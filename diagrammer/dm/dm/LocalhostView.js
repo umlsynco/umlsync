@@ -65,7 +65,7 @@ Version:
 					autoFocus: false,
 					initAjax: {
 						url: urlArg + "/getlist",
-						dataType: data_type,
+						dataType: 'JSONP',
 						data: {path: "/"}
 				},
 				onLazyRead: function(node){
@@ -83,8 +83,8 @@ Version:
 						key = undefined;
 					}
 					node.appendAjax({
-						url: self.options.viewmanager + uid + "/getlist",
-						dataType: data_type,
+						url: urlArg + "/getlist",
+						dataType: "JSONP",
 						data: {path: filenode.getAbsolutePath(false), key:key}
 					});
 				}, // onLazyRead
@@ -92,10 +92,10 @@ Version:
 					if (!node.data.isFolder) {
 						if ($("#tab-" + node.data.key).length == 0) {
 							if ('diagramclass' == node.data.addClass)
-								self.loadDiagram(self.options.viewmanager + uid + '/open?path='+node.getAbsolutePath(), data_type);
+								self.loadDiagram(urlArg + '/open?path='+node.getAbsolutePath(), "jsonp");
 
 							if ('cfile' == node.data.addClass)
-								self.loadCode(self.options.viewmanager + uid + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
+								self.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
 
 							// Urgly hack for diagram selection menu
 							var val = $("#vp_main_menu input").val();

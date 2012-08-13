@@ -146,8 +146,8 @@ Version:
 					// Complete menu update first.
 					// And open the default views than.
 					for (i in json) {
-						if (json[i].isdefault) {
-							var IView = new dm.base.LocalhostView(self.options.viewmanager + uid);
+						if (json[i]['isdefault']) {
+							var IView = new dm.base.LocalhostView(self.options.viewmanager + json[i]['id']);
 							IView.euid = json[i]['id'];
 							self.addView2(json[i]['title'], IView);
 						}
@@ -201,6 +201,7 @@ Version:
 				if (!json)
 					return;
 				self.views = self.views || {};
+				self.views[IView.euid] = self.views[IView.euid] || {};
 				self.views[IView.euid].info = json || {};
 				self.views[IView.euid].ctxmenu =
 					$('<ul id="view-'+IView.euid +'" class="context-menu" >\
