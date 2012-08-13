@@ -870,7 +870,7 @@ dm['es'] = dm.es;
             var ctx = this.canvas.getContext("2d");
 
             ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
-            ctx.clearRect(0, 0, 1000, 500);
+            ctx.clearRect(0, 0, 1300, 700);
 //            ctx.strokeRect(0, 0, 1000, 500);
 
 
