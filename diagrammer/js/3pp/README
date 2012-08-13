@@ -1,0 +1,31 @@
+3PP plugins description and licenses
+
+==================================================
+link: http://www.arashkarimzadeh.com/
+3pp/editable/editable.js
+
+==================================================
+link: http://tablesorter.com/docs/
+required: metadata plugin
+3pp/tablesorter/jquery.tablesorter.zip
+
+==================================================
+link: https://github.com/jquery/jquery-metadata
+3pp/metadata/jquery.metadata.js
+3pp/metadata/jquery-jquery-metadata-e5a9e43.tar.gz
+
+==================================================
+link: http://wwwendt.de/tech/dynatree/
+3pp/dynatree/jquery.dynatree.js - added getAbsolutePath()
+3pp/dynatree/dynatree-1.2.1.tar.gz
+
+==================================================
+link:https://github.com/arnklint/jquery-contextMenu
+3pp/contextmenu/jquery.contextmenu.js
+
+Debug purpose only:
+==================================================
+link:http://grasp.googlecode.com/svn-history/r11/trunk/frontend/lib/jquery.jLog.min.js
+3pp/jLog/jLog.min.js
+
+

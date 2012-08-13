@@ -1,0 +1,182 @@
+[
+  {
+   "elements": [
+	{"type": "state",
+	 "description": "State",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/State.png"}]
+	},
+	{"type": "state",
+	 "description": "Submachine state",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/SubMachineState.png"}]
+	},
+	{"type": "image",
+	 "image_path":"./dm/icons/vp/es/common/interface.png",
+	 "description": "Entry point",
+	 "menu": "port-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/EntryPoint.png"}]
+	},
+	{"type": "image",
+	 "aux":"exitpoint",
+	 "image_path":"./dm/icons/vp/es/common/ExitPoint.png",
+	 "description": "Exit point",
+	 "menu": "port-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/ExitPoint.png"}]
+	},
+	{"type":"image",
+	 "aux":"initialpseudostate",
+	 "image_path": "./dm/icons/vp/es/common/InitialPseudoState.png",
+	 "description": "Initial pseudo state",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/InitialPseudoState.png"}]
+	},
+	{"type": "image",
+	 "aux":"finalstate",
+	 "image_path": "dm/icons/vp/es/common/FinalState.png",
+	 "description": "Final state",
+	 "menu": "end-state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/FinalState.png"}]
+	},
+	{"type": "image",
+	 "aux":"shallowhistory",
+	 "image_path": "dm/icons/vp/es/common/ShallowHistory.png",
+	 "description": "Shallow history",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/ShallowHistory.png"}]
+	},
+	{"type": "image",
+	 "aux":"deephistory",
+	 "image_path": "dm/icons/vp/es/common/DeepHistory.png",
+	 "description": "Deep history",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/DeepHistory.png"}]
+	},
+	{"type": "image",
+	 "aux":"terminate",
+	 "image_path": "dm/icons/vp/es/common/Terminate.png",
+	 "description": "Terminate",
+	 "menu": "end-state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/statemachine/Terminate.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"transition",
+	   "description":"Transition",
+	   "image": [{"small": "./dm/icons/vp/cs/Transition.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Anchor",
+	   "image": [{"small": "./dm/icons/vp/cs/AnchorToNote.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Constraint",
+	   "image": [{"small": "./dm/icons/vp/cs/Constrain.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Containment",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  }
+    ],
+	"menus": [
+	  {"id":"state-menu",
+	   "items": [
+				{"el":"State",
+				 "cs":[
+						{"connector":"transition",
+						 "image":"dm/icons/vp/cs/diagram/transition_to_state.gif"
+						}
+					  ]
+				},
+				{"el":"Final state",
+				 "cs":[
+						{"connector":"transition",
+						 "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
+						}
+					  ]
+				},
+				{"el":"Initial pseudo state",
+				 "cs":[
+						{"connector":"transition",
+						 "image":"dm/icons/vp/cs/diagram/transition2_to_initial_pseudo_state.gif"
+						}
+					  ]
+				},
+				{"el":"Shallow history",
+				 "cs":[
+						{"connector":"transition",
+						 "image":"dm/icons/vp/cs/diagram/transition2_to_shallow_history.gif"
+						}
+					  ]
+				},
+				{"el":"Deep history",
+				 "cs":[
+						{"connector":"transition",
+						 "image":"dm/icons/vp/cs/diagram/transition2_to_deep_history.gif"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"port-menu",
+	   "items": [
+				{"el":"State",
+				 "cs":[
+						{"connector":"transition",
+						 "image":"dm/icons/vp/cs/diagram/transition_to_state.gif"}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"note-menu",
+	   "items": [
+				{"el":"State",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"end-state-menu",
+	   "items": [
+				{"el":"State",
+				 "cs":[
+						{"connector":"transition",
+						 "image":"dm/icons/vp/cs/diagram/transition_to_state.gif"}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

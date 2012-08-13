@@ -1,0 +1,127 @@
+[
+  {
+   "elements": [
+	{"type": "node",
+	 "description": "Node",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/vp/es/deployment/Node.png"}]
+	},
+	{"type": "node",
+	 "description": "Execution Environment Node",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/vp/es/deployment/ExecutionEnvironmentNode.png"}]
+	},
+	{"type": "node",
+	 "description": "Device Node",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/vp/es/deployment/DeviceNode.png"}]
+	},
+	{"type": "artifact",
+	 "description": "Artifact",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/vp/es/deployment/Artifact.png"}]
+	},
+	{"type": "component",
+	 "description": "Component",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/vp/es/component/Component.png"}]
+	},
+	{"type": "interface",
+	 "description": "Interface",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/vp/es/component/Interface.png"}]
+	},
+	{"type": "port",
+	 "description": "Port",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/vp/es/component/Port.png"}]
+	},
+	{"type": "instance",
+	 "description": "Instance Specification",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/vp/es/component/InstanceSpecification.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"dependency",
+	   "description":"Dependency",
+	   "image": [{"small": "./dm/icons/vp/cs/dependency.png"}]
+	  },
+      {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+      {"connector":"realization",
+	   "description":"Realization",
+	   "image": [{"small": "./dm/icons/vp/cs/realization.png"}]
+	  },
+      {"connector":"association",
+	   "description":"Association",
+	   "image": [{"small": "./dm/icons/vp/cs/association.png"}]
+	  },
+      {"connector":"aggregation",
+	   "description":"Aggregation",
+	   "image": [{"small": "./dm/icons/vp/cs/aggregation.png"}]
+	  },
+      {"connector":"composition",
+	   "description":"Composition",
+	   "image": [{"small": "./dm/icons/vp/cs/composition.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Anchor",
+	   "image": [{"small": "./dm/icons/vp/cs/AnchorToNote.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Constraint",
+	   "image": [{"small": "./dm/icons/vp/cs/Constrain.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Containment",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  }
+    ],
+    "menus": [
+	  {"id":"vp-component-menu",
+	   "items": [
+				{"el":"Component",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/vp/cs/diagram/association_with_component.gif"
+						},
+						{"connector":"aggregation",
+						 "image":"dm/icons/vp/cs/diagram/aggregation_from_component.gif"
+						},
+						{"connector":"composition",
+						 "image":"dm/icons/vp/cs/diagram/composition_to_component.gif"
+						}
+					  ]
+				},
+				{"el":"Interface",
+				 "cs":[
+						{"connector":"realization",
+						 "image":"dm/icons/vp/cs/diagram/provided_interface_to_interface.gif"
+						}
+					  ]
+				},
+				{"el":"Port",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/vp/cs/diagram/association_with_port.gif"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

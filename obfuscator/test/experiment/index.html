@@ -1,0 +1,56 @@
+<><!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script src="../../../diagrammer/js/jquery.js"></script>
+  <script src="./experiment.min.js"></script>
+  <script src="./loader.js"></script>
+  <script src="./experiment_ext1.js"></script>
+
+   <script>
+    function singleton() {
+      var instance = (function() {
+      var privateVar = 0;
+		
+    function privateMethod () {
+      privateVar = 1;
+    }
+
+    return { // public interface
+      publicMethod1: function () {
+			this.publicField = 10;
+          privateMethod ();
+       },
+      publicMethod2: function () {
+        alert("Value: " + this.publicField);
+      }
+    };
+  })();
+  instance.publicField = 0;
+
+  singleton = function () { // re-define the function for subsequent calls
+    return instance;
+  };
+
+  return singleton(); // call the new function
+}
+
+
+
+    $(document).ready(function() {
+	  dm.r = new dm.es.package({'x':123, 'y':1024}, "bublik");
+	  //alert("BBBB: " + dm.r.parrent);
+	  dm.singleton = new singleton();
+	  dm.singleton.publicMethod2();
+	  dm.singleton2 = new singleton();
+	  dm.singleton2.publicMethod1();
+	  dm.singleton3 = new singleton();
+	  dm.singleton3.publicMethod2();
+	  singleton().publicMethod2();
+	});
+  </script>
+</head>
+<body>
+STARTED !!!
+</body>
+</html>

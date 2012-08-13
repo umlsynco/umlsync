@@ -1,0 +1,53 @@
+[
+  {
+   "elements": [
+	{"element": "package",
+	 "type": "UML",
+	 "description": "Package",
+	 "image": [{"small": "./dm/icons/vp/es/package/Package.png"}]
+	},
+	{"element": "subsystem",
+	 "type": "UML",
+	 "description": "Subsystem",
+	 "image": [{"small": "./dm/icons/vp/es/package/Subsystem.png"}]
+	},
+	{"element": "note",
+	 "type": "UML",
+	 "description": "Note",
+	 "image": [{"small": "./dm/icons/vp/es/common/note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"dependency",
+	   "type":"UML",
+	   "description":"Dependency",
+	   "image": [{"small": "./dm/icons/vp/cs/dependency.png"}]
+	  },
+      {"connector":"dependency",
+	   "type":"UML",
+	   "description":"Import",
+	   "image": [{"small": "./dm/icons/vp/cs/Import.png"}]
+	  },
+      {"connector":"dependency",
+	   "type":"UML",
+	   "description":"Access",
+	   "image": [{"small": "./dm/icons/vp/cs/Access.png"}]
+	  },
+      {"connector":"generalization",
+	   "type":"UML",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+      {"connector":"dependency",
+	   "type":"UML",
+	   "description":"Merge",
+	   "image": [{"small": "./dm/icons/vp/cs/Merge.png"}]
+	  },
+      {"connector":"nested",
+	   "type":"UML",
+	   "description":"Containment",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  }
+    ]
+   }
+]

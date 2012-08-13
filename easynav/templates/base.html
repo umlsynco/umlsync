@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>{% block title %}{% endblock %} | EasyNav</title>
+  <link rel="icon" type="image/png" href="{{MEDIA_URL}}static/images/easynav.png" />
+  <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}static/css/common.css" />
+
+{% block css %}{% endblock %}
+  <link href="{{MEDIA_URL}}static/diagrams/css/start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="{{MEDIA_URL}}static/diagrams/css/main.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="{{MEDIA_URL}}static/diagrams/js/3pp/tablesorter/themes/blue/style.css" type="text/css" media="screen"/>
+  
+
+<script src="{{MEDIA_URL}}static/diagrams/js/jquery.min.js"></script>
+<script src="{{MEDIA_URL}}static/diagrams/js/jquery-ui.js"></script>
+<script src="{{MEDIA_URL}}static/diagrams/js/3pp/metadata/jquery.metadata.js"></script>
+<script src="{{MEDIA_URL}}static/diagrams/js/3pp/tablesorter/jquery.tablesorter.js"></script>
+
+
+{% block scripts %}{% endblock %}
+
+ </head>
+ <body>
+
+<div id="dialog-form" title="Create new project">
+    <p class="validateTips">All form fields are required.</p>
+
+    <form>
+    <fieldset>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+        <label for="description">Description</label>
+        <input type="textarea" name="description" id="description" value="" class="text ui-widget-content ui-corner-all" />
+    </fieldset>
+    </form>
+</div>
+
+<div id="body">
+  <div class="nav" id="header">
+  <div>
+      <ul id="header-menu" class="menu_left">
+        <li><a href="#">Project</a>
+		  <ul>
+		  <li><a id="newproject" href="#">New project</a></li>
+		  <li><a id="vp_main_menu_ref" rel="#vp_main_menu2" href="#">New diagram</a></li>
+		  <li><a href="#vp_main_menu2_ref">Open code project</a></li>
+		  <li><a id="export" href="#">Export diagram</a></li>
+		  <li><a id="import" href="#">Import diagram</a></li>
+		  </ul>
+		</li>
+        <li><a href="http://umlsync.org/about">Actions</a>
+		<ul>
+        <li><a href="#">Post for review </a></li>
+        <li><a href="#">Do something usefull</a></li>
+		</ul>
+		</li>
+        <li><a href="http://umlsync.org">Edit</a>
+		<ul>
+        <li><a href="#">Undo              Ctrl+Z</a></li>
+        <li><a href="#">Redo              Ctrl+Y</a></li>
+        <li><a href="#">Copy              Ctrl+C</a></li>
+		<li><a href="#">Cut               Ctrl+X</a></li>
+		<li><a href="#">Past              Ctrl+V</a></li>
+		<li><a href="#">Select All        Ctrl+A</a></li>
+		<li><a href="#">Remove selection  Del</a></li>
+		</ul>
+		</li>
+
+        <li id='Views'><a href="#">Views</a>
+        <ul>
+        <li><a href="#">SandBox</a></li>
+		</ul>
+        </li>
+    </ul>
+	</div><div>
+    <ul class="menu_right">
+        <li><a href="http://umlsync.org/">Log out</a></li>
+        <li><a href="http://127.0.0.1:8000/about">About</a></li>
+        <li><a href="#">Settings </a></li>
+        <li><a href="#">Report a bug</a></li>
+    </ul>
+	</div>
+  </div>
+  <div id="content">
+  </div>
+  <div id="content-bottom" style="clear:both;">bottom</div>
+</div>
+
+<!--- div id="socializethis" class="trashbox"> Some kind of clipboard with multiple selection. User could review code and find some instances and put them on this clipboard.
+</div --->
+
+{% block content-left %}{% endblock %}
+{% block content-center %}{% endblock %}
+{% block content-right %}{% endblock %}
+
+<!--- input id="possition_locator" type="text" value="click a button" style="position:fixed;left:0px;top:0px;width:300px;"/ Position Locator instance. Check the rest of the code to be sute that it is not uses any longer --->
+
+</body>
+</html>

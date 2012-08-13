@@ -1,0 +1,48 @@
+[
+  {
+   "elements": [
+	{"type": "component",
+	 "description": "Component",
+	 "image": [{"small": "./dm/icons/vp/es/component/Component.png"}]
+	},
+	{"type": "interface",
+	 "description": "Interface",
+	 "image": [{"small": "./dm/icons/vp/es/component/Interface.png"}]
+	},
+	{"type": "port",
+	 "description": "Port",
+	 "image": [{"small": "./dm/icons/vp/es/component/Port.png"}]
+	},
+	{"type": "instance",
+	 "description": "Instance Specification",
+	 "image": [{"small": "./dm/icons/vp/es/component/InstanceSpecification.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"dependency",
+	   "description":"Dependency",
+	   "image": [{"small": "./dm/icons/vp/cs/dependency.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Import",
+	   "image": [{"small": "./dm/icons/vp/cs/Import.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Access",
+	   "image": [{"small": "./dm/icons/vp/cs/Access.png"}]
+	  },
+      {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Merge",
+	   "image": [{"small": "./dm/icons/vp/cs/Merge.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Containment",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  }
+    ]
+   }
+]

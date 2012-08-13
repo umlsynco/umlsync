@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" height="734.35999" width="298.09" id="svg2" sodipodi:version="0.32" inkscape:version="0.44" sodipodi:docbase="C:\Documents and Settings\Arek.TOBIASZ-156923D\Pulpit" sodipodi:docname="use_case_diagram_actor_people.svg" version="1.0">
+  <defs id="defs4"/>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:cx="310.76429" inkscape:cy="490.81012" inkscape:zoom="1" inkscape:document-units="px" inkscape:current-layer="layer1" showgrid="true" inkscape:window-width="1280" inkscape:window-height="744" inkscape:window-x="-4" inkscape:window-y="-4" width="298.09px" height="734.36px" borderlayer="false"/>
+  <metadata id="metadata7">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:groupmode="layer" inkscape:label="Warstwa 1" id="layer1" style="display: inline;">
+    <path sodipodi:type="arc" style="fill: none; stroke: black; stroke-width: 3; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" id="path1884" sodipodi:cx="435.92374" sodipodi:cy="486.81354" sodipodi:rx="192.0369" sodipodi:ry="175.71376" d="M 627.96063 486.81354 A 192.0369 175.71376 0 1 1  243.88684,486.81354 A 192.0369 175.71376 0 1 1  627.96063 486.81354 z" transform="matrix(0.662402, 0, 0, 0.723937, -139.126, -214.818)"/>
+    <path style="fill: none; fill-rule: evenodd; stroke: black; stroke-width: 3; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 149.63121,265.30877 C 149.63121,434.30124 149.63121,433.82115 149.63121,433.82115 L 149,583.60992" id="path3657"/>
+    <path style="fill: none; fill-rule: evenodd; stroke: black; stroke-width: 3.36866; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 276.81568,368.27664 L 21.18432,367.64528 L 276.81568,368.27664 z " id="path4548"/>
+    <path style="fill: none; fill-rule: evenodd; stroke: black; stroke-width: 3; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 19,717.46096 L 148,580.46096 L 278,718.46096 L 148,583.46096 L 19,717.46096 z " id="path6322"/>
+  </g>
+</svg>

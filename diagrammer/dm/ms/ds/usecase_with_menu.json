@@ -1,0 +1,165 @@
+[
+  {
+   "elements": [
+	{"type": "ellipse",
+	 "description": "Use Case",
+	 "menu": "vp-usecase-menu",
+	 "image": [{"small": "./dm/icons/vp/cs/usecase/UseCase.png"}]
+	},
+	{"type": "node",
+	 "description": "Node",
+	 "menu": "vp-usecase-menu",
+	 "image": [{"small": "./dm/icons/vp/cs/usecase/UseCase.png"}]
+	},
+	{"type": "instance",
+	 "description": "System",
+	 "menu":"vp-note",
+	 "image": [{"small": "./dm/icons/vp/cs/usecase/System.png"}]
+	},
+	{"type": "image",
+	 "image_path":"images/actor3.svg",
+	 "width":"40",
+	 "description": "Actor",
+	 "menu":"vp-actor",
+	 "image": [{"small": "./dm/icons/vp/cs/usecase/Actor.png"}]
+	},
+	{"type": "ellipse",
+	 "description": "Collaboration",
+	 "menu": "vp-collaboration",
+	 "image": [{"small": "./dm/icons/vp/cs/usecase/UseCaseCollaboration.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "menu": "vp-note",
+	 "image": [{"small": "./dm/icons/vp/es/component/InstanceSpecification.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"association",
+	   "description":"Association",
+	   "image": [{"small": "./dm/icons/vp/cs/association.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Include",
+	   "image": [{"small": "./dm/icons/vp/cs/usecase/Include.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Extend",
+	   "image": [{"small": "./dm/icons/vp/cs/usecase/Extend.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Dependency",
+	   "image": [{"small": "./dm/icons/vp/cs/dependency.png"}]
+	  },
+      {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+      {"connector":"realization",
+	   "description":"Realization",
+	   "image": [{"small": "./dm/icons/vp/cs/realization.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Anchor",
+	   "image": [{"small": "./dm/icons/vp/cs/AnchorToNote.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Constraint",
+	   "image": [{"small": "./dm/icons/vp/cs/Constrain.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Containment",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  }
+    ],
+	"menus": [
+	  {"id":"vp-usecase-menu",
+	   "items": [
+				{"el":"Actor",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/vp/cs/diagram/association_with_actor.gif"
+						}
+					  ]
+				},
+				{"el":"Use Case",
+				 "cs":[
+						{"connector":"dependency",
+						 "image":"dm/icons/vp/cs/diagram/include_to_use_case.gif"
+						},
+						{"connector":"dependency",
+						 "image":"dm/icons/vp/cs/diagram/extend_from_use_case.gif"
+						},
+						{"connector":"generalization",
+						 "image":"dm/icons/vp/cs/diagram/generalization_from_use_case.gif"
+						}
+					  ]
+				},
+				{"el":"Collaboration",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/vp/cs/diagram/association_with_collaboration2.gif"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"vp-actor",
+	   "items": [
+				{"el":"Use Case",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/vp/cs/diagram/association_with_use_case.gif"
+						}
+					  ]
+				},
+				{"el":"Actor",
+				 "cs":[
+						{"connector":"generalization",
+						 "image":"dm/icons/vp/cs/diagram/generalization_from_actor.gif"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"vp-collaboration",
+	   "items": [
+				{"el":"Use Case",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/vp/cs/diagram/association_with_use_case.gif"}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"vp-note",
+	   "items": [
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

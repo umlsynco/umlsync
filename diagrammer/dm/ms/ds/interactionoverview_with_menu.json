@@ -1,0 +1,104 @@
+[
+  {
+   "elements":[
+   {"type": "interaction_start",
+	 "description": "Initial Node",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/interaction/InitialPseudoState.png"}]
+	},
+	 {"type": "interaction_final",
+	 "description": "Activity Final",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/interaction/FinalState.png"}]
+	},
+	{"type": "diamond",
+	 "description": "Decision node",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/interaction/DecisionNode.png"}]
+	},
+	{"type": "fork_node",
+	 "description": "Fork node",
+	 "menu": "state-menu",
+	 "size": 20,
+	 "color": "black",
+	 "image": [{"small": "./dm/icons/vp/es/interaction/structure_fork.gif"}]
+	},
+	{"type": "interaction",
+	 "description": "Interaction",
+	 "menu": "state-menu",
+	 "image": [{"small": "./dm/icons/vp/es/interaction/InteractionOccurrence.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"transition",
+	   "description":"Transition",
+	   "image": [{"small": "./dm/icons/vp/cs/Transition.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Anchor",
+	   "image": [{"small": "./dm/icons/vp/cs/AnchorToNote.png"}]
+	  }
+    ],
+	"menus": [
+	  {"id":"state-menu",
+	   "items": [
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				},
+                {"el":"Interaction",
+				 "cs":[
+						{"connector":"transition",
+						 "image":"dm/icons/vp/cs/diagram/association_with_use_case.gif"
+						}
+					  ]
+				},
+                {"el":"Activity Final",
+                "cs":[
+                    {"connector":"transition",
+                    "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
+                    }
+                    ]
+                },
+                {"el":"Decision node",
+                "cs":[
+                    {"connector":"transition",
+                    "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
+                    }
+                    ]
+                },
+                {"el":"Fork node",
+                "cs":[
+                    {"connector":"transition",
+                    "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
+                    }
+                    ]
+                }  
+			 ]
+	  },
+	  {"id":"note-menu",
+	   "items": [
+				{"el":"State",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

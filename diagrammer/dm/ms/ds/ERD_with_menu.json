@@ -1,0 +1,82 @@
+[
+  {
+   "elements": [
+	{"type": "entity",
+	 "description": "Entity",
+	 "ctx_menu": "entity",
+	 "menu": "entity-menu",
+	 "image": [{"small": "./dm/icons/vp/es/ER/Entity.png"}],
+	 "fields": ["Id   INTEGER","Name CHAR"]
+	},
+	{"type": "entity",
+	 "description": "View",
+	 "menu": "entity-menu",
+	 "ctx_menu": "entity",
+	 "image": [{"small": "./dm/icons/vp/es/ER/DBView.png"}]
+	},
+	{"type": "procedure",
+	 "description": "Stored Procedures",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/ER/StoredProceduresContainer.png"}]
+	},
+	{"type": "resultset",
+	 "description": "Stored Procedure ResultSet",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/ER/ResultSet.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector": "anchor",
+	   "description": "Anchor",
+	   "image": [{"small": "./dm/icons/vp/cs/AnchorToNote.png"}]
+	  },
+      {"connector": "onetoone",
+	   "description": "OneToOne",
+	   "image": [{"small": "./dm/icons/vp/cs/OneToOneRelationship.png"}]
+	  },
+      {"connector": "onetomany",
+	   "description": "OneToMany",
+	   "image": [{"small": "./dm/icons/vp/cs/OneToManyRelationship.png"}]
+	  },
+      {"connector": "manytomany",
+	   "description": "ManyToMany",
+	   "image": [{"small": "./dm/icons/vp/cs/ManyToManyRelationship.png"}]
+	  }
+    ],
+	"menus": [
+	  {"id": "entity-menu",
+	   "items": [
+				{"el": "Entity",
+				 "cs":[
+						{"connector": "onetoone",
+						 "image": "dm/icons/vp/cs/diagram/one_to_one_to_db_table.gif"
+						},
+						{"connector": "onetomany",
+						 "image": "dm/icons/vp/cs/diagram/one_to_many_to_db_table.gif"
+						},
+						{"connector": "manytomany",
+						 "image": "dm/icons/vp/cs/diagram/many_to_many_to_db_table.gif"
+						}
+					  ]
+				}
+			 ]
+	  },
+	  {"id": "note-menu",
+	   "items": [
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"
+						 }
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

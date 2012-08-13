@@ -1,0 +1,105 @@
+[
+{
+    "elements": [
+    {"type": "image",
+	"image_path":"./dm/icons/vp/es/common/InitialPseudoState.png",
+	"description": "Initial Node",
+	"menu": "port-menu",
+	"image": [{"small": "./dm/icons/vp/es/statemachine/InitialPseudoState.png"}],
+        "width": "22",
+        "height": "22"
+    },
+    {"type": "image",
+	"image_path":"./dm/icons/vp/es/common/FinalState.png",
+	"description": "Final Node",
+	"menu": "port-menu",
+	"image": [{"small": "./dm/icons/vp/es/statemachine/FinalState.png"}]
+    },
+    {"type": "state",
+	"description": "Activity",
+	"menu": "activity-menu",
+	"image": [{"small": "./dm/icons/vp/es/statemachine/State.png"}],
+	"nameTemplate" : "Activity"
+    },
+    {"type": "diamond",
+	"description": "Decision",
+	"menu": "activity-menu",
+	"image": [{"small": "./dm/icons/vp/es/statemachine/State.png"}]
+    },
+    {"type": "image",
+	"description": "Fork",
+	"menu": "activity-menu",
+	"image": [{"small": "./dm/icons/vp/es/statemachine/Fock.png"}]
+    },
+    {"type": "image",
+	"description": "Join",
+	"menu": "activity-menu",
+	"image": [{"small": "./dm/icons/vp/es/statemachine/Join.png"}]
+    },
+    {"type": "note",
+	"description": "Note",
+	"menu": "note-menu",
+	"image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+    }
+    ],
+    "connectors": [
+    {"connector":"anchor",
+	"description":"Anchor",
+	"image": [{"small": "./dm/icons/vp/cs/AnchorToNote.png"}]
+    },
+    {"connector":"nested",
+	"description":"Containment",
+	"image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+    }
+    ],
+    "menus": [
+    {"id":"activity-menu",
+	"items": [
+	{"el":"Activity",
+	    "cs":[
+	    {"connector":"transition",
+		"image":"dm/icons/vp/cs/diagram/transition_to_state.gif"
+	    }
+	    ]
+	},
+	{"el":"Final Node",
+	    "cs":[
+	    {"connector":"transition",
+		"image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
+	    }
+	    ]
+	},
+	{"el":"Initial Node",
+	    "cs":[
+	    {"connector":"transition",
+		"image":"dm/icons/vp/cs/diagram/transition2_to_initial_pseudo_state.gif"
+	    }
+	    ]
+	},
+	{"el":"Note",
+	    "cs":[
+	    {"connector":"anchor",
+		"image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+	    ]
+	}
+	]
+    },
+    {"id":"note-menu",
+	"items": [
+	{"el":"State",
+	    "cs":[
+	    {"connector":"anchor",
+		"image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+	    ]
+	},
+	{"el":"Note",
+	    "cs":[
+	    {"connector":"anchor",
+		"image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+	    ]
+	}
+	]
+    }
+    ]
+}
+]

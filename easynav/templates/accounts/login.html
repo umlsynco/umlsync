@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Log In" %}{% endblock %}
+
+{% block content-center %}
+
+<form method="post" action=".">
+ {% csrf_token %}
+ <h1 class="title">{% trans "Log In" %}</h1>
+ <div class="main">
+ <input type="hidden" name="next_page" value="{{next_page}}"></input>
+ <table>
+  <tr>
+   <td class="label"><label for="id_username">{% trans "Username" %}</label></td>
+   <td class="field"><input type="text" name="username" id="id_username" tabindex="1" /></td>
+{% if auth_backends.0.supports_registration and siteconfig.settings.auth_enable_registration|default_if_none:1 %}
+   <td class="hint">
+    {% trans "Don't have an account?" %}
+    <a href="{% url register %}">{% trans "Create one now" %}</a>
+   </td>
+{% endif %}
+  </tr>
+  <tr>
+   <td class="label"><label for="id_password">{% trans "Password" %}</label></td>
+   <td class="field"><input type="password" name="password" id="id_password" tabindex="2" /></td>
+{% if auth_backends.0.supports_registration %}
+   <td class="hint">
+    {% trans "Forgot your password?" %}
+    <a href="{% url recover %}">{% trans "Recover it" %}</a>
+   </td>
+{% endif %}
+  </tr>
+  <tr>
+   <td>&nbsp;</td>
+   <td class="field"><input type="submit" value="{% trans "Log in" %}" tabindex="3" /></td>
+  </tr>
+ </table>
+ </div>
+</form>
+
+{% endblock %}

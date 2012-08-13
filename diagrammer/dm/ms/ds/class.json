@@ -1,0 +1,60 @@
+[
+  {
+   "elements": [
+	{"element": "class",
+	 "description": "Class",
+	 "image": [{"small": "./dm/icons/vp/es/class/Class.png"}]
+	},
+	{"element": "class",
+	 "description": "Interface",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassInterface.png"}]
+	},
+	{"element": "class",
+	 "description": "Enumeration",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassEnumeration.png"}]
+	},
+	{"element": "class",
+	 "description": "Primitive",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassPrimitive.png"}]
+	},
+	{"element": "class",
+	 "description": "ORM",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassORM.png"}]
+	},
+	{"element": "class",
+	 "description": "ORMComponent",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassORMComponent.png"}]
+	},
+	{"element": "note",
+	 "description": "Note",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"aggregation",
+	   "description":"Aggregation",
+	   "image": [{"small": "./dm/icons/vp/cs/aggregation.png"}]
+	  },
+      {"connector":"realization",
+	   "description":"Realization",
+	   "image": [{"small": "./dm/icons/vp/cs/realization.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Dependency",
+	   "image": [{"small": "./dm/icons/vp/cs/dependency.png"}]
+	  },
+      {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Nested",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  },
+      {"connector":"composition",
+	   "description":"Composition",
+	   "image": [{"small": "./dm/icons/vp/cs/composition.png"}]
+	  }
+    ]
+   }
+]

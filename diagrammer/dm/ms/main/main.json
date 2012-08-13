@@ -1,0 +1,81 @@
+[
+	{"diagram": "class",
+	 "type": "class",
+	 "base_type":"base",
+	 "description": "UML class diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/classDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_class_diagram.png"}]
+	},
+	{"diagram": "package",
+	 "type": "base",
+	 "description": "UML package diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/packageDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_package_diagram.png"}]
+	},
+	{"diagram": "component",
+	 "type": "base",
+	 "description": "UML component diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/componentDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_component_diagram.png"}]
+	},
+	{"diagram": "lifeline",
+	 "type": "UML",
+	 "description": "UML sequence diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/sequenceDiagram.gif",
+	            "medium": "./dm/icons/ds/UML_component_diagram.png"}]
+	},
+	{"diagram": "object",
+	 "type": "base",
+	 "description": "UML object diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/objectDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_object_diagram.png"}]
+	},
+	{"diagram": "activity",
+	 "type": "base",
+	 "description": "UML activity diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/activityDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_activity_diagram.png"}]
+	},
+	{"diagram": "deployment",
+	 "type": "base",
+	 "description": "UML deployment diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/deploymentDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_deployment_diagram.png"}]
+	},
+	{"diagram": "usecase",
+	 "type": "base",
+	 "description": "UML usecase diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/useCaseDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_usecase_diagram.png"}]
+	},
+	{"diagram": "statemachine",
+	 "type": "base",
+	 "description": "UML statemachine diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/stateDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_statemachine_diagram.png"}]
+	},
+	{"diagram": "interactionoverview",
+	 "type": "base",
+	 "description": "UML interaction overview diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/interactionOverviewDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_interactionoverview_diagram.png"}]
+	},
+	{"diagram": "ERD",
+	 "type": "base",
+	 "description": "Entity-Relation diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/entityRelationshipDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_interactionoverview_diagram.png"}]
+	},
+	{"diagram": "dataflow",
+	 "type": "base",
+	 "description": "DataFlow diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/dataFlowDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_interactionoverview_diagram.png"}]
+	},
+	{"diagram": "venn",
+	 "type": "base",
+	 "description": "Venn diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/VennDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_interactionoverview_diagram.png"}]
+	}
+]

@@ -1,0 +1,921 @@
+
+body {
+	font-family: sans-serif;
+	font-size: 11px;
+	color: #666666;	
+	width: 100%;
+	height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.ui-resizable-s-l {
+	position: absolute;
+	width:10%;
+	height:3px;
+	background-color: white;
+	border:0px;
+	bottom:4px;
+	left:45%;
+	cursor: s-resize;
+}
+
+.ui-resizable-s-u {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+	border:0px;
+	bottom:4px;
+	left:50%;
+	cursor: s-resize;
+}
+
+.ui-resizable-e-u {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+	border:0px;
+    top:50%;
+	right:4px;
+	cursor: e-resize;
+}
+
+.ui-resizable-n-u {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+	top:4px;
+	left:50%;
+	cursor: n-resize;
+	border:0px;
+}
+
+.ui-resizable-w-u {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+	border:0px;
+	top:50%;
+	left:4px;
+	cursor: w-resize;
+}
+
+.ui-resizable-nw-u {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+	border:0px;
+    top:4px;
+	left:4px;cursor: nw-resize;
+}
+
+.ui-resizable-ne-u {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+	border:0px;
+    top:4px;
+	right:4px;
+	cursor: ne-resize;
+}
+
+.ui-resizable-se-u {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+	border:0px;
+	bottom:4px;right:4px;cursor: se-resize;
+}
+
+.ui-resizable-sw-u {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+	border:0px;
+	bottom:4px;left:4px;cursor: sw-resize;
+}
+
+.extreference{
+	position: absolute;
+	width:10px;
+	height:10px;
+	border:0px;
+	bottom:10px;
+	left:10px;
+	cursor: sw-resize;
+}
+
+.fitsize{
+	position: absolute;
+	width:10px;
+	height:10px;
+	border:0px;
+	bottom:4px;
+	right:14px;
+	cursor: sw-resize;
+}
+
+.HResizer {
+	position: absolute;
+	width:6px;
+	height:6px;
+	background-color: black;
+}
+
+.UMLSyncClassDiagram {
+	border: 1px solid #0099FF;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	position: relative;
+	background-color: seashell;
+}
+
+.UMLSyncCanvas {
+	background-image: url('../images/bground_sq.png');
+	border: 1px solid grey;
+	background-color: none;
+	position: absolute;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.UMLSyncClassBorder {
+    padding: 10px;
+	border: 0px solid #87CEEB;
+	position: absolute;
+	width: 150px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 15px;
+	z-index: 9999997;
+}
+
+.UMLSyncClass {
+	padding: 0px;
+	border: 0px;
+	margin: 0 0px;
+	background-color: #87CEEB;
+	position: relative;
+	height:100%;
+
+/*
+	-moz-box-shadow:inset 0 0 30px #000000;
+    -webkit-box-shadow:inset 0 0 10px #000000;
+    box-shadow:inset 0 0 10px #000000;
+*/
+}
+
+.UMLSyncClass div {
+	margin: 0 0px;
+    padding: 0;
+	border:1px solid #0099FF;
+    text-decoration:none;
+	text-align: center;
+}
+
+.UMLSyncClassHeader {
+    height:20px;
+	width: 100%;
+}
+
+.UMLSyncClassAttributes {
+	width: 100%;
+	height:10px;
+}
+
+.UMLSyncClassOperations {
+	width: 100%;
+	height:10px;
+}
+
+.UMLSyncClass div ul {
+  padding: 0;
+  margin: 2px;
+  position: relative;
+}
+
+.UMLSyncClass div li {
+	margin: 0 0px;
+	padding: 0px;
+	position: heritage;
+	text-align: left;
+	display: block;
+}
+
+.UMLSyncClass div li a {
+    margin: 0;
+	padding: 0;
+	display: block;
+	position: heritage;
+    color: White; 
+	text-decoration: none;
+}
+
+.UMLSyncClass div li em {
+	background: #87CEEB;
+	display: none;
+}
+
+.UMLSyncPacketBorder {
+    padding: 10px;
+	border: 0px solid #87CEEB;
+	position: absolute;
+	left: 100px;
+	top: 300px; 
+	-webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 15px;
+}
+
+.UMLSyncPacket {
+	position: relative;
+	width:100%;
+	height:100%;
+}
+
+.UMLSyncNoteBorder {
+    padding: 10px;
+	border: 0px solid #87CEEB;
+	position: absolute;
+	height:40px;
+	width:100px;
+	left: 100px;
+	top: 300px; 
+	-webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 15px;
+}
+
+.UMLSyncNote {
+	position: relative;
+    width:100%;
+	height:100%;
+	border: 1px solid #0099FF;
+	background-color: #87CEEB;
+}
+
+.UMLSyncInstance {
+	position: relative;
+    width:100%;
+	height:45px;
+	border: 1px solid #0099FF;
+	background-color: #87CEEB;
+	text-align: center;
+}
+
+.UMLSyncPort {
+	position: relative;
+    width:100%;
+	height:100%;
+	border: 1px solid #0099FF;
+	background-color: #87CEEB;
+}
+
+.UMLSyncPacketTab {
+	padding:0px;
+	border: 1px;
+	position: relative;
+	width: 15%;
+	height: 20px;
+	border:1px solid #0099FF;
+	background-color: #87CEEB;
+}
+
+.UMLSyncPacketBody {
+	padding:0px;
+	border: 1px;
+	position: relative;
+	border:1px solid #0099FF;
+	background-color: #87CEEB;
+    text-decoration:none;
+	text-align: center;
+}
+
+.UMLSyncNoteCorner {
+	position: absolute;
+	height: 16px;
+	width: 16px;
+	right: -1px;
+	top:-1px;
+}
+
+
+.UMLSyncCollaboration {
+    padding: 0px;
+    border: 1px dashed black;
+	position: relative;
+	width:100%;
+	height:100%;
+    text-align: center;
+	margin: auto;
+	background-color: #87CEEB;
+	-webkit-border-radius: 100%;
+    -moz-border-radius: 100% 100%;
+    border-radius: 100% 100%;
+}
+
+.UMLSyncComponent {
+	position: relative;
+    text-align: center;
+	border: 1px solid black;
+	background-color: #87CEEB;
+}
+
+.UMLSyncState{
+    border: 1px solid black;
+	position: relative;
+    text-align: center;
+	background-color: #87CEEB;
+	-webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px 20px;
+}
+
+.UMLSyncEntity{
+    padding: 0px;
+    border: 1px solid black;
+	position: relative;
+    text-align: left;
+	margin: 0 0px;
+	background-color: #F5B67A;
+	-webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px 20px;
+}
+
+.UMLSyncInteractionHead{
+    border: 0px;
+	border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    border-radius: 0px 0px 15px 0px;
+	position: relative;
+	width:50%;
+	height:20px;
+    text-align: center;
+	margin: 0px;
+	padding:0px;
+}
+
+.UMLSyncInteraction{
+    padding: 0px;
+    border: 1px solid black;
+	position: relative;
+    text-align: center;
+	margin: 0 0px;
+	background-color: #FFFFFF;
+}
+
+.UMLSyncProcedure{
+    padding: 10px;
+    border: 1px solid black;
+	position: relative;
+	width:100%;
+	height:100%;
+    text-align: left;
+	margin: auto;
+	background-color: #BDE689;
+	-webkit-border-radius: 20px 20px 0px 0px;
+    -moz-border-radius: 20px 20px 0px 0px;
+    border-radius: 20px 20px 0px 0px;
+}
+
+.UMLSyncResultSet{
+    padding: 10px;
+    border: 1px solid black;
+	position: relative;
+	width:100%;
+	height:100%;
+    text-align: left;
+	margin: auto;
+	background-color: #E3E689;
+}
+
+.UMLSyncEntityHead{
+    border: 0px;
+    border-bottom: 1px solid black;
+	position: relative;
+	width:100%;
+	height:20px;
+    text-align: center;
+	margin: 0px;
+	padding:0px;
+}
+
+.UMLSyncEntityField{
+    width:100%;
+    border-bottom: 1px solid #FFFFAE;
+}
+
+.UMLSyncInterface {
+    padding: 0px;
+	width:15px;
+	height:15px;
+    border: 1px solid black;
+	position: relative;
+	margin: auto;
+	background-color: #87CEEB;
+	-webkit-border-radius: 100%;
+    -moz-border-radius: 100% 100%;
+    border-radius: 100% 100%;
+}
+
+.UMLSyncDataStore {
+	background-color: yellow;
+    border: 1px solid black;
+    border-right:0;
+	position: relative;
+	padding:0;
+	height:100%;
+}
+.UMLSyncDataStore A{
+	left:40px;
+}
+
+.UMLSyncDataStore div{
+	background-color: gray;
+	height:100%;
+	width: 25px;
+    border: 1px solid black;
+	position:absolute;
+}
+
+.UMLSyncDFProcess {
+    padding: 0px;
+	margin: 0px;
+    border: 1px solid black;
+	position: relative;
+	width:100%;
+	height:100%;
+    text-align: center;
+	margin: auto;
+	background-color: #F5B67A;
+	-webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px 20px;
+}
+
+.UMLSyncDFProcessMiddle {
+   margin: 15px 0px;
+   border-top: 1px solid black;
+   border-bottom: 1px solid black;
+   background-color: white;
+}
+
+.VPDiagramManager{
+  position:relative;
+  background-color:grey;
+  width:100%;
+  height:100%;
+}
+
+.vpdm-toolbar{
+  position:relative;
+  float:left;
+  width:200px;
+}
+
+.vpdm-tabs{
+  position:relative;
+  float:left;
+  width: 100%;
+  height: 100%;
+}
+
+.ClassAttributes {
+ border:0px;
+ width:100%;
+ height:20px;
+ overflow:hidden;
+}
+
+.ClassOperations {
+ border:0px;
+ width:100%;
+ height:20px;
+ overflow:hidden;
+}
+
+.UMLSyncComponent {
+	position: relative;
+    text-align: center;
+   	##width:100%;
+	##height:100%;
+	border: 1px solid black;
+	background-color: #87CEEB;
+}
+
+.UMLSyncVenn {
+	position: relative;
+    text-align: center;
+    width: 100%;
+	height: 100%;
+	border: 1px;
+	-webkit-border-radius: 50%; -moz-border-radius: 50%;
+	opacity: 0.5;
+	background-color: transparent;
+}
+
+.UMLSyncInteractionStartNode {
+	position: relative;
+	text-align: center;
+	width: 20px;
+	height: 20px;
+    border: 3px solid black;
+    -webkit-border-radius: 50%; -moz-border-radius: 50%;
+    background-color: transparent;
+}
+
+.UMLSyncInteractionFinalNode {
+	position: relative;
+	text-align: center;
+	width: 20px;
+	height: 20px;
+    background: white;
+    border: 3px solid black;
+    -webkit-border-radius: 50%; -moz-border-radius: 50%;
+    background-color: transparent;
+}
+
+.trashbox {
+   position:fixed;
+    display: block;
+    height: 35px;
+    opacity: 0.7;
+    width: 260px;
+}
+
+#socializethis {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: none repeat scroll 0 0 #CCCCCC;
+    border-color: #666666;
+    border-style: solid;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-width: 1px 0 0 1px;
+    bottom: 30%;
+    box-shadow: -3px -3px 3px rgba(0, 0, 0, 0.5);
+    height: 260px;
+    overflow: hidden;
+    padding: 2px 5px;
+    position: fixed;
+    right: 0;
+    width: 15px;
+}
+
+
+.trashbox2 {
+   position:fixed;
+    display: block;
+    height: 35px;
+    opacity: 0.7;
+    width: 260px;
+}
+
+#socializethis2 {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: none repeat scroll 0 0 #CCCCCC;
+    border-color: #666666;
+    border-style: solid;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-width: 1px 0 0 1px;
+    top: 0;
+    box-shadow: 3px -3px 3px rgba(0, 0, 0, 0.5);
+    height: 26px;
+    overflow: hidden;
+    padding: 2px 5px;
+    position: fixed;
+    left: 480px;
+    width: 680px;
+	z-index: 100000000;
+}
+
+
+#vp_main_menu2 {
+		/* overlay is hidden before loading */
+		display:none;
+
+		/* standard decorations */
+		background-color:#999999;
+        border-radius: 5px 5px 5px 5px;
+        color: #EEEEEE;
+        margin: 0 auto;
+        padding: 15px 20px;
+        position: relative;
+        width: 400px;
+		z-index: 99999991;
+}
+
+#vp_main_menu2 div {
+		background-color:#999999;
+		font-size: 11px;
+		color: #000;
+		font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+}
+
+#vp_main_menu3 {
+		/* overlay is hidden before loading */
+		display:none;
+
+		/* standard decorations */
+		background-color:#999999;
+        border-radius: 5px 5px 5px 5px;
+        color: #EEEEEE;
+        margin: 0 auto;
+        padding: 15px 20px;
+        position: relative;
+        width: 400px;
+		z-index: 99999991;
+}
+
+#vp_main_menu3 div {
+		background-color:#999999;
+		font-size: 11px;
+		color: #000;
+		font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+}
+
+
+#vp_main_menu2 div div{
+    height:185px;
+	overflow:auto;
+    background-color: #eee;
+    border: 1px solid #444444;
+    border-radius: 4px 4px 4px 4px;
+	
+		font-size: 11px;
+		font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+}
+#vp_main_menu2 div label {
+	color: #FFF;
+}
+
+#vp_main_menu2 div input{
+    background-color: #eee;
+    border: 1px solid #444444;
+    border-radius: 4px 4px 4px 4px;
+	width: 322px;
+	color: #000;
+		font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+}
+
+#vp_main_menu2 button {
+    border: 1px solid #666666;
+    outline: 0 none;
+    background-color: #5D689A;
+    border-bottom: 0.2em solid #666666;
+    border-radius: 10.2em 10.2em 10.2em 10.2em;
+    border-width: 1px 1px 0.2em;
+    box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 1em;
+    line-height: 1;
+    padding: 0.3em 0.6em;
+    text-shadow: 0 0 0.1em #222222;
+}
+
+#vp_main_menu34{
+    height: 250px;
+	overflow: auto;
+    background-color: #eee;
+    border: 1px solid #444444;
+    border-radius: 4px 4px 4px 4px;
+	font-size: 12px;
+	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+}
+
+#vp_main_menu3 div label {
+	color: #FFF;
+}
+
+#vp_main_menu3 div input{
+    background-color: #eee;
+    border: 1px solid #444444;
+    border-radius: 4px 4px 4px 4px;
+	width: 322px;
+	color: #000;
+	font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+}
+
+#vp_main_menu3 button {
+    border: 1px solid #666666;
+    outline: 0 none;
+    background-color: #5D689A;
+    border-bottom: 0.2em solid #666666;
+    border-radius: 10.2em 10.2em 10.2em 10.2em;
+    border-width: 1px 1px 0.2em;
+    box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 1em;
+    line-height: 1;
+    padding: 0.3em 0.6em;
+    text-shadow: 0 0 0.1em #222222;
+}
+
+.context-menu {
+    border: 1px solid #555555;
+	background-color: #eee;
+    display: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 10000000;
+}
+
+.context-menu LI {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+.context-menu LI A {
+    background-position: 6px center;
+    background-repeat: no-repeat;
+    color: #333333;
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    outline: medium none;
+    padding: 1px 5px 1px 28px;
+    text-decoration: none;
+}
+
+.context-menu LI.hover A {
+    background-color: #555555;
+    color: #FFFFFF;
+}
+
+.context-menu LI.separator {
+    border-top: 1px solid #CCCCCC;
+}
+
+.elementSelector.hover{
+    background-color: #444444;
+    color: #FFFFFF;
+}
+
+.connectorSelector.hover{
+    background-color: #444444;
+    color: #FFFFFF;
+}
+
+.connectorSelector.selected{
+    background-color: #555555;
+    color: #FFFFFF;
+}
+
+.UMLSyncDiamond { 
+  background-color: #87CEEB;
+  border: 1px solid black;
+  position:absolute;
+  left:50%;
+  top:50%;
+  -webkit-transform: rotate(-45deg); 
+  -moz-transform: rotate(-45deg); 
+  -ms-transform: rotate(-45deg); 
+  -o-transform: rotate(-45deg); 
+  transform: rotate(-45deg); 
+  -webkit-transform-origin: 0 100%; 
+  -moz-transform-origin: 0 100%; 
+  -ms-transform-origin: 0 100%; 
+  -o-transform-origin: 0 100%; 
+  transform-origin: 0 100%; 
+}
+
+.UMLSyncDiamondW {
+}
+
+.UMLSyncSignal {
+    border-bottom: 86px solid black;
+    border-right: 16px solid transparent;
+    height: 0;
+    position: absolute;
+    right: 0;
+    width: 0;
+	top: 0;
+}
+
+.UMLSyncSignal2 {
+    border-top: 86px solid black;
+    border-right: 16px solid transparent;
+    height: 0;
+    position: absolute;
+    right: 0;
+	top:50%;
+    width: 0;
+}
+
+.UMLSyncSignal1 {
+    border-bottom: 86px solid #87CEEB;
+    border-right: 16px solid transparent;
+    height: 0;
+    position: absolute;
+    right: 1px;
+    width: 0;
+	top: 0;
+}
+
+.UMLSyncSignal12 {
+    border-top: 86px solid #87CEEB;
+    border-right: 16px solid transparent;
+    height: 0;
+    position: absolute;
+    right: 1px;
+	top:50%;
+    width: 0;
+}
+
+.UMLSyncComponent2 {
+	position: relative;
+	right: 10;
+    text-align: center;
+	border: 1px solid black;
+	background-color: #87CEEB;
+}
+
+span.diagramclass  span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/diagram_obj.gif");
+} 
+
+span.namespace  span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/namespace_obj.png");
+} 
+
+span.package span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/package_obj.gif");
+} 
+
+span.packageroot span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/jar_obj.gif");
+} 
+
+span.iconclass span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/class_obj.gif");
+} 
+
+span.iconinterface span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/int_obj.gif");
+} 
+
+span.javafile span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/jcu_obj.gif");
+} 
+
+span.cfile span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/c_file_obj.gif");
+} 
+
+span.jproject span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/projects.gif");
+} 
+
+span.cproject span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/cprojects.gif");
+} 
+
+span.cfolder span.dynatree-icon
+{
+ background-position: 0 0;
+ background-image: url("../images/cfolder_obj.gif");
+} 

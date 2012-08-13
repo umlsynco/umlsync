@@ -1,0 +1,82 @@
+[
+  {"type": "sequence",
+   "elements": [
+	{"type": "objinstance",
+	 "description": "Object Instance",
+	 "menu":"vp-component-menu",
+	 "ctx_menu":"sequence",
+	 "image": [{"small": "./dm/icons/vp/es/component/InstanceSpecification.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"llsequence",
+	   "description":"Life Line Sequence",
+	   "image": [{"small": "./dm/icons/vp/cs/dependency.png"}]
+	  },
+      {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+      {"connector":"realization",
+	   "description":"Realization",
+	   "image": [{"small": "./dm/icons/vp/cs/realization.png"}]
+	  },
+      {"connector":"association",
+	   "description":"Association",
+	   "image": [{"small": "./dm/icons/vp/cs/association.png"}]
+	  },
+      {"connector":"aggregation",
+	   "description":"Aggregation",
+	   "image": [{"small": "./dm/icons/vp/cs/aggregation.png"}]
+	  },
+      {"connector":"composition",
+	   "description":"Composition",
+	   "image": [{"small": "./dm/icons/vp/cs/composition.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Anchor",
+	   "image": [{"small": "./dm/icons/vp/cs/AnchorToNote.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Constraint",
+	   "image": [{"small": "./dm/icons/vp/cs/Constrain.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Containment",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  }
+    ],
+    "menus": [
+	  {"id":"vp-component-menu",
+	   "items": [
+				{"el":"Object Instance",
+				 "cs":[
+						{"connector":"llsequence",
+						 "image":"dm/icons/vp/cs/diagram/association_with_component.gif"
+						},
+						{"connector":"llsequence",
+						 "image":"dm/icons/vp/cs/diagram/aggregation_from_component.gif"
+						},
+						{"connector":"llsequence",
+						 "image":"dm/icons/vp/cs/diagram/composition_to_component.gif"
+						}
+					  ]
+				},
+				{"el":"Port",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/vp/cs/diagram/association_with_port.gif"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

@@ -1,0 +1,135 @@
+[
+  {
+   "elements": [
+	{"type": "class",
+	 "description": "Class",
+	 "menu": "vp-class-menu",
+	 "ctx_menu": "class",
+	 "image": [{"small": "./dm/icons/vp/es/class/Class.png"}]
+	},
+	{"type": "class",
+	 "description": "Interface",
+	 "nameTemplate": "Interface",
+	 "menu": "vp-class-menu",
+	 "ctx_menu": "class",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassInterface.png"}]
+	},
+	{"type": "class",
+	 "description": "Enumeration",
+	 "menu": "vp-class-menu",
+	 "ctx_menu": "class",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassEnumeration.png"}]
+	},
+	{"type": "class",
+	 "description": "Primitive",
+	 "menu": "vp-class-menu",
+	 "ctx_menu": "class",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassPrimitive.png"}]
+	},
+	{"type": "class",
+	 "description": "ORM",
+	 "menu": "vp-class-menu",
+	 "ctx_menu": "class",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassORM.png"}]
+	},
+	{"type": "class",
+	 "description": "ORMComponent",
+	 "menu": "vp-class-menu",
+	 "ctx_menu": "class",
+	 "image": [{"small": "./dm/icons/vp/es/class/ClassORMComponent.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"aggregation",
+	   "description":"Aggregation",
+	   "image": [{"small": "./dm/icons/vp/cs/aggregation.png"}]
+	  },
+      {"connector":"realization",
+	   "description":"Realization",
+	   "image": [{"small": "./dm/icons/vp/cs/realization.png"}]
+	  },
+      {"connector":"selfassociation",
+	   "description":"Self Association",
+	   "oneway":"true",
+	   "image": [{"small": "./dm/icons/vp/cs/composition.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Dependency",
+	   "image": [{"small": "./dm/icons/vp/cs/dependency.png"}]
+	  },
+      {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Nested",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  },
+      {"connector":"composition",
+	   "description":"Composition",
+	   "image": [{"small": "./dm/icons/vp/cs/composition.png"}]
+	  }
+    ],
+	"menus": [
+	  {"id":"vp-class-menu",
+	   "items": [
+				{"el":"Class",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/vp/cs/class/class/vp-association.png"
+						},
+						{"connector":"aggregation",
+						 "image":"dm/icons/vp/cs/class/class/vp-aggregation.png"
+						},
+						{"connector":"composition",
+						 "image":"dm/icons/vp/cs/class/class/vp-composition.png"
+						},
+						{"connector":"Self Association",
+						 "image":"dm/icons/vp/cs/class/class/vp-self-association.png"
+						},
+						{"connector":"dependency",
+						 "image":"dm/icons/vp/cs/class/class/vp-dependency.png"
+						},
+						{"connector":"realization",
+						 "image":"dm/icons/vp/cs/class/class/vp-realization.png"
+						},
+						{"connector":"generalization",
+						 "image":"dm/icons/vp/cs/class/class/vp-generalization.png"
+						},
+						{"connector":"nested",
+						 "image":"dm/icons/vp/cs/class/class/vp-nested.png"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"note-menu",
+	   "items": [
+				{"el":"Class",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

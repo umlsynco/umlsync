@@ -1,0 +1,87 @@
+[
+  {
+   "elements": [
+	{"type": "dfprocess",
+	 "description": "Process",
+	 "menu": "process-menu",
+	 "image": [{"small": "./dm/icons/vp/es/dataflow/ProcessBox.png"}]
+	},
+	{"type": "dfentity",
+	 "description": "External Entity",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/dataflow/ExternalEntity.png"}]
+	},
+	{"type": "datastore",
+	 "description": "Data Store",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/dataflow/Datastore.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector": "anchor",
+	   "description": "Anchor",
+	   "image": [{"small": "./dm/icons/vp/cs/AnchorToNote.png"}]
+	  },
+      {"connector":"transition",
+	   "description":"Data Flow",
+	   "image": [{"small": "./dm/icons/vp/cs/Transition.png"}]
+	  },
+      {"connector":"bitransition",
+	   "description":"Bidirectional Data Flow",
+	   "image": [{"small": "./dm/icons/vp/cs/BiDirectionDataFlow.png"}]
+	  }
+    ],
+	"menus": [
+	  {"id": "process-menu",
+	   "items": [
+				{"el": "Process",
+				 "cs":[
+						{"connector": "transition",
+						 "image": "dm/icons/vp/cs/dataflow/dataflow_to_process.png"
+						},
+						{"connector": "bitransition",
+						 "image": "dm/icons/vp/cs/dataflow/bi_direction_dataflow_to_process.png"
+						}
+					  ]
+				},
+				{"el": "External Entity",
+				 "cs":[
+						{"connector": "transition",
+						 "image": "dm/icons/vp/cs/dataflow/dataflow_to_entity.png"
+						},
+						{"connector": "bitransition",
+						 "image": "dm/icons/vp/cs/dataflow/bi_direction_dataflow_to_entity.png"
+						}
+					  ]
+				},
+				{"el": "Data Store",
+				 "cs":[
+						{"connector": "transition",
+						 "image": "dm/icons/vp/cs/dataflow/dataflow_to_datastore.png"
+						},
+						{"connector": "bitransition",
+						 "image": "dm/icons/vp/cs/dataflow/bi_direction_dataflow_to_datastore.png"
+						}
+					  ]
+				}
+			 ]
+	  },
+	  {"id": "note-menu",
+	   "items": [
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"
+						 }
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

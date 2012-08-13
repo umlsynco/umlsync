@@ -1,0 +1,54 @@
+[
+  {
+   "elements": [
+	{"type": "venn",
+	 "description": "Blue",
+	 "menu": "venn-menu",
+	 "color": "blue",
+	 "image": [{"small": "./dm/icons/vp/es/venn/blue.png"}]
+	},
+	{"type": "venn",
+	 "description": "Yellow",
+	 "menu": "venn-menu",
+	 "color": "yellow",
+	 "image": [{"small": "./dm/icons/vp/es/venn/yellow.png"}]
+	},
+	{"type": "venn",
+	 "description": "Red",
+	 "menu": "venn-menu",
+	 "color": "red",
+	 "image": [{"small": "./dm/icons/vp/es/venn/red.png"}]
+	},
+	{"type": "venn",
+	 "description": "Green",
+	 "menu": "venn-menu",
+	 "color": "green",
+	 "image": [{"small": "./dm/icons/vp/es/venn/green.png"}]
+	},
+	{"type": "venn",
+	 "description": "Orange",
+	 "menu": "venn-menu",
+	 "color": "orange",
+	 "image": [{"small": "./dm/icons/vp/es/venn/orange.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+   ],
+   "menus": [
+   	{"id": "venn-menu",
+   	 "items":
+   	 [
+   	 	{
+   		"el":"Note",
+		"cs":[{"connector":"anchor",
+			   "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"
+			  }
+			 ]
+		}
+   	 ]
+   	}
+   ]
+  }
+]

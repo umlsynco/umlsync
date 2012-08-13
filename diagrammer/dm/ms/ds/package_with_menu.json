@@ -1,0 +1,102 @@
+[
+  {
+   "elements": [
+	{"type": "package",
+	 "description": "Package",
+	 "menu":"vp-package-menu",
+	 "image": [{"small": "./dm/icons/vp/es/package/Package.png"}]
+	},
+	{"type": "package",
+	 "aux": "subsystem",
+	 "description": "Subsystem",
+	 "menu":"vp-package-menu",
+	 "dropable":"package",
+	 "image": [{"small": "./dm/icons/vp/es/package/Subsystem.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "menu":"vp-note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/common/note.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"dependency",
+	   "description":"Dependency",
+	   "image": [{"small": "./dm/icons/vp/cs/dependency.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Import",
+	   "image": [{"small": "./dm/icons/vp/cs/Import.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Access",
+	   "image": [{"small": "./dm/icons/vp/cs/Access.png"}]
+	  },
+      {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+      {"connector":"dependency",
+	   "description":"Merge",
+	   "image": [{"small": "./dm/icons/vp/cs/Merge.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Containment",
+	   "image": [{"small": "./dm/icons/vp/cs/nested.png"}]
+	  }
+    ],
+    "menus": [
+	  {"id":"vp-package-menu",
+	   "items": [
+				{"el":"Package",
+				 "cs":[
+						{"connector":"dependency",
+						 "image":"dm/icons/vp/cs/diagram/dependency_to_package.gif"
+						},
+						{"connector":"access",
+						 "image":"dm/icons/vp/cs/diagram/access_to_package.gif"
+						},
+						{"connector":"import",
+						 "image":"dm/icons/vp/cs/diagram/import_to_package.gif"
+						},
+						{"connector":"generalization",
+						 "image":"dm/icons/vp/cs/diagram/generalization_from_package.gif"
+						},
+						{"connector":"realization",
+						 "image":"dm/icons/vp/cs/diagram/realization_from_package.gif"
+						},
+						{"connector":"dependency",
+						 "image":"dm/icons/vp/cs/diagram/merge_to_package.gif"
+						},
+						{"connector":"nested",
+						 "image":"dm/icons/vp/cs/diagram/contain_package.gif"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"vp-note-menu",
+	   "items": [
+				{"el":"Package",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]

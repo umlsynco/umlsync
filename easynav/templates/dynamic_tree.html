@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+{% block css %}
+<link href="static/diagrams/js/3pp/skin/ui.dynatree.css" rel="stylesheet" type="text/css" id="skinSheet">
+<link href="static/diagrams/css/main.css" rel="stylesheet" type="text/css" id="skinSheetDiag">
+<link href="static/css/pygments.css" rel="stylesheet" type="text/css" id="skinSheet">
+<link rel="stylesheet" href="static/diagrams/js/3pp/simple-color-picker/jquery.simple-color-picker.css" type="text/css" media="screen"/>
+<link rel="stylesheet" href="static/diagrams/css/jqsimplemenu.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="static/diagrams/css/simple_menu.css" type="text/css" media="screen" />
+
+{% endblock %}
+
+{% block title %} Project Navigator{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="static/diagrams/js/jqsimplemenu.js"></script>
+<script src="static/diagrams/js/ui.selectmenu.js"></script>
+<script type="text/javascript" src="static/diagrams/js/3pp/simple-color-picker/jquery.simple-color-picker.js"></script>
+
+<script src="static/diagrams/js/3pp/jquery.tools.min.js"></script>
+<script src="static/diagrams/js/3pp/dynatree/jquery.dynatree.js" type="text/javascript"></script>
+<script src="static/diagrams/js/3pp/contextmenu/jquery.contextmenu.js"></script>
+<script src="static/diagrams/js/3pp/jLog/jLog.min.js"></script>
+<script src="static/diagrams/js/3pp/editable/editable.js"></script>
+<script src="static/diagrams/js/jquery.cookie.js"></script>
+
+  <!-- script src="static/diagrams/js/jquery-ui.js"></script -->
+  <script src="static/diagrams/dm/ds/diagram.js?next"></script>
+  <script src="static/diagrams/dm/dm/loader.js"></script>
+  <script src="static/diagrams/dm/hs/menu.js"></script>
+  <script src="static/diagrams/dm/ds/base.js"></script>
+  <script src="static/diagrams/dm/ms/vp/vp.js"></script>
+  <script src="static/diagrams/dm/cs/nested.js"></script>
+  <script src="static/diagrams/dm/cs/aggregation.js"></script>
+  <script src="static/diagrams/dm/cs/composition.js"></script>
+  <script src="static/diagrams/dm/hs/framework.js"></script>
+  <script src="static/diagrams/dm/ms/ds/common.js"></script>
+  <script src="static/diagrams/dm/ms/ctx/class.js?next"></script>
+  <script src="static/diagrams/dm/es/class.js?next"></script>
+  <script src="static/diagrams/dm/es/package.js?next"></script>
+  <script src="static/diagrams/dm/es/component.js?next"></script>
+  <script src="static/diagrams/dm/es/objinstance.js?next2"></script>
+
+<style>
+        body { font-size: 62.5%; }
+        label, input { display:block; }
+        input.text { margin-bottom:12px; width:95%; padding: .4em; }
+        fieldset { padding:0; border:0; margin-top:25px; }
+        h1 { font-size: 1.2em; margin: .6em 0; }
+        div#users-contain { width: 350px; margin: 20px 0; }
+        div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+        div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+        .ui-dialog .ui-state-error { padding: .3em; }
+        .validateTips { border: 1px solid transparent; padding: 0.3em; }
+    </style>    
+
+
+<script type="text/javascript"><!--
+$(document).ready(function() {
+
+$(document).ajaxSend(function(event, xhr, settings) {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+});
+
+   var Loader = new dm.base.loader("http://localhost:8000/static/diagrams/");
+   var fw = new dm.hs.framework(Loader, {viewmanager: "http://localhost:8000/vm/"});
+       fw.loadDiagram("http://localhost:8000/proxy/diagrams/packageDiagram2.umlsync");
+
+    var viewId = 
+      fw.addView("SandBox", {
+        persist: true,
+        initAjax: { url: "http://localhost:8000/static/diagrams/tests/base.json"}, 
+        onLazyRead: function(node){
+            if (node.data.isFolder)
+              node.appendAjax({url: "http://localhost:8000/static/diagrams/tests/" + node.getAbsolutePath() + ".json"});
+        },
+        onActivate: function(node) {
+            if (!node.data.isFolder)
+              fw.loadDiagram("http://localhost:8000/static/diagrams/tests/" + node.getAbsolutePath() + ".json");
+        },
+      });
+
+        $( "#dialog-form" ).dialog({
+            autoOpen: false,
+            height: 250,
+            width: 350,
+            modal: true,
+            buttons: {
+                "Create a new project": function() {
+                   var ch = $("#" + viewId + " #tree").dynatree("getTree").getRoot().getChildren();
+                   for (i in ch) {
+                      if (ch[i].data.title == "Projects") {
+                        ch[i].addChild({title: $("#name").val(), isFolder:true, tooltip: $("#description").val()});
+                        break;
+                      }
+                   }
+                },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {
+                allFields.val( "" ).removeClass( "ui-state-error" );
+            }
+        });
+
+   // The diagram selection menu
+   var menu = new dm.ms.vp(fw);
+
+        $( "#newproject" )
+            .click(function() {
+                $( "#dialog-form" ).dialog( "open" );
+        });
+    
+    // addView(title, dyno_tree_methods, toolbox)
+/*   fw.addView("Diagrams", {
+         title:"Diagram navigator",
+         autoFocus: false,
+         initAjax: {
+             url: "getlist",
+             data: {key: "start",
+                    project: "storageman"}
+         },
+         onActivate: function(node) {
+            if (!node.data.isFolder) {
+                //alert("clicked " + node.data.key + " path: " + node.getAbsolutePath());
+              if ($("#tab-" + node.data.key).length == 0) {
+				if (node.getAbsolutePath(true))
+		          fw.loadDiagram('http://localhost:8000/getdiagram?path=' + node.getAbsolutePath(true)+'&name='+node.data.title+'&project=storageman');
+		        else
+		          fw.loadDiagram('http://localhost:8000/getdiagram?name='+node.data.title+'&project=storageman');
+              }
+              //$("#tabs").tabs('select', '#tab-' + node.data.key);
+            }
+        },
+        onLazyRead: function(node){
+          if (node.data.isFolder) {
+            node.appendAjax({
+            // We don't want the next line in production code:
+            debugLazyDelay: 750,
+            url: "getlist",
+            data: {key: node.getAbsolutePath(),
+                   project:"storageman"}
+            });
+          }
+       },
+      onCreate: function(node, span){
+        $(span).bind('contextmenu', function(e) {
+            e.preventDefault();
+            $.log("CONTEXT MENU TO SHOW");
+       });
+      },
+      onClick: function(node, event) {
+          $.log("Ctx menu clicked !!! ");
+      },
+        dnd: {
+  onDragStart: function(node) {
+   // if(node.data.isFolder)
+     // return false;
+    return true;
+  },
+  onDragStop: function(node) {
+      //logMsg("tree.onDragStop(%o)", node);
+ },
+       autoExpandMS: 1000,
+      preventVoidMoves: true,
+      onDragEnter: function(node, sourceNode) {
+        return true;
+      },
+
+    onDragOver: function(node, sourceNode, hitMode) {
+        if(node.isDescendantOf(sourceNode)){
+          return false;
+        }
+      },
+      onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+        sourceNode.move(node, hitMode);
+      }
+}
+}, {items:[{button:"ui-icon-document",
+            title:"new",
+            method:function(node) {
+				$.glc = $.glc || 1;
+				$.glc++;
+				var path = node.getAbsolutePath(!node.data.isFolder);
+		        var innerHtml = "<div id='vp_main_menu2'><div>" + 
+		            "<p><label>Add folder to " + path + ": </label><input type='text' maxlength='30' pattern='[a-zA-Z ]{5,}' name='name'></p>" +
+		"<p style='margin: 10px 0; align: middle;'><button class='finish' type='submit' style='background-color:#7FAEFF;cursor:default;'>Finish</button>&nbsp;&nbsp;&nbsp;" +
+		"<button type='submit' class='close'>Cancel</button></p>" +
+		"</div></div>";
+
+	    
+
+		$('body').append(innerHtml);
+        $("#vp_main_menu2").draggable({cancel: '.scrollable'});
+		$("#vp_main_menu2").overlay({
+          // custom top position
+          top: 150,
+          // some mask tweaks suitable for facebox-looking dialogs
+          mask: {
+            // you might also consider a "transparent" color for the mask
+            color: '#',
+            // load mask a little faster
+            loadSpeed: 200,
+            // very transparent
+            opacity: 0.5
+          },
+          // disable this for modal dialog-type of overlayoverlays
+          closeOnClick: true,
+          // load it immediately after the construction
+          load: true
+        });
+	
+		$("#vp_main_menu2 .finish").click(function() {
+  			    if (path != "") {
+					path = 'path=' + path + '&';
+				}
+
+				var name = $("#vp_main_menu2 input").val();
+				if (name != "") {
+				  $.ajax({
+					url: 'http://localhost:8000/newdiagramfolder?' + path +'name='+ name + '&project=storageman',
+					context: document.body
+				  });
+				}
+
+		  $("#vp_main_menu2").remove();
+		});
+		
+		$("#vp_main_menu2 .close").click(function() { $("#vp_main_menu2").remove();});
+					
+
+
+		   } // method
+           },
+           {button:"ui-icon-closethick",
+            title:"Remove",
+            method:function(node) {
+				var path = node.getAbsolutePath(!node.data.isFolder);
+				if (path != "")
+				  path = '&path='+path;
+				 
+              $.ajax({
+                url: 'http://localhost:8000/removediagram?name='+node.data.title+path+'&project=storageman',
+                context: document.body
+              });
+            }}]});
+
+  fw.addView("Project", {
+  title: "Files navigator",
+  fx: { height: "toggle", duration: 200 },
+  autoFocus: false, // Set focus to first child, when expanding or lazy-loading.
+  initAjax: {
+    url: "navigator/",
+    data: {
+	  key: "start",
+      project: "storageman"
+    }
+  },
+dnd: {
+  onDragStart: function(node) {
+    return true;
+  },
+  onDragStop: function(node) {
+      //logMsg("tree.onDragStop(%o)", node);
+ }
+},
+
+
+onActivate: function(node) {
+if (!node.data.isFolder) {
+if ($("#tab-" + node.data.key).length == 0) {
+	fw.loadCode('http://localhost:8000/editor/?key=' + node.getAbsolutePath()+'&project=storageman', node.data.title);
+}
+}
+},
+
+onLazyRead: function(node){
+//if (node.data.isFolder) {
+node.appendAjax({
+// We don't want the next line in production code:
+debugLazyDelay: 750,
+url: "navigator/",
+data: {key: node.getAbsolutePath(),
+project:"storageman",
+mode: "funnyMode"}
+});
+//} 
+}
+});
+*/
+        
+    // Initialize header menu on the left
+    $('#header-menu').jqsimplemenu();
+    $("#vp_main_menu_ref").live('click', function(){
+        $( "#vp_main_menu" ).dialog( "open" );
+        //$("#vp_main_menu").overlay().load();
+    });
+});
+
+</script>
+
+{% endblock %}

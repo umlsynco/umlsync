@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" width="90" height="90" id="svg2" version="1.0">
+  <g id="layer1" transform="translate(454.402, -354.694)">
+    <g id="g3193" transform="matrix(0.550791, 0, 0, 0.550791, -32.2674, 154.266)" style="stroke:#060000;stroke-width:4.44996309;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+      <path id="path3183" d="M -677.61364,445.80915 L -617.58485,445.72189" style="fill:none;fill-rule:evenodd;stroke:#060000;stroke-width:4.44996309;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+	  <path id="path3185" d="M -647.80933,436.95745 L -647.80933,482.30147" style="fill:none;fill-rule:evenodd;stroke:#060000;stroke-width:4.44996309;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+      <path id="path3189" d="M -677.64562,529.47352 L -647.80932,482.00668 L -617.52096,529.62421" style="fill:none;fill-rule:evenodd;stroke:#060000;stroke-width:4.44996309;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+      <path transform="matrix(1.17746, 0, 0, 1.19489, 113.632, -84.5599)" d="M -634.54872,423.84097 A 12.130414,12.205758 0 1 1 -658.80955,423.84097 A 12.130414,12.205758 0 1 1 -634.54872,423.84097 z" id="path3191" style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#060000;stroke-width:3.75162411;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
+    </g>
+  </g>
+</svg>

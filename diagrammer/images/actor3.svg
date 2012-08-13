@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41" height="73" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <g id="layer1">
+   <g stroke="#060000" stroke-width="4.449963" stroke-miterlimit="4" id="g3193">
+    <path fill="none" fill-rule="evenodd" stroke="#060000" stroke-width="4.449963" stroke-miterlimit="4" d="m3.661076,24.36969l33.063328,-0.048054" id="path3183"/>
+    <path fill="none" fill-rule="evenodd" stroke="#060000" stroke-width="4.449963" stroke-miterlimit="4" d="m20.077026,19.494263l0,24.975082" id="path3185"/>
+    <path fill="none" fill-rule="evenodd" stroke="#060000" stroke-width="4.449963" stroke-linejoin="bevel" stroke-miterlimit="4" d="m3.643459,70.451271l16.433567,-26.144302l16.682579,26.22731" id="path3189"/>
+    <path fill="#ffffff" fill-rule="evenodd" stroke="#060000" stroke-width="3.751624" stroke-linecap="round" stroke-linejoin="bevel" stroke-miterlimit="4" stroke-dashoffset="0" id="path3191" d="m27.945435,11.191654a7.866988,8.033033 0 1 1-15.734001,0a7.866988,8.033033 0 1 115.734001,0z"/>
+   </g>
+  </g>
+ </g>
+</svg>
