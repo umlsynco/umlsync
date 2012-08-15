@@ -54,8 +54,8 @@ Version:
             innerHtml = '<form>\
                 <fieldset><div id="vp_main_menu34" style="scroll:auto;"><ul>' + innerHtml + '</ul></div>\
                 <p><label>Create in: <select><option>SandBox</option><option>Somewhere else (FIXME)</option></select></label></p>\
-                <p><label">Name: <input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></label>\
-                </p></fieldset></form>';
+                <p><label>Name: <input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></label>\
+                </p><p><br></p></fieldset></form>';
                 $("<div id='vp_main_menu' title='Creating new diagram'></div>").appendTo('body');
                 $(innerHtml).appendTo("#vp_main_menu");
 
