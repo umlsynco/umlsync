@@ -142,10 +142,15 @@ a {
 }
 
 .UMLSyncCanvas {
-	background-image: url('../images/bground_sq.png');
 	border: 1px solid grey;
 	background-color: none;
 	position: absolute;
+	z-index: 999;
+	pointer-events: none;
+}
+
+.UMLSyncCanvasBackground {
+	background-image: url('../images/bground_sq.png');
 	z-index: 0;
 	pointer-events: none;
 }
@@ -158,7 +163,7 @@ a {
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 15px;
-	z-index: 9999997;
+	z-index: 999;
 }
 
 .UMLSyncClass {
@@ -606,7 +611,7 @@ a {
     position: fixed;
     left: 480px;
     width: 680px;
-	z-index: 100000000;
+	z-index: 1000;
 }
 
 
@@ -622,7 +627,7 @@ a {
         padding: 15px 20px;
         position: relative;
         width: 400px;
-		z-index: 99999991;
+		z-index: 1002;
 }
 
 #vp_main_menu2 div {
@@ -644,7 +649,7 @@ a {
         padding: 15px 20px;
         position: relative;
         width: 400px;
-		z-index: 99999991;
+		z-index: 1002;
 }
 
 #vp_main_menu3 div {
@@ -740,7 +745,7 @@ a {
     margin: 0;
     padding: 0;
     position: absolute;
-    z-index: 10000000;
+    z-index: 1003;
 }
 
 .context-menu LI {
@@ -768,6 +773,17 @@ a {
 
 .context-menu LI.separator {
     border-top: 1px solid #CCCCCC;
+}
+
+.diagram-menu {
+	z-index:1000;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 150px;
+	height: 100%;
+	background-color: grey;
+	border: 1px solid black;
 }
 
 .elementSelector.hover{

@@ -19,8 +19,8 @@
         diagramName: "BaseDiagram",
         diagramEventPrefix: "CD",
         'options': {
-            'width': 800,
-            'height': 500,
+            'width': 1300,
+            'height': 700,
             'type': 'base'
         },
         _init: function() {

@@ -293,21 +293,18 @@ dm['es'] = dm.es;
      *             attached
      */
     //@export:dm.ds.diagram
-    dm.base.diagram("ds.diagram", {
+    dm.base.diagram("ds.diagram", {   
         'options': {
-        'width': 800,
-        'height': 500,
-        'nameTemplate': 'diagram',
-        'type2': 'diagram' // hack while we do not have project manager
-    },
+          'nameTemplate': 'diagram',
+          'type2': 'diagram' // hack while we do not have a project manager
+        },
     //@proexp
     _create: function () {
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
-                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=1300px height=700px>\
-                <p> Your browser doesn\'t support canvas</p>\
-                </canvas>\
-                </div>\
-                ');
+                <div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">\
+                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas></div></div>');
+        
                 this.max_zindex = 100;
                 this.canvas = window.document.getElementById(this.euid +'_Canvas');
 
@@ -861,7 +858,7 @@ dm['es'] = dm.es;
     },
     /**
      * \class Function.
-     * Clear the canvas rectongle and re-draw
+     * Clear the canvas rectangle and re-draw
      * all connectors on the Canvas.
      */
     //@proexp
@@ -870,7 +867,7 @@ dm['es'] = dm.es;
             var ctx = this.canvas.getContext("2d");
 
             ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
-            ctx.clearRect(0, 0, 1300, 700);
+            ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 //            ctx.strokeRect(0, 0, 1000, 500);
 
 

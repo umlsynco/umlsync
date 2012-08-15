@@ -270,7 +270,7 @@ Version:
 
         dm.base.loader.LoadDiagramMenuData(type, function(json) {
 
-            var innerHtml = "<div id='testmenu' style='z-index:99999991; position:absolute; left:0px;top:0px;width:150px;height:100%;background-color:grey;border:1px solid black;'><ul>";
+            var innerHtml = "<div id='testmenu' class='diagram-menu'><ul>";
 
             var ddata = json;
             var elements = ddata[0].elements,
