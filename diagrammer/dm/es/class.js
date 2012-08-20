@@ -3,7 +3,7 @@
   */
 (function( $, dm, undefined ) {
 
-dm.base.diagram("es.class", dm.es.element, {
+dm.base.diagram("es.class", dm['es']['element'], {
     options: {
         nameTemplate: 'Class',
         width: '150px',

@@ -41,14 +41,15 @@ Version:
 				persist: true,
 				initAjax: { url: urlArg + "base.json"}, 
 				onLazyRead: function(node){
-					if (node.data.isFolder)
+					if (node.data.isFolder) {
 					  node.appendAjax({url: urlArg + node.getAbsolutePath() + ".json"});
+                    }
 				},
 				onActivate: function(node) {
 					if (!node.data.isFolder)
 					  dm.dm.fw.loadDiagram(urlArg + node.getAbsolutePath() + ".json");
 				},
-			} //tree			
+			} //tree
 		};
 	};
 //	@aspect

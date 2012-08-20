@@ -32,30 +32,17 @@ Version:
  */
 //@aspect
 (function($, dm, undefined) {
-
+    //@export:dm.base.loader:plain
     dm.base.loader = function(urlArg) {
 
         this.instance = null; 
-     
-        var getInstance = function() { 
-            if (!this.instance) { 
-                // create a instance 
-                this.instance = createInstance(); 
-                this.instance.url = urlArg; // Some reference in diagram's menu
-                this.instance.working = false;
-                dm.base.loader = this.instance;
-            } 
-     
-            // return the instance of the singletonClass 
-            return this.instance; 
-        } 
      
         var createInstance = function() { 
             this.working = false;
  
             return {
             _addToLoadQueue: function(item) {
-                var instance = dm.base.loader;
+                var instance = dm.base['loader'];
                 if (!instance._loadQueue) {
                     instance.working = false;
                     instance._loadQueue = new Array();
@@ -65,7 +52,7 @@ Version:
             },
             _process: function(isAjaxCallback) {
                 var item = null;
-                var instance = dm.base.loader;
+                var instance = dm.base['loader'];
                 if (instance.working) {
                     return;
                 }
@@ -87,17 +74,17 @@ Version:
                     // loaded all necessary data yet.
                     if (item.precondition()) {
                         $.ajax({
-                            url: urlArg + item.url,
-                            dataType: "script",
-                            success: function(){
+                            'url': urlArg + item.url,
+                            'dataType': "script",
+                            'success': function(){
                             callback(data);
                             self.working = false;
                             self._process(true);
                         },
-                        error: function(){
+                        'error': function(){
                             // Do not call calback on failed
                             // callback(data);
-                            alert("Failed to load: " + item.url);
+                            alert("Failed to load: " + urlArg + item.url);
                             self.working = false;
                             self._process(true);
                         }
@@ -113,7 +100,7 @@ Version:
                 }
             },
             //@proexp
-            OnLoadComplete: function(callback2, options) {
+            'OnLoadComplete': function(callback2, options) {
                 this._addToLoadQueue({
                     url: "",
                     precondition: function() { return false;},
@@ -122,39 +109,39 @@ Version:
                 });
             },
             //@proexp
-            LoadMainMenuData: function(callback) {
+            'LoadMainMenuData': function(callback) {
                 // There is no dependency on main menu load sequence
                 // therefore it is possible to load is asynchronious
                 $.ajax({
-                      url: urlArg + "dm/ms/main/main.json",
-                      dataType: 'json',
-                      success: function(data) {
+                      'url': urlArg + "dm/ms/main/main.json",
+                      'dataType': 'json',
+                      'success': function(data) {
                              if (callback)
                                  callback(data, urlArg);
                       },
-                      error: function(XMLHttpRequest, textStatus, errorThrown){
+                      'error': function(XMLHttpRequest, textStatus, errorThrown){
                            alert("Load the main menu description failed:" + textStatus + ":\n XHTTP"+ XMLHttpRequest+ "\n ERR:"+ errorThrown);
                       }
                 });//ajax
             },
             //@proexp
-            LoadDiagramMenuData: function(type, callback) {
+            'LoadDiagramMenuData': function(type, callback) {
                 // There is no dependency on main menu load sequence
                 // therefore it is possible to load is asynchronious
                 $.ajax({
-                      url: urlArg + "/dm/ms/ds/" + type + "_with_menu.json",
-                      dataType: 'json',
-                      success: function(data) {
+                      'url': urlArg + "/dm/ms/ds/" + type + "_with_menu.json",
+                      'dataType': 'json',
+                      'success': function(data) {
                              if (callback)
                                  callback(data);
                       },
-                      error: function(XMLHttpRequest, textStatus, errorThrown){
+                      'error': function(XMLHttpRequest, textStatus, errorThrown){
                            alert("Load the diagram menu description failed:" + textStatus + ":\n XHTTP"+ XMLHttpRequest+ "\n ERR:"+ errorThrown);
                       }
                 });//ajax
             },
             //@proexp
-            Menu: function(type, specific, options) {
+            'Menu': function(type, specific, options) {
                 this._addToLoadQueue({
                     url: "/dm/ms/" + type + "/" + specific +".js", 
                     precondition: function() {
@@ -171,23 +158,23 @@ Version:
                 });
             },
             //@proexp
-            CreateContextMenu: function(name, menuBuilder) {
+            'CreateContextMenu': function(name, menuBuilder) {
                 this._addToLoadQueue({
                     url: "./dm/ms/ctx/" + name + ".js",
                     precondition: function(options) {
-                    if (dm.ms.ctx[name] == undefined) {
+                    if (dm.ms['ctx'][name] == undefined) {
                         return true;
                     }
                     return false;
                 },
                 callback: function(options) { 
-                    return new dm.ms.ctx[name](options);
+                    return new dm.ms['ctx'][name](options);
                 },
                 data: menuBuilder
                 });
             },
             //@no-export
-            CreateDiagramMenu: function(type, diagram, callback2) {
+            'CreateDiagramMenu': function(type, diagram, callback2) {
                 var self2 = this;
                 this._addToLoadQueue({
                     url: "dm/ms/ds/common.js",
@@ -208,7 +195,7 @@ Version:
                 });
             },
             //@proexp
-            Diagram: function(dName, dType, options, parrent, argCallback) {
+            'Diagram': function(dName, dType, options, parrent, argCallback) {
 
                 if ((dm['ds'] == undefined)
                         || (dm['ds']['diagram'] == undefined)) {
@@ -247,8 +234,8 @@ Version:
                     if (argCallback) {
                         argCallback(newdiagram);
                     }
-                    self.CreateDiagramMenu(opt.diagram, newdiagram);
-                    dm.dm.fw.selectedDiagram = newdiagram; // Fix for just added diagram
+                    self['CreateDiagramMenu'](opt.diagram, newdiagram);
+                    //dm.dm['fw']['selectedDiagram'] = newdiagram; // Fix for just added diagram
                     return newdiagram;
                 },
                 data: opt
@@ -261,7 +248,7 @@ Version:
              }*/
             },
             //@proexp
-            LoadElement: function(type) {
+            'LoadElement': function(type) {
 
                 if (dm['es'] == undefined) {
                     alert("You should create diagram instance first !!!");
@@ -283,7 +270,7 @@ Version:
                 }
             },
             //@proexp
-            Element: function(type, options, diagram, callback2) {
+            'Element': function(type, options, diagram, callback2) {
 
                 if (dm['es'] == undefined) {
                     alert("You should create diagram instance first !!!");
@@ -311,7 +298,7 @@ Version:
                 });
             },
             //@proexp
-            Connector: function(type, options, diagram, callback2) {
+            'Connector': function(type, options, diagram, callback2) {
 
                 if (dm.cs == undefined) {
                     alert("You should create diagram instance first !!!");
@@ -341,14 +328,23 @@ Version:
             }; 
         };
         
+        var getInstance = function() { 
+            if (!this.instance) { 
+                // create a instance 
+                this.instance = createInstance(); 
+                this.instance.url = urlArg; // Some reference in diagram's menu
+                this.instance.working = false;
+                // Global export
+                dm['base']['loader'] = this.instance;
+            } 
+     
+            // return the instance of the singletonClass 
+            return this.instance; 
+        }
         return getInstance(); 
     };
-
-//    @export:dm.base.loader:plain
-//    dm.base.loader.prototype = 
-
-//    @print
-
-//    @aspect
+    //@print
+dm['base']['loader'] = dm.base.loader;
+//@aspect
 })(jQuery, dm);
 

@@ -21,6 +21,7 @@ instructions = "zipit.py:  Simple zipfile creation script." + \
 def preprocess(infile, outfile):
   rf = open(infile, 'r')
   wf = open(outfile, 'w')
+  exportf = open("./externals_ext.js", 'w')
   aspecNextLine = False
   exportNextLine = False
   printExport = ""
@@ -43,6 +44,8 @@ def preprocess(infile, outfile):
         extraline = "this['" + field + "'] = this." + field + ";"
       else:
         field = newline.rsplit(':')[0]
+        if "'" in field:
+            field = field.rsplit('\'')[1]
         printExport = "%s%s%s'] = %s%s;\n"%(printExport, currentExportProto, field, currentExportProtoObj, field)
       exportNextLine = False
       wf.write(line)
@@ -71,6 +74,7 @@ def preprocess(infile, outfile):
     if "//@proexp" in line:
       exportNextLine = True
     if "//@print" in line:
+      exportf.write(printExport)
       wf.write(printExport)
       printExport = ""
       currentExportProto = ""
@@ -78,6 +82,7 @@ def preprocess(infile, outfile):
 
   rf.close()
   wf.close()
+  exportf.close()
 
 # Notice the __name__=="__main__"
 # this is used to control what Python does when it is called from the

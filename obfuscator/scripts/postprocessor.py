@@ -24,10 +24,6 @@ def postprocess(infile, outfile):
   dm = "dm"
 
   for line in rf:
-    if "window.dm=" in line:
-      pos = line.find("window.dm=") + 10
-      dm = line[pos:pos+1]
-
     if "$.aspect(\"" in line:
       newline = line
       result = ""

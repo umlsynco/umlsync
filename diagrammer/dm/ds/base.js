@@ -14,8 +14,9 @@
  Version:
   2.0.0 (2012-07-12)
 */
+//@aspect
 (function( $, dm, undefined ) {
-    dm.base.diagram("ds.base", dm.ds.diagram, {
+    dm['base']['diagram']("ds.base", dm['ds']['diagram'], {
         diagramName: "BaseDiagram",
         diagramEventPrefix: "CD",
         'options': {
@@ -26,4 +27,5 @@
         _init: function() {
         }
     });
+//@aspect
 })(jQuery, window.dm);

@@ -17,21 +17,21 @@ Version:
   1.0.0 (2012-03-21)
  */
 
-
+//@aspect
 (function($, dm, undefined) {
 
-	//@export:dm.hs.framework
+	//@export:dm.hs.framework:plain
 	dm.hs.framework = function(options) {
 
 		function getInstance(options) {
 			dm.dm = dm.dm || {};
-			if (!dm.dm.fw) { 
+			if (!dm.dm['fw']) { 
 				// create a instance 
-				dm.dm.fw = new framework(options); 
+				dm.dm['fw'] = new framework(options); 
 			} 
 
 			// return the instance of the singletonClass 
-			return dm.dm.fw; 
+			return dm.dm['fw'];
 		}
 
 		var framework = function(options) {
@@ -60,13 +60,13 @@ Version:
 				self.updateFrameWork(true);
 			});
 
-			var $tabs = $("#tabs").tabs( {tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+			var $tabs = $("#tabs").tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
 			      		add: function(event, ui) {
 					    $tabs.tabs('select', '#' + ui.panel.id);
 					},
 					select: function(event, ui) {
-						if (dm.dm.fw.diagrams)
-							self.selectedDiagram = dm.dm.fw.diagrams["#" + ui.panel.id];
+						if (dm.dm['fw']['diagrams'])
+							self.selectedDiagram = dm.dm['fw']['diagrams']["#" + ui.panel.id];
 
 						self.updateFrameWork(true);
 					}
@@ -113,18 +113,18 @@ Version:
 		},
 		// Loading the main menu JSON description and put it as argument to callback function 
 		//@proexp
-		LoadMainMenu:function(callback) {
+		'LoadMainMenu':function(callback) {
 			dm.base.loader.LoadMainMenuData(callback);
 		},
 		//@proexp
-		registerViewManager: function(viewmanager, type) {
+		'registerViewManager': function(viewmanager, type) {
 			var json_type = type || "json";
 			if (viewmanager) {
 				this.options.viewmanager = viewmanager;
 				var self = this;
-				$.ajax({ url: viewmanager + "getviews",
-					dataType: json_type,
-					success:    function(json) {
+				$.ajax({ 'url': viewmanager + "getviews",
+					'dataType': json_type,
+					'success':    function(json) {
 					var innerHtml = "",
 					selectHtml = "";
 					for (i in json) {
@@ -186,7 +186,7 @@ Version:
 
 		},
 		//@proexp
-		addView2: function(name, IView) {
+		'addView2': function(name, IView) {
 			//TODO: don't load view if name/euid is reserved yet !
 			//      it could help to prevent some mess with localhost views
 			var id = '#diagramTree-'+ this.left_counter;
@@ -244,7 +244,7 @@ Version:
 
 
 						$('body').append(innerHtml);
-						$("#vp_main_menu2").draggable({cancel: '.scrollable,:input,:button'});
+						$("#vp_main_menu2").draggable({'cancel': '.scrollable,:input,:button'});
 						$("#vp_main_menu2").overlay({
 									// custom top position
 									top: 150,
@@ -319,7 +319,8 @@ Version:
 			}
 			return id;
 		},
-		checkDiagramName: function(name) {
+        //@proexp
+		'checkDiagramName': function(name) {
 			var foundName = false;
 			$('#' + this.options.tabs + ' ul li a').each(function(i) {
 				if (this.text == name) {
@@ -328,7 +329,8 @@ Version:
 			});
 			return !foundName;
 		},
-		addDiagram: function(baseType, type, name, options) {
+        //@proexp
+		'addDiagram': function(baseType, type, name, options) {
 			var tabname = "#"+ this.options.tabRight + "-" + this.counter;
 			this.counter++;
 			$("#" + this.options.tabs).tabs("add", tabname, name);
@@ -341,13 +343,14 @@ Version:
 			});
 			this.updateFrameWork(true);
 		},
-		loadDiagram: function(path, data_type) {
+        //@proexp
+		'loadDiagram': function(path, data_type) {
 			var json_type = data_type || "json";
 			var self = this;
 			$.ajax({
-				url: path,
-				dataType: json_type,
-				success: function(json) {
+				'url': path,
+				'dataType': json_type,
+				'success': function(json) {
 				var tabname = "#"+ self.options.tabRight + "-" + self.counter;
 				self.counter++;
 				$.struct = json;
@@ -360,8 +363,9 @@ Version:
 			}
 			}).fail(function(x1,x2,x3) {alert("FAILED to load:" + path +" : " + x1.status + x2 + x3);});
 		},
-		loadCode: function(url, name) {
-			$.ajax({url:url, dataType:'jsonp'});
+        //@proexp
+		'loadCode': function(url, name) {
+			$.ajax({'url':url, 'dataType':'jsonp'});
 			/*
      var tabname = "#"+ this.options.tabRight + "-" + this.counter;
      this.counter++;
@@ -525,7 +529,7 @@ Version:
 						$("#borderWidth").append("<option value='"+ i+"'>" + i +"px</option>");
 					}
 
-					$('button#color5').simpleColorPicker({ onChangeColor: function(color) { 
+					$('button#color5').simpleColorPicker({ 'onChangeColor': function(color) { 
 						if (fw.selectedDiagram)  {
 							fw.selectedDiagram._setWidgetsOption("color", color);
 						}
@@ -562,4 +566,7 @@ Version:
 		return getInstance(options);
 
 	};
+    //@print
+
+//@aspect
 })(jQuery, dm);
