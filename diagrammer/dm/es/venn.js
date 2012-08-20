@@ -6,7 +6,9 @@ dm.base.diagram("es.venn", dm.es.element, {
     options: {
         nameTemplate: "Venn",
         opacity: 0.6,
-        color: 'purel'
+        color: 'purel',
+        width: '150px',
+        height: '150px'
     },
     _create: function() {
       // HTML for class structure creation

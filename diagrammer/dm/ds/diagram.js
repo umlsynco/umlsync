@@ -22,6 +22,7 @@ var dm = (function( window, undefined ) {
     dm.menu = {};
     dm.ds = {};
     dm.cs = {};
+    dm.hs = {};
 
     return dm;
 })(window);
@@ -34,6 +35,7 @@ dm['menu'] = dm.menu;
 dm['ds'] = dm.ds;
 dm['cs'] = dm.cs;
 dm['es'] = dm.es;
+dm['hs'] = dm.hs;
 
 //@aspect
 (function( $, dm, undefined ) {
@@ -104,7 +106,7 @@ dm['es'] = dm.es;
         dm.ds.diagram.ec++;
 
         // it is responsible for this.element instance creation 
-        this._create();
+        this['_create']();
         
         //@overwrite
         this.element = $(this.element);
@@ -121,12 +123,13 @@ dm['es'] = dm.es;
 
             this._trigger( "create" );
 
-            this._init();
+            this['_init']();
         } else {
             // TODO: change on even to dialog manager !!!
             alert("Please, declare method _create() for diagram element " + this.euid);
         }
     },
+//#ifdef EDITOR
     //@proexp
     getDescription: function(key, value) {
         var kv = !(key || value || false);
@@ -175,6 +178,7 @@ dm['es'] = dm.es;
     //@overwrite
     _update: function() {
     },
+//#endif
     //@proexp
     _getCreateOptions: function() {
         return $.metadata && $.metadata.get( this.element[0] )[ this.euid ];
@@ -188,22 +192,24 @@ dm['es'] = dm.es;
     //@overwrite
     _destroy: function(){},
     destroy: function() {
-        this._destroy();
+        this['_destroy']();
         // TODO: handle diagram close
         // This is hack to save diagram on destroy
+//#ifdef EDITOR
         if ((this.options['type2'] == 'diagram')
                 && (this.options['viewid'])) {
             var data = this.getDescription();
             //alert("destroy " + this.options.fullname);
             var self = this;
             $.ajax({
-                type: 'GET',
-                url: 'http://localhost:8000/vm/'+ self.options['viewid'] +'/save',
-                dataType: 'jsonp',
-                data: {'diagram':data, 'path': self.options['fullname'] + ".umlsync", 'description':'Test diagram'},
-                success: function(ddd) {alert("DONE COOL !!!!" + ddd);}
+                'type': 'GET',
+                'url': 'http://localhost:8000/vm/'+ self.options['viewid'] +'/save',
+                'dataType': 'jsonp',
+                'data': {'diagram':data, 'path': self.options['fullname'] + ".umlsync", 'description':'Test diagram'},
+                'success': function(ddd) {alert("DONE COOL !!!!" + ddd);}
             });
         }
+//#endif
         this.element
         .unbind( "." + this.euid )
         .removeData( this.euid );
@@ -258,27 +264,21 @@ dm['es'] = dm.es;
         // this would happen if we could call $.event.fix instead of $.Event
         // but we don't have a way to force an event to be fixed multiple times
         if ( event.originalEvent ) {
-            for ( var i = $.event.props.length, prop; i; ) {
-                prop = $.event.props[ --i ];
-                event[ prop ] = event.originalEvent[ prop ];
+            for ( var i = $['event']['props']['length'], prop; i; ) {
+                prop = $['event']['props'][ --i ];
+                event[ prop ] = event['originalEvent'][ prop ];
             }
         }
 
-        this.element.trigger( event, data );
+        $(this.element).trigger( event, data );
 
         return !( $.isFunction(callback) &&
-                callback.call( this.element[0], event, data ) === false ||
-                event.isDefaultPrevented() );
+                callback['call']( this.element[0], event, data ) === false ||
+                event['isDefaultPrevented']() );
     }
     };
 
     //@print
-
-//@aspect
-})(jQuery, dm);
-
-//@aspect
-(function( $, dm, undefined ) {
 
     /**
      * jQuery.dm.base.diagram class.
@@ -293,21 +293,18 @@ dm['es'] = dm.es;
      *             attached
      */
     //@export:dm.ds.diagram
-    dm.base.diagram("ds.diagram", {
+    dm.base.diagram("ds.diagram", {   
         'options': {
-        'width': 800,
-        'height': 500,
         'nameTemplate': 'diagram',
-        'type2': 'diagram' // hack while we do not have project manager
-    },
+        'type2': 'diagram' // hack while we do not have a project manager
+        },
     //@proexp
     _create: function () {
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
-                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=1300px height=700px>\
-                <p> Your browser doesn\'t support canvas</p>\
-                </canvas>\
-                </div>\
-                ');
+                <div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">\
+                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas></div></div>');
+        
                 this.max_zindex = 100;
                 this.canvas = window.document.getElementById(this.euid +'_Canvas');
 
@@ -315,32 +312,33 @@ dm['es'] = dm.es;
                 // It is not necessary for regular usage
                 // TODO: make it as a separate functionality which glue 
                 //       file tree and diagram engine
+//#ifdef EDITOR
                 var iDiagram = this;
                 $("#" + this.euid + "_Canvas").droppable({
                     drop: function( event, ui ) {
-                    var source = ui.helper.data("dtSourceNode") || ui.draggable;
-                    $.log("source: " + source.data.addClass);
-                    if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
-    var key = "",
-    separator = "",
-    filenode = source,
-    isInterface = source.data.addClass == "iconinterface";
-    // TODO: Change on isFs (is filesystem resource)
-    while ((filenode.data.addClass == 'iconinterface')
-            || (filenode.data.addClass == 'iconclass')
-            || (filenode.data.addClass == 'namespace')) {
-        key = filenode.data.title + separator + key;
-        separator = "::";
-        filenode = filenode.parent;
-    }
+                      var source = ui.helper.data("dtSourceNode") || ui.draggable;
+                      $.log("source: " + source.data.addClass);
+                      if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
+                        var key = "",
+                            separator = "",
+                            filenode = source,
+                            isInterface = source.data.addClass == "iconinterface";
+                            // TODO: Change on isFs (is filesystem resource)
+                        while ((filenode.data.addClass == 'iconinterface')
+                          || (filenode.data.addClass == 'iconclass')
+                          || (filenode.data.addClass == 'namespace')) {
+                          key = filenode.data.title + separator + key;
+                          separator = "::";
+                          filenode = filenode.parent;
+                        }
 
-    if (iDiagram.options['type'] == "component") {
-        var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
+                        if (iDiagram.options['type'] == "component") {
+                          var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
 
-        element.pageX = 200;
-        element.pageY = 200;
-        element.name = key;
-        element.filepath = filenode.getAbsolutePath() + "/" + key;
+                        element.pageX = 200;
+                        element.pageY = 200;
+                        element.name = key;
+                        element.filepath = filenode.getAbsolutePath() + "/" + key;
         var ename = iDiagram.Element(element.type, element);
         return;
     }
@@ -391,6 +389,7 @@ dm['es'] = dm.es;
                 }
                 });
 
+//#endif
                 /** Canvas extra functionality handling:
                  *   1. Hide resize GUI helpers on canvas click
                  *   2. Position locator is debug functionality
@@ -456,12 +455,15 @@ dm['es'] = dm.es;
                     x = e.pageX - p.left,
                     y = e.pageY - p.top;
                     diag.startConnectorTransform(x,y);
+//#ifdef EDITOR
                     if ((diag.selectedconntector)
-        && (!dm.dm.fw['CtrlDown'])) {
-    diag.selectedconntector._setOption("selected", true);
-    e.stopPropagation();
+                      && (!dm['dm']['fw']['CtrlDown'])) {
+                      diag.selectedconntector._setOption("selected", true);
+                      e.stopPropagation();
                     }
+//#endif
                 })
+//#ifdef EDITOR
                 .bind('contextmenu', function(e) {
                     if (diag.selectedconntector) {
     diag.menuCtx['HideAll']();
@@ -470,7 +472,9 @@ dm['es'] = dm.es;
     e.preventDefault();
     diag.multipleSelection = true; // work around to hide connector selection on click
                     }
-                });
+                })
+//#endif
+                ;
 
                 // create an empty lists for connectors and elements
                 this.connectors = [];
@@ -495,7 +499,7 @@ dm['es'] = dm.es;
                 }
 
                 // Perform function on diagram load completion
-                dm.base.loader.OnLoadComplete(function() {
+                dm['base']['loader']['OnLoadComplete'](function() {
                     for (i in diag.elements) {
     var d = diag.elements[i].options['dropped'];
     if (d) {
@@ -516,6 +520,7 @@ dm['es'] = dm.es;
                 this.reverted_operations = new Array(); // Array of reverted operations of diagram
 
     },
+//#ifdef EDITOR
     //@proexp
     _update: function() {
         this.options['connectors'] = this.connectors;
@@ -527,6 +532,7 @@ dm['es'] = dm.es;
         this.options['elements'] = this.elements;
 
     },
+//#endif
     //@proexp
     _init: function () {
         // It is necessary to init mouse over listener
@@ -555,14 +561,14 @@ dm['es'] = dm.es;
         self.max_zindex++;
         options["z-index"] = self.max_zindex; //options["z-index"] || ();
         $.log("this.options.loader.Element !!!");
-        dm.base.loader.Element(type, options, this, function(obj) {
+        dm['base']['loader']['Element'](type, options, this, function(obj) {
             if (obj != undefined)
                 self.elements[obj.euid] = obj;
 
             if (callback)
                 callback(obj);
         });
-
+//#ifdef EDITOR
         // If it is editable diagram
         if (this.options['editable']) {
             // Load the context menu for element
@@ -573,9 +579,10 @@ dm['es'] = dm.es;
             if ((this.menuIcon != undefined) && (options['menu'] != undefined))
                 this.menuIcon['load'](options['menu']);
         }
-
+//#endif
         return options.euid;
     },
+//#ifdef EDITOR
     //@proexp
     _setWidgetsOption: function( key, value ) {
         if (key == "selected") {
@@ -634,6 +641,7 @@ dm['es'] = dm.es;
 
         this.draw(); // work-around to re-draw connectors after options update
     },
+//#endif
     /**
      * \class Function.
      * TODO: think about lifeline diagram
@@ -649,6 +657,7 @@ dm['es'] = dm.es;
         }
         return undefined;
     },
+//#ifdef EDITOR
     /**
      * \class Function.
      */
@@ -668,6 +677,7 @@ dm['es'] = dm.es;
         }
 
     },
+//#endif
     //@proexp
     removeElement: function(euid) {
         var el = this.elements;
@@ -681,6 +691,7 @@ dm['es'] = dm.es;
         }
 
     },
+//#ifdef EDITOR
     /**
      * \class Function.
      * remove connector from the list of updatable connectors
@@ -705,7 +716,7 @@ dm['es'] = dm.es;
         }
 
     },
-
+//#endif
 
     /**
      * \class Function.
@@ -719,7 +730,7 @@ dm['es'] = dm.es;
         // Loader is responsible for connector creation
         var self = this;
 
-        dm.base.loader.Connector(type, options, this, function(connector) {
+        dm['base']['loader']['Connector'](type, options, this, function(connector) {
             if (connector != undefined) {
                 self.connectors.push(connector);
                 self.draw();
@@ -728,6 +739,7 @@ dm['es'] = dm.es;
             }
         });
     },
+//#ifdef EDITOR
     //@proexp
     _dropConnector: function(ui) {
         var result = undefined;
@@ -817,6 +829,7 @@ dm['es'] = dm.es;
             }
         }
     },
+//#endif
     //@proexp    
     onDragStart: function(el, ui) {
         el.onDragStart(ui, true);
@@ -861,7 +874,7 @@ dm['es'] = dm.es;
     },
     /**
      * \class Function.
-     * Clear the canvas rectongle and re-draw
+     * Clear the canvas rectangle and re-draw
      * all connectors on the Canvas.
      */
     //@proexp
@@ -870,7 +883,7 @@ dm['es'] = dm.es;
             var ctx = this.canvas.getContext("2d");
 
             ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
-            ctx.clearRect(0, 0, 1300, 700);
+            ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 //            ctx.strokeRect(0, 0, 1000, 500);
 
 
@@ -968,8 +981,9 @@ dm['es'] = dm.es;
      */
     //@proexp
      _mouseClick: function(refElement) {
+//#ifdef EDITOR
         var mtype = (refElement == undefined) ? undefined : refElement.options['menu'];
-        var ctrlDown = dm.dm.fw['CtrlDown'];
+        var ctrlDown = dm['dm']['fw']['CtrlDown'];
         this.clickedElement = refElement;
 
         // Hide all context menus
@@ -1034,8 +1048,9 @@ dm['es'] = dm.es;
             this.selectedElement._setOption("selected", true);
             this.draw();
         }
-
+//#endif
     },
+//#ifdef EDITOR
     //@proexp
     reportOperation: function(operation, euid, before, after) {
         this.operations.push([operation, euid, before, after]);
@@ -1061,6 +1076,7 @@ dm['es'] = dm.es;
             }
         }
     }
+//#endif
     });
     
     //@print
@@ -1097,6 +1113,7 @@ dm['es'] = dm.es;
             // create element at possition which described in jsonDesc
             alert("Could not create virtual element !!!");
         },
+//#ifdef EDITOR
         //@proexp
         _update: function() {
             var p = $("#" + this.euid + "_Border").position();
@@ -1113,6 +1130,7 @@ dm['es'] = dm.es;
                 }
             }
         },
+//#endif
         //@proexp
         _init: function () {
             if (this.options['height']) {
@@ -1149,12 +1167,11 @@ dm['es'] = dm.es;
 
             var axis111 = this.options['axis'] || false;
             var elmt = $('#' + this.euid  + '_Border').draggable({
-                'start': function(event, ui) {
-                $.log ("SSSSSSSSSSSSSSTART");
+              'start': function(event, ui) {
                 self.operation_start = {left: ui.position.left, top: ui.position.top};
                 parrentClass.onDragStart(self, ui);
-            },
-            'drag': function(event, ui) {
+              },
+              'drag': function(event, ui) {
                 parrentClass.onDragMove(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
                 if (parrentClass != undefined) {
                     parrentClass.draw();
@@ -1162,8 +1179,8 @@ dm['es'] = dm.es;
                 if (self.$moveit != undefined) {
                     $("#" + self.$moveit).css("left", 200);
                 }
-            },
-            'stop': function(event, ui) {
+              },
+              'stop': function(event, ui) {
                 if (ui.position.top < 0) {
                     $(this).css("top", 3);
                     ui.position.top = 3;
@@ -1178,7 +1195,7 @@ dm['es'] = dm.es;
 
                 if (self.options['droppable']) {
                     if (self.parrent != undefined) {
-    self.parrent._dropElement(self, ui); 
+                      self.parrent._dropElement(self, ui); 
                     }
                 }
                 if (self.onDropComplete) {
@@ -1212,14 +1229,14 @@ dm['es'] = dm.es;
               }
       }) // draggable completed*/
             // CSS  hack for chnaging view of resizable element "ui-resizable-*-u"
-            .resizable({ handles: this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u', alsoResize: '#' + this.euid + '_Border .ElementResizeArea', 
-                stop: function() {
+            .resizable({ 'handles': this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u', 'alsoResize': '#' + this.euid + '_Border .ElementResizeArea', 
+                'stop': function() {
                 if (self.onResizeComplete) {
                     self.onResizeComplete();
                 }
                 self.parrent.draw();
             },
-            resize: function() {
+            'resize': function() {
                 if (self.onResizeComplete) {
                     self.onResizeComplete();
                 }
@@ -1351,7 +1368,7 @@ dm['es'] = dm.es;
                 this.onDragMove(ui);
                 if (this.options['droppable']) {
                     if (this.parrent != undefined) {
-    this.parrent._dropElement(this, {position: {'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top}}); 
+                      this.parrent._dropElement(this, {position: {'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top}}); 
                     }
                 }
 
@@ -1368,8 +1385,8 @@ dm['es'] = dm.es;
         dm.ds.diagram = dm.ds.diagram || {}; 
         dm.ds.diagram.ec = 0; 
 
-        //@export:dm.cs.connector
-        dm.base.diagram("cs.connector", {
+//@export:dm.cs.connector
+dm.base.diagram("cs.connector", {
             'options': {
             'selected': false,
             'nameTemplate': 'Connector',
@@ -1419,6 +1436,7 @@ dm['es'] = dm.es;
         },
         //@proexp
         _create: function () {
+            //@proexp
             this.epoints = [];
             this.cleanOnNextTransform = false;
             if (this.options['stored']) {

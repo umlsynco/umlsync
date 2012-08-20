@@ -22,26 +22,27 @@ var dm = (function( window, undefined ) {
     dm.menu = {};
     dm.ds = {};
     dm.cs = {};
+    dm.hs = {};
 
     return dm;
 })(window);
 
 window['dm'] = dm;
 
+// export namespaces for minifier
 dm['base'] = dm.base;
 dm['menu'] = dm.menu;
 dm['ds'] = dm.ds;
 dm['cs'] = dm.cs;
 dm['es'] = dm.es;
-
-//var $ = jQuery;
+dm['hs'] = dm.hs;
 
 //@aspect
 $.aspect('(function( $, dm, undefined ) {');
 
     //@export:dm.base.diagram:plain
-    dm.base.diagram = function( qq, base, prototype ) {
-        var ns = qq.split( "." ),
+    dm.base.diagram = function( name, base, prototype ) {
+        var ns = name.split( "." ),
         fullName = ns[0] + "-" + ns[1],
         namespace = ns[ 0 ],
         name = ns[ 1 ];
@@ -57,8 +58,8 @@ $.aspect('(function( $, dm, undefined ) {');
             // allow instantiation without initializing for simple inheritance
             if ( arguments.length ) {
                 options = options || {};
-                if (options.type == undefined)
-                    options.type = name;
+                if (options['type'] == undefined)
+                    options['type'] = name;
                 this._createDiagram( options, parrent);
             }
         };
@@ -77,58 +78,56 @@ $.aspect('(function( $, dm, undefined ) {');
     //@print
 dm['base']['diagram'] = dm.base.diagram;
     
-    //@export:dm.base.DiagramElement:plain
-    dm.base.DiagramElement = function( options, parrent) {
+    dm.base.DiagramElement = function( options, parent) {
         // allow instantiation without initializing for simple inheritance
         if ( arguments.length ) {
-            this._createDiagram( options, parrent);
+            this._createDiagram( options, parent);
         }
     } ;
 
+    //@export:dm.base.DiagramElement:plain
     dm.base.DiagramElement.prototype = {
     'options': {
         'editable': true,
         'nameTemplate': 'base'
     },
-    //@proexp
-    _createDiagram: function( options, parrent) {
+    _createDiagram: function( options, parent) {
         // extend the basic options
-        this._setOptions(options); // Extended class could re-define some options setup
+        this.options = $.extend(true, {}, this.options, options);
+        //this._setOptions(options); // Extended class could re-define some options setup
 
         //@proexp
-        this['parrent'] = parrent;
-        //@proexp
-        this['euid'] = this.options['type'] + dm.ds.diagram.ec;
-
+        this.parrent = parent;
+this['parrent'] = this.parrent;        //@proexp
+        this.euid = this.options['type'] + dm.ds.diagram.ec;
+this['euid'] = this.euid;
         if (this.options['name'] == undefined) {
             this.options['name'] = this.options['nameTemplate'] + dm.ds.diagram.ec;
         }
         dm.ds.diagram.ec++;
 
         // it is responsible for this.element instance creation 
-        this._create();
-        //@proexp
+        this['_create']();
+        
+        //@overwrite
         this.element = $(this.element);
 
-        // $.widget.bridge stores the plugin instance, but we do it anyway
-        // so that it's stored even before the _create function runs
         if (this.element) {
             // element unique id
-            $.log("DATA euid:" + this['euid']);
-            this.element.data(this['euid'], this );
+            $(this.element).data(this.euid, this );
             this._baseinit();
 
             var self = this;
-            this.element.bind("remove." + this['euid'], function() {
+            $(this.element).bind("remove." + this.euid, function() {
                 self.destroy();
             });
 
             this._trigger( "create" );
 
-            this._init();
+            this['_init']();
         } else {
             // TODO: change on even to dialog manager !!!
-            alert("Please, declare method _create() for diagram element " + this['euid']);
+            alert("Please, declare method _create() for diagram element " + this.euid);
         }
     },
     //@proexp
@@ -176,21 +175,23 @@ dm['base']['diagram'] = dm.base.diagram;
         item += '}';
         return item;
     },
-    //@proexp
+    //@overwrite
     _update: function() {
     },
     //@proexp
     _getCreateOptions: function() {
-        return $.metadata && $.metadata.get( this.element[0] )[ this['euid'] ];
+        return $.metadata && $.metadata.get( this.element[0] )[ this.euid ];
     },
-    //@proexp
-    _create: function() {},
-    //@proexp
-    _init: function() {},
-    //@proexp
-    _baseinit: function() {},
-    //@proexp
+    //@overwrite
+    _create: function(){},
+    //@overwrite
+    _init: function(){},
+    //@overwrite
+    _baseinit: function(){},
+    //@overwrite
+    _destroy: function(){},
     destroy: function() {
+        this._destroy();
         // TODO: handle diagram close
         // This is hack to save diagram on destroy
         if ((this.options['type2'] == 'diagram')
@@ -207,13 +208,8 @@ dm['base']['diagram'] = dm.base.diagram;
             });
         }
         this.element
-        .unbind( "." + this['euid'] )
-        .removeData( this['euid'] );
-    },
-
-
-    widget: function() {
-        return this.element;
+        .unbind( "." + this.euid )
+        .removeData( this.euid );
     },
     //@proexp
     option: function( key, value ) {
@@ -265,43 +261,28 @@ dm['base']['diagram'] = dm.base.diagram;
         // this would happen if we could call $.event.fix instead of $.Event
         // but we don't have a way to force an event to be fixed multiple times
         if ( event.originalEvent ) {
-            for ( var i = $.event.props.length, prop; i; ) {
-                prop = $.event.props[ --i ];
-                event[ prop ] = event.originalEvent[ prop ];
+            for ( var i = $['event']['props']['length'], prop; i; ) {
+                prop = $['event']['props'][ --i ];
+                event[ prop ] = event['originalEvent'][ prop ];
             }
         }
 
-        this.element.trigger( event, data );
+        $(this.element).trigger( event, data );
 
         return !( $.isFunction(callback) &&
-                callback.call( this.element[0], event, data ) === false ||
-                event.isDefaultPrevented() );
+                callback['call']( this.element[0], event, data ) === false ||
+                event['isDefaultPrevented']() );
     }
     };
 
     //@print
 dm['base']['DiagramElement'] = dm.base.DiagramElement;
-dm['base']['DiagramElement'].prototype['_createDiagram'] = dm.base.DiagramElement.prototype._createDiagram;
-dm['base']['DiagramElement'].prototype['parrent'] = dm.base.DiagramElement.prototype['parrent'] ;
-dm['base']['DiagramElement'].prototype['euid'] = dm.base.DiagramElement.prototype['euid'] ;
-dm['base']['DiagramElement'].prototype['element '] = dm.base.DiagramElement.prototype.element ;
 dm['base']['DiagramElement'].prototype['getDescription'] = dm.base.DiagramElement.prototype.getDescription;
-dm['base']['DiagramElement'].prototype['_update'] = dm.base.DiagramElement.prototype._update;
 dm['base']['DiagramElement'].prototype['_getCreateOptions'] = dm.base.DiagramElement.prototype._getCreateOptions;
-dm['base']['DiagramElement'].prototype['_create'] = dm.base.DiagramElement.prototype._create;
-dm['base']['DiagramElement'].prototype['_init'] = dm.base.DiagramElement.prototype._init;
-dm['base']['DiagramElement'].prototype['_baseinit'] = dm.base.DiagramElement.prototype._baseinit;
-dm['base']['DiagramElement'].prototype['destroy'] = dm.base.DiagramElement.prototype.destroy;
 dm['base']['DiagramElement'].prototype['option'] = dm.base.DiagramElement.prototype.option;
 dm['base']['DiagramElement'].prototype['_setOptions'] = dm.base.DiagramElement.prototype._setOptions;
 dm['base']['DiagramElement'].prototype['_setOption'] = dm.base.DiagramElement.prototype._setOption;
 dm['base']['DiagramElement'].prototype['_trigger'] = dm.base.DiagramElement.prototype._trigger;
-
-//@aspect
-$.aspect('})(jQuery, dm);');
-
-//@aspect
-$.aspect('(function( $, dm, undefined ) {');
 
     /**
      * jQuery.dm.base.diagram class.
@@ -316,32 +297,28 @@ $.aspect('(function( $, dm, undefined ) {');
      *             attached
      */
     //@export:dm.ds.diagram
-    dm.base.diagram("ds.diagram", {
+    dm.base.diagram("ds.diagram", {   
         'options': {
-        'width': 800,
-        'height': 500,
-        'nameTemplate': 'diagram',
-        'type2': 'diagram' // hack while we do not have project manager
-    },
+          'nameTemplate': 'diagram',
+          'type2': 'diagram' // hack while we do not have a project manager
+        },
     //@proexp
     _create: function () {
-        this.element = $(this['parrent']).append('<div id="' + this['euid'] + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
-                <canvas id="' + this['euid'] +'_Canvas" class="UMLSyncCanvas" width=1000px height=500px>\
-                <p> Your browser doesn\'t support canvas</p>\
-                </canvas>\
-                </div>\
-                ');
+        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
+                <div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">\
+                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas></div></div>');
+        
                 this.max_zindex = 100;
-                this.canvas = window.document.getElementById(this['euid'] +'_Canvas');
+                this.canvas = window.document.getElementById(this.euid +'_Canvas');
 
                 // Diagram canvas drop element
                 // It is not necessary for regular usage
                 // TODO: make it as a separate functionality which glue 
                 //       file tree and diagram engine
                 var iDiagram = this;
-                $("#" + this['euid'] + "_Canvas").droppable({
+                $("#" + this.euid + "_Canvas").droppable({
                     drop: function( event, ui ) {
-                    $.log("Droppable data ? ");
                     var source = ui.helper.data("dtSourceNode") || ui.draggable;
                     $.log("source: " + source.data.addClass);
                     if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
@@ -421,7 +398,7 @@ $.aspect('(function( $, dm, undefined ) {');
                  *   3. Mouse Up/Down for connector stransforms perform
                  */
                 var diag = this;
-                $("#" + this['euid'])
+                $("#" + this.euid)
                 .dblclick(function(e) {
                     e.preventDefault();
                     $.log("DBL CLICK");         
@@ -481,15 +458,15 @@ $.aspect('(function( $, dm, undefined ) {');
                     y = e.pageY - p.top;
                     diag.startConnectorTransform(x,y);
                     if ((diag.selectedconntector)
-        && (!diag['options']['loader']['hs']['CtrlDown'])) { /// PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+        && (!dm['dm']['fw']['CtrlDown'])) {
     diag.selectedconntector._setOption("selected", true);
     e.stopPropagation();
                     }
                 })
                 .bind('contextmenu', function(e) {
                     if (diag.selectedconntector) {
-    diag.menuCtx.HideAll();
-    diag.menuCtx.visit(diag.selectedconntector, e.pageX , e.pageY);
+    diag.menuCtx['HideAll']();
+    diag.menuCtx['visit'](diag.selectedconntector, e.pageX , e.pageY);
     $.log("context menu ");
     e.preventDefault();
     diag.multipleSelection = true; // work around to hide connector selection on click
@@ -519,7 +496,7 @@ $.aspect('(function( $, dm, undefined ) {');
                 }
 
                 // Perform function on diagram load completion
-                this.options['loader']['OnLoadComplete'](function() {
+                dm['base']['loader']['OnLoadComplete'](function() {
                     for (i in diag.elements) {
     var d = diag.elements[i].options['dropped'];
     if (d) {
@@ -527,7 +504,7 @@ $.aspect('(function( $, dm, undefined ) {');
         for (ii in d) {
             for (iii in diag.elements) {
                 if (diag.elements[iii].options['id'] == d[ii]) {
-                    diag.elements[i]._dropped.push(diag.elements[iii]['euid']);
+                    diag.elements[i]._dropped.push(diag.elements[iii].euid);
                     break; // from the neares for
                 }
             } // iii
@@ -542,13 +519,13 @@ $.aspect('(function( $, dm, undefined ) {');
     },
     //@proexp
     _update: function() {
-        this.options.connectors = this.connectors;
+        this.options['connectors'] = this.connectors;
         var i = 0;
         for (r in this.elements) {
-            this.elements[r].options.id = i;
+            this.elements[r].options['id'] = i;
             i++;
         }
-        this.options.elements = this.elements;
+        this.options['elements'] = this.elements;
 
     },
     //@proexp
@@ -578,10 +555,11 @@ $.aspect('(function( $, dm, undefined ) {');
         var self = this;
         self.max_zindex++;
         options["z-index"] = self.max_zindex; //options["z-index"] || ();
-        $.log("this.options['loader'].Element !!!");
-        this.options['loader']['Element'](type, options, this, function(obj) {
+        $.log("this.options.loader.Element !!!");
+        dm['base']['loader']['Element'](type, options, this, function(obj) {
             if (obj != undefined)
-                self.elements[obj['euid']] = obj;
+                self.elements[obj.euid] = obj;
+
             if (callback)
                 callback(obj);
         });
@@ -590,13 +568,14 @@ $.aspect('(function( $, dm, undefined ) {');
         if (this.options['editable']) {
             // Load the context menu for element
             if ((this.menuCtx != undefined) && (options['ctx_menu'] != undefined))
-                this.menuCtx.load(options['ctx_menu']);
+                // mini
+                this.menuCtx['load'](options['ctx_menu']);
             // Load the icons menu for element
             if ((this.menuIcon != undefined) && (options['menu'] != undefined))
-                this.menuIcon.load(options['menu']);
+                this.menuIcon['load'](options['menu']);
         }
 
-        return options['euid'];
+        return options.euid;
     },
     //@proexp
     _setWidgetsOption: function( key, value ) {
@@ -676,18 +655,25 @@ $.aspect('(function( $, dm, undefined ) {');
      */
     //@proexp
      setMenuBuilder: function(type, menu) {
-        if (type == "main")
+        if (type == "main") {
+            //@proexp
             this.menuMain = menu;
-        if (type == "context")
+this['menuMain'] = this.menuMain;        }
+        if (type == "context") {
+            //@proexp
             this.menuCtx = menu;
-        if (type == "icon")
+this['menuCtx'] = this.menuCtx;        }
+        if (type == "icon") {
+            //@proexp
             this.menuIcon = menu;
+this['menuIcon'] = this.menuIcon;        }
+
     },
     //@proexp
     removeElement: function(euid) {
         var el = this.elements;
         for (k in el) {
-            if (el[k]['euid'] == euid) {
+            if (el[k].euid == euid) {
                 delete el[k];
                 el.splice(k, 1);
                 $('#' +  euid + '_Border').remove(); // Think about removal !!!!
@@ -734,7 +720,7 @@ $.aspect('(function( $, dm, undefined ) {');
         // Loader is responsible for connector creation
         var self = this;
 
-        this.options['loader']['Connector'](type, options, this, function(connector) {
+        dm['base']['loader']['Connector'](type, options, this, function(connector) {
             if (connector != undefined) {
                 self.connectors.push(connector);
                 self.draw();
@@ -747,7 +733,7 @@ $.aspect('(function( $, dm, undefined ) {');
     _dropConnector: function(ui) {
         var result = undefined;
         for (i in this.elements) {
-            var e = $("#" + this.elements[i]['euid'] + "_Border");
+            var e = $("#" + this.elements[i].euid + "_Border");
             var p = e.position(),
             w = e.width(),
             h = e.height();
@@ -765,7 +751,7 @@ $.aspect('(function( $, dm, undefined ) {');
     _dropSubDiagram: function(path, event, ui) {
         var d, z = 0;
         for (i in this.elements) {
-            var e = $("#" + this.elements[i]['euid'] + "_Border");
+            var e = $("#" + this.elements[i].euid + "_Border");
             var p = e.offset(),
             w = e.width(),
             h = e.height();
@@ -782,27 +768,27 @@ $.aspect('(function( $, dm, undefined ) {');
         }
 
         if (d != undefined) {
-            if (d.options.subdiagram != undefined) {
-                d.options.subdiagram = path;
-                $("img#" + d['euid'] + "_REF").attr('title', path);
+            if (d.options['subdiagram'] != undefined) {
+                d.options['subdiagram'] = path;
+                $("img#" + d.euid + "_REF").attr('title', path);
                 return;
             }
-            d.options.subdiagram = path;
+            d.options['subdiagram'] = path;
 
             var self = this;
-            $("img#" + d['euid'] + "_REF").attr('title', path).click(function() {
+            $("img#" + d.euid + "_REF").attr('title', path).click(function() {
                 if (path != "")
                     path = '&path=' + path;
-                self.options['loader']['hs']['loadDiagram']('http://localhost:8000/vm/cp/getdiagram?' + path +'&project=storageman');
+                dm.dm.fw['loadDiagram']('http://localhost:8000/vm/cp/getdiagram?' + path +'&project=storageman');
             });
         }
     },
     //@proexp
     _dropElement: function(element, ui) {
         for (i in this.elements) {
-            if (this.elements[i].options.acceptdrop
-                    && (this.elements[i]['euid'] != element['euid'])) {
-                var e = $("#" + this.elements[i]['euid'] + "_Border");
+            if (this.elements[i].options['acceptdrop']
+                    && (this.elements[i].euid != element.euid)) {
+                var e = $("#" + this.elements[i].euid + "_Border");
                 var p = e.position(),
                 w = e.width(),
                 h = e.height();
@@ -814,16 +800,16 @@ $.aspect('(function( $, dm, undefined ) {');
                     this.elements[i]._dropped = this.elements[i]._dropped || new Array();
                     var notfound = true;
                     for (j in this.elements[i]._dropped) {
-    if (this.elements[i]._dropped[j] == element['euid']) {
+    if (this.elements[i]._dropped[j] == element.euid) {
         notfound = false;
         break;
     }
                     }
                     if (notfound)
-    this.elements[i]._dropped.push(element['euid']);
+    this.elements[i]._dropped.push(element.euid);
                 } else {
                     for (j in this.elements[i]._dropped) {
-    if (this.elements[i]._dropped[j] == element['euid']) {
+    if (this.elements[i]._dropped[j] == element.euid) {
         this.elements[i]._dropped.splice(j,1);
         break;
     }
@@ -876,7 +862,7 @@ $.aspect('(function( $, dm, undefined ) {');
     },
     /**
      * \class Function.
-     * Clear the canvas rectongle and re-draw
+     * Clear the canvas rectangle and re-draw
      * all connectors on the Canvas.
      */
     //@proexp
@@ -885,18 +871,18 @@ $.aspect('(function( $, dm, undefined ) {');
             var ctx = this.canvas.getContext("2d");
 
             ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
-            ctx.clearRect(0, 0, 1000, 500);
+            ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 //            ctx.strokeRect(0, 0, 1000, 500);
 
 
             for (c in this.connectors) {
                 ctx.lineWidth = 1;
 
-                if (this.connectors[c].options.linewidth != undefined) {
-                    ctx.lineWidth = this.connectors[c].options.linewidth;          
+                if (this.connectors[c].options['linewidth'] != undefined) {
+                    ctx.lineWidth = this.connectors[c].options['linewidth'];          
                 }
 
-                if (this.connectors[c].options.selected) {
+                if (this.connectors[c].options['selected']) {
                     ctx.lineWidth += 2;
                     this.connectors[c].redraw(ctx, "blue");
                     ctx.lineWidth -= 2;
@@ -906,8 +892,8 @@ $.aspect('(function( $, dm, undefined ) {');
 
                 }
                 else {
-                    if (this.connectors[c].options.color)
-    this.connectors[c].redraw(ctx, this.connectors[c].options.color);
+                    if (this.connectors[c].options['color'])
+    this.connectors[c].redraw(ctx, this.connectors[c].options['color']);
                     else 
     this.connectors[c].redraw(ctx);
                 }
@@ -973,7 +959,6 @@ $.aspect('(function( $, dm, undefined ) {');
      */
     //@proexp
      stopConnectorTransform: function(x,y) {
-    $.log("DEBUG STOPTRANS !!!");
         if ((this.transformStarted == true)
                 && (this.selectedconntector != undefined))
             this.selectedconntector.stopTransform(x,y);
@@ -981,25 +966,16 @@ $.aspect('(function( $, dm, undefined ) {');
     },
     /**
      * \class Function.
-     * No ideas why do we need this method
-     */
-    //@proexp
-     setElementsMenuManager: function(menuManager) {
-        this.emm = menuManager;
-        this.selectedElement = undefined;
-    },
-    /**
-     * \class Function.
      */
     //@proexp
      _mouseClick: function(refElement) {
-        var mtype = (refElement == undefined) ? undefined : refElement.options.menu;
-        var ctrlDown = this.options['loader']['hs']['CtrlDown'];
+        var mtype = (refElement == undefined) ? undefined : refElement.options['menu'];
+        var ctrlDown = dm['dm']['fw']['CtrlDown'];
         this.clickedElement = refElement;
 
         // Hide all context menus
         if (this.menuCtx)
-            this.menuCtx.HideAll();
+            this.menuCtx['HideAll']();
 
         // Nothing to add for multiple selection
         if (ctrlDown) {
@@ -1012,11 +988,11 @@ $.aspect('(function( $, dm, undefined ) {');
             if ((this.selectedElement != undefined)
                     && (this.selectedElement != refElement)) {
                 if (this.menuIcon != undefined)
-                    this.menuIcon.Disable(this.selectedElement);
+                    this.menuIcon['Disable'](this.selectedElement);
             }
 
             if (refElement != undefined) {
-                $.log("ref element is: " + refElement['euid'] + " OPT: " + refElement.option("selected"));
+                $.log("ref element is: " + refElement.euid + " OPT: " + refElement.option("selected"));
                 refElement._setOption("selected", (refElement.option("selected") ? false:true));
             }
             this.multipleSelection = true;
@@ -1040,14 +1016,14 @@ $.aspect('(function( $, dm, undefined ) {');
             if (this.menuIcon != undefined) { 
                 // Disable icon menu for the current element
                 if (this.selectedElement != undefined)
-                    this.menuIcon.Disable(this.selectedElement);
+                    this.menuIcon['Disable'](this.selectedElement);
 
                 if (refElement != undefined) {
                     // Enable menu for the newely selected element
                     if (mtype != undefined) {
-    this.menuIcon.Enable(refElement['euid'], mtype, refElement);
+    this.menuIcon['Enable'](refElement.euid, mtype, refElement);
                     }
-                    this.menuIcon.Show(refElement['euid'], refElement);
+                    this.menuIcon['Show'](refElement.euid, refElement);
                 }
             }
 
@@ -1110,7 +1086,6 @@ dm['ds']['diagram'].prototype['draw'] = dm['ds']['diagram'].prototype.draw;
 dm['ds']['diagram'].prototype['isPointOnLine'] = dm['ds']['diagram'].prototype.isPointOnLine;
 dm['ds']['diagram'].prototype['startConnectorTransform'] = dm['ds']['diagram'].prototype.startConnectorTransform;
 dm['ds']['diagram'].prototype['stopConnectorTransform'] = dm['ds']['diagram'].prototype.stopConnectorTransform;
-dm['ds']['diagram'].prototype['setElementsMenuManager'] = dm['ds']['diagram'].prototype.setElementsMenuManager;
 dm['ds']['diagram'].prototype['_mouseClick'] = dm['ds']['diagram'].prototype._mouseClick;
 dm['ds']['diagram'].prototype['reportOperation'] = dm['ds']['diagram'].prototype.reportOperation;
 dm['ds']['diagram'].prototype['revertOperation'] = dm['ds']['diagram'].prototype.revertOperation;
@@ -1133,7 +1108,7 @@ dm['ds']['diagram'].prototype['repeatOperation'] = dm['ds']['diagram'].prototype
         },
         /*
     destroy: function() {
-      var el = this['parrent'].elements;
+      var el = this.parrent.elements;
       for (k in el) {
         if (el[k] == this) {
           delete el[k];
@@ -1150,31 +1125,31 @@ dm['ds']['diagram'].prototype['repeatOperation'] = dm['ds']['diagram'].prototype
         },
         //@proexp
         _update: function() {
-            var p = $("#" + this['euid'] + "_Border").position();
-            this.options.pageX = p.left;
-            this.options.pageY = p.top;
-            this.options.width = $("#" + this['euid'] + "_Border").width();
-            this.options.height = $("#" + this['euid'] + "_Border").height();
-            this.options.name = $("#" + this['euid'] + " .Name").html();
+            var p = $("#" + this.euid + "_Border").position();
+            this.options['pageX'] = p.left;
+            this.options['pageY'] = p.top;
+            this.options['width'] = $("#" + this.euid + "_Border").width();
+            this.options['height'] = $("#" + this.euid + "_Border").height();
+            this.options['name'] = $("#" + this.euid + " .Name").html();
 
             if (this._dropped) {
-                this.options.dropped = new Array();
+                this.options['dropped'] = new Array();
                 for (i in this._dropped) {
-                    this.options.dropped.push(this['parrent'].elements[this._dropped[i]].options.id);
+                    this.options['dropped'].push(this.parrent.elements[this._dropped[i]].options['id']);
                 }
             }
         },
         //@proexp
         _init: function () {
-            if (this.options.height) {
-                $('#' + this['euid'])
-                .css('width', this.options.width).css('height', this.options.height);
-                $('#' + this['euid'] + "_Border").css("width", this.options.width);
+            if (this.options['height']) {
+                $('#' + this.euid)
+                .css('width', this.options['width']).css('height', this.options['height']);
+                $('#' + this.euid + "_Border").css("width", this.options['width']);
             }
 
-            if (this.options.top)
-                $('#' + this['euid'])
-                .css('top', this.options.top);
+            if (this.options['top'])
+                $('#' + this.euid)
+                .css('top', this.options['top']);
         },
 
         /**
@@ -1188,18 +1163,18 @@ dm['ds']['diagram'].prototype['repeatOperation'] = dm['ds']['diagram'].prototype
         _baseinit: function() {
             //wrap with border
             var poz = "";
-            if ((this.options.pageX != undefined)
-                    && (this.options.pageY != undefined)) {
-                poz = " style='top:" +this.options.pageY + "px;left:" + this.options.pageX + "px;' ";
+            if ((this.options['pageX'] != undefined)
+                    && (this.options['pageY'] != undefined)) {
+                poz = " style='top:" +this.options['pageY'] + "px;left:" + this.options['pageX'] + "px;' ";
             }
 
-            $(this.element).wrap('<div id="' + this['euid'] + '_Border"' + poz + ' class="UMLSyncClassBorder"></div>');
+            $(this.element).wrap('<div id="' + this.euid + '_Border"' + poz + ' class="UMLSyncClassBorder"></div>');
 
-            var parrentClass = this['parrent'];
+            var parrentClass = this.parrent;
             var self = this;
 
-            var axis111 = this.options.axis || false;
-            var elmt = $('#' + this['euid']  + '_Border').draggable({
+            var axis111 = this.options['axis'] || false;
+            var elmt = $('#' + this.euid  + '_Border').draggable({
                 'start': function(event, ui) {
                 $.log ("SSSSSSSSSSSSSSTART");
                 self.operation_start = {left: ui.position.left, top: ui.position.top};
@@ -1224,28 +1199,28 @@ dm['ds']['diagram'].prototype['repeatOperation'] = dm['ds']['diagram'].prototype
                     $(this).css("left", 140);
                     ui.position.left = 140;
                 }
-                $.log("D STOP:" + self['euid']);
+                $.log("D STOP:" + self.euid);
                 parrentClass.onDragStop(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
 
-                if (self.options.droppable) {
-                    if (self['parrent'] != undefined) {
-    self['parrent']._dropElement(self, ui); 
+                if (self.options['droppable']) {
+                    if (self.parrent != undefined) {
+    self.parrent._dropElement(self, ui); 
                     }
                 }
                 if (self.onDropComplete) {
                     self.onDropComplete();
                 }
-                self['parrent'].reportOperation("move", self['euid'], self.operation_start, {left: ui.position.left, top: ui.position.top});
+                self.parrent.reportOperation("move", self.euid, self.operation_start, {left: ui.position.left, top: ui.position.top});
             },
-            'scope': self.options.dropable,
+            'scope': self.options['droppable'],
             'axis': axis111
             }) 
             /*{
         start: function(event, ui) {
                  // if this is a connection helper
                  // => add connector to for redrawing 
-                 if (self['parrent']Class != undefined) {
-                     self['parrent']Class.startConnection(self.id);
+                 if (self.parrentClass != undefined) {
+                     self.parrentClass.startConnection(self.id);
                  }
                },
         drag: function(event, ui) {
@@ -1257,53 +1232,53 @@ dm['ds']['diagram'].prototype['repeatOperation'] = dm['ds']['diagram'].prototype
                 // remove connection helper 
                 // create connection it is possible because element should be available yet 
                 // TODO: check that connection supported (menu which describe connections should contain such connection declaration !!!!)
-                if (self['parrent']Class != undefined) {
-                     self['parrent']Class.stopConnection(self.id);
+                if (self.parrentClass != undefined) {
+                     self.parrentClass.stopConnection(self.id);
                 }
               }
       }) // draggable completed*/
             // CSS  hack for chnaging view of resizable element "ui-resizable-*-u"
-            .resizable({ handles: this.options.resizable_h || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u', alsoResize: '#' + this['euid'] + '_Border .ElementResizeArea', 
-                stop: function() {
+            .resizable({ 'handles': this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u', 'alsoResize': '#' + this.euid + '_Border .ElementResizeArea', 
+                'stop': function() {
                 if (self.onResizeComplete) {
                     self.onResizeComplete();
                 }
-                self['parrent'].draw();
+                self.parrent.draw();
             },
-            resize: function() {
+            'resize': function() {
                 if (self.onResizeComplete) {
                     self.onResizeComplete();
                 }
-                self['parrent'].draw();
+                self.parrent.draw();
             }      
             })
             .bind('contextmenu', function(e) {
                 e.preventDefault();
                 // Check that context menu manager already loaded
-                if (self['parrent'].menuCtx) {
-                    self['parrent'].menuCtx.HideAll();
-                    self['parrent'].menuCtx.visit(self, e.pageX , e.pageY);
+                if (self.parrent.menuCtx) {
+                    self.parrent.menuCtx['HideAll']();
+                    self.parrent.menuCtx['visit'](self, e.pageX , e.pageY);
                 }
             })
             .css({'position':'absolute'})
-            .css('top', this.options.pageY)
-            .css('left', this.options.pageX);
+            .css('top', this.options['pageY'])
+            .css('left', this.options['pageX']);
 
             // Hide element resize points which was
             // added on the previous step
-            $('#' + this['euid'] +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
+            $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
 
             // enable editable fields
             // if this diagram is editable
-            if (this['parrent'].options.editable) {
-                $("#" + this['euid'] + " .editablefield").editable();
+            if (this.parrent.options['editable']) {
+                $("#" + this.euid + " .editablefield").editable();
             }
 
             // You need to select element to start DND
-            $('#'+this['euid'])
+            $('#'+this.euid)
             .click(function(e) {
                 $.log("clicked element");
-                self['parrent']._mouseClick(self, self.options.menu);
+                self.parrent._mouseClick(self, self.options['menu']);
                 e.stopPropagation();
             })       
             .mouseenter(function (){
@@ -1311,64 +1286,64 @@ dm['ds']['diagram'].prototype['repeatOperation'] = dm['ds']['diagram'].prototype
                 $('#' + this.id +'_FS').css({'visibility':'visible'});
                 $('#' + this.id +'_REF').css({'visibility':'visible'});
                 // Show the  menu if element was selected
-                if (self['parrent'].menuIcon)
-                    self['parrent'].menuIcon.Show(this.id, self);
+                if (self.parrent.menuIcon)
+                    self.parrent.menuIcon['Show'](this.id, self);
                 //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
             })
             .mouseleave(function (){
                 $('#' + this.id +'_Border').css({'border':'0px solid #87CEEF'}).animate({left:'+=3px', top:'+=3px'},0);
 
-                //Check if this['euid'] is the same as selected
-                if (self['parrent'].menuIcon)
-                    self['parrent'].menuIcon.Hide(this.id);
+                //Check if this.euid is the same as selected
+                if (self.parrent.menuIcon)
+                    self.parrent.menuIcon['Hide'](this.id);
                 //$(".elmenu-" + self.menutype).animate({opacity:"0"});;
 //                if (!self.options.selected) {
                 $('#' + this.id +'_FS').css({'visibility':'hidden'});
                 $('#' + this.id +'_REF').css({'visibility':'hidden'});
 //                }
             })
-            .append("<img id='" + this['euid'] + "_REF' title='REFERENCE' src='static/diagrams/images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>")
-            .append("<img id='" + this['euid'] + "_FS' src='static/diagrams/images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
+            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='static/diagrams/images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>")
+            .append("<img id='" + this.euid + "_FS' src='static/diagrams/images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
 
-            if (this.options.subdiagram) {
-                $("img#" + this['euid'] + "_REF").attr('title', this.options.subdiagram).click(function() {
-                    var path = self.options.subdiagram;
+            if (this.options['subdiagram']) {
+                $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(function() {
+                    var path = self.options['subdiagram'];
                     if (path != "")
     path = '&path=' + path;
-                    self['parrent'].options['loader']['hs']['loadDiagram']('http://localhost:8000/vm/cp/getdiagram?' + path +'&project=storageman');
+                    dm.dm.fw['loadDiagram']('http://localhost:8000/vm/cp/getdiagram?' + path +'&project=storageman');
                 });
             }
 
 
-            if (this.options.color) 
-                this._setOption("color", this.options.color);
+            if (this.options['color']) 
+                this._setOption("color", this.options['color']);
 
-            if (this.options.borderwidth)
-                this._setOption("borderwidth", this.options.borderwidth);
+            if (this.options['borderwidth'])
+                this._setOption("borderwidth", this.options['borderwidth']);
 
             if (this.options["font-family"])
                 this._setOption("font-family", this.options["font-family"]);
 
             if (this.options["z-index"])
-                $('#'+this['euid'] + "_Border").css("z-index", this.options["z-index"]);
+                $('#'+this.euid + "_Border").css("z-index", this.options["z-index"]);
         },
         //@proexp
         _setOption: function( key, value ) {
             this.options[ key ] = value;
             if (key == "color") {
-                $("#" + this['euid']).css("background-color", value);
+                $("#" + this.euid).css("background-color", value);
             } else if (key == "borderwidth") {
-                $("#" + this['euid']).css("border-width", value);
+                $("#" + this.euid).css("border-width", value);
             } else if (key == "font-family") {
                 $.log("ff: " + value);
-                $("#" + this['euid']).css(key, value);
+                $("#" + this.euid).css(key, value);
             } else if (key == "selected") {
                 if (value)
-                    $('#' + this['euid'] +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
+                    $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
                 else
-                    $('#' + this['euid'] +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
+                    $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
             } else if (key == "z-index") {
-                $("#" + this['euid'] + '_Border ').css(key, value);
+                $("#" + this.euid + '_Border ').css(key, value);
             }
 
             return this;
@@ -1379,11 +1354,11 @@ dm['ds']['diagram'].prototype['repeatOperation'] = dm['ds']['diagram'].prototype
                 return;
 
             for (i in this._dropped)
-                this['parrent'].elements[this._dropped[i]].onDragStart(ui);
+                this.parrent.elements[this._dropped[i]].onDragStart(ui);
 
             this.options.dragStart = true;
             if (isbase == undefined) {
-                var p = $("#" + this['euid'] + "_Border").position();
+                var p = $("#" + this.euid + "_Border").position();
                 this.start_operation = {left:p.left, top:p.top};
             }
         },
@@ -1392,23 +1367,23 @@ dm['ds']['diagram'].prototype['repeatOperation'] = dm['ds']['diagram'].prototype
             if (this.options.dragStart == undefined)
                 return;
             if (!this.start_operation)
-                alert("THERE IS NO this.start_operation for: " + this['euid'] + this.options.dragStart);
-            $("#" + this['euid'] + "_Border").css({'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top});
+                alert("THERE IS NO this.start_operation for: " + this.euid + this.options.dragStart);
+            $("#" + this.euid + "_Border").css({'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top});
 
         },
         //@proexp
         onDragStop: function(ui) {
             if (ui) {
                 this.onDragMove(ui);
-                if (this.options.droppable) {
-                    if (this['parrent'] != undefined) {
-    this['parrent']._dropElement(this, {position: {'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top}}); 
+                if (this.options['droppable']) {
+                    if (this.parrent != undefined) {
+    this.parrent._dropElement(this, {position: {'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top}}); 
                     }
                 }
 
             }
 
-            $.log("DSTOP: " + this['euid']);
+            $.log("DSTOP: " + this.euid);
             this.options.dragStart = undefined;
             this.start_operation = undefined;
         }    
@@ -1437,15 +1412,15 @@ dm['es']['element'].prototype['onDragStop'] = dm['es']['element'].prototype.onDr
         },
         //@proexp
         addLable: function(text, x, y) {
-            this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>").appendTo("#" + this['parrent']['euid']).css("left", x).css("top", y).draggable().editable());
+            this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>").appendTo("#" + this.parrent.euid).css("left", x).css("top", y).draggable().editable());
         },
         //@proexp
         getDescription: function() {
             var item = '{',
-            fromId = this['parrent'].elements[this.options.fromId].options.id,
-            toId = this['parrent'].elements[this.options.toId].options.id;
+            fromId = this.parrent.elements[this.options['fromId']].options['id'],
+            toId = this.parrent.elements[this.options['toId']].options['id'];
 
-            item += '"type":"' + this.options.type + '",';
+            item += '"type":"' + this.options['type'] + '",';
             item += '"fromId":"' + fromId + '",';
             item += '"toId":"' + toId + '",';
             item += '"epoints":[';
@@ -1479,38 +1454,39 @@ dm['es']['element'].prototype['onDragStop'] = dm['es']['element'].prototype.onDr
         },
         //@proexp
         _create: function () {
+            //@proexp
             this.epoints = [];
-            this.cleanOnNextTransform = false;
-            if (this.options.stored) {
-                for (i in this['parrent'].elements) {
-//                    alert("ELEMENT: " + this['parrent'].elements[i]['euid']);
-                    if (this['parrent'].elements[i].options.id == this.options.fromId) {
-    this.from = this['parrent'].elements[i]['euid'];
+this['epoints'] = this.epoints;            this.cleanOnNextTransform = false;
+            if (this.options['stored']) {
+                for (i in this.parrent.elements) {
+//                    alert("ELEMENT: " + this.parrent.elements[i].euid);
+                    if (this.parrent.elements[i].options['id'] == this.options['fromId']) {
+    this.from = this.parrent.elements[i].euid;
                     }
-                    if (this['parrent'].elements[i].options.id == this.options.toId) {
-    this.toId = this['parrent'].elements[i]['euid'];
+                    if (this.parrent.elements[i].options['id'] == this.options['toId']) {
+    this.toId = this.parrent.elements[i].euid;
                     }
                 }
-                if (this.options.epoints) {
+                if (this.options['epoints']) {
                     dm.debug = dm.debug || {};
-                    dm.debug[this['euid']] = this.options.epoints;
+                    dm.debug[this.euid] = this.options['epoints'];
                     this.epoints = new Array();
-                    for (i in this.options.epoints) {
+                    for (i in this.options['epoints']) {
     this.epoints[i] = {};
-    this.epoints[i][0] = parseInt(this.options.epoints[i][0], 10);
-    this.epoints[i][1] = parseInt(this.options.epoints[i][1], 10);
+    this.epoints[i][0] = parseInt(this.options['epoints'][i][0], 10);
+    this.epoints[i][1] = parseInt(this.options['epoints'][i][1], 10);
                     }
                 }
-                this.options.fromId = this.from;
-                this.options.toId = this.toId;
+                this.options['fromId'] = this.from;
+                this.options['toId'] = this.toId;
             }
             else {
-                this.from = this.options.fromId;
-                this.toId = this.options.toId;
+                this.from = this.options['fromId'];
+                this.toId = this.options['toId'];
             }
             this.lables = new Array();
-            for (i in this.options.lables) {
-                var l = this.options.lables[i];
+            for (i in this.options['lables']) {
+                var l = this.options['lables'][i];
                 this.addLable(l.name, parseInt(l.x), parseInt(l.y));
             }
         },
@@ -1549,13 +1525,22 @@ dm['es']['element'].prototype['onDragStop'] = dm['es']['element'].prototype.onDr
 
             this.points = this._getConnectionPoints(this.from, this.toId, this.epoints);
             this.gip = [];
-            for (i=0;i<this.points.length-1;++i) {        
+            for (i=0;i<this.points.length-1;++i) {
                 var dy = this.points[i][1] - this.points[i+1][1],
                 dx = this.points[i][0] - this.points[i+1][0];
                 this.gip[i] = Math.sqrt(dx*dx + dy*dy);
             }
 
-            this.draw(context, this.points, col);
+
+      // !!! It looks like conflict of naming. Diagram has draw method too,
+      //     But with different signature
+      // !!!
+      // ???
+      // Is is problem
+      // Why it is possible to re-define methods for elements
+      // but not possible for connector
+      // ???
+            this['draw'](context, this.points, col);
         },
 
         //@proexp
@@ -1709,8 +1694,8 @@ dm['es']['element'].prototype['onDragStop'] = dm['es']['element'].prototype.onDr
 
             var p11 = $('#'+ fromId + "_Border").position();
             var p21 = $('#' + toId + "_Border").position();
-            var scrollTop = 0,//$("#" + this['parrent']['euid']).scrollTop(),
-            scrollLeft = 0;//$("#" + this['parrent']['euid']).scrollLeft();
+            var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
+            scrollLeft = 0;//$("#" + this.parrent.euid).scrollLeft();
 
             if ((epoints == undefined) || (epoints.length ==0)) {
                 var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width()) ;

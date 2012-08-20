@@ -127,6 +127,23 @@ Version:
 					}
 				}
 			}, //tree
+			elements: {
+				'class': {
+					'Open': {
+					  click: function(element) {
+						var name = element.option("name");
+						if ($("#tab-" + name).length == 0) {
+							$("#tabs").tabs('add', '#tab-' + name, name);
+							if (element.options.filepath) {
+								$("#tab-" + name).load('http://localhost:8000/editor/?key=' + element.options.filepath.substr(0, element.options.filepath.length - name.length - 1) +'&project=storageman');
+							}
+						}
+						$("#tabs").tabs('select', '#tab-' + element.option("name"));
+					  },
+                      klass: "menu-item-1" // a custom css class for this menu item (usable for styling)
+                   },
+				}
+			}
 			
 		};
 	};
