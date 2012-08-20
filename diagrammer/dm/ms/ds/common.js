@@ -273,9 +273,9 @@ Version:
             var innerHtml = "<div id='testmenu' style='z-index:99999991; position:absolute; left:0px;top:0px;width:150px;height:100%;background-color:grey;border:1px solid black;'><ul>";
 
             var ddata = json;
-            var elements = ddata[0].elements,
-            connectors = ddata[0].connectors,
-            hmenus = ddata[0].menus;
+            var elements = ddata[0]['elements'],
+            connectors = ddata[0]['connectors'],
+            hmenus = ddata[0]['menus'];
             var items = [];
 
             diagramMenuBuilder.elements = [];
