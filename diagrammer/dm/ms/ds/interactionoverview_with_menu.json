@@ -85,12 +85,6 @@
 	  },
 	  {"id":"note-menu",
 	   "items": [
-				{"el":"State",
-				 "cs":[
-						{"connector":"anchor",
-						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
-					  ]
-				},
 				{"el":"Note",
 				 "cs":[
 						{"connector":"anchor",
@@ -100,5 +94,5 @@
 			 ]
 	  }
 	]
-   }
+  }
 ]
