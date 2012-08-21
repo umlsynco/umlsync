@@ -3,3 +3,4 @@
 *.pyc
 local_settings.py
 /Eclipse\websync\bin\websync/*.class
+.DS_Store
