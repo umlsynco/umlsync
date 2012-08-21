@@ -47,21 +47,21 @@ Version:
             for (d in data) {
                 var image = (data[d].image[0][so.image] != undefined) ? "list-style-image:url(\'"+ urlPrefix + data[d].image[0][so.image] + "\')" : "list-style-type:none";
                 items.push('<li class="diagramSelector" style="cursor:pointer;' + image + ';" id="'  + data[d].diagram +'">' +
-    data[d].description + '</li>');
-            } 
+                data[d].description + '</li>');
+            }
 
             innerHtml = items.join('');
             innerHtml = '<form>\
                 <fieldset><div id="vp_main_menu34" style="scroll:auto;"><ul>' + innerHtml + '</ul></div>\
                 <p><label>Create in: <select><option>SandBox</option><option>Somewhere else (FIXME)</option></select></label></p>\
-                <p><label>Name: <input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></label>\
+                <p><label class="left" for="name">Name:</label><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
                 </p></fieldset></form>';
                 $("<div id='vp_main_menu' title='Creating new diagram'></div>").appendTo('body');
                 $(innerHtml).appendTo("#vp_main_menu");
 
                 $( "#vp_main_menu" ).dialog({
                     autoOpen: true,
-                    minHeight: 470,
+                    minHeight: 430,
                     minWidth: 350,
                     modal: true,
                     buttons: {
