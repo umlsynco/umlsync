@@ -110,7 +110,7 @@
     // List of default loaded diagrams
     //fw.loadDiagram("./test/Project1/ERDiagram.json");
     //fw.loadDiagram("./test/Project1/PackageDiagram.json");
-	  var IFilesView = new dm.base.LocalFilesView("./tests/");
+	  var IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
 	  IFilesView.euid = 'sb';
 	  
 	  fw.addView2('SandBox', IFilesView);

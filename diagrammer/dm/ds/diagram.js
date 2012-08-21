@@ -1293,8 +1293,8 @@ dm['hs'] = dm.hs;
                 $('#' + this.id +'_REF').css({'visibility':'hidden'});
 //                }
             })
-            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='static/diagrams/images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>")
-            .append("<img id='" + this.euid + "_FS' src='static/diagrams/images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
+            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>")
+            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
 
             if (this.options['subdiagram']) {
                 $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(function() {

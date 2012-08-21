@@ -499,8 +499,8 @@ Version:
 		initializeToolBox: function(Loader) {
 			var fw=this;
 			$("body").append('<div id="socializethis2" class="trashbox2">\
-					<img src="static/diagrams/images/VP.png" rel="#vp_main_menu" id="vp_main_menu_ref" title="Diagram Menu" style="border:0px; width:16px"></img>\
-					<img src="static/diagrams/images/VP.png" rel="#vp_main_menu2" id="vp_main_menu2_ref" title="Projects" style="border:0px; width:16px"></img>\
+					<img src="./images/VP.png" rel="#vp_main_menu" id="vp_main_menu_ref" title="Diagram Menu" style="border:0px; width:16px"></img>\
+					<img src="./images/VP.png" rel="#vp_main_menu2" id="vp_main_menu2_ref" title="Projects" style="border:0px; width:16px"></img>\
 					<button class="ui-button"><span class="ui-icon ui-icon-align-left"/></button>\
 					<button class="ui-button"><span class="ui-icon ui-icon-align-center"/></button>\
 					<button class="ui-button"><span class="ui-icon ui-icon-align-right"/></button>\
@@ -518,6 +518,10 @@ Version:
 					<button class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>\
 					<select name="borderWidth" id="borderWidth">\
 					</select>');
+
+					$("#vp_main_menu_ref").click(function(){
+  					  $( "#vp_main_menu" ).dialog( "open" );
+				    });
 
 					var allFonts = ["arial", "san serif", "serif", "wide", "narrow", "comic sans ms", "Courier New", "Geramond", "Georgia", "Tahoma", "Trebuchet MS", "Verdana"];
 					for (var loop=0; loop<allFonts.length; loop++) {
