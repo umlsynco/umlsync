@@ -1690,11 +1690,11 @@ dm.base.diagram("cs.connector", {
 
       if ((epoints == undefined) || (epoints.length == 0)) {
 
-        var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width() / 2);
-        var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height() / 2);
+        var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width());
+        var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height());
 
-        var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width() / 2);
-        var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height() / 2);
+        var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width());
+        var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height());
 
         var newpoints = [[x1 + scrollLeft,y1 + scrollTop], [x2 + scrollLeft,y2 + scrollTop]];
         
