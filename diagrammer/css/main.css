@@ -1,9 +1,9 @@
 body {
-	font-family: sans-serif;
-	font-size: 11px;
-	color: #666666;	
-	width: 100%;
-	height: 100%;
+  font-family: sans-serif;
+  font-size: 11px;
+  color: #666666; 
+  width: 100%;
+  height: 100%;
 }
 
 a {
@@ -11,200 +11,200 @@ a {
 }
 
 .ui-resizable-s-l {
-	position: absolute;
-	width: 10%;
-	height: 3px;
-	background-color: white;
-	border: 0px;
-	bottom: 4px;
-	left: 45%;
-	cursor: s-resize;
+  position: absolute;
+  width: 10%;
+  height: 3px;
+  background-color: white;
+  border: 0px;
+  bottom: 4px;
+  left: 45%;
+  cursor: s-resize;
 }
 
 .ui-resizable-s-u {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
-	border: 0px;
-	bottom: 4px;
-	left: 50%;
-	cursor: s-resize;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border: 0px;
+  bottom: 4px;
+  left: 50%;
+  cursor: s-resize;
 }
 
 .ui-resizable-e-u {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
-	border: 0px;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border: 0px;
   top: 50%;
-	right: 4px;
-	cursor: e-resize;
+  right: 4px;
+  cursor: e-resize;
 }
 
 .ui-resizable-n-u {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
-	top: 4px;
-	left: 50%;
-	cursor: n-resize;
-	border: 0px;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  top: 4px;
+  left: 50%;
+  cursor: n-resize;
+  border: 0px;
 }
 
 .ui-resizable-w-u {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
-	border: 0px;
-	top: 50%;
-	left: 4px;
-	cursor: w-resize;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border: 0px;
+  top: 50%;
+  left: 4px;
+  cursor: w-resize;
 }
 
 .ui-resizable-nw-u {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
-	border: 0px;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border: 0px;
   top: 4px;
-	left: 4px;
+  left: 4px;
   cursor: nw-resize;
 }
 
 .ui-resizable-ne-u {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
-	border: 0px;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border: 0px;
   top: 4px;
-	right: 4px;
-	cursor: ne-resize;
+  right: 4px;
+  cursor: ne-resize;
 }
 
 .ui-resizable-se-u {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
-	border: 0px;
-	bottom: 4px;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border: 0px;
+  bottom: 4px;
   right: 4px;
   cursor: se-resize;
 }
 
 .ui-resizable-sw-u {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
-	border: 0px;
-	bottom: 4px;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border: 0px;
+  bottom: 4px;
   left: 4px;
   cursor: sw-resize;
 }
 
 .extreference {
-	position: absolute;
-	width: 10px;
-	height: 10px;
-	border: 0px;
-	bottom: 10px;
-	left: 10px;
-	cursor: sw-resize;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0px;
+  bottom: 10px;
+  left: 10px;
+  cursor: sw-resize;
 }
 
 .fitsize {
-	position: absolute;
-	width: 10px;
-	height: 10px;
-	border: 0px;
-	bottom: 4px;
-	right: 14px;
-	cursor: sw-resize;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0px;
+  bottom: 4px;
+  right: 14px;
+  cursor: sw-resize;
 }
 
 .HResizer {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background-color: black;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: black;
 }
 
 .UMLSyncClassDiagram {
-	border: 1px solid #0099FF;
-	width: 100%;
-	height: 100%;
-	overflow: auto;
-	position: relative;
-	background-color: seashell;
+  border: 1px solid #0099FF;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  background-color: seashell;
 }
 
 .UMLSyncCanvas {
-	border: 1px solid grey;
-	background-color: none;
-	position: absolute;
-	z-index: 999;
-	pointer-events: none;
+  border: 1px solid grey;
+  background-color: none;
+  position: absolute;
+  z-index: 999;
+  pointer-events: none;
 }
 
 .UMLSyncCanvasBackground {
-	background-image: url('../images/bground_sq.png');
-	z-index: 0;
-	pointer-events: none;
+  background-image: url('../images/bground_sq.png');
+  z-index: 0;
+  pointer-events: none;
 }
 
 .UMLSyncClassBorder {
   padding: 10px;
-	border: 0px solid #87CEEB;
-	position: absolute;
-	width: 150px;
+  border: 0px solid #87CEEB;
+  position: absolute;
+  width: 150px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 15px;
-	z-index: 999;
+  z-index: 999;
 }
 
 .UMLSyncClass {
   padding: 0px;
-	border: 0px;
-	margin: 0 0px;
-	background-color: #87CEEB;
-	position: relative;
-	height: 100%;
+  border: 0px;
+  margin: 0 0px;
+  background-color: #87CEEB;
+  position: relative;
+  height: 100%;
 /*
-	-moz-box-shadow: inset 0 0 30px #000000;
+  -moz-box-shadow: inset 0 0 30px #000000;
   -webkit-box-shadow: inset 0 0 10px #000000;
   box-shadow: inset 0 0 10px #000000;
 */
 }
 
 .UMLSyncClass div {
-	margin: 0 0px;
+  margin: 0 0px;
   padding: 0;
-	border: 1px solid #0099FF;
+  border: 1px solid #0099FF;
   text-decoration: none;
-	text-align: center;
+  text-align: center;
 }
 
 .UMLSyncClassHeader {
   height: 20px;
-	width: 100%;
+  width: 100%;
 }
 
 .UMLSyncClassAttributes {
-	width: 100%;
-	height: 10px;
+  width: 100%;
+  height: 10px;
 }
 
 .UMLSyncClassOperations {
-	width: 100%;
-	height: 10px;
+  width: 100%;
+  height: 10px;
 }
 
 .UMLSyncClass div ul {
@@ -214,138 +214,138 @@ a {
 }
 
 .UMLSyncClass div li {
-	margin: 0 0px;
-	padding: 0px;
-	position: heritage;
-	text-align: left;
-	display: block;
+  margin: 0 0px;
+  padding: 0px;
+  position: heritage;
+  text-align: left;
+  display: block;
 }
 
 .UMLSyncClass div li a {
   margin: 0;
-	padding: 0;
-	display: block;
-	position: heritage;
+  padding: 0;
+  display: block;
+  position: heritage;
   color: White; 
-	text-decoration: none;
+  text-decoration: none;
 }
 
 .UMLSyncClass div li em {
-	background: #87CEEB;
-	display: none;
+  background: #87CEEB;
+  display: none;
 }
 
 .UMLSyncPacketBorder {
   padding: 10px;
-	border: 0px solid #87CEEB;
-	position: absolute;
-	left: 100px;
-	top: 300px; 
-	-webkit-border-radius: 10px;
+  border: 0px solid #87CEEB;
+  position: absolute;
+  left: 100px;
+  top: 300px; 
+  -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 15px;
 }
 
 .UMLSyncPacket {
-	position: relative;
-	width: 100%;
-	height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .UMLSyncNoteBorder {
   padding: 10px;
-	border: 0px solid #87CEEB;
-	position: absolute;
-	height: 40px;
-	width: 100px;
-	left: 100px;
-	top: 300px; 
-	-webkit-border-radius: 10px;
+  border: 0px solid #87CEEB;
+  position: absolute;
+  height: 40px;
+  width: 100px;
+  left: 100px;
+  top: 300px; 
+  -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 15px;
 }  
 
 .UMLSyncNote {
-	position: relative;
+  position: relative;
   width: 100%;
-	height: 100%;
-	border: 1px solid #0099FF;
-	background-color: #87CEEB;
+  height: 100%;
+  border: 1px solid #0099FF;
+  background-color: #87CEEB;
 }
 
 .UMLSyncInstance {
-	position: relative;
+  position: relative;
   width: 100%;
-	height: 45px;
-	border: 1px solid #0099FF;
-	background-color: #87CEEB;
-	text-align: center;
+  height: 45px;
+  border: 1px solid #0099FF;
+  background-color: #87CEEB;
+  text-align: center;
 }
 
 .UMLSyncPort {
-	position: relative;
+  position: relative;
   width: 100%;
-	height: 100%;
-	border: 1px solid #0099FF;
-	background-color: #87CEEB;
+  height: 100%;
+  border: 1px solid #0099FF;
+  background-color: #87CEEB;
 }
 
 .UMLSyncPacketTab {
-	padding: 0px;
-	border: 1px;
-	position: relative;
-	width: 15%;
-	height: 20px;
-	border: 1px solid #0099FF;
-	background-color: #87CEEB;
+  padding: 0px;
+  border: 1px;
+  position: relative;
+  width: 15%;
+  height: 20px;
+  border: 1px solid #0099FF;
+  background-color: #87CEEB;
 }
 
 .UMLSyncPacketBody {
-	padding: 0px;
-	border: 1px;
-	position: relative;
-	border: 1px solid #0099FF;
-	background-color: #87CEEB;
+  padding: 0px;
+  border: 1px;
+  position: relative;
+  border: 1px solid #0099FF;
+  background-color: #87CEEB;
   text-decoration: none;
-	text-align: center;
+  text-align: center;
 }
 
 .UMLSyncNoteCorner {
-	position: absolute;
-	height: 16px;
-	width: 16px;
-	right: -1px;
-	top: -1px;
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  right: -1px;
+  top: -1px;
 }
 
 
 .UMLSyncCollaboration {
   padding: 0px;
   border: 1px dashed black;
-	position: relative;
-	width: 100%;
-	height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
   text-align: center;
-	margin: auto;
-	background-color: #87CEEB;
-	-webkit-border-radius: 100%;
+  margin: auto;
+  background-color: #87CEEB;
+  -webkit-border-radius: 100%;
   -moz-border-radius: 100% 100%;
   border-radius: 100% 100%;
 }
 
 .UMLSyncComponent {
-	position: relative;
+  position: relative;
   text-align: center;
-	border: 1px solid black;
-	background-color: #87CEEB;
+  border: 1px solid black;
+  background-color: #87CEEB;
 }
 
 .UMLSyncState {
   border: 1px solid black;
-	position: relative;
+  position: relative;
   text-align: center;
-	background-color: #87CEEB;
-	-webkit-border-radius: 20px;
+  background-color: #87CEEB;
+  -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px 20px;
 }
@@ -353,35 +353,35 @@ a {
 .UMLSyncEntity {
   padding: 0px;
   border: 1px solid black;
-	position: relative;
+  position: relative;
   text-align: left;
-	margin: 0 0px;
-	background-color: #F5B67A;
-	-webkit-border-radius: 20px;
+  margin: 0 0px;
+  background-color: #F5B67A;
+  -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px 20px;
 }
 
 .UMLSyncInteractionHead {
   border: 0px;
-	border-right: 1px solid black;
+  border-right: 1px solid black;
   border-bottom: 1px solid black;
   border-radius: 0px 0px 15px 0px;
-	position: relative;
-	width: 50%;
-	height: 20px;
+  position: relative;
+  width: 50%;
+  height: 20px;
   text-align: center;
-	margin: 0px;
-	padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 .UMLSyncInteraction {
   padding: 0px;
   border: 1px solid black;
-	position: relative;
+  position: relative;
   text-align: center;
-	margin: 0 0px;
-	background-color: #FFFFFF;
+  margin: 0 0px;
+  background-color: #FFFFFF;
 }
 
 .UMLSyncForkNode {
@@ -398,13 +398,13 @@ a {
 .UMLSyncProcedure {
   padding: 10px;
   border: 1px solid black;
-	position: relative;
-	width: 100%;
-	height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
   text-align: left;
-	margin: auto;
-	background-color: #BDE689;
-	-webkit-border-radius: 20px 20px 0px 0px;
+  margin: auto;
+  background-color: #BDE689;
+  -webkit-border-radius: 20px 20px 0px 0px;
   -moz-border-radius: 20px 20px 0px 0px;
   border-radius: 20px 20px 0px 0px;
 }
@@ -412,23 +412,23 @@ a {
 .UMLSyncResultSet {
   padding: 10px;
   border: 1px solid black;
-	position: relative;
-	width: 100%;
-	height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
   text-align: left;
-	margin: auto;
-	background-color: #E3E689;
+  margin: auto;
+  background-color: #E3E689;
 }
 
 .UMLSyncEntityHead {
   border: 0px;
   border-bottom: 1px solid black;
-	position: relative;
-	width: 100%;
-	height: 20px;
+  position: relative;
+  width: 100%;
+  height: 20px;
   text-align: center;
-	margin: 0px;
-	padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 .UMLSyncEntityField {
@@ -438,48 +438,48 @@ a {
 
 .UMLSyncInterface {
   padding: 0px;
-	width: 15px;
-	height: 15px;
+  width: 15px;
+  height: 15px;
   border: 1px solid black;
-	position: relative;
-	margin: auto;
-	background-color: #87CEEB;
-	-webkit-border-radius: 100%;
+  position: relative;
+  margin: auto;
+  background-color: #87CEEB;
+  -webkit-border-radius: 100%;
   -moz-border-radius: 100% 100%;
   border-radius: 100% 100%;
 }
 
 .UMLSyncDataStore {
-	background-color: yellow;
+  background-color: yellow;
   border: 1px solid black;
   border-right: 0;
-	position: relative;
-	padding: 0;
-	height: 100%;
+  position: relative;
+  padding: 0;
+  height: 100%;
 }
 .UMLSyncDataStore A {
-	left: 40px;
+  left: 40px;
 }
 
 .UMLSyncDataStore div {
-	background-color: gray;
-	height: 100%;
-	width: 25px;
+  background-color: gray;
+  height: 100%;
+  width: 25px;
   border: 1px solid black;
-	position: absolute;
+  position: absolute;
 }
 
 .UMLSyncDFProcess {
   padding: 0px;
-	margin: 0px;
+  margin: 0px;
   border: 1px solid black;
-	position: relative;
-	width: 100%;
-	height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
   text-align: center;
-	margin: auto;
-	background-color: #F5B67A;
-	-webkit-border-radius: 20px;
+  margin: auto;
+  background-color: #F5B67A;
+  -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px 20px;
 }
@@ -526,40 +526,40 @@ a {
 }
 
 .UMLSyncComponent {
-	position: relative;
+  position: relative;
   text-align: center;
   ##width: 100%;
-	##height: 100%;
-	border: 1px solid black;
-	background-color: #87CEEB;
+  ##height: 100%;
+  border: 1px solid black;
+  background-color: #87CEEB;
 }
 
 .UMLSyncVenn {
-	position: relative;
+  position: relative;
   text-align: center;
   width: 100%;
-	height: 100%;
-	border: 1px;
-	-webkit-border-radius: 50%; -moz-border-radius: 50%;
-	opacity: 0.5;
-	background-color: transparent;
+  height: 100%;
+  border: 1px;
+  -webkit-border-radius: 50%; -moz-border-radius: 50%;
+  opacity: 0.5;
+  background-color: transparent;
 }
 
 .UMLSyncInteractionStartNode {
-	position: relative;
-	text-align: center;
-	width: 20px;
-	height: 20px;
+  position: relative;
+  text-align: center;
+  width: 20px;
+  height: 20px;
   border: 3px solid black;
   -webkit-border-radius: 50%; -moz-border-radius: 50%;
   background-color: transparent;
 }
 
 .UMLSyncInteractionFinalNode {
-	position: relative;
-	text-align: center;
-	width: 20px;
-	height: 20px;
+  position: relative;
+  text-align: center;
+  width: 20px;
+  height: 20px;
   background: white;
   border: 3px solid black;
   -webkit-border-radius: 50%; -moz-border-radius: 50%;
@@ -625,7 +625,7 @@ a {
   position: fixed;
   left: 480px;
   width: 680px;
-	z-index: 1000;
+  z-index: 1000;
 }
 
 
@@ -675,7 +675,7 @@ a {
 
 #vp_main_menu2 div div {
   height: 185px;
-	overflow: auto;
+  overflow: auto;
   background-color: #eee;
   border: 1px solid #444444;
   border-radius: 4px 4px 4px 4px;
@@ -683,16 +683,16 @@ a {
   font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
 }
 #vp_main_menu2 div label {
-	color: #FFF;
+  color: #FFF;
 }
 
 #vp_main_menu2 div input {
   background-color: #eee;
   border: 1px solid #444444;
   border-radius: 4px 4px 4px 4px;
-	width: 322px;
-	color: #000;
-	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+  width: 322px;
+  color: #000;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
 }
 
 #vp_main_menu2 button {
@@ -713,25 +713,25 @@ a {
 
 #vp_main_menu34 {
   height: 250px;
-	overflow: auto;
+  overflow: auto;
   background-color: #eee;
   border: 1px solid #444444;
   border-radius: 4px 4px 4px 4px;
-	font-size: 12px;
-	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 12px;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
 }
 
 #vp_main_menu3 div label {
-	color: #FFF;
+  color: #FFF;
 }
 
 #vp_main_menu3 div input {
   background-color: #eee;
   border: 1px solid #444444;
   border-radius: 4px 4px 4px 4px;
-	width: 322px;
-	color: #000;
-	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+  width: 322px;
+  color: #000;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
 }
 
 #vp_main_menu3 button {
@@ -752,7 +752,7 @@ a {
 
 .context-menu {
   border: 1px solid #555555;
-	background-color: #eee;
+  background-color: #eee;
   display: none;
   margin: 0;
   padding: 0;
@@ -788,14 +788,14 @@ a {
 }
 
 .diagram-menu {
-	z-index: 1000;
-	position: absolute;
-	left: 0px;
-	top: 0px;
-	width: 150px;
-	height: 100%;
-	background-color: grey;
-	border: 1px solid black;
+  z-index: 1000;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 150px;
+  height: 100%;
+  background-color: grey;
+  border: 1px solid black;
 }
 
 .elementSelector.hover {
@@ -841,7 +841,7 @@ a {
   position: absolute;
   right: 0;
   width: 0;
-	top: 0;
+  top: 0;
 }
 
 .UMLSyncSignal2 {
@@ -850,7 +850,7 @@ a {
   height: 0;
   position: absolute;
   right: 0;
-	top: 50%;
+  top: 50%;
   width: 0;
 }
 
@@ -861,7 +861,7 @@ a {
   position: absolute;
   right: 1px;
   width: 0;
-	top: 0;
+  top: 0;
 }
 
 .UMLSyncSignal12 {
@@ -870,69 +870,69 @@ a {
   height: 0;
   position: absolute;
   right: 1px;
-	top: 50%;
+  top: 50%;
   width: 0;
 }
 
 .UMLSyncComponent2 {
-	position: relative;
-	right: 10;
+  position: relative;
+  right: 10;
   text-align: center;
-	border: 1px solid black;
-	background-color: #87CEEB;
+  border: 1px solid black;
+  background-color: #87CEEB;
 }
 
 span.diagramclass  span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/diagram_obj.gif");
+  background-position: 0 0;
+  background-image: url("../images/diagram_obj.gif");
 } 
 
 span.namespace  span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/namespace_obj.png");
+  background-position: 0 0;
+  background-image: url("../images/namespace_obj.png");
 } 
 
 span.package span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/package_obj.gif");
+  background-position: 0 0;
+  background-image: url("../images/package_obj.gif");
 } 
 
 span.packageroot span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/jar_obj.gif");
+  background-position: 0 0;
+  background-image: url("../images/jar_obj.gif");
 } 
 
 span.iconclass span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/class_obj.gif");
+  background-position: 0 0;
+  background-image: url("../images/class_obj.gif");
 } 
 
 span.iconinterface span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/int_obj.gif");
+  background-position: 0 0;
+  background-image: url("../images/int_obj.gif");
 } 
 
 span.javafile span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/jcu_obj.gif");
+  background-position: 0 0;
+  background-image: url("../images/jcu_obj.gif");
 } 
 
 span.cfile span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/c_file_obj.gif");
+  background-position: 0 0;
+  background-image: url("../images/c_file_obj.gif");
 } 
 
 span.jproject span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/projects.gif");
+  background-position: 0 0;
+  background-image: url("../images/projects.gif");
 } 
 
 span.cproject span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/cprojects.gif");
+  background-position: 0 0;
+  background-image: url("../images/cprojects.gif");
 } 
 
 span.cfolder span.dynatree-icon {
- background-position: 0 0;
- background-image: url("../images/cfolder_obj.gif");
+  background-position: 0 0;
+  background-image: url("../images/cfolder_obj.gif");
 } 
