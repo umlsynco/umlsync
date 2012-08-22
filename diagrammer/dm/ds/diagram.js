@@ -1278,7 +1278,6 @@ dm['hs'] = dm.hs;
         $('#' + this.id +'_REF').css({'visibility':'visible'});
         // Show the  menu if element was selected
         if (self.parrent.menuIcon) {
-          console.log("Show menu");
           self.parrent.menuIcon['Show'](this.id, self);
         }
         //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
@@ -1288,7 +1287,6 @@ dm['hs'] = dm.hs;
 
         //Check if this.euid is the same as selected
         if (self.parrent.menuIcon) {
-          console.log("Hide menu");
           self.parrent.menuIcon['Hide'](this.id);
         }
         //$(".elmenu-" + self.menutype).animate({opacity:"0"});;
@@ -1355,9 +1353,6 @@ dm['hs'] = dm.hs;
 
       this.options.dragStart = true;
 
-      console.log("Hide menu");
-      self.parrent.menuIcon['Hide'](this.id);
-
       if (isbase == undefined) {
         var p = $("#" + this.euid + "_Border").position();
         this.start_operation = {left:p.left, top:p.top};
@@ -1372,8 +1367,6 @@ dm['hs'] = dm.hs;
       if (!this.start_operation)
         alert("THERE IS NO this.start_operation for: " + this.euid + this.options.dragStart);
       $("#" + this.euid + "_Border").css({'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top});
-      if (self.parrent.menuIcon)
-          self.parrent.menuIcon['Hide'](this.id);
 
     },
     //@proexp
@@ -1469,9 +1462,9 @@ dm.base.diagram("cs.connector", {
           dm.debug[this.euid] = this.options['epoints'];
           this.epoints = new Array();
           for (i in this.options['epoints']) {
-  this.epoints[i] = {};
-  this.epoints[i][0] = parseInt(this.options['epoints'][i][0], 10);
-  this.epoints[i][1] = parseInt(this.options['epoints'][i][1], 10);
+            this.epoints[i] = {};
+            this.epoints[i][0] = parseInt(this.options['epoints'][i][0], 10);
+            this.epoints[i][1] = parseInt(this.options['epoints'][i][1], 10);
           }
         }
         this.options['fromId'] = this.from;
@@ -1542,8 +1535,8 @@ dm.base.diagram("cs.connector", {
 
     //@proexp
     _getRValue: function(x1, x2, w) {
-      var diffx = x2-x1;
-      if (diffx>0) {
+      var diffx = x2 - x1;
+      if (diffx > 0) {
         if (diffx > w)
           return x1 + w;
         return x2;
@@ -1637,7 +1630,7 @@ dm.base.diagram("cs.connector", {
 
       var isEqualPoint = function(p1, p2) {
         if ((p1[0] - 12 < p2[0]) && (p1[0] + 12 > p2[0])
-  && (p1[1] - 12 < p2[1]) && (p1[1] + 12 > p2[1])) {
+            && (p1[1] - 12 < p2[1]) && (p1[1] + 12 > p2[1])) {
           return true;
         }
         return false;
@@ -1679,46 +1672,50 @@ dm.base.diagram("cs.connector", {
     //@proexp
     _getConnectionPoints: function(fromId, toId, epoints) {
 
-      //alert(" Get connection points: " + fromId + "  " + toId);
-      var p1 = $('#'+ fromId).position();
+      //console.log(" Get connection points: " + fromId + "  " + toId);
 
+      var p1 = $('#'+ fromId).position();
       var p2 = $('#' + toId).position();
+      
       if (p2 == null) {
-        alert(" TOID" + toId);
+        console.log(toId + ".position() is null");
         return;
       }
-
 
       var p11 = $('#'+ fromId + "_Border").position();
       var p21 = $('#' + toId + "_Border").position();
 
-      var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
-      scrollLeft = 0;//$("#" + this.parrent.euid).scrollLeft();
+      var scrollTop = 0; //$("#" + this.parrent.euid).scrollTop(),
+      scrollLeft = 0; //$("#" + this.parrent.euid).scrollLeft();
 
-      if ((epoints == undefined) || (epoints.length ==0)) {
-        var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width()) ;
-        var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height()) ;
-        var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width());
-        var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height());
+      if ((epoints == undefined) || (epoints.length == 0)) {
+
+        var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width() / 2);
+        var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height() / 2);
+
+        var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width() / 2);
+        var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height() / 2);
 
         var newpoints = [[x1 + scrollLeft,y1 + scrollTop], [x2 + scrollLeft,y2 + scrollTop]];
         
         return newpoints;
       }
       else {
-        var lln = epoints.length -1;
+
+        var lln = epoints.length - 1;
         var x1 = this._getRValue(p1.left + p11.left, epoints[0][0], $('#'+ fromId).width()) ;
         var y1 = this._getRValue(p1.top + p11.top, epoints[0][1], $('#'+ fromId).height()) ;
 
         var x2 = this._getRValue(p2.left + p21.left, epoints[lln][0], $('#' + toId).width());
         var y2 = this._getRValue(p2.top + p21.top, epoints[lln][1], $('#' + toId).height());
 
-        /*     var x1 = p1.left + p11.left;
-     var y1 = p1.top + p11.top;
-
-     var x2 = p2.left + p21.left;
-     var y2 = p2.top + p21.top;
+        /*
+        var x1 = p1.left + p11.left;
+        var y1 = p1.top + p11.top;
+        var x2 = p2.left + p21.left;
+        var y2 = p2.top + p21.top;
          */    
+        
         var newpoints = [];
         newpoints[0] = [x1 + scrollLeft,y1 + scrollTop];
         for (i=1;i<=epoints.length;++i) {
