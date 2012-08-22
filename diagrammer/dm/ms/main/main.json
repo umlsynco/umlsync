@@ -12,9 +12,21 @@
 	 "image": [{"small": "./dm/icons/vp/dss/classDiagram.gif",
 	            "medium": "./dm/icons/vp/ds/UML_class_diagram.png"}]
 	},
+	{"diagram": "communication",
+	 "type": "base",
+	 "description": "UML communication diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/componentDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_component_diagram.png"}]
+	},
 	{"diagram": "component",
 	 "type": "base",
 	 "description": "UML component diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/componentDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_component_diagram.png"}]
+	},
+	{"diagram": "composite structure",
+	 "type": "base",
+	 "description": "UML composite structure diagram",
 	 "image": [{"small": "./dm/icons/vp/dss/componentDiagram.gif",
 	            "medium": "./dm/icons/vp/ds/UML_component_diagram.png"}]
 	},
@@ -42,6 +54,12 @@
 	 "image": [{"small": "./dm/icons/vp/dss/packageDiagram.gif",
 	            "medium": "./dm/icons/vp/ds/UML_package_diagram.png"}]
 	},
+	{"diagram": "profile",
+	 "type": "base",
+	 "description": "UML profile diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/packageDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_package_diagram.png"}]
+	},
 	{"diagram": "sequence",
 	 "type": "UML",
 	 "description": "UML sequence diagram",
@@ -50,13 +68,19 @@
 	},
 	{"diagram": "statemachine",
 	 "type": "base",
-	 "description": "UML statemachine diagram",
+	 "description": "UML state machine diagram",
+	 "image": [{"small": "./dm/icons/vp/dss/stateDiagram.gif",
+	            "medium": "./dm/icons/vp/ds/UML_statemachine_diagram.png"}]
+	},
+	{"diagram": "timing",
+	 "type": "base",
+	 "description": "UML timing diagram",
 	 "image": [{"small": "./dm/icons/vp/dss/stateDiagram.gif",
 	            "medium": "./dm/icons/vp/ds/UML_statemachine_diagram.png"}]
 	},
 	{"diagram": "usecase",
 	 "type": "base",
-	 "description": "UML usecase diagram",
+	 "description": "UML use case diagram",
 	 "image": [{"small": "./dm/icons/vp/dss/useCaseDiagram.gif",
 	            "medium": "./dm/icons/vp/ds/UML_usecase_diagram.png"}]
 	},
