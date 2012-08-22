@@ -17,8 +17,10 @@ Version:
 (function($, dm, undefined) {
 
 	dm.base.SelfAnalysisView = function(urlArg) {
-	
-		return {
+	  this.urlArg = urlArg;
+    };
+	dm.base.SelfAnalysisView.prototype = 
+		    {
 			'init': function() {
 			  return (window.dm != undefined); 
 			},
@@ -77,7 +79,36 @@ Version:
 							ch.push({title: r, isLazy:true, isFolder:true, addClass:"package"}); 
 					     }
 					  } else {
-					    
+					    function GetNode(n) {
+						   if (n.data.key != "root") {
+						     var elem = GetNode(n.parent);
+							 if (elem.prototype) {
+							   return elem.prototype[n.data.title];
+							 }
+							 return elem[n.data.title];
+						   } else {
+						     return dm;
+						   }						   
+						}
+						var element = GetNode(node);
+						if (element.prototype) {
+						  for (r in element.prototype) {
+                            var isObject = (element.prototype[r].prototype != undefined)|| $.isPlainObject(element);;
+							var isFunction = $.isFunction(element.prototype[r]);
+							isFunction = (!isFunction || isObject);
+						    var addClass = (isObject) ? "iconclass":"package";
+							ch.push({title: r, isLazy:isFunction, isFolder:isFunction, addClass:addClass}); 
+						  }
+						} else {
+						  for (r in element) {
+                            var isObject = (element[r].prototype != undefined)|| $.isPlainObject(element);
+							var isFunction = $.isFunction(element[r]);
+							isFunction = (!isFunction || isObject);
+						    var addClass = (isObject) ? "iconclass":"package";
+							ch.push({title: r, isLazy:isFunction, isFolder:isFunction, addClass:addClass}); 
+						  }
+						}
+						/*	
 					    if (node.parent.data.key != "root") {
 						  
 						  var par = node.parent.data.title;
@@ -89,21 +120,32 @@ Version:
 					      }
 						} else {
 					      for (r in dm[node.data.title]) {
+						    var isObject = (dm[node.data.title][r].prototype != undefined);
+						    var addClass = (isObject) ? "iconclass":"package";
 							ch.push({title: r, isLazy:true, isFolder:true, addClass:addClass}); 
 					     }
 						}
-					  } 
+					  
+					  */} 
 					node.addChild(ch);
                    }
 					node.setLazyNodeStatus(DTNodeStatus_Ok);
 				},
 				onActivate: function(node) {
 					if (!node.data.isFolder)
-					  dm.dm.fw.loadDiagram(urlArg + node.getAbsolutePath() + ".json");
+					  dm.dm.fw.loadDiagram(this.urlArg + node.getAbsolutePath() + ".json");
 				},
+				dnd: {
+					onDragStart: function(node) {
+						return true;
+					},
+					onDragStop: function(node) {
+						//logMsg("tree.onDragStop(%o)", node);
+					}
+				}
 			} //tree
 		};
-	};
+
 //	@aspect
 })(jQuery, dm);
 

@@ -23,6 +23,7 @@ var dm = (function( window, undefined ) {
     dm.ds = {};
     dm.cs = {};
     dm.hs = {};
+	dm.dm = {};
 
     return dm;
 })(window);
@@ -36,6 +37,7 @@ dm['ds'] = dm.ds;
 dm['cs'] = dm.cs;
 dm['es'] = dm.es;
 dm['hs'] = dm.hs;
+dm['dm'] = dm.dm;
 
 //@aspect
 (function( $, dm, undefined ) {
@@ -499,7 +501,7 @@ dm['hs'] = dm.hs;
                 }
 
                 // Perform function on diagram load completion
-                dm['base']['loader']['OnLoadComplete'](function() {
+                dm['dm']['loader']['OnLoadComplete'](function() {
                     for (i in diag.elements) {
     var d = diag.elements[i].options['dropped'];
     if (d) {
@@ -561,7 +563,7 @@ dm['hs'] = dm.hs;
         self.max_zindex++;
         options["z-index"] = self.max_zindex; //options["z-index"] || ();
         $.log("this.options.loader.Element !!!");
-        dm['base']['loader']['Element'](type, options, this, function(obj) {
+        dm['dm']['loader']['Element'](type, options, this, function(obj) {
             if (obj != undefined)
                 self.elements[obj.euid] = obj;
 
@@ -730,7 +732,7 @@ dm['hs'] = dm.hs;
         // Loader is responsible for connector creation
         var self = this;
 
-        dm['base']['loader']['Connector'](type, options, this, function(connector) {
+        dm['dm']['loader']['Connector'](type, options, this, function(connector) {
             if (connector != undefined) {
                 self.connectors.push(connector);
                 self.draw();

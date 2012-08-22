@@ -42,7 +42,7 @@ Version:
  
             return {
             _addToLoadQueue: function(item) {
-                var instance = dm.base['loader'];
+                var instance = dm.dm['loader'];
                 if (!instance._loadQueue) {
                     instance.working = false;
                     instance._loadQueue = new Array();
@@ -52,7 +52,7 @@ Version:
             },
             _process: function(isAjaxCallback) {
                 var item = null;
-                var instance = dm.base['loader'];
+                var instance = dm.dm['loader'];
                 if (instance.working) {
                     return;
                 }
@@ -335,7 +335,7 @@ Version:
                 this.instance.url = urlArg; // Some reference in diagram's menu
                 this.instance.working = false;
                 // Global export
-                dm['base']['loader'] = this.instance;
+                dm['dm']['loader'] = this.instance;
             } 
      
             // return the instance of the singletonClass 
@@ -344,7 +344,7 @@ Version:
         return getInstance(); 
     };
     //@print
-dm['base']['loader'] = dm.base.loader;
+    dm['base']['loader'] = dm.base.loader;
 //@aspect
 })(jQuery, dm);
 

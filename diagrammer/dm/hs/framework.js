@@ -37,10 +37,10 @@ Version:
 		var framework = function(options) {
 			$.extend(true, this.options, options);
 			this.counter = 0;
-			this.loader = dm.base.loader;
+			this.loader = dm.dm.loader;
 			this.diagrams = this.diagrams || {};
 
-			this.initializeToolBox(dm.base.loader);
+			this.initializeToolBox(dm.dm.loader);
 
 			// Think about field set 
 			$("#" + this.options.content).append('\
@@ -93,7 +93,7 @@ Version:
 					});
 
 					// Initialize the key handler
-					this.initializeKeyHandler(dm.base.loader);
+					this.initializeKeyHandler(dm.dm.loader);
 					if (this.options.viewmanager) {
 						this.registerViewManager(this.options.viewmanager);
 					}
@@ -114,7 +114,7 @@ Version:
 		// Loading the main menu JSON description and put it as argument to callback function 
 		//@proexp
 		'LoadMainMenu':function(callback) {
-			dm.base.loader.LoadMainMenuData(callback);
+			dm.dm.loader.LoadMainMenuData(callback);
 		},
 		//@proexp
 		'registerViewManager': function(viewmanager, type) {
@@ -337,7 +337,7 @@ Version:
 			if (type == "lifeline")
 				baseType = "sequence";
 			var self = this;
-			dm.base.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
+			dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
 					, function(obj) {
 				self.diagrams[tabname] = obj;
 			});
@@ -355,7 +355,7 @@ Version:
 				self.counter++;
 				$.struct = json;
 				$("#" + self.options.tabs).tabs("add", tabname, json.name);
-				dm.base.loader.Diagram(json.type, "base", json, tabname
+				dm.dm.loader.Diagram(json.type, "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;
 				});

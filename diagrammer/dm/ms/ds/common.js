@@ -79,7 +79,7 @@ Version:
 
         this.load = function(name) {
             if (this.menus[name] == undefined)
-                dm.base.loader.CreateContextMenu(name, this);
+                dm.dm.loader.CreateContextMenu(name, this);
         }
 
         this.append = function(obj, id) {
@@ -145,7 +145,7 @@ Version:
             var menu_items = [];
             for (c in this.menus[menu_id])       // element descriptor
                 for (r in this.menus[menu_id][c])  // connector descriptor
-                    menu_items.push("<img src='" + dm.base.loader.url + this.menus[menu_id][c][r] +"' id='" + r +"' title='"+ r + "' aux='" + c + "'></img>");
+                    menu_items.push("<img src='" + dm.dm.loader.url + this.menus[menu_id][c][r] +"' id='" + r +"' title='"+ r + "' aux='" + c + "'></img>");
 
             var cells = menu_items.join('');
 
@@ -176,7 +176,7 @@ Version:
                       lcon = iconMenuBuilder.dmb.getConnectorById(this.id);
 
                   if ((element != undefined) && (element.element != undefined))
-                    dm.base.loader.LoadElement(element.element);
+                    dm.dm.loader.LoadElement(element.element);
                     if ((lcon != undefined) && (lcon.oneway)) {
                       alert("ONE WAY");                
                       iconMenuBuilder.diagram.Connector(lcon.connector,
@@ -268,7 +268,7 @@ Version:
 
         var diagramMenuBuilder = this;
 
-        dm.base.loader.LoadDiagramMenuData(type, function(json) {
+        dm.dm.loader.LoadDiagramMenuData(type, function(json) {
 
             var innerHtml = "<div id='testmenu' class='diagram-menu'><ul>";
 
@@ -287,7 +287,7 @@ Version:
                 diagramMenuBuilder.elements[elements[d].description] = elements[d];
                 diagramMenuBuilder.elements[elements[d].description].editable = true;
 
-                var image = (elements[d].image[0]["small"]) ? "list-style-image:url(\'" +dm.base.loader.url +  elements[d].image[0]["small"] + "\')" : "list-style-type:none";
+                var image = (elements[d].image[0]["small"]) ? "list-style-image:url(\'" +dm.dm.loader.url +  elements[d].image[0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="elementSelector" style="cursor:pointer;' + image
     + ';" id="'  + elements[d].description +'" imgpath="' + elements[d].image_path + '">' +
     elements[d].description + '</li>');
@@ -302,7 +302,7 @@ Version:
                 diagramMenuBuilder.connectors[desc] = connectors[d];
                 diagramMenuBuilder.connectors[desc].editable = true;
 
-                var image = (connectors[d].image[0]["small"]) ? "list-style-image:url(\'" + dm.base.loader.url + connectors[d].image[0]["small"] + "\')" : "list-style-type:none";
+                var image = (connectors[d].image[0]["small"]) ? "list-style-image:url(\'" + dm.dm.loader.url + connectors[d].image[0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="connectorSelector" style="cursor:pointer;' + image
     + ';" id="'  + connectors[d].connector +'">' +
     connectors[d].description + '</li>');
@@ -373,7 +373,7 @@ Version:
                        // alert(this.euid);
                        var sel = this.euid;
                        sel = sel.substr(0, sel.length -7);
-                       dm.base.loader.Connector(selConn, {selected: sel, temporary: "ConnectionHelper"},
+                       dm.dm.loader.Connector(selConn, {selected: sel, temporary: "ConnectionHelper"},
              {}, diagram);
                            },
                     drag: function(event) {
@@ -389,7 +389,7 @@ Version:
                       diagram.removeConnector(sel, "ConnectionHelper", selConn);
 
                       if (name != undefined)
-                         dm.base.loader.Connector(selConn, {selected: sel, temporary: name}, {}, diagram);                      
+                         dm.dm.loader.Connector(selConn, {selected: sel, temporary: name}, {}, diagram);                      
                       // Remove selection from menu item
                       $('.connectorSelector').removeClass('selected');
                // Enable DND for elements again
@@ -408,7 +408,7 @@ Version:
                     }
           });*/
                 // TODO: enable drag helper for connectors
-                //dm.base.loader.Connector(this.euid, self.options, {}, self.diagram);
+                //dm.dm.loader.Connector(this.euid, self.options, {}, self.diagram);
             });
         });
     }
