@@ -19,7 +19,6 @@
 	{"type": "fork_node",
 	 "description": "Fork node",
 	 "menu": "state-menu",
-	 "size": 20,
 	 "color": "black",
 	 "image": [{"small": "./dm/icons/vp/es/interaction/structure_fork.gif"}]
 	},
@@ -30,7 +29,6 @@
 	},
 	{"type": "note",
 	 "description": "Note",
-	 "menu": "note-menu",
 	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
 	}
     ],
@@ -47,58 +45,42 @@
 	"menus": [
 	  {"id":"state-menu",
 	   "items": [
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
-						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
-					  ]
-				},
-                {"el":"Interaction",
+        {"el":"Interaction",
 				 "cs":[
 						{"connector":"transition",
 						 "image":"dm/icons/vp/cs/diagram/association_with_use_case.gif"
 						}
 					  ]
 				},
-                {"el":"Activity Final",
-                "cs":[
-                    {"connector":"transition",
-                    "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
-                    }
-                    ]
-                },
-                {"el":"Decision node",
-                "cs":[
-                    {"connector":"transition",
-                    "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
-                    }
-                    ]
-                },
-                {"el":"Fork node",
-                "cs":[
-                    {"connector":"transition",
-                    "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
-                    }
-                    ]
-                }  
-			 ]
-	  },
-	  {"id":"note-menu",
-	   "items": [
-				{"el":"State",
-				 "cs":[
-						{"connector":"anchor",
-						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
-					  ]
-				},
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
-						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
-					  ]
-				}
+        {"el":"Activity Final",
+        "cs":[
+            {"connector":"transition",
+            "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
+            }
+            ]
+        },
+        {"el":"Decision node",
+        "cs":[
+            {"connector":"transition",
+            "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
+            }
+            ]
+        },
+        {"el":"Fork node",
+        "cs":[
+            {"connector":"transition",
+            "image":"dm/icons/vp/cs/diagram/transition2_to_final_state2.gif"
+            }
+            ]
+        },
+        {"el":"Note",
+         "cs":[
+            {"connector":"anchor",
+             "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+            ]
+        }
 			 ]
 	  }
 	]
-   }
+  }
 ]

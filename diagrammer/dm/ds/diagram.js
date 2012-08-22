@@ -201,7 +201,10 @@ dm['dm'] = dm.dm;
         if ((this.options['type2'] == 'diagram')
                 && (this.options['viewid'])) {
             var data = this.getDescription();
+      
             //alert("destroy " + this.options.fullname);
+      console.log(data);
+
             var self = this;
             $.ajax({
                 'type': 'GET',
@@ -1151,7 +1154,7 @@ dm['dm'] = dm.dm;
          *  Initialization of base operations of element:
          *  Wrap with boarder-div, add resizable handlers, css etc
          *  Add the behaviour: editable, draggale, menu hide/show
-         *  TODO: refactoring is comming 
+     *  TODO: refactoring is coming 
          */
          //@proexp
         _baseinit: function() {
@@ -1174,13 +1177,13 @@ dm['dm'] = dm.dm;
                 parrentClass.onDragStart(self, ui);
               },
               'drag': function(event, ui) {
-                parrentClass.onDragMove(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
                 if (parrentClass != undefined) {
                     parrentClass.draw();
                 }
                 if (self.$moveit != undefined) {
                     $("#" + self.$moveit).css("left", 200);
                 }
+                parrentClass.onDragMove(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
               },
               'stop': function(event, ui) {
                 if (ui.position.top < 0) {
@@ -1279,16 +1282,18 @@ dm['dm'] = dm.dm;
                 $('#' + this.id +'_FS').css({'visibility':'visible'});
                 $('#' + this.id +'_REF').css({'visibility':'visible'});
                 // Show the  menu if element was selected
-                if (self.parrent.menuIcon)
+               if (self.parrent.menuIcon) {
                     self.parrent.menuIcon['Show'](this.id, self);
+                }
                 //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
             })
             .mouseleave(function (){
                 $('#' + this.id +'_Border').css({'border':'0px solid #87CEEF'}).animate({left:'+=3px', top:'+=3px'},0);
 
                 //Check if this.euid is the same as selected
-                if (self.parrent.menuIcon)
+                if (self.parrent.menuIcon) {
                     self.parrent.menuIcon['Hide'](this.id);
+                 }
                 //$(".elmenu-" + self.menutype).animate({opacity:"0"});;
 //                if (!self.options.selected) {
                 $('#' + this.id +'_FS').css({'visibility':'hidden'});
@@ -1350,6 +1355,7 @@ dm['dm'] = dm.dm;
                 this.parrent.elements[this._dropped[i]].onDragStart(ui);
 
             this.options.dragStart = true;
+
             if (isbase == undefined) {
                 var p = $("#" + this.euid + "_Border").position();
                 this.start_operation = {left:p.left, top:p.top};
@@ -1666,27 +1672,26 @@ dm.base.diagram("cs.connector", {
         //@proexp
         _getConnectionPoints: function(fromId, toId, epoints) {
 
-            //alert(" Get connection points: " + fromId + "  " + toId);
             var p1 = $('#'+ fromId).position();
-
             var p2 = $('#' + toId).position();
             if (p2 == null) {
-                alert(" TOID" + toId);
                 return;
             }
 
-
             var p11 = $('#'+ fromId + "_Border").position();
             var p21 = $('#' + toId + "_Border").position();
-            var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
+            var scrollTop = 0; //$("#" + this.parrent.euid).scrollTop(),
             scrollLeft = 0;//$("#" + this.parrent.euid).scrollLeft();
 
             if ((epoints == undefined) || (epoints.length ==0)) {
                 var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width()) ;
                 var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height()) ;
+
                 var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width());
                 var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height());
+
                 var newpoints = [[x1 + scrollLeft,y1 + scrollTop], [x2 + scrollLeft,y2 + scrollTop]];
+
                 return newpoints;
             }
             else {
@@ -1697,12 +1702,13 @@ dm.base.diagram("cs.connector", {
                 var x2 = this._getRValue(p2.left + p21.left, epoints[lln][0], $('#' + toId).width());
                 var y2 = this._getRValue(p2.top + p21.top, epoints[lln][1], $('#' + toId).height());
 
-                /*         var x1 = p1.left + p11.left;
+       /*
+         var x1 = p1.left + p11.left;
          var y1 = p1.top + p11.top;
-
          var x2 = p2.left + p21.left;
          var y2 = p2.top + p21.top;
-                 */      
+        */      
+
                 var newpoints = [];
                 newpoints[0] = [x1 + scrollLeft,y1 + scrollTop];
                 for (i=1;i<=epoints.length;++i) {
