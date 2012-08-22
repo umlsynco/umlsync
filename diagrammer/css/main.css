@@ -712,7 +712,8 @@ a {
 }
 
 #vp_main_menu34 {
-  height: 250px;
+  min-height: 250px;
+  height: 100%;
   overflow: auto;
   background-color: #eee;
   border: 1px solid #444444;
