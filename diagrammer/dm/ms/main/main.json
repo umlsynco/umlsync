@@ -18,7 +18,7 @@
 	 "image": [{"small": "./dm/icons/vp/dss/componentDiagram.gif",
 	            "medium": "./dm/icons/vp/ds/UML_component_diagram.png"}]
 	},
-	{"diagram": "lifeline",
+	{"diagram": "sequence",
 	 "type": "UML",
 	 "description": "UML sequence diagram",
 	 "image": [{"small": "./dm/icons/vp/dss/sequenceDiagram.gif",

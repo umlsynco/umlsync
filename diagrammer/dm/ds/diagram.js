@@ -199,8 +199,10 @@ dm['hs'] = dm.hs;
     if ((this.options['type2'] == 'diagram')
         && (this.options['viewid'])) {
       var data = this.getDescription();
+      
       //alert("destroy " + this.options.fullname);
       console.log(data);
+
       var self = this;
       $.ajax({
         'type': 'GET',
