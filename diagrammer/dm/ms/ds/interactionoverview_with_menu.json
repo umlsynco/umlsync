@@ -19,7 +19,6 @@
 	{"type": "fork_node",
 	 "description": "Fork node",
 	 "menu": "state-menu",
-	 "size": 20,
 	 "color": "black",
 	 "image": [{"small": "./dm/icons/vp/es/interaction/structure_fork.gif"}]
 	},
