@@ -1343,7 +1343,7 @@ dm['hs'] = dm.hs;
     },
     //@proexp
     onDragStart: function(ui, isbase) {
-      console.log("onDragStart()");   
+      //console.log("onDragStart()");   
 
       if (this.options.dragStart != undefined)
         return;
@@ -1360,7 +1360,7 @@ dm['hs'] = dm.hs;
     },
     //@proexp
     onDragMove: function(ui) {
-      console.log("onDragMove()");
+      //console.log("onDragMove()");
 
       if (this.options.dragStart == undefined)
         return;
@@ -1371,7 +1371,7 @@ dm['hs'] = dm.hs;
     },
     //@proexp
     onDragStop: function(ui) {
-      console.log("onDragStop()");
+      //console.log("onDragStop()");
       if (ui) {
         this.onDragMove(ui);
         if (this.options['droppable']) {
