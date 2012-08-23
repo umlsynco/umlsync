@@ -54,7 +54,7 @@ Version:
                var tabname = "#"+ dm.dm.fw.options.tabRight + "-" + dm.dm.fw.counter;
                dm.dm.fw.counter++;
                $("#" + dm.dm.fw.options.tabs).tabs("add", tabname, json.name);
-              dm.base.loader.Diagram(json.type, "base", json, tabname);
+              dm.dm.loader.Diagram(json.type, "base", json, tabname);
               dm.dm.fw.updateFrameWork(true);
             }      
           }
