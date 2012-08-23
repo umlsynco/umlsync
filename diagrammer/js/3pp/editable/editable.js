@@ -13,6 +13,7 @@ $.fn.editable = function(options){
 		onEdit: null,
 		onSubmit: null,
 		onCancel: null,
+		onAutocomplete: null,
 		editClass: null,
 		submit: null,
 		cancel: null,
@@ -65,6 +66,14 @@ $.fn.editable = function(options){
 										previous:$this.data('editable.previous')
 									}]
 								);
+
+		// Call Auto complete option
+		if($.isFunction(opts.onAutocomplete)) {
+		  var list = opts.onAutocomplete.apply($this);
+		  if (list) {
+		    $this.children().autocomplete({source: list });
+		  }
+		}
 	}
 	options.toNonEditable = function($this,change){
 		opts = $this.data('editable.options');

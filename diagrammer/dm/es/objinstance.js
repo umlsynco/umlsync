@@ -121,8 +121,6 @@ dm.base.diagram("es.objinstance", dm.es.element, {
         this.options.methods.push(md + "()");
     },
     getAutocomplete: function() {
-        $.log("objinst AUTOCOMPLETE:");
-        $.log("methods" + this.options.methods);
         return this.options.methods;
     },
     getName: function() {
@@ -181,7 +179,6 @@ dm.base.diagram("es.llport", dm.es.element, {
         return this;
     },
     getAutocomplete: function() {
-      $.log("LLPORT AUTOCOMPLETE:");
       if (this.parrent) {
         var els = this.parrent.elements;
         for (i in els) {

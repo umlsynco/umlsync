@@ -65,7 +65,36 @@ Version:
 			  },
 			  "Object Instance": {
 			    "Update": function(element) {
-				   alert("NAME: "  + element.getName());
+				    var name = element.getName(),
+                    ns = name.split(".");
+					var inst = dm;
+					
+                    if (ns[0] == "window") {
+					  inst = window;
+					} else if (ns[0] = "dm") { // do nothing
+					} else {
+					  return;
+					}
+
+                    for (i=1; i<ns.length; ++i) {
+					   inst = inst[ns[i]];					   
+                       if (inst == undefined) {
+                          return;
+                       }
+					   if (inst.prototype != undefined) {
+                         inst = inst.prototype;
+                       }
+                    }
+                    
+                    if (inst.prototype != undefined) {
+                      inst = inst.prototype;
+                    }
+
+                    for (g in inst) {
+                       if ($.isFunction(inst[g])) {
+                        element.addMethod(g);
+                       }
+                    }
 			    },
 			    "Hide inherited": function(element) {
 			    }
