@@ -320,7 +320,7 @@ Version:
 				return id;
 		},
 		'ShowContextMenu': function(name, event, node) {
-		   //$(".context-menu").hide();
+		   $(".context-menu").hide();
 		   if (name) {
 		     this.activeNode = node;
 		     $("#view-"+name +".context-menu").css("left", event.clientX).css("top", event.clientY).show();
