@@ -65,6 +65,7 @@ Version:
 			  },
 			  "Object Instance": {
 			    "Update": function(element) {
+				   alert("NAME: "  + element.getName());
 			    },
 			    "Hide inherited": function(element) {
 			    }

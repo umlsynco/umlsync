@@ -22,7 +22,7 @@ Version:
 
 	//@export:dm.hs.framework:plain
 	dm.hs.framework = function(options) {
-
+        var activeNode;
 		function getInstance(options) {
 			dm.dm = dm.dm || {};
 			if (!dm.dm['fw']) { 
@@ -203,7 +203,12 @@ Version:
 			  innerHtml += '</ul>';
               $(innerHtml).hide().appendTo('body');
 			  $.log("ADD: view-" + vid);
-			  $("#view-"+vid + " .menu-item A").click(function() {items[this.id](self.activeNode);$("#view-"+vid).hide();});
+
+			  $("#view-"+vid + " .menu-item A").click(function() {
+			       items[this.id](activeNode);
+				   //$("#view-"+vid).hide();  //Hide the conceate context menu
+				   $(".context-menu").hide(); // Hide all context menus
+			  });
 			  $("#view-"+vid + " .menu-item").mouseenter(function(event) { $(this).addClass('hover'); })
               .mouseleave(function(event) { $(this).removeClass('hover');});
 			}
@@ -322,11 +327,12 @@ Version:
 		'ShowContextMenu': function(name, event, node) {
 		   $(".context-menu").hide();
 		   if (name) {
-		     this.activeNode = node;
+		     activeNode = node;
 		     $("#view-"+name +".context-menu").css("left", event.clientX).css("top", event.clientY).show();
 		   }
 		},
 		'ShowElementContextMenu': function(description, viewid, data, event) {
+		   activeNode = data;
 		   var self = dm.dm.fw;
 		   if (self.views && self.views[viewid]
 		     && self.views[viewid]['element_menu']
