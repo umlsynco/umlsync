@@ -21,6 +21,7 @@ Version:
     };
 	dm.base.SelfAnalysisView.prototype = 
 		    {
+			'euid': 'SelfView',
 			'init': function() {
 			  return (window.dm != undefined); 
 			},
@@ -43,6 +44,7 @@ Version:
 			      node.reloadChildren();
 			   },
 			   "Open": function(node) {
+			     alert("OPEN CLICKED !!!");
 			   },
 			   "Save": function(node) {
 			   },
@@ -53,8 +55,15 @@ Version:
 			     this.remove(node.getAbsolutePath(), function() {node.remove();});
 			   }
 			},
-			"ctx_element": {
-			  "class": {
+			"element_menu": {
+			  "Class": {
+			    "Update": function(element) {
+				  alert("Update called !!!");
+			    },
+			    "Hide inherited": function(element) {
+			    }
+			  },
+			  "Object Instance": {
 			    "Update": function(element) {
 			    },
 			    "Hide inherited": function(element) {
@@ -67,7 +76,7 @@ Version:
                 onCreate: function(node, span){
                    $(span).bind('contextmenu', function(e) {
 				     var node = $.ui.dynatree.getNode(e.currentTarget);
-					 alert("Show context menu for: " + node.data.title);
+					 dm.dm.fw.ShowContextMenu("SelfView", e, node);
 					 e.preventDefault();
 				   });
                 },
@@ -88,7 +97,7 @@ Version:
 							 return elem[n.data.title];
 						   } else {
 						     return dm;
-						   }						   
+						   }	   
 						}
 						var element = GetNode(node);
 						if (element.prototype) {
@@ -108,25 +117,7 @@ Version:
 							ch.push({title: r, isLazy:isFunction, isFolder:isFunction, addClass:addClass}); 
 						  }
 						}
-						/*	
-					    if (node.parent.data.key != "root") {
-						  
-						  var par = node.parent.data.title;
-						  var isObject = (dm[par][node.data.title].prototype != undefined);
-						  var pro = (isObject) ? dm[par][node.data.title].prototype : dm[par][node.data.title];
-						  var addClass = (isObject) ? "iconclass":"package";
-						  for (r in pro) {
-							ch.push({title: r, isLazy:true, isFolder:true, addClass:addClass}); 
-					      }
-						} else {
-					      for (r in dm[node.data.title]) {
-						    var isObject = (dm[node.data.title][r].prototype != undefined);
-						    var addClass = (isObject) ? "iconclass":"package";
-							ch.push({title: r, isLazy:true, isFolder:true, addClass:addClass}); 
-					     }
-						}
-					  
-					  */} 
+                    } 
 					node.addChild(ch);
                    }
 					node.setLazyNodeStatus(DTNodeStatus_Ok);
@@ -137,10 +128,21 @@ Version:
 				},
 				dnd: {
 					onDragStart: function(node) {
+					    $.log("DYNATREE DND START");
+					    function GetPath(n) {
+						   if (n.data.key != "root") {
+							 return GetPath(n.parent) + "." + n.data.title;
+						   } else {
+						     return "dm";
+						   }	   
+						}
+
+						node.data.element = "Object Instance";
+						node.data.description = GetPath(node);
 						return true;
 					},
 					onDragStop: function(node) {
-						//logMsg("tree.onDragStop(%o)", node);
+						$.log("DYNATREE DND STOP");
 					}
 				}
 			} //tree

@@ -102,8 +102,8 @@ Version:
 					this.right_counter = 0;
 		}
 
-		framework.prototype = {
-				options: {
+	  framework.prototype = {
+		options: {
 			tabRight:"diag",
 			tabLeft:"view",
 			tabs:"tabs",
@@ -195,8 +195,36 @@ Version:
 			$(id).append("<div id='tree'></div>");
 			var self = this;
 
+			function initCtxMenu(vid, items) {
+			  var innerHtml = '<ul id="view-'+  vid +'" class="context-menu" >';
+			  for (r in items) {
+				innerHtml += '<li class="menu-item"><a id="'+r+'">'+r+'</a></li>'
+			  }
+			  innerHtml += '</ul>';
+              $(innerHtml).hide().appendTo('body');
+			  $.log("ADD: view-" + vid);
+			  $("#view-"+vid + " .menu-item A").click(function() {items[this.id](self.activeNode);$("#view-"+vid).hide();});
+			  $("#view-"+vid + " .menu-item").mouseenter(function(event) { $(this).addClass('hover'); })
+              .mouseleave(function(event) { $(this).removeClass('hover');});
+			}
+			if (IView.ctx_menu) {
+              initCtxMenu(IView.euid, IView.ctx_menu);
+              self.views = self.views || {};
+			  self.views[IView.euid] = {};
+
+			  if (IView['element_menu']) {
+			    self.views[IView.euid]['element_menu'] = {};
+				var counter = 0;
+			    for (r in IView['element_menu']) {
+				  self.views[IView.euid]['element_menu'][r] = IView.euid + "-" + counter;
+				  initCtxMenu(self.views[IView.euid]['element_menu'][r], IView['element_menu'][r]);
+				  counter++;
+				}
+			  }
+			}
 			// TODO: Create common context menu manager which could handle
 			//       diagram, element, trees etc !!!
+			/*
 			IView.info(function(json) {
 				if (!json)
 					return;
@@ -284,12 +312,36 @@ Version:
 						self.views[IView.euid].ctxmenu.hide();
 				});
 			});
-
+*/
 			var dt = $(id + " #tree").dynatree(IView.tree).dynatree("getTree");
 
 				// Get capabilities
 				// Create context menu
 				return id;
+		},
+		'ShowContextMenu': function(name, event, node) {
+		   //$(".context-menu").hide();
+		   if (name) {
+		     this.activeNode = node;
+		     $("#view-"+name +".context-menu").css("left", event.clientX).css("top", event.clientY).show();
+		   }
+		},
+		'ShowElementContextMenu': function(description, viewid, data, event) {
+		   var self = dm.dm.fw;
+		   if (self.views && self.views[viewid]
+		     && self.views[viewid]['element_menu']
+			 && self.views[viewid]['element_menu'][description]) {
+			 // Enable the context menu for element
+			 var uniqueName = "#view-";
+		     uniqueName += self.views[viewid]['element_menu'][description];// Id of the menu
+			 $.log("SHOW: " + uniqueName);
+			 var $elem = $(uniqueName +".context-menu");
+			 if (data == undefined) {
+			   $elem.hide({delay:1000});
+			 } else {
+			   $elem.css("left", event.clientX-3).css("top", event.clientY+3).show()
+			 }
+		   }
 		},
 		//@proexp
 		addView: function(name, options, toolbox) {
@@ -334,7 +386,7 @@ Version:
 			var tabname = "#"+ this.options.tabRight + "-" + this.counter;
 			this.counter++;
 			$("#" + this.options.tabs).tabs("add", tabname, name);
-			if (type == "lifeline")
+			if (type == "sequence")
 				baseType = "sequence";
 			var self = this;
 			dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname

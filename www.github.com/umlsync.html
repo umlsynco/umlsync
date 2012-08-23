@@ -73,7 +73,7 @@
     .validateTips { border: 1px solid transparent; padding: 0.3em; }
   </style>    
   <script src="./diagrammer/dm/ds/diagram.js"></script>
-  <script src="./diagrammer/dm/ds/base.min.js"></script>
+  <script src="./diagrammer/dm/ds/base.js"></script>
   <script src="./diagrammer/dm/ds/sequence.js"></script>
   <script src="./diagrammer/dm/dm/loader.js"></script>
   <script src="./diagrammer/dm/dm/LocalhostView.js"></script>
@@ -179,7 +179,7 @@
 
                $(innerHtml).appendTo(".frames .frame");
 
-               dm.base.loader.Diagram(json.type, 'base', json, ".frames .frame .bubble");
+               dm.dm.loader.Diagram(json.type, 'base', json, ".frames .frame .bubble");
             }
           }
         };

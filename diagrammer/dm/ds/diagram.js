@@ -321,6 +321,7 @@ dm['dm'] = dm.dm;
                 var iDiagram = this;
                 $("#" + this.euid + "_Canvas").droppable({
                     drop: function( event, ui ) {
+					  $.log("DIAGRAM.jS DROPPABLE !!!");
                       var source = ui.helper.data("dtSourceNode") || ui.draggable;
                       $.log("source: " + source.data.addClass);
                       if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
@@ -328,25 +329,38 @@ dm['dm'] = dm.dm;
                             separator = "",
                             filenode = source,
                             isInterface = source.data.addClass == "iconinterface";
-                            // TODO: Change on isFs (is filesystem resource)
-                        while ((filenode.data.addClass == 'iconinterface')
+                        if (source.data.description) {
+						  key = source.data.description;
+						}
+						else {
+                          while ((filenode.data.addClass == 'iconinterface')
                           || (filenode.data.addClass == 'iconclass')
                           || (filenode.data.addClass == 'namespace')) {
                           key = filenode.data.title + separator + key;
                           separator = "::";
                           filenode = filenode.parent;
-                        }
+                          }
+						}
+
+						if (iDiagram.options['type'] == "sequence" && source.data.element != undefined) {
+                          var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById(source.data.element, {'viewid':source.data.viewid}));
+						  element.pageX = 200;
+                          element.pageY = 200;
+                          element.name = key;
+                          var ename = iDiagram.Element(element.type, element);
+                          return;
+						}
 
                         if (iDiagram.options['type'] == "component") {
                           var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
 
-                        element.pageX = 200;
-                        element.pageY = 200;
-                        element.name = key;
-                        element.filepath = filenode.getAbsolutePath() + "/" + key;
-        var ename = iDiagram.Element(element.type, element);
-        return;
-    }
+                          element.pageX = 200;
+                          element.pageY = 200;
+                          element.name = key;
+                          element.filepath = filenode.getAbsolutePath() + "/" + key;
+                          var ename = iDiagram.Element(element.type, element);
+                          return;
+                        }
     if (iDiagram.menuIcon != undefined) {
         var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':source.data.viewid});
         if (element != undefined) {

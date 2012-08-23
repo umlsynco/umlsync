@@ -42,12 +42,20 @@ Version:
                 e.preventDefault();
                 menuBuilder.HideAll();
                 e.stopPropagation();
-            }).mouseenter(function() { $(this).addClass('hover');})
-            .mouseleave(function() { $(this).removeClass('hover');});
+            }).mouseenter(function(event) { $(this).addClass('hover');
+			  if(item_options.mouseenter) {
+			    item_options.mouseenter(menuBuilder.currentElement, event);
+			  }
+			})
+            .mouseleave(function(event) { $(this).removeClass('hover');
+			  if(item_options.mouseleave) {
+			    item_options.mouseleave(menuBuilder.currentElement, event);
+			}
+			});
         });
 
         this.Show = function(element, x, y) {
-
+            $(".context-menu").hide();
             //show element context menu
             var pz = $("#" + menuBuilder.diagramId).offset();
             this.x = x - pz.left;
@@ -57,6 +65,7 @@ Version:
         };
 
         this.Hide = function() {
+		    $(".context-menu").hide();
             $("#" + menuBuilder.diagramId + " #" + options.uid).hide();
         };
     };
