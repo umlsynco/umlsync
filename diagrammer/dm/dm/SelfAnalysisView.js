@@ -33,9 +33,9 @@ Version:
 				if (callback)
 					callback.call();
 			},
-			'save': function(data, path, callback) {
-				
-			},
+		    'save': function(path, data, description) {
+              alert(data);
+		    },
 			'newfolder':function(path,name,callback) {
 				if (callback) callback({'isFolder':true,'isLazy':true,'title':name, 'addClass':"package"});
 			},
@@ -163,7 +163,6 @@ Version:
 				},
 				dnd: {
 					onDragStart: function(node) {
-					    $.log("DYNATREE DND START");
 					    function GetPath(n) {
 						   if (n.data.key != "root") {
 							 return GetPath(n.parent) + "." + n.data.title;
@@ -171,8 +170,7 @@ Version:
 						     return "dm";
 						   }	   
 						}
-
-						node.data.element = "Object Instance";
+                        node.data.viewid = this.euid;
 						node.data.description = GetPath(node);
 						return true;
 					},

@@ -195,24 +195,13 @@ dm['dm'] = dm.dm;
     _destroy: function(){},
     destroy: function() {
         this['_destroy']();
-        // TODO: handle diagram close
-        // This is hack to save diagram on destroy
+        // TODO: handle diagram close on a framework level ?
 //#ifdef EDITOR
         if ((this.options['type2'] == 'diagram')
                 && (this.options['viewid'])) {
             var data = this.getDescription();
-      
-            //alert("destroy " + this.options.fullname);
-      console.log(data);
 
-            var self = this;
-            $.ajax({
-                'type': 'GET',
-                'url': 'http://localhost:8000/vm/'+ self.options['viewid'] +'/save',
-                'dataType': 'jsonp',
-                'data': {'diagram':data, 'path': self.options['fullname'] + ".umlsync", 'description':'Test diagram'},
-                'success': function(ddd) {alert("DONE COOL !!!!" + ddd);}
-            });
+            dm.dm.fw.saveDiagram(this.options['viewid'], this.options['fullname'], data, "Test save/restore !!!");
         }
 //#endif
         this.element

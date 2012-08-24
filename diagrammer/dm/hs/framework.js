@@ -216,6 +216,7 @@ Version:
               initCtxMenu(IView.euid, IView.ctx_menu);
               self.views = self.views || {};
 			  self.views[IView.euid] = {};
+			  self.views[IView.euid]['view'] = IView;
 
 			  if (IView['element_menu']) {
 			    self.views[IView.euid]['element_menu'] = {};
@@ -406,6 +407,15 @@ Version:
 				self.diagrams[tabname] = obj;
 			});
 			this.updateFrameWork(true);
+		},
+		//@proexp
+		'saveDiagram': function(viewId, path, data, description) {
+		    var self = this;
+		    if (!self.views || !self.views[viewId] || !self.views[viewId].view) {
+			  alert("View: " + viewId + " was not initialize.");
+			  return;
+			}
+			self.views[viewId].view.save(path, data, description);			
 		},
         //@proexp
 		'loadDiagram': function(path, data_type) {

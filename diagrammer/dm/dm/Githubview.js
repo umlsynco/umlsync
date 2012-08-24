@@ -72,6 +72,9 @@ Version:
                 if (callback)
                     callback(null);
             },
+		    'save': function(path, data, description) {
+              alert(description);
+		    },
 			'ctx_menu': {
 			   "Reload": function(node) {
 			      node.reloadChildren();

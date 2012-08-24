@@ -43,15 +43,15 @@ Version:
 			}
 			});
 		},
-		save: function(data, path, callback) {
-			//TODO: check path
-			$.ajax({
-				type: 'GET',
-				url: urlArg +'/save',
-				dataType: 'jsonp',
-				data: {'diagram':data, 'path': path, 'description':'Test diagram'},
-				success: function(ddd) {alert("DONE COOL !!!!" + ddd);}
-			});
+		save: function(path, data, description) {
+		    alert("SAVE: to " + path);
+            $.ajax({
+                'type': 'GET',
+                'url': urlArg +'/save',
+                'dataType': 'jsonp',
+                'data': {'diagram':data, 'path': path + ".umlsync", 'description':description},
+                'success': function(ddd) {alert("DONE COOL !!!!" + ddd);}
+            });
 		},
 		newfolder:function(path,name,callback) {
 			$.ajax({
