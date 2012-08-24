@@ -592,10 +592,11 @@ dm['dm'] = dm.dm;
         // If it is editable diagram
         if (this.options['editable']) {
             // Load the context menu for element
-            if ((this.menuCtx != undefined) && (options['ctx_menu'] != undefined))
+            if ((this.menuCtx) && (options['ctx_menu'])) {
                 // mini
 				$.log("LOAD :" + options['ctx_menu']);
                 this.menuCtx['load'](options['ctx_menu']);
+			}
             // Load the icons menu for element
             if ((this.menuIcon != undefined) && (options['menu'] != undefined))
                 this.menuIcon['load'](options['menu']);

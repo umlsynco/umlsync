@@ -62,6 +62,7 @@ Version:
 
         var pUrl = url;
         return {
+		    euid: "Github",
             // Check if loging required
             init: function() {
             },
@@ -71,13 +72,48 @@ Version:
                 if (callback)
                     callback(null);
             },
+			'ctx_menu': {
+			   "Reload": function(node) {
+			      node.reloadChildren();
+			   },
+			   "Open": function(node) {
+			     // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
+                    if ((!node.data.isFolder)
+                        && (node.data.title.indexOf(".json") != -1))
+                    $.ajax({
+                        accepts: 'application/vnd.github-blob.raw',
+                        dataType: 'jsonp',
+                        url: 'https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs/'+node.data.sha,
+                        success: decodeContent,
+                        error: function(jqXHR, textStatus, errorThrown) {
+                           //Error handling code
+                           alert('Oops there was an error');
+                        },
+                    });
+			   },
+			   "Save": function(node) {
+			   },
+			   "New folder": function(node) {
+			     this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
+			   },
+			   "Remove": function(node) {
+			     this.remove(node.getAbsolutePath(), function() {node.remove();});
+			   }
+			},
             tree: {
                 persist: true,
                 initAjax: {
                     url: pUrl + 'git/trees/master',
                     dataType:"jsonp",
                     postProcess: treeView
-                }, 
+                },
+                onCreate: function(node, span){
+                   $(span).bind('contextmenu', function(e) {
+				     var node = $.ui.dynatree.getNode(e.currentTarget);
+					 dm.dm.fw.ShowContextMenu("Github", e, node);
+					 e.preventDefault();
+				   });
+                },
                 onLazyRead: function(node){
                     if (node.data.isFolder)
                         node.appendAjax({url: "https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/trees/" + node.data.sha,

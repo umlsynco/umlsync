@@ -96,6 +96,7 @@ Version:
 
                     for (g in inst) {
                        if ($.isFunction(inst[g])) {
+					    $.log("ADD: " + g);
                         element.addMethod(g);
                        }
                     }

@@ -60,6 +60,66 @@ Version:
 					success: function(data) {if (callback) callback(data);}
 				});
 			},
+			'ctx_menu': {
+			   "Reload": function(node) {
+			      node.reloadChildren();
+			   },
+			   "Open": function(node) {
+			     // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
+			     if (!node.data.isFolder) {
+						if ($("#tab-" + node.data.key).length == 0) {
+							if ('diagramclass' == node.data.addClass)
+								self.loadDiagram(urlArg + '/open?path='+node.getAbsolutePath(), "jsonp");
+
+							if ('cfile' == node.data.addClass)
+								self.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
+
+							// Urgly hack for diagram selection menu
+							var val = $("#vp_main_menu input").val();
+							val.substr(val.lastIndexOf('/'))
+							$("#vp_main_menu input").val(node.parent.getAbsolutePath() + '/' + val.substr(val.lastIndexOf('/')));
+						}
+					} else {
+						// Ugly hack for diagram selection menu
+						var val = $("#vp_main_menu input").val();
+						val.substr(val.lastIndexOf('/'))
+						self.views[uid].active = node.getAbsolutePath();
+						$("#vp_main_menu input").val(node.getAbsolutePath() + val.substr(val.lastIndexOf('/')));
+					}
+			   },
+			   "Save": function(node) {
+			   },
+			   "New folder": function(node) {
+			     this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
+			   },
+			   "Remove": function(node) {
+			     this.remove(node.getAbsolutePath(), function() {node.remove();});
+			   }
+			},
+			"element_menu": {
+			  "Package,Subsystem": {
+			    "Internal packages": function(element) {
+				  alert("Not implemented!!!");
+			    },
+			    "Dependency": function(element) {
+				  alert("Not implemented!!!");
+			    },
+			    "Usage": function(element) {
+				  alert("Not implemented!!!");
+			    }
+			  },
+			  "Class,Interface,Object Instance": {
+			    "Internal packages": function(element) {
+				  alert("Not implemented!!!");
+			    },
+			    "Dependency": function(element) {
+				  alert("Not implemented!!!");
+			    },
+			    "Usage": function(element) {
+				  alert("Not implemented!!!");
+			    }
+			  }
+			},
 			tree: {
 					title:name,
 					autoFocus: false,
