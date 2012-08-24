@@ -579,6 +579,7 @@ dm['dm'] = dm.dm;
         var self = this;
         self.max_zindex++;
         options["z-index"] = self.max_zindex; //options["z-index"] || ();
+		options["ctx_menu"] = options["ctx_menu"] || "default"; //options["z-index"] || ();
         $.log("this.options.loader.Element !!!");
         dm['dm']['loader']['Element'](type, options, this, function(obj) {
             if (obj != undefined)
@@ -593,6 +594,7 @@ dm['dm'] = dm.dm;
             // Load the context menu for element
             if ((this.menuCtx != undefined) && (options['ctx_menu'] != undefined))
                 // mini
+				$.log("LOAD :" + options['ctx_menu']);
                 this.menuCtx['load'](options['ctx_menu']);
             // Load the icons menu for element
             if ((this.menuIcon != undefined) && (options['menu'] != undefined))
@@ -1113,7 +1115,8 @@ dm['dm'] = dm.dm;
             'pageY': 140,
             'pageX': 200,
             'selected': false,
-            'area': "none"
+            'area': "none",
+			'ctx_menu':"default"
         },
         /*
     destroy: function() {

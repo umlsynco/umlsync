@@ -56,14 +56,18 @@ Version:
 			   }
 			},
 			"element_menu": {
-			  "Class": {
-			    "Update": function(element) {
-				  alert("Update called !!!");
+			  "Package,Subsystem": {
+			    "Internal packages": function(element) {
+				  alert("Not implemented!!!");
 			    },
-			    "Hide inherited": function(element) {
+			    "Dependency": function(element) {
+				  alert("Not implemented!!!");
+			    },
+			    "Usage": function(element) {
+				  alert("Not implemented!!!");
 			    }
 			  },
-			  "Object Instance": {
+			  "Class,Interface,Object Instance": {
 			    "Update": function(element) {
 				    var name = element.getName(),
                     ns = name.split(".");

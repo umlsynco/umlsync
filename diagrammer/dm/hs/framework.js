@@ -221,8 +221,13 @@ Version:
 			    self.views[IView.euid]['element_menu'] = {};
 				var counter = 0;
 			    for (r in IView['element_menu']) {
-				  self.views[IView.euid]['element_menu'][r] = IView.euid + "-" + counter;
-				  initCtxMenu(self.views[IView.euid]['element_menu'][r], IView['element_menu'][r]);
+				  var rs = r.split(","), // Multiple elements support "Package,Subsystem"
+				      nm = IView.euid + "-" + counter;
+				  for (h in rs) {
+				    self.views[IView.euid]['element_menu'][rs[h]] = nm;
+					$.log("INIT: " + rs[h]);
+				  }
+				  initCtxMenu(nm, IView['element_menu'][r]);
 				  counter++;
 				}
 			  }
