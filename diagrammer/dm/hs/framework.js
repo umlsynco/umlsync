@@ -330,6 +330,7 @@ Version:
 				return id;
 		},
 		'ShowContextMenu': function(name, event, node) {
+		   $.log("SHOW: " + name);
 		   $(".context-menu").hide();
 		   if (name) {
 		     activeNode = node;
