@@ -63,13 +63,12 @@ Version:
 			var $tabs = $("#tabs").tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
 			      	'add': function(event, ui) {
 						if (dm.dm['fw']['diagrams'])
-							self.selectedDiagram = dm.dm['fw']['diagrams']["#" + ui.panel.id];
-
+							self.selectedDiagramId = "#" + ui.panel.id;
 					    $tabs.tabs('select', '#' + ui.panel.id);
 					},
 					'select': function(event, ui) {
 						if (dm.dm['fw']['diagrams'])
-							self.selectedDiagram = dm.dm['fw']['diagrams']["#" + ui.panel.id];
+							self.selectedDiagramId = "#" + ui.panel.id;
 						self.updateFrameWork(true);
 					},
 					'remove': function(event, ui) {
@@ -444,6 +443,7 @@ Version:
 				dm.dm.loader.Diagram(json.type, "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;
+					$.log("ADDDDDDDDDDDDDDDD: " + tabname);
 				});
 				self.updateFrameWork(true);
 			  },
@@ -470,12 +470,12 @@ Version:
                }
 				 */
 				if (e.keyCode == 46) {
-					if (fw.selectedDiagram)  {
-						if (fw.selectedDiagram.clickedElement != undefined) {
-							fw.selectedDiagram.clickedElement._update();
-							$.clippy = fw.selectedDiagram.clickedElement.getDescription();
+					if (fw.diagrams[fw.selectedDiagramId])  {
+						if (fw.diagrams[fw.selectedDiagramId].clickedElement != undefined) {
+							fw.diagrams[fw.selectedDiagramId].clickedElement._update();
+							$.clippy = fw.diagrams[fw.selectedDiagramId].clickedElement.getDescription();
 							// Have to think about conectors
-							$("#" + fw.selectedDiagram.clickedElement.euid + "_Border").remove();
+							$("#" + fw.diagrams[fw.selectedDiagramId].clickedElement.euid + "_Border").remove();
 						}
 					}
 				} else if (e.ctrlKey) {
@@ -483,8 +483,8 @@ Version:
 					case 97:// Handle Ctl-A
 						$.log("Ctl-A");
 
-						if (fw.selectedDiagram) {
-							fw.selectedDiagram._setWidgetsOption("selected", true);
+						if (fw.diagrams[fw.selectedDiagramId]) {
+							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", true);
 						}
 						e.preventDefault();
 						break;                       
@@ -494,8 +494,8 @@ Version:
 						// 2. if element ? => copy it on clipboard
 						//                          stop propagate
 						$.log("Ctl-C");
-						if (fw.selectedDiagram)  {
-							$.clippy = fw.selectedDiagram.getDescription("selected", true);
+						if (fw.diagrams[fw.selectedDiagramId])  {
+							$.clippy = fw.diagrams[fw.selectedDiagramId].getDescription("selected", true);
 						} else {
 							$.clippy = undefined;
 						}
@@ -507,11 +507,11 @@ Version:
 						//                          stop propagate
 						// 3. Remove element
 						$.log("Ctl-X");
-						if (fw.selectedDiagram)  {
-							if (fw.selectedDiagram.clickedElement != undefined) {
-								fw.selectedDiagram.clickedElement._update();
-								$.clippy = fw.selectedDiagram.clickedElement.getDescription();
-								$("#" + fw.selectedDiagram.clickedElement.euid + "_Border").remove();
+						if (fw.diagrams[fw.selectedDiagramId])  {
+							if (fw.diagrams[fw.selectedDiagramId].clickedElement != undefined) {
+								fw.diagrams[fw.selectedDiagramId].clickedElement._update();
+								$.clippy = fw.diagrams[fw.selectedDiagramId].clickedElement.getDescription();
+								$("#" + fw.diagrams[fw.selectedDiagramId].clickedElement.euid + "_Border").remove();
 							} else {
 								$.clippy = undefined;
 							}
@@ -525,7 +525,7 @@ Version:
 						//                          stop propagate if success
 						$.log("Ctl-V");
 
-						if (($.clippy)  && (fw.selectedDiagram)) {
+						if (($.clippy)  && (fw.diagrams[fw.selectedDiagramId])) {
 							var obj = $.parseJSON($.clippy),
 							es = obj["elements"],
 							cs = obj["connectors"];
@@ -533,10 +533,10 @@ Version:
 								es[j].pageX = parseInt(es[j].pageX) + 10;
 								$.log("pzgeX: " + es[j].pageX);
 								es[j].pageY = parseInt(es[j].pageY) + 10;
-								fw.selectedDiagram.Element(es[j].type, es[j]);
+								fw.diagrams[fw.selectedDiagramId].Element(es[j].type, es[j]);
 							}
 							//for (j in cs)
-							//fw.selectedDiagram.Connector(cs[j].type, cs[j]);
+							//fw.diagrams[fw.selectedDiagramId].Connector(cs[j].type, cs[j]);
 							$.clippy = undefined;
 						}
 						break;
@@ -545,8 +545,8 @@ Version:
 						// 2. if diagram => get operation sequence manager
 						//                       -> goBack()
 						$.log("Ctl-Z");
-						if (fw.selectedDiagram)  {
-							fw.selectedDiagram.revertOperation();
+						if (fw.diagrams[fw.selectedDiagramId])  {
+							fw.diagrams[fw.selectedDiagramId].revertOperation();
 						}
 						break;
 					case 121:// Handle Ctl-Y
@@ -554,8 +554,8 @@ Version:
 						// 2. if diagram => get operation sequence manager
 						//                       -> goForward()
 						$.log("Ctl-Y");
-						if (fw.selectedDiagram)  {
-							fw.selectedDiagram.repeatOperation();
+						if (fw.diagrams[fw.selectedDiagramId])  {
+							fw.diagrams[fw.selectedDiagramId].repeatOperation();
 						}
 						break;
 					case 120:// Handle Ctl-S
@@ -620,32 +620,32 @@ Version:
 					}
 
 					$('button#color5').simpleColorPicker({ 'onChangeColor': function(color) { 
-						if (fw.selectedDiagram)  {
-							fw.selectedDiagram._setWidgetsOption("color", color);
+						if (fw.diagrams[fw.selectedDiagramId])  {
+							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("color", color);
 						}
 					} });
 					$('button#vatop').click(function() {
-						if (fw.selectedDiagram)  {
-							fw.selectedDiagram._setWidgetsOption("z-index", "front");
+						if (fw.diagrams[fw.selectedDiagramId])  {
+							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("z-index", "front");
 						}
 					});
 					$('button#vabottom').click(function() {
-						if (fw.selectedDiagram)  {
-							fw.selectedDiagram._setWidgetsOption("z-index", "back");
+						if (fw.diagrams[fw.selectedDiagramId])  {
+							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("z-index", "back");
 						}
 					});
 
 					$("#borderWidth").change(function() {
-						if (fw.selectedDiagram)  {
+						if (fw.diagrams[fw.selectedDiagramId])  {
 							$.log("diagram ok");
-							fw.selectedDiagram._setWidgetsOption("borderwidth", $(this).val() + "px");
+							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("borderwidth", $(this).val() + "px");
 						}    
 					});
 
 					$("select#speedAa").change(function() {
 						$.log("diagram ok");
-						if (fw.selectedDiagram)  {
-							fw.selectedDiagram._setWidgetsOption("font-family", $(this).val());
+						if (fw.diagrams[fw.selectedDiagramId])  {
+							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("font-family", $(this).val());
 						}
 					});    
 

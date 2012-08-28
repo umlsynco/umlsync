@@ -800,8 +800,7 @@ dm['dm'] = dm.dm;
             var self = this;
             $("img#" + d.euid + "_REF").attr('title', path).click(function() {
                 if (path != "")
-//                    path = '&path=' + path;
-                dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
+                  dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
             });
         }
     },
@@ -1314,8 +1313,7 @@ dm['dm'] = dm.dm;
                 $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(function() {
                     var path = self.options['subdiagram'];
                     if (path != "")
-//                      path = '&path=' + path;
-                    dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
+                      dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
                 });
             }
 
