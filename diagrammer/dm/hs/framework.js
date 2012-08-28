@@ -61,30 +61,37 @@ Version:
 			});
 
 			var $tabs = $("#tabs").tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
-			      		add: function(event, ui) {
-					    $tabs.tabs('select', '#' + ui.panel.id);
-					},
-					select: function(event, ui) {
+			      	'add': function(event, ui) {
 						if (dm.dm['fw']['diagrams'])
 							self.selectedDiagram = dm.dm['fw']['diagrams']["#" + ui.panel.id];
 
+					    $tabs.tabs('select', '#' + ui.panel.id);
+					},
+					'select': function(event, ui) {
+						if (dm.dm['fw']['diagrams'])
+							self.selectedDiagram = dm.dm['fw']['diagrams']["#" + ui.panel.id];
 						self.updateFrameWork(true);
+					},
+					'remove': function(event, ui) {
+					   // Selected diagram is modified ?
+					   // Save diagram if modified
+					   // Remove tab and change selection !!!
 					}
 					});
 
 			$('#tabs span.ui-test').live('click', function() {
-					var index = $('li',$("#tabs")).index($(this).parent());
-					$("#tabs").tabs('remove', index);
+					var index = $('li', $tabs).index($(this).parent());
+					$tabs.tabs('remove', index);
 			});
 
-			$("#treetabs").tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>'});
+			var $treetabs = $("#treetabs").tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>'});
 
 			$('#treetabs span.ui-test').live('click', function() {
-				var index = $('li',$("#treetabs")).index($(this).parent());
-				$("#treetabs").tabs('remove', index);
+				var index = $('li', $treetabs).index($(this).parent());
+				$treetabs.tabs('remove', index);
 			});
 
-			$("#content-left-right-resize").draggable({ axis: 'x', drag: function(ui) {
+			$("#content-left-right-resize").draggable({ axis: 'x', 'drag': function(ui) {
 					self.updateFrameWork(false, ui);
 					}, 
 					stop: function(ui) {
@@ -212,11 +219,13 @@ Version:
 			  $("#view-"+vid + " .menu-item").mouseenter(function(event) { $(this).addClass('hover'); })
               .mouseleave(function(event) { $(this).removeClass('hover');});
 			}
+
+            self.views = self.views || {};
+  		    self.views[IView.euid] = {};
+			self.views[IView.euid]['view'] = IView;
+
 			if (IView.ctx_menu) {
               initCtxMenu(IView.euid, IView.ctx_menu);
-              self.views = self.views || {};
-			  self.views[IView.euid] = {};
-			  self.views[IView.euid]['view'] = IView;
 
 			  if (IView['element_menu']) {
 			    self.views[IView.euid]['element_menu'] = {};
@@ -415,16 +424,18 @@ Version:
 			  alert("View: " + viewId + " was not initialize.");
 			  return;
 			}
-			self.views[viewId].view.save(path, data, description);			
+			self.views[viewId].view.save(path, data, description);
 		},
         //@proexp
-		'loadDiagram': function(path, data_type) {
-			var json_type = data_type || "json";
-			var self = this;
-			$.ajax({
-				'url': path,
-				'dataType': json_type,
-				'success': function(json) {
+		'loadDiagram': function(viewid, path) {
+		    $.log("VIEWID IS:" + viewid);
+		    var self = this;
+		    if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
+			  alert("View: " + viewid + " was not initialize.");
+			  return;
+			}
+			self.views[viewid].view.loadDiagram(path, {
+			  success: function(json) {
 				var tabname = "#"+ self.options.tabRight + "-" + self.counter;
 				self.counter++;
 				$.struct = json;
@@ -434,8 +445,8 @@ Version:
 					self.diagrams[tabname] = obj;
 				});
 				self.updateFrameWork(true);
-			}
-			}).fail(function(x1,x2,x3) {alert("FAILED to load:" + path +" : " + x1.status + x2 + x3);});
+			  },
+			  error: function() {alert("FAILED to load:" + path);}});
 		},
         //@proexp
 		'loadCode': function(url, name) {

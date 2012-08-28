@@ -18,7 +18,8 @@ Version:
 
 	dm.base.LocalFilesView = function(urlArg) {
 	
-		return {
+		var self = {
+		    euid: 'LocalFiles',
 			init: function() {
 				// Check localhost availability and select port
 			},
@@ -34,6 +35,15 @@ Version:
 			save: function(data, path, callback) {
 				
 			},
+			loadDiagram: function(node, callback) {
+			    $.log("LOADING: " + urlArg + node.getAbsolutePath() + ".json");
+				$.ajax({
+		          url: urlArg + node.getAbsolutePath() + ".json",
+				  dataType: 'json',
+                  success: callback.success,
+			      error:callback.error
+		        });
+			},
 			newfolder:function(path,name,callback) {
 				if (callback) callback({isFolder:true,isLazy:true,title:name});
 			},
@@ -47,10 +57,11 @@ Version:
 				},
 				onActivate: function(node) {
 					if (!node.data.isFolder)
-					  dm.dm.fw.loadDiagram(urlArg + node.getAbsolutePath() + ".json");
+					  dm.dm.fw.loadDiagram(self.euid, node);
 				},
 			} //tree
 		};
+		return self;
 	};
 //	@aspect
 })(jQuery, dm);

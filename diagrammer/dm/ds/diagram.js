@@ -801,7 +801,7 @@ dm['dm'] = dm.dm;
             $("img#" + d.euid + "_REF").attr('title', path).click(function() {
                 if (path != "")
                     path = '&path=' + path;
-                dm.dm.fw['loadDiagram']('http://localhost:8000/vm/cp/getdiagram?' + path +'&project=storageman');
+                dm.dm.fw['loadDiagram'](this.options['viewid'], path);
             });
         }
     },
@@ -1315,7 +1315,7 @@ dm['dm'] = dm.dm;
                     var path = self.options['subdiagram'];
                     if (path != "")
     path = '&path=' + path;
-                    dm.dm.fw['loadDiagram']('http://localhost:8000/vm/cp/getdiagram?' + path +'&project=storageman');
+                    dm.dm.fw['loadDiagram'](this.options['viewid'], path);
                 });
             }
 

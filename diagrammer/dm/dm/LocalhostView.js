@@ -43,6 +43,14 @@ Version:
 			}
 			});
 		},
+		'loadDiagram':function(node, callback) {
+		   $.ajax({
+		     url: urlArg + '/open?path='+ node.getAbsolutePath(),
+			 dataType: 'jsonp',
+			 success: callback.success,
+			 error:callback.error
+		   });
+		},
 		save: function(path, data, description) {
 		    alert("SAVE: to " + path);
             $.ajax({
@@ -71,7 +79,7 @@ Version:
 			if (!node.data.isFolder) {
 				if ($("#tab-" + node.data.key).length == 0) {
 					if ('diagramclass' == node.data.addClass)
-						dm.dm.fw.loadDiagram(urlArg + '/open?path='+node.getAbsolutePath(), "jsonp");
+						dm.dm.fw.loadDiagram(self.euid, node);
 
 					if ('cfile' == node.data.addClass)
 						dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
@@ -419,7 +427,7 @@ Version:
 			if (!node.data.isFolder) {
 				if ($("#tab-" + node.data.key).length == 0) {
 					if ('diagramclass' == node.data.addClass)
-						dm.dm.fw.loadDiagram(urlArg + '/open?path='+node.getAbsolutePath(), "jsonp");
+						dm.dm.fw.loadDiagram(self.euid, node);
 
 					if ('cfile' == node.data.addClass)
 						dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);

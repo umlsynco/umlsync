@@ -42,7 +42,7 @@ Version:
               return data;
         };
         
-        function decodeContent(data, textStatus, jqXHR) {
+        function decodeContent(data, textStatus, jqXHR, callback) {
           for (d in data) {
             if (d == 'data') {
                var splitted = data[d].content.split('\n');
@@ -51,17 +51,13 @@ Version:
                  decoded += $.base64.decode(splitted[s]);
                }
                var json = $.parseJSON(decoded);
-               var tabname = "#"+ dm.dm.fw.options.tabRight + "-" + dm.dm.fw.counter;
-               dm.dm.fw.counter++;
-               $("#" + dm.dm.fw.options.tabs).tabs("add", tabname, json.name);
-              dm.dm.loader.Diagram(json.type, "base", json, tabname);
-              dm.dm.fw.updateFrameWork(true);
-            }      
+			   if (callback) callback(json);
+            }
           }
         };
 
         var pUrl = url;
-        return {
+        var self = {
 		    euid: "Github",
             // Check if loging required
             init: function() {
@@ -75,15 +71,27 @@ Version:
 		    'save': function(path, data, description) {
               alert(description);
 		    },
+			'loadDiagram': function(node, callback) {
+			  if (node && node.data && node.data.sha) {
+		        $.ajax({
+		          url: 'https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs/'+node.data.sha,
+                  accepts: 'application/vnd.github-blob.raw',
+			      dataType: 'jsonp',
+                  success: function(x, y, z) {decodeContent(x,y,z,callback.success);},
+			      error:callback.error
+		        });
+			  }
+			},
 			'ctx_menu': {
 			   "Reload": function(node) {
 			      node.reloadChildren();
 			   },
 			   "Open": function(node) {
 			     // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
-                    if ((!node.data.isFolder)
-                        && (node.data.title.indexOf(".json") != -1))
-                    $.ajax({
+                 if ((!node.data.isFolder)
+                        && (node.data.title.indexOf(".json") != -1)) {
+					dm.dm.fw.loadDiagram(self.euid, node);
+                    /*$.ajax({
                         accepts: 'application/vnd.github-blob.raw',
                         dataType: 'jsonp',
                         url: 'https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs/'+node.data.sha,
@@ -92,7 +100,8 @@ Version:
                            //Error handling code
                            alert('Oops there was an error');
                         },
-                    });
+                    });*/
+				 }
 			   },
 			   "Save": function(node) {
 			   },
@@ -126,26 +135,11 @@ Version:
                 onActivate: function(node) {
                     if ((!node.data.isFolder)
                         && (node.data.title.indexOf(".json") != -1))
-                    $.ajax({
-                        accepts: 'application/vnd.github-blob.raw',
-                        dataType: 'jsonp',
-                        url: 'https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs/'+node.data.sha,
-                        success: decodeContent,
-                        error: function(jqXHR, textStatus, errorThrown) {
-                           //Error handling code
-                           alert('Oops there was an error');
-                        },
-                    });
+						dm.dm.fw.loadDiagram(self.euid, node);
                 },
             },
-            // The element context menu extension
-            'element': {
-                'class': {
-                    'Update': function() {
-                    }
-                }                
-            }
         };
+		return self;
     };
 //@aspect
 })(jQuery, dm);
