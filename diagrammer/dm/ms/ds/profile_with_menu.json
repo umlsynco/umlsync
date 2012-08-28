@@ -1,0 +1,65 @@
+[
+  {
+   "elements": [
+	{"type": "stereotype",
+	 "description": "Stereotype",
+	 "menu": "vp-stereotype-menu",
+	 "ctx_menu": "stereotype",
+	 "image": [{"small": "./dm/icons/vp/es/class/Class.png"}]
+	},
+	{"type": "note",
+	 "description": "Note",
+	 "menu": "note-menu",
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
+	}
+  ],
+    "connectors": [
+    {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/vp/cs/generalization.png"}]
+	  },
+    {"connector":"composition",
+	   "description":"Composition",
+	   "image": [{"small": "./dm/icons/vp/cs/composition.png"}]
+	  }
+    ],
+	"menus": [
+	  {"id":"vp-stereotype-menu",
+	   "items": [
+				{"el":"Stereotype",
+				 "cs":[
+						{"connector":"composition",
+						 "image":"dm/icons/vp/cs/class/class/vp-composition.png"
+						},
+						{"connector":"generalization",
+						 "image":"dm/icons/vp/cs/class/class/vp-generalization.png"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"note-menu",
+	   "items": [
+				{"el":"Stereotype",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/vp/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]
