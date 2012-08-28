@@ -195,15 +195,7 @@ dm['dm'] = dm.dm;
     _destroy: function(){},
     destroy: function() {
         this['_destroy']();
-        // TODO: handle diagram close on a framework level ?
-//#ifdef EDITOR
-        if ((this.options['type2'] == 'diagram')
-                && (this.options['viewid'])) {
-            var data = this.getDescription();
 
-            dm.dm.fw.saveDiagram(this.options['viewid'], this.options['fullname'], data, "Test save/restore !!!");
-        }
-//#endif
         this.element
         .unbind( "." + this.euid )
         .removeData( this.euid );

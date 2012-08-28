@@ -62,24 +62,29 @@ Version:
 
 			var $tabs = $("#tabs").tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
 			      	'add': function(event, ui) {
-						if (dm.dm['fw']['diagrams'])
+						if (self['diagrams'])
 							self.selectedDiagramId = "#" + ui.panel.id;
 					    $tabs.tabs('select', '#' + ui.panel.id);
 					},
 					'select': function(event, ui) {
-						if (dm.dm['fw']['diagrams'])
+						if (self['diagrams'])
 							self.selectedDiagramId = "#" + ui.panel.id;
 						self.updateFrameWork(true);
 					},
-					'remove': function(event, ui) {
-					   // Selected diagram is modified ?
-					   // Save diagram if modified
-					   // Remove tab and change selection !!!
-					}
+/*					'remove': function(event, ui) { // it is too late to save diagram at this moment
+						self.updateFrameWork(true);
+					}*/
 					});
 
 			$('#tabs span.ui-test').live('click', function() {
-					var index = $('li', $tabs).index($(this).parent());
+					var index = $('li', $tabs).index($(this).parent().parent()),
+					    ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
+					// TODO: Add dialog "Would you like to store diagram ?"
+					if (self['diagrams'] && self['diagrams'][ahref]) {
+					  	  var diagram = self['diagrams'][ahref];
+					      var data = diagram.getDescription();
+                          self.saveDiagram(diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
+					}
 					$tabs.tabs('remove', index);
 			});
 
