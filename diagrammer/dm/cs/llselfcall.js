@@ -1,7 +1,7 @@
 /*
-Class: association
+Class: self call of port element on sequence diagram
 
-Association connector creates a connection beween two elements of diagram
+Generalization connector creates a connection beween two elements of diagram
 
 Author:
   Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
@@ -20,7 +20,7 @@ Version:
 dm = dm || {};
 dm.cs = dm.cs || {};
 
-dm.base.diagram("cs.selfassociation", dm.cs.connector, {
+dm.base.diagram("cs.llselfcall", dm.cs.connector, {
     draw: function(context2, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
@@ -61,19 +61,20 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
          alert("SELF-CONNECTION suppose the same source and destination element");
        //alert(" Get connection points: " + fromId + "  " + toId);
 
-      var p11 = $('#'+ this.from + "_Border").position();
+	  var $el = $('#'+ this.from + "_Border");
+      var p11 = $el.position(),
+	      ew = $el.width(),
+		  eh = $el.height();
       if (!p11) {
          alert("Not found " + this.from);
          return;
       }
 
-      this.epoints.splice(3, this.epoints.length-3);
-      this.epoints[0][0] = p11.left + 40;
-      this.epoints[0][1] = p11.top - 20;
-      this.epoints[1][0] = p11.left + 180;
-      this.epoints[1][1] = p11.top - 20;
-      this.epoints[2][0] = p11.left + 180;
-      this.epoints[2][1] = p11.top + 20;
+      this.epoints.splice(2, this.epoints.length-2);
+      this.epoints[0][0] = p11.left + ew + 25;
+      this.epoints[0][1] = p11.top + 16;
+      this.epoints[1][0] = p11.left + ew + 25;
+      this.epoints[1][1] = p11.top + eh;
 
        var p1 = $('#'+ fromId).position();
        var p2 = p1;
@@ -100,12 +101,6 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
          var x2 = this._getRValue(p2.left + p21.left, epoints[lln][0], $('#' + toId).width());
          var y2 = this._getRValue(p2.top + p21.top, epoints[lln][1], $('#' + toId).height());
 
-/*         var x1 = p1.left + p11.left;
-         var y1 = p1.top + p11.top;
-
-         var x2 = p2.left + p21.left;
-         var y2 = p2.top + p21.top;
-*/      
         var newpoints = [];
         newpoints[0] = [x1 + scrollLeft,y1 + scrollTop];
         for (i=1;i<=epoints.length;++i) {
@@ -114,6 +109,21 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
         newpoints[epoints.length + 1] = [x2 + scrollLeft,y2 + scrollTop];
         return newpoints;
        }
+    },
+    getAutocomplete: function() {
+        if (this.parrent == undefined)
+          return null;
+
+        if (this.parrent.elements[this.toId]
+         && this.parrent.elements[this.toId].getAutocomplete)
+         return this.parrent.elements[this.toId].getAutocomplete();
+        return null;
+    },
+    addLable: function(text, x, y) {
+      var self = this;
+      this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>").appendTo("#" + this.parrent.euid)
+      .css("left", x).css("top", y)
+      .draggable().editable({onAutocomplete:function() { return self.getAutocomplete() }}));
     }
     });
 })(jQuery, dm);

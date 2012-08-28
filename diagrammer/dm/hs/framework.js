@@ -434,6 +434,7 @@ Version:
 			  alert("View: " + viewid + " was not initialize.");
 			  return;
 			}
+			if (self.views[viewid])
 			self.views[viewid].view.loadDiagram(path, {
 			  success: function(json) {
 				var tabname = "#"+ self.options.tabRight + "-" + self.counter;

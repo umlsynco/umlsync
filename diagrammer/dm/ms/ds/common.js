@@ -186,7 +186,8 @@ Version:
 
                   if ((element != undefined) && (element.element != undefined))
                     dm.dm.loader.LoadElement(element.element);
-                    if ((lcon != undefined) && (lcon.oneway)) {
+                  if ((lcon != undefined) && (lcon.oneway)) {
+				      $.log("CONNECTOR: " + lcon.connector);
                       iconMenuBuilder.diagram.Connector(lcon.connector,
                            {fromId: iconMenuBuilder.currentElement,
 						    toId: iconMenuBuilder.currentElement});
