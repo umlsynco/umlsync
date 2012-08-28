@@ -20,7 +20,7 @@
         'Add method': {
             click: function(element){ 
             if (element.addMethod != undefined) 
-                element.addMethod("private newmothod(int, int, void*)");
+                element.addMethod("private newmethod(int, int, void*)");
             },
             klass: "second-menu-item"
         },
