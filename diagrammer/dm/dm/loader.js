@@ -235,7 +235,6 @@ Version:
                         argCallback(newdiagram);
                     }
                     self['CreateDiagramMenu'](opt.diagram, newdiagram);
-                    //dm.dm['fw']['selectedDiagram'] = newdiagram; // Fix for just added diagram
                     return newdiagram;
                 },
                 data: opt

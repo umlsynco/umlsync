@@ -195,15 +195,7 @@ dm['dm'] = dm.dm;
     _destroy: function(){},
     destroy: function() {
         this['_destroy']();
-        // TODO: handle diagram close on a framework level ?
-//#ifdef EDITOR
-        if ((this.options['type2'] == 'diagram')
-                && (this.options['viewid'])) {
-            var data = this.getDescription();
 
-            dm.dm.fw.saveDiagram(this.options['viewid'], this.options['fullname'], data, "Test save/restore !!!");
-        }
-//#endif
         this.element
         .unbind( "." + this.euid )
         .removeData( this.euid );
@@ -800,8 +792,7 @@ dm['dm'] = dm.dm;
             var self = this;
             $("img#" + d.euid + "_REF").attr('title', path).click(function() {
                 if (path != "")
-//                    path = '&path=' + path;
-                dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
+                  dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
             });
         }
     },
@@ -1314,8 +1305,7 @@ dm['dm'] = dm.dm;
                 $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(function() {
                     var path = self.options['subdiagram'];
                     if (path != "")
-//                      path = '&path=' + path;
-                    dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
+                      dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
                 });
             }
 
