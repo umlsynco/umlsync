@@ -17,12 +17,12 @@ Version:
 
 var dm = (function( window, undefined ) {
 
-    var dm = {};
-    dm.base = {};
-    dm.menu = {};
-    dm.ds = {};
-    dm.cs = {};
-    dm.hs = {};
+  var dm = {};
+  dm.base = {};
+  dm.menu = {};
+  dm.ds = {};
+  dm.cs = {};
+  dm.hs = {};
 	dm.dm = {};
 
     return dm;
@@ -1139,7 +1139,7 @@ dm['dm'] = dm.dm;
             if (this.options['height']) {
                 $('#' + this.euid)
                 .css('width', this.options['width']).css('height', this.options['height']);
-                $('#' + this.euid + "_Border").css("width", this.options['width']);
+                $('#' + this.euid + "_Border").css("width", this.options['width']).css("border", '1px solid #87CEEB');
             }
 
             if (this.options['top'])
@@ -1373,15 +1373,18 @@ dm['dm'] = dm.dm;
                 this.onDragMove(ui);
                 if (this.options['droppable']) {
                     if (this.parrent != undefined) {
-                      this.parrent._dropElement(this, {position: {'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top}}); 
+                      this.parrent._dropElement(this, {position: {'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top}});
                     }
                 }
 
             }
-
             $.log("DSTOP: " + this.euid);
             this.options.dragStart = undefined;
             this.start_operation = undefined;
+            var p = $("#" + this.euid + "_Border").position();
+            var aligned_left = p.left - p.left % 10;
+            var aligned_top = p.top - p.top % 10;
+            $("#" + this.euid + "_Border").css({'left': aligned_left, 'top': aligned_top});
         }    
         });
 
