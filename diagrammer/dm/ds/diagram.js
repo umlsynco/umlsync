@@ -440,8 +440,8 @@ dm['dm'] = dm.dm;
                     
                     var status = diag.isPointOnLine(x,y);
                     if (status) {
-    //$("#possition_locator").val("X:" + x + "  y:" + y + " on");
-    e.stopPropagation();
+                      //$("#possition_locator").val("X:" + x + "  y:" + y + " on");
+                      e.stopPropagation();
                     }
                 })
                 .mouseup(function(e) {

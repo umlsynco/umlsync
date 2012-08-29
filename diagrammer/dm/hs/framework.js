@@ -448,7 +448,6 @@ Version:
 				dm.dm.loader.Diagram(json.type, "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;
-					$.log("ADDDDDDDDDDDDDDDD: " + tabname);
 				});
 				self.updateFrameWork(true);
 			  },
