@@ -91,8 +91,8 @@
       $(document).ready(function() {
       var Loader = new dm.base.loader("./diagrammer/");
       var converter = new Showdown.converter();
-      dm['dm'] = {};
-      dm['dm']['fw'] = {};
+      dm['dm'] = dm['dm'] || {};
+      dm['dm']['fw'] = dm['dm']['fw'] || {};
       dm['dm']['fw']['CtrlDown'] = false;
 
       function treeView(data, textStatus, jqXHR) {
