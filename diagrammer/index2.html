@@ -58,7 +58,7 @@
   <script src="./dm/hs/framework.js"></script>
   
   <script>
- // $.log = function() {};
+  $.log = function(msg) {window.console.log(msg);};
   
   $(document).ready(function() {
     var Loader = new dm.base.loader("./");

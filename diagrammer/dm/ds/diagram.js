@@ -434,6 +434,7 @@ dm['dm'] = dm.dm;
                     evt.stopPropagation();
                 })
                 .mousemove(function(e) {  // DEBUG FUNCTIONALITY.
+				
                     var p = $(this).offset(),
                     x = e.pageX - p.left,
                     y = e.pageY - p.top;
@@ -443,6 +444,18 @@ dm['dm'] = dm.dm;
     //$("#possition_locator").val("X:" + x + "  y:" + y + " on");
     e.stopPropagation();
                     }
+					var el = diag.isMouseOverElement(x,y)
+					
+					if (el) {
+					  if (el.options["z-index"] < 3000)
+ 					    el._setOption("z-index", "+=3000");
+                      for (i in el._dropped) {
+					    var dr = el.parrent.elements[el._dropped[i]];
+					    if (dr.options["z-index"] < 3000)
+                          dr._setOption("z-index", "+=3000");;
+					    dr._setOption("opacity", "0.7");;
+                      }
+					}
                 })
                 .mouseup(function(e) {
                     var p = $(this).offset(),
@@ -565,7 +578,7 @@ dm['dm'] = dm.dm;
         dm['dm']['loader']['Element'](type, options, this, function(obj) {
             if (obj != undefined)
                 self.elements[obj.euid] = obj;
-
+			$.log("AAAAAAAAAADED: " + obj.euid + " to " + self.euid);
             if (callback)
                 callback(obj);
         });
@@ -915,6 +928,27 @@ dm['dm'] = dm.dm;
             ctx.lineWidth = 1;
         }
     },
+	isMouseOverElement: function(x,y) {
+		var zi = 0, sel;
+        if (!$.isEmptyObject(this.elements)) {
+            for (c in this.elements) {
+			    var el = this.elements[c],
+				    $el = $("#" + el.euid + "_Border"),
+					pp = $el.position();
+                if (x>pp.left && x<pp.left+$el.width() && y > pp.top && y < pp.top + $el.height()) {
+				  //$.log("isMouseOverElement: " + pp.left + " < " + x + " < " + (pp.left + $el.width()));
+				  //$.log("isMouseOverElement: " + pp.top + " < " + y + " < " + (pp.top + $el.height()) + "    EL: " + el.euid);
+				  var z = el.options["z-index"];
+				      z = (z>3000)? z-3000:z;
+				  if (z>zi) {
+				    sel = el;
+					zi=z;
+				  }
+                }
+            }
+        }
+		return sel;
+	},
     /**
      * \class Function.
      * Check that point is on the line.
@@ -1165,8 +1199,9 @@ dm['dm'] = dm.dm;
 
             $(this.element).wrap('<div id="' + this.euid + '_Border"' + poz + ' class="UMLSyncClassBorder"></div>');
 
+			var self = this;
+
             var parrentClass = this.parrent;
-            var self = this;
 
             var axis111 = this.options['axis'] || false;
             var elmt = $('#' + this.euid  + '_Border').draggable({
@@ -1276,7 +1311,7 @@ dm['dm'] = dm.dm;
                 e.stopPropagation();
             })       
             .mouseenter(function (){
-                $('#' + this.id +'_Border').css({'border':'3px solid #678E8B'}).animate({left:'-=3px', top:'-=3px'},0);
+                $('#' + this.id +'_Border').css({'border':'3px solid #678E8B'}).animate({left:'-=3px', top:'-=3px'},0).css({ opacity: 0.7 });;
                 $('#' + this.id +'_FS').css({'visibility':'visible'});
                 $('#' + this.id +'_REF').css({'visibility':'visible'});
                 // Show the  menu if element was selected
@@ -1286,7 +1321,21 @@ dm['dm'] = dm.dm;
                 //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
             })
             .mouseleave(function (){
-                $('#' + this.id +'_Border').css({'border':'0px solid #87CEEF'}).animate({left:'+=3px', top:'+=3px'},0);
+                $('#' + this.id +'_Border').css({'border':'0px solid #87CEEF'}).animate({left:'+=3px', top:'+=3px'},0).css({ opacity: 1 });
+                $.log("MOUSE LEAVE !!!!!!!!!!!!!!!!!!!!!!!!!");
+				if (self.options["z-index"] > 3000) {
+				    $.log("reduce z-index: " + self.options["z-index"]);
+				    //$.log("Reduce z-index: " + self.options["z-index"]);
+					self._setOption("z-index", "-=3000");
+					$.log("reduced z-index: " + self.options["z-index"]);
+					//$.log("Reduced z-index: " + self.options["z-index"]);
+                    for (i in self._dropped) {
+					  var dr = self.parrent.elements[self._dropped[i]];
+					  if (dr.options["z-index"] > 3000)
+                        dr._setOption("z-index", "-=3000");;
+					  dr._setOption("opacity", "1");;
+                    }
+				}
 
                 //Check if this.euid is the same as selected
                 if (self.parrent.menuIcon) {
@@ -1320,7 +1369,7 @@ dm['dm'] = dm.dm;
                 this._setOption("font-family", this.options["font-family"]);
 
             if (this.options["z-index"])
-                $('#'+this.euid + "_Border").css("z-index", this.options["z-index"]);
+                $('#'+this.euid+ "_Border").css("z-index", this.options["z-index"]);
         },
         //@proexp
         _setOption: function( key, value ) {
@@ -1338,7 +1387,7 @@ dm['dm'] = dm.dm;
                 else
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
             } else if (key == "z-index") {
-                $("#" + this.euid + '_Border ').css(key, value);
+                this.options[ key ] = $("#" + this.euid + "_Border").css(key, value).css(key);				
             }
 
             return this;
