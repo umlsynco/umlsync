@@ -798,8 +798,8 @@ a {
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 150px;
-  height: 100%;
+  width: 90%;
+  height: 30px;
   background-color: grey;
   border: 1px solid black;
 }

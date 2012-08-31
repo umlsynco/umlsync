@@ -297,9 +297,9 @@ Version:
                 diagramMenuBuilder.elements[elements[d].description].editable = true;
 
                 var image = (elements[d].image[0]["small"]) ? "list-style-image:url(\'" +dm.dm.loader.url +  elements[d].image[0]["small"] + "\')" : "list-style-type:none";
-                items.push('<li class="elementSelector" style="cursor:pointer;' + image
-    + ';" id="'  + elements[d].description +'" imgpath="' + elements[d].image_path + '">' +
-    elements[d].description + '</li>');
+                items.push('<li class="elementSelector" style="cursor:pointer;float:left;width:30px;' + image
+    + ';" id="'  + elements[d].description +'" imgpath="' + elements[d].image_path + '">'
+    + '</li>'); 
             }
 
             // Prepare the list of connectors. Clickable left side menu 
@@ -312,9 +312,9 @@ Version:
                 diagramMenuBuilder.connectors[desc].editable = true;
 
                 var image = (connectors[d].image[0]["small"]) ? "list-style-image:url(\'" + dm.dm.loader.url + connectors[d].image[0]["small"] + "\')" : "list-style-type:none";
-                items.push('<li class="connectorSelector" style="cursor:pointer;' + image
+                items.push('<li class="connectorSelector" style="cursor:pointer;float:left;width:30px;' + image
     + ';" id="'  + connectors[d].connector +'">' +
-    connectors[d].description + '</li>');
+    '</li>');
             }
 
             innerHtml += items.join('');

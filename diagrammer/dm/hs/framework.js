@@ -608,7 +608,7 @@ Version:
 					<button class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>\
 					<select name="borderWidth" id="borderWidth">\
 					</select>');
-
+             $("#socializethis2").draggable();
 					$("#vp_main_menu_ref").click(function(){
   					  $( "#vp_main_menu" ).dialog( "open" );
 				    });
