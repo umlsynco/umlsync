@@ -161,7 +161,7 @@ a {
 
 .UMLSyncClassBorder {
   padding: 10px;
-  border: 0px solid #87CEEB;
+  border: 0px solid black;
   position: absolute;
   width: 150px;
   -webkit-border-radius: 10px;
@@ -170,11 +170,33 @@ a {
   z-index: 999;
 }
 
+.grElement {
+background: #72aa00; /* Old browsers */
+background: -moz-linear-gradient(-45deg, #72aa00 2%, #bfd255 24%, #8eb92a 50%, #9ecb2d 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right bottom, color-stop(2%,#72aa00), color-stop(24%,#bfd255), color-stop(50%,#8eb92a), color-stop(100%,#9ecb2d)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(-45deg, #72aa00 2%,#bfd255 24%,#8eb92a 50%,#9ecb2d 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(-45deg, #72aa00 2%,#bfd255 24%,#8eb92a 50%,#9ecb2d 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(-45deg, #72aa00 2%,#bfd255 24%,#8eb92a 50%,#9ecb2d 100%); /* IE10+ */
+background: linear-gradient(135deg, #72aa00 2%,#bfd255 24%,#8eb92a 50%,#9ecb2d 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#72aa00', endColorstr='#9ecb2d',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.grBlack {
+background: rgb(41,41,41); /* Old browsers */
+background: -moz-linear-gradient(-45deg,  rgba(141,141,141,1) 0%, rgba(14,14,14,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(141,141,141,1)), color-stop(100%,rgba(14,14,14,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(-45deg,  rgba(141,141,141,1) 0%,rgba(14,14,14,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(-45deg,  rgba(141,141,141,1) 0%,rgba(14,14,14,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(-45deg,  rgba(141,141,141,1) 0%,rgba(14,14,14,1) 100%); /* IE10+ */
+background: linear-gradient(135deg,  rgba(141,141,141,1) 0%,rgba(14,14,14,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
 .UMLSyncClass {
   padding: 0px;
   border: 0px;
   margin: 0 0px;
-  background-color: #87CEEB;
+  /*background-color: #87CEEB;*/
   position: relative;
   height: 100%;
 /*
@@ -187,7 +209,7 @@ a {
 .UMLSyncClass div {
   margin: 0 0px;
   padding: 0;
-  border: 1px solid #0099FF;
+  border: 1px solid black;
   text-decoration: none;
   text-align: center;
 }
@@ -717,7 +739,7 @@ a {
 }
 
 #vp_main_menu34 {
-  min-height: 250px;
+  min-height: 100px;
   height: 100%;
   overflow: auto;
   background-color: #eee;

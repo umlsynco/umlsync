@@ -154,12 +154,12 @@ Version:
             var menu_items = [];
             for (c in this.menus[menu_id])       // element descriptor
                 for (r in this.menus[menu_id][c])  // connector descriptor
-                    menu_items.push("<img src='" + dm.dm.loader.url + this.menus[menu_id][c][r] +"' id='" + r +"' title='"+ r + "' aux='" + c + "'></img>");
+                    menu_items.push("<img src='" + dm.dm.loader.url + this.menus[menu_id][c][r] +"' id='" + r +"' title='"+ r + "' aux='" + c + "' style='padding:1px;'></img>");
 
             var cells = menu_items.join('');
 
             // Append menu to the diagram
-            $("#" + this.diagram.euid).append("<div style='position:absolute;left:200px;z-index:19999998;' class='elmenu-" + menu_id +"'>" + cells + "</div>");
+            $("#" + this.diagram.euid).append("<div style='position:absolute;left:200px;z-index:19999998;' class='elmenu-" + menu_id +" grBlack'>" + cells + "</div>");
 
             // Hide the element
             $(' .elmenu-' + menu_id).css({opacity:"0"});
@@ -279,7 +279,7 @@ Version:
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
 
-            var innerHtml = "<div id='testmenu' class='diagram-menu'><ul>";
+            var innerHtml = "<div id='testmenu' class='diagram-menu grBlack'><ul>";
 
             var ddata = json;
             var elements = ddata[0]['elements'],

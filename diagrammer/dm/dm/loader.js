@@ -113,7 +113,7 @@ Version:
                 // There is no dependency on main menu load sequence
                 // therefore it is possible to load is asynchronious
                 $.ajax({
-                      'url': urlArg + "dm/ms/main/main.json",
+                      'url': urlArg + "dm/ms/us/main.json",
                       'dataType': 'json',
                       'success': function(data) {
                              if (callback)
@@ -129,7 +129,7 @@ Version:
                 // There is no dependency on main menu load sequence
                 // therefore it is possible to load is asynchronious
                 $.ajax({
-                      'url': urlArg + "/dm/ms/ds/" + type + "_with_menu.json",
+                      'url': urlArg + "/dm/ms/us/ds/" + type + "_with_menu.json",
                       'dataType': 'json',
                       'success': function(data) {
                              if (callback)

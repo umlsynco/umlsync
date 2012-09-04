@@ -1276,7 +1276,7 @@ dm['dm'] = dm.dm;
                 e.stopPropagation();
             })       
             .mouseenter(function (){
-                $('#' + this.id +'_Border').css({'border':'3px solid #678E8B'}).animate({left:'-=3px', top:'-=3px'},0);
+                $('#' + this.id +'_Border').css({'border':'3px solid #414141'}).animate({left:'-=3px', top:'-=3px'},0);
                 $('#' + this.id +'_FS').css({'visibility':'visible'});
                 $('#' + this.id +'_REF').css({'visibility':'visible'});
                 // Show the  menu if element was selected

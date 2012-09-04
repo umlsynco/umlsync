@@ -76,7 +76,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       // HTML for class structure creation
       this.innerHtmlClassInfo = '\
-        <div id="' + this.euid + '" class="UMLSyncClass">\
+        <div id="' + this.euid + '" class="UMLSyncClass grElement">\
         <div class="UMLSyncClassHeader">\
         <a class="editablefield ClassName">' + this.options.name + '</a><br>\
         <a class="editablefield ClassAux">'+ this.aux +'</a>\
