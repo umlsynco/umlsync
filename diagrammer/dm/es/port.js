@@ -10,7 +10,7 @@ dm.base.diagram("es.port", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncPort ElementResizeArea">\
+      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncPort ElementResizeArea grElement">\
     </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);

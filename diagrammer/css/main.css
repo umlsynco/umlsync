@@ -304,8 +304,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
   position: relative;
   width: 100%;
   height: 45px;
-  border: 1px solid #0099FF;
-  background-color: #87CEEB;
+  border: 1px solid black;
   text-align: center;
 }
 
@@ -313,8 +312,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
   position: relative;
   width: 100%;
   height: 100%;
-  border: 1px solid #0099FF;
-  background-color: #87CEEB;
+  border: 1px solid black;
 }
 
 .UMLSyncPacketTab {
@@ -323,16 +321,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
   position: relative;
   width: 15%;
   height: 20px;
-  border: 1px solid #0099FF;
-  background-color: #87CEEB;
+  border: 1px solid black;
 }
 
 .UMLSyncPacketBody {
   padding: 0px;
   border: 1px;
   position: relative;
-  border: 1px solid #0099FF;
-  background-color: #87CEEB;
+  border: 1px solid black;
   text-decoration: none;
   text-align: center;
 }
@@ -364,7 +360,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
   position: relative;
   text-align: center;
   border: 1px solid black;
-  background-color: #87CEEB;
 }
 
 .UMLSyncState {
@@ -470,7 +465,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
   border: 1px solid black;
   position: relative;
   margin: auto;
-  background-color: #87CEEB;
   -webkit-border-radius: 100%;
   -moz-border-radius: 100% 100%;
   border-radius: 100% 100%;

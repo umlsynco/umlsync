@@ -64,23 +64,23 @@
 				{"el":"Object Instance",
 				 "cs":[
 						{"connector":"llsequence",
-						 "image":"dm/icons/us/cs/diagram/association_with_component.gif"
+						 "image":"dm/icons/us/cs/association.png"
 						},
 						{"connector":"llsequence",
-						 "image":"dm/icons/us/cs/diagram/aggregation_from_component.gif"
+						 "image":"dm/icons/us/cs/aggregation.png"
 						},
 						{"connector":"llsequence",
-						 "image":"dm/icons/us/cs/diagram/composition_to_component.gif"
+						 "image":"dm/icons/us/cs/composition.png"
 						}
 					  ]
 				},
 				{"el":"Port",
 				 "cs":[
 						{"connector":"association",
-						 "image":"dm/icons/us/cs/diagram/association_with_port.gif"
+						 "image":"dm/icons/us/cs/association.png"
 						},
 						{"connector":"Self Call",
-						 "image":"dm/icons/us/cs/class/class/vp-self-association.png"
+						 "image":"dm/icons/us/cs/class/class/self-association.png"
 						}
 					  ]
 				},

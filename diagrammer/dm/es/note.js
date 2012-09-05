@@ -10,7 +10,7 @@ dm.base.diagram("es.note", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncNote ElementResizeArea">\
+      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncNote ElementResizeArea grElement">\
                         <a class="editablefield Name">' + this.options.name + '</a>\
                         <img src="./images/corner.png" class="UMLSyncNoteCorner">\
     </div>';

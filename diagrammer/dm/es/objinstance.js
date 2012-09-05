@@ -14,7 +14,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
     _create: function() {
       // HTML for class structure creation
       this.innerHtml = '<div id="' + this.euid + '" class="ElementResizeArea">\
-                        <div id="' + this.euid + '_NEXT" class="UMLSyncInstance" style="height:40px;">\
+                        <div id="' + this.euid + '_NEXT" class="UMLSyncInstance grElement" style="height:40px;">\
                         <div><a class="editablefield Name">:' + this.options.name+ '</a></div></div></div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
@@ -144,7 +144,7 @@ dm.base.diagram("es.llport", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncPort ElementResizeArea">\
+      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncPort ElementResizeArea grElement">\
     </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);

@@ -31,8 +31,8 @@ dm.base.diagram("es.package", dm.es.element, {
       // HTML for class structure creation
       var aux = (this.options.aux != undefined) ? "<a>&lt&lt" + this.options.aux + "&gt&gt</a><br><b>" : "";
       this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncPacket">\
-                                <div class="UMLSyncPacketTab"></div>\
-            <div class="UMLSyncPacketBody ElementResizeArea">'
+                                <div class="UMLSyncPacketTab grElement"></div>\
+            <div class="UMLSyncPacketBody ElementResizeArea grElement">'
             + aux + 
             '<a class="editablefield">'+ this.options.name + '</a></div>\
                                 </div>';

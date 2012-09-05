@@ -20,7 +20,7 @@ dm.base.diagram("es.component", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncComponent ElementResizeArea">\
+      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncComponent ElementResizeArea grElement">\
                         <img src="images/component.png" style="position:absolute;top:3px;right:17px"></img>\
                         <a class="editablefield" style="text-align:left;position:relative;top:30%">&laquo;interface&raquo;</a><br>\
     <a class="editablefield Name" style="text-align:left;position:relative;top:30%">' + this.options.name + '</a>\

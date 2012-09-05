@@ -20,7 +20,7 @@ dm.base.diagram("es.interface", dm.es.element, {
     },
     _create: function() {
       this.innerHtml = '<div id="' + this.euid + '" style="width:100%;height:100%;">\
-                        <div id="Circle" class="UMLSyncInterface"></div>\
+                        <div id="Circle" class="UMLSyncInterface grElement"></div>\
                         </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
