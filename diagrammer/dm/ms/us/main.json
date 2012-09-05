@@ -1,0 +1,23 @@
+[
+  {"diagram": "class",
+   "type": "class",
+   "base_type":"base",
+   "description": "UML class diagram",
+   "image": [{"small": "./dm/icons/us/dss/classDiagram.png"}]
+  },
+  {"diagram": "component",
+   "type": "base",
+   "description": "UML component diagram",
+   "image": [{"small": "./dm/icons/us/dss/componentDiagram.png"}]
+  },
+  {"diagram": "package",
+   "type": "base",
+   "description": "UML package diagram",
+   "image": [{"small": "./dm/icons/us/dss/packageDiagram.png"}]
+  },
+  {"diagram": "sequence",
+   "type": "UML",
+   "description": "UML sequence diagram",
+   "image": [{"small": "./dm/icons/us/dss/sequenceDiagram.png"}]
+  }
+]

@@ -1,0 +1,97 @@
+[
+  {"type": "sequence",
+   "elements": [
+	{"type": "objinstance",
+	 "description": "Object Instance",
+	 "menu":"vp-component-menu",
+	 "ctx_menu":"sequence",
+	 "image": [{"small": "./dm/icons/us/es/component/InstanceSpecification.png"}]
+	},
+	{"type": "image",
+	 "image_path":"images/actor3.svg",
+	 "width":"40",
+	 "description": "Actor",
+	 "menu":"vp-component-menu",
+	 "image": [{"small": "./dm/icons/us/es/sequence/Actor.png"}]
+	}
+    ],
+    "connectors": [
+      {"connector":"llsequence",
+	   "description":"Life Line Sequence",
+	   "image": [{"small": "./dm/icons/us/cs/dependency.png"}]
+	  },
+      {"connector":"llselfcall",
+	   "description":"Self Call",
+	   "oneway":"true",
+	   "image": [{"small": "./dm/icons/us/cs/composition.png"}]
+	  },
+      {"connector":"generalization",
+	   "description":"Generalization",
+	   "image": [{"small": "./dm/icons/us/cs/generalization.png"}]
+	  },
+      {"connector":"realization",
+	   "description":"Realization",
+	   "image": [{"small": "./dm/icons/us/cs/realization.png"}]
+	  },
+      {"connector":"association",
+	   "description":"Association",
+	   "image": [{"small": "./dm/icons/us/cs/association.png"}]
+	  },
+      {"connector":"aggregation",
+	   "description":"Aggregation",
+	   "image": [{"small": "./dm/icons/us/cs/aggregation.png"}]
+	  },
+      {"connector":"composition",
+	   "description":"Composition",
+	   "image": [{"small": "./dm/icons/us/cs/composition.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Anchor",
+	   "image": [{"small": "./dm/icons/us/cs/AnchorToNote.png"}]
+	  },
+      {"connector":"anchor",
+	   "description":"Constraint",
+	   "image": [{"small": "./dm/icons/us/cs/Constrain.png"}]
+	  },
+      {"connector":"nested",
+	   "description":"Containment",
+	   "image": [{"small": "./dm/icons/us/cs/nested.png"}]
+	  }
+    ],
+    "menus": [
+	  {"id":"vp-component-menu",
+	   "items": [
+				{"el":"Object Instance",
+				 "cs":[
+						{"connector":"llsequence",
+						 "image":"dm/icons/us/cs/diagram/association_with_component.gif"
+						},
+						{"connector":"llsequence",
+						 "image":"dm/icons/us/cs/diagram/aggregation_from_component.gif"
+						},
+						{"connector":"llsequence",
+						 "image":"dm/icons/us/cs/diagram/composition_to_component.gif"
+						}
+					  ]
+				},
+				{"el":"Port",
+				 "cs":[
+						{"connector":"association",
+						 "image":"dm/icons/us/cs/diagram/association_with_port.gif"
+						},
+						{"connector":"Self Call",
+						 "image":"dm/icons/us/cs/class/class/vp-self-association.png"
+						}
+					  ]
+				},
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "image":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  }
+	]
+   }
+]
