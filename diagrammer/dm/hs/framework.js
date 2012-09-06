@@ -51,7 +51,6 @@ Version:
 					<div id="'+ this.options.content +'-right" style="width:100px;left:206px;height:100%;position:absolute;padding:0;margin:0;">\
 					<div id="tabs"><ul></ul></div>\
 					</div>');
-
 			// #9 #10 # 55 are based on margin and padding of element
 			// they should be replaced on valid values
 			var self = this;
@@ -67,8 +66,17 @@ Version:
 					    $tabs.tabs('select', '#' + ui.panel.id);
 					},
 					'select': function(event, ui) {
-						if (self['diagrams'])
+						if (self['diagrams']) {
 							self.selectedDiagramId = "#" + ui.panel.id;
+							var did = self['diagrams'][self.selectedDiagramId];
+							if (did) {
+							  $("#accordion").find("h3").each(function(index) {
+								      if ($(this).attr("aux") == did.options.type) {
+									     $("#accordion").accordion({ active: index });
+									  }
+							});
+						   }
+						}
 						self.updateFrameWork(true);
 					},
 /*					'remove': function(event, ui) { // it is too late to save diagram at this moment
@@ -90,6 +98,7 @@ Version:
 
 			var $treetabs = $("#treetabs").tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>'});
 
+			
 			$('#treetabs span.ui-test').live('click', function() {
 				var index = $('li', $treetabs).index($(this).parent());
 				$treetabs.tabs('remove', index);

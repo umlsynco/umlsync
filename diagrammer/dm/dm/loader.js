@@ -128,10 +128,17 @@ Version:
             'LoadDiagramMenuData': function(type, callback) {
                 // There is no dependency on main menu load sequence
                 // therefore it is possible to load is asynchronious
+				self.dmenus = self.dmenus || {};
+				if (self.dmenus[type]) {
+				  callback(self.dmenus[type]);
+				  return;
+				}
+
                 $.ajax({
                       'url': urlArg + "/dm/ms/us/ds/" + type + "_with_menu.json",
                       'dataType': 'json',
                       'success': function(data) {
+					         self.dmenus[type] = data;
                              if (callback)
                                  callback(data);
                       },

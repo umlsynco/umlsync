@@ -835,6 +835,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
 .diagram-menu {
   z-index: 1000;
   position: absolute;
+  left: 20px;
+  top: 48px;
+  width: 150px;
+  height: auto;
+  background-color: #D7D7D7;
+  border: 1px solid black;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+}
+
+.accordion-diagram-menu {
+  z-index: 1000;
+  position: absolute;
   left: 0px;
   top: 0px;
   width: 150px;

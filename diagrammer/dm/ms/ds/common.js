@@ -281,7 +281,7 @@ Version:
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
 
-            var innerHtml = "<div id='testmenu' class='diagram-menu'><ul>";
+            var innerHtml = "<div id='testmenu'><ul style='overflow:hidden;'>";
 
             var ddata = json;
             var elements = ddata[0]['elements'],
@@ -301,7 +301,8 @@ Version:
                 var image = (elements[d].image[0]["small"]) ? "list-style-image:url(\'" +dm.dm.loader.url +  elements[d].image[0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="elementSelector" style="cursor:pointer;' + image
     + ';" id="'  + elements[d].description +'" imgpath="' + elements[d].image_path + '">' +
-    elements[d].description + '</li><li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>');
+    elements[d].description + '</li>');
+	//<li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>
             }
 
             // Prepare the list of connectors. Clickable left side menu 
@@ -316,14 +317,38 @@ Version:
                 var image = (connectors[d].image[0]["small"]) ? "list-style-image:url(\'" + dm.dm.loader.url + connectors[d].image[0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="connectorSelector" style="cursor:pointer;' + image
     + ';" id="'  + connectors[d].connector +'">' +
-    connectors[d].description + '</li><li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>');
+    connectors[d].description + '</li>');
+	//<li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>
             }
 
             innerHtml += items.join('');
             innerHtml += "</ul></div>";
 
             // Append menu to diagram
-            $("#" + diagram.euid).append(innerHtml);
+            //$("#" + diagram.euid).append(innerHtml);
+		
+			var menuIsActive = false;
+			var len = $("#accordion").length;
+			if (len) {
+			  var idx = -1;
+			  len = 0; // Wrong length earlier, have to re-calculate it again
+			  $("#accordion").find("h3").each(function(index) {
+			    ++len;
+				if ($(this).attr("aux") == type) {
+				  idx = index;
+				  menuIsActive = true;
+				}
+			  });
+			  
+			  if (idx < 0) {
+			   $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion().accordion({active: len});
+			  } else {
+			    $("#accordion").accordion({active: idx });
+			  }
+			} else {
+  			    $("#tabs").append("<div class='diagram-menu'><div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
+				$("#accordion").accordion({active: 0 });
+			}
 
             // Identify the parrent class for diagram
             // TODO:   Prvide class reference as argument instead for diagram.id
@@ -348,19 +373,16 @@ Version:
             // TODO: put both menu builders to the 
             var iconMenuBuilder = new dm.ms.IconMenuBuilder(hmenus, diagram, diagramMenuBuilder),
             ctxMenuBuilder = new dm.ms.ContextMenuBuilder(loader, diagram, diagramMenuBuilder);
-
-            $("#" + diagram.euid + " .elementSelector")
+       if (!menuIsActive) {
+            $("#accordion .elementSelector")
             .mouseenter(function() {$(this).addClass('hover');})
             .mouseleave(function() {$(this).removeClass('hover');})  
             .click(function(){
                 self.ec++;
                 var menus = [];
 
-                // TODO:  diagram.DisableConnectionHelper for elements
-                /*       $("#" + diagram.id + " .UMLSyncClassBorder").draggable( { helper : 'original', start:function(){},  stop:function(){}, drag:function(){
-               diagram.draw();
-       }} );*/
-
+	            var fw = dm.dm.fw;
+				var diagram = fw['diagrams'][fw.selectedDiagramId];
                 var loadElement = diagramMenuBuilder.getElementById(this.id);
 
                 if ((loadElement != undefined) && (loadElement.menu != undefined))
@@ -368,7 +390,7 @@ Version:
                 diagram.Element(loadElement.type, loadElement);
             });
 
-            $("#" + diagram.euid + " .connectorSelector").mouseenter(function() {$(this).addClass('hover');}).mouseleave(function() {$(this).removeClass('hover');})
+            $("#accordion .connectorSelector").mouseenter(function() {$(this).addClass('hover');}).mouseleave(function() {$(this).removeClass('hover');})
             .click(function(e){
                 $(this).addClass('selected');
                 var selConn = this.id;
@@ -421,7 +443,8 @@ Version:
                 // TODO: enable drag helper for connectors
                 //dm.dm.loader.Connector(this.euid, self.options, {}, self.diagram);
             });
-        });
+		} // Menu not active
+		});
     }
 
 })(jQuery, dm);
