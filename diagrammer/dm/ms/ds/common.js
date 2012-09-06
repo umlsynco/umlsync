@@ -62,11 +62,13 @@ Version:
             this.y = y - pz.top;
 
             $("#" + menuBuilder.diagramId + " #" + options.uid).css({"left":x-pz.left, "top":y - pz.top}).show();
+			$("#socializethis2").css({"left":x, "top":y-60}).show();
         };
 
         this.Hide = function() {
 		    $(".context-menu").hide();
             $("#" + menuBuilder.diagramId + " #" + options.uid).hide();
+			$("#socializethis2").hide();
         };
     };
 
@@ -159,7 +161,7 @@ Version:
             var cells = menu_items.join('');
 
             // Append menu to the diagram
-            $("#" + this.diagram.euid).append("<div style='position:absolute;left:200px;z-index:19999998;' class='elmenu-" + menu_id +" grBlack'>" + cells + "</div>");
+            $("#" + this.diagram.euid).append("<div style='position:absolute;left:200px;z-index:19999998;' class='elmenu-" + menu_id +"'>" + cells + "</div>");
 
             // Hide the element
             $(' .elmenu-' + menu_id).css({opacity:"0"});
@@ -279,7 +281,7 @@ Version:
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
 
-            var innerHtml = "<div id='testmenu' class='diagram-menu grBlack'><ul>";
+            var innerHtml = "<div id='testmenu' class='diagram-menu'><ul>";
 
             var ddata = json;
             var elements = ddata[0]['elements'],
@@ -299,7 +301,7 @@ Version:
                 var image = (elements[d].image[0]["small"]) ? "list-style-image:url(\'" +dm.dm.loader.url +  elements[d].image[0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="elementSelector" style="cursor:pointer;' + image
     + ';" id="'  + elements[d].description +'" imgpath="' + elements[d].image_path + '">' +
-    elements[d].description + '</li>');
+    elements[d].description + '</li><li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>');
             }
 
             // Prepare the list of connectors. Clickable left side menu 
@@ -314,7 +316,7 @@ Version:
                 var image = (connectors[d].image[0]["small"]) ? "list-style-image:url(\'" + dm.dm.loader.url + connectors[d].image[0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="connectorSelector" style="cursor:pointer;' + image
     + ';" id="'  + connectors[d].connector +'">' +
-    connectors[d].description + '</li>');
+    connectors[d].description + '</li><li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>');
             }
 
             innerHtml += items.join('');

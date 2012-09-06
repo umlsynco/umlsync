@@ -588,30 +588,34 @@ Version:
 		},
 		initializeToolBox: function(Loader) {
 			var fw=this;
+			// Place for logo !!!
+			//$("body").append('<img src="./images/logo.png" style="position:fixed;top:0;left:0;"/>');
 			$("body").append('<div id="socializethis2" class="trashbox2">\
-					<img src="./images/VP.png" rel="#vp_main_menu" id="vp_main_menu_ref" title="Diagram Menu" style="border:0px; width:16px"></img>\
-					<img src="./images/VP.png" rel="#vp_main_menu2" id="vp_main_menu2_ref" title="Projects" style="border:0px; width:16px"></img>\
-					<button class="ui-button"><span class="ui-icon ui-icon-align-left"/></button>\
-					<button class="ui-button"><span class="ui-icon ui-icon-align-center"/></button>\
-					<button class="ui-button"><span class="ui-icon ui-icon-align-right"/></button>\
+					<select name="speedAa" id="speedAa" style="border: 1px solid #B3C7E1;width:60px;"></select>\
+					<select name="borderWidth" id="borderWidth" style="border: 1px solid #B3C7E1;"></select>\
+					<button class="ui-button"><span class="ui-icon ui-icon-font-big"/></button>\
+					<button class="ui-button"><span class="ui-icon ui-icon-font-italic"/></button>\
 					<button id="vatop" title="Bring Front" class="ui-button"><span class="ui-icon ui-icon-valign-top"/></button>\
 					<button id="vacenter" class="ui-button"><span class="ui-icon ui-icon-valign-center"/></button>\
 					<button id="vabottom" title="Bring Back" class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>\
-					<select name="speedAa" id="speedAa">\
-					</select>\
-					<button class="ui-button"><span class="ui-icon ui-icon-font-big"/></button>\
-					<button class="ui-button"><span class="ui-icon ui-icon-font-italic"/></button>\
-					<button class="ui-button"><span class="ui-icon ui-icon-font-underline"/></button>            \
 					<button class="ui-button"><span class="ui-icon ui-icon-font-underline"/></button>\
-					<button id="color5" title="Color Picker"><span class="color5"/></button>\
-					\
-					<button class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>\
-					<select name="borderWidth" id="borderWidth">\
-					</select>');
+					<button class="ui-button"><span class="ui-icon ui-icon-font-underline"/></button>\
+					<button id="color5" title="Color Picker"><span class="color5"/></button></div>');
 
-					$("#vp_main_menu_ref").click(function(){
-  					  $( "#vp_main_menu" ).dialog( "open" );
-				    });
+/*
+  There are two menus required for editable:
+    one for text edit
+	another for element/connector edit
+					<button class="ui-button"><span class="ui-icon ui-icon-align-left"/></button>\
+					<button class="ui-button"><span class="ui-icon ui-icon-align-center"/></button>\
+					<button class="ui-button"><span class="ui-icon ui-icon-align-right"/></button>\
+					<button class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>
+					*/
+
+	$("#socializethis2").click(function(){ $(".context-menu").hide();});				
+//					$("#vp_main_menu_ref").click(function(){
+//  					  $( "#vp_main_menu" ).dialog( "open" );
+//				    });
 
 					var allFonts = ["arial", "san serif", "serif", "wide", "narrow", "comic sans ms", "Courier New", "Geramond", "Georgia", "Tahoma", "Trebuchet MS", "Verdana"];
 					for (var loop=0; loop<allFonts.length; loop++) {
