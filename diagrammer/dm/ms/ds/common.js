@@ -206,7 +206,7 @@ Version:
                 drag: function(event) {iconMenuBuilder.diagram.draw();},
                 stop: function(event, ui) {
                   var tid = $(this).attr("aux"),
-                      element = iconMenuBuilder.dmb.getElementById(tid),
+                      element = $.extend({}, iconMenuBuilder.dmb.getElementById(tid)),
                       lcon = iconMenuBuilder.dmb.getConnectorById(this.id);
 
                   if ((element != undefined) && ((lcon == undefined) || (!lcon.oneway))) {
