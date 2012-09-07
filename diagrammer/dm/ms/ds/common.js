@@ -261,9 +261,15 @@ Version:
                     x = undefined;
 
                 }
-                var pz = $('#'+ id + "_Border").position();
-                x = x || (pz.left + 20); // fix for lifeline diagrams
-                y = y || (pz.top - 20);
+                var $el = $('#'+ id + "_Border");
+				var pz = $el.position(),
+				    $did = $el.parent();
+               var dpz = $did.offset();
+			   var scrollTop = $did.scrollTop(),
+                   scrollLeft = $did.scrollLeft();
+                   x = x || pz.left + scrollLeft + 20;
+                   y = y || pz.top  + scrollTop  - 20;
+
                 $(".elmenu-" + this.currentMenu).stop().css("left", x).css("top", y).animate({opacity:"1"});
             }
         }
