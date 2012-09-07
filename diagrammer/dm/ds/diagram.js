@@ -291,6 +291,7 @@ dm['dm'] = dm.dm;
                 <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
                 </div></div>');
 
+
 				//<canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
 				//<p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
                 
@@ -302,8 +303,11 @@ dm['dm'] = dm.dm;
                 // It is not necessary for regular usage
                 // TODO: make it as a separate functionality which glue 
                 //       file tree and diagram engine
-//#ifdef EDITOR
+
                 var iDiagram = this;
+
+				$("#" + this.euid + ".UMLSyncClassDiagram").scroll(function() {iDiagram.draw();});
+//#ifdef EDITOR
 				/*
                 $("#" + this.euid + "_Canvas").droppable({
                     drop: function( event, ui ) {
