@@ -57,11 +57,17 @@ Version:
         this.Show = function(element, x, y) {
             $(".context-menu").hide();
             //show element context menu
-            var pz = $("#" + menuBuilder.diagramId).offset();
-            this.x = x - pz.left;
-            this.y = y - pz.top;
+			var $did = $("#" + menuBuilder.diagramId);
+            var pz = $did.offset();
+			var scrollTop = $did.scrollTop(),
+            scrollLeft = $did.scrollLeft();
+            this.x = x - pz.left + scrollTop;
+            this.y = y - pz.top + scrollLeft;
+            
 
-            $("#" + menuBuilder.diagramId + " #" + options.uid).css({"left":x-pz.left, "top":y - pz.top}).show();
+
+            //$("#" + menuBuilder.diagramId + " #" + options.uid).css({"left":x-pz.left, "top":y - pz.top}).show();
+			$("#" + menuBuilder.diagramId + " #" + options.uid).css({"left":x-pz.left + scrollLeft, "top":y - pz.top + scrollTop}).show();
 			$("#socializethis2").css({"left":x, "top":y-60}).show();
         };
 
@@ -259,7 +265,6 @@ Version:
                 x = x || (pz.left + 20); // fix for lifeline diagrams
                 y = y || (pz.top - 20);
                 $(".elmenu-" + this.currentMenu).stop().css("left", x).css("top", y).animate({opacity:"1"});
-
             }
         }
         this.Hide = function(id) {

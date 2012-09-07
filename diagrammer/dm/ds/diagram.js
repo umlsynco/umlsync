@@ -1254,9 +1254,10 @@ dm['dm'] = dm.dm;
             .bind('contextmenu', function(e) {
                 e.preventDefault();
                 // Check that context menu manager already loaded
+				var poz = $("#" + self.euid).position();
                 if (self.parrent.menuCtx) {
                     self.parrent.menuCtx['HideAll']();
-                    self.parrent.menuCtx['visit'](self, e.pageX , e.pageY);
+                    self.parrent.menuCtx['visit'](self, e.pageX , e.pageY );
                 }
             })
             .css({'position':'absolute'})
