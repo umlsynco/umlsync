@@ -286,8 +286,9 @@ dm['dm'] = dm.dm;
         },
     //@proexp
     _create: function () {
+	//<div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
-                <div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">\
+                <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
                 </div></div>');
 
 				//<canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\

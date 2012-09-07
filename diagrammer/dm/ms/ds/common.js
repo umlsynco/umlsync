@@ -369,6 +369,7 @@ Version:
 			} else {
   			    $("#tabs").append("<div class='diagram-menu'><div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
 				$("#accordion").accordion({active: 0 });
+				$(".diagram-menu").draggable();
 			}
 
             // Identify the parrent class for diagram
