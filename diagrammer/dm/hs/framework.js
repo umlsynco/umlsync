@@ -61,9 +61,10 @@ Version:
 
 			var $tabs = $("#tabs").tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
 			      	'add': function(event, ui) {
-						if (self['diagrams'])
+						if (self['diagrams']) {
 							self.selectedDiagramId = "#" + ui.panel.id;
-					    $tabs.tabs('select', '#' + ui.panel.id);
+						}
+                        $tabs.tabs('select', '#' + ui.panel.id);
 					},
 					'select': function(event, ui) {
 						if (self['diagrams']) {
@@ -75,6 +76,7 @@ Version:
 									     $("#accordion").accordion({ active: index });
 									  }
 							});
+							did.draw();
 						   }
 						}
 						self.updateFrameWork(true);
@@ -83,6 +85,9 @@ Version:
 						self.updateFrameWork(true);
 					}*/
 					});
+
+					
+            $("#tabs").append('<canvas id="SingleCanvas" class="UMLSyncCanvas" style="left:20px;top:48px;" width="1640" height="900">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
 
 			$('#tabs span.ui-test').live('click', function() {
 					var index = $('li', $tabs).index($(this).parent().parent()),

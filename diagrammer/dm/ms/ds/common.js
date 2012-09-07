@@ -341,9 +341,19 @@ Version:
 			  });
 			  
 			  if (idx < 0) {
-			   $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion().accordion({active: len});
+			   $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({active: len,
+			       changestart: function(event, ui) {
+						var newIndex = $(ui.newHeader).index('h3');
+                        return false;//$(this).accordion( "option" , "active" ) == newIndex;
+				}
+				});
 			  } else {
-			    $("#accordion").accordion({active: idx });
+			    $("#accordion").accordion({active: idx,
+			       changestart: function(event, ui) {
+						var newIndex = $(ui.newHeader).index('h3');
+                        return false; //$(this).accordion( "option" , "active" ) == newIndex;
+				}
+				});
 			  }
 			} else {
   			    $("#tabs").append("<div class='diagram-menu'><div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");

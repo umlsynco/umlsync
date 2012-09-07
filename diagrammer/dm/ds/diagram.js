@@ -288,11 +288,14 @@ dm['dm'] = dm.dm;
     _create: function () {
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
                 <div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">\
-                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
-                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas></div></div>');
-        
+                </div></div>');
+
+				//<canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+				//<p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
+                
                 this.max_zindex = 100;
-                this.canvas = window.document.getElementById(this.euid +'_Canvas');
+                //this.canvas = window.document.getElementById(this.euid +'_Canvas');
+				this.canvas = window.document.getElementById('SingleCanvas');
 
                 // Diagram canvas drop element
                 // It is not necessary for regular usage
@@ -300,6 +303,7 @@ dm['dm'] = dm.dm;
                 //       file tree and diagram engine
 //#ifdef EDITOR
                 var iDiagram = this;
+				/*
                 $("#" + this.euid + "_Canvas").droppable({
                     drop: function( event, ui ) {
 					  $.log("DIAGRAM.jS DROPPABLE !!!");
@@ -387,7 +391,7 @@ dm['dm'] = dm.dm;
 
                     }
                 }
-                });
+                });*/
 
 //#endif
                 /** Canvas extra functionality handling:
@@ -881,11 +885,12 @@ dm['dm'] = dm.dm;
      */
     //@proexp
      draw: function() {
-        if (this.connectors.length > 0) {
-            var ctx = this.canvas.getContext("2d");
+        var ctx = this.canvas.getContext("2d");
 
-            ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
-            ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+	 if (this.connectors.length > 0) {
 //            ctx.strokeRect(0, 0, 1000, 500);
 
 
