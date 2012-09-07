@@ -292,7 +292,7 @@ Version:
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
 
-            var innerHtml = "<div id='testmenu'><ul style='overflow:hidden;'>";
+            var innerHtml = "<div id='testmenu' style='padding-left:0;'><ul style='overflow:hidden;'>";
 
             var ddata = json;
             var elements = ddata[0]['elements'],
