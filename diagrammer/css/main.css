@@ -143,6 +143,7 @@ a {
   overflow: auto;
   position: relative;
   background-color: seashell;
+  background-image: url('../images/bground_sq.png');
 }
 
 .UMLSyncCanvas {
@@ -154,7 +155,6 @@ a {
 }
 
 .UMLSyncCanvasBackground {
-  background-image: url('../images/bground_sq.png');
   z-index: 0;
   pointer-events: none;
 }
