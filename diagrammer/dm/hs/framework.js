@@ -87,7 +87,7 @@ Version:
 					});
 
 					
-            $("#tabs").append('<canvas id="SingleCanvas" class="UMLSyncCanvas" style="left:20px;top:48px;" width="1640" height="900">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
+            $("#tabs").append('<canvas id="SingleCanvas" class="UMLSyncCanvas" style="left:20px;top:48px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
 
 			$('#tabs span.ui-test').live('click', function() {
 					var index = $('li', $tabs).index($(this).parent().parent()),
@@ -191,7 +191,13 @@ Version:
 				.children(".ui-tabs").height(hhh - 6)
 				.children(".ui-tabs-panel").height(hhh - 51)
 				.children("div").height(hhh - 58);
-				$("#" + this.options.content + "-right").width($("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 6);
+                $("#" + this.options.content + "-right").width($("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 6);
+
+                var canvas = window.document.getElementById('SingleCanvas');
+				if (canvas) {
+				  canvas.height = hhh - 58;
+				  canvas.width = ($("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 30);
+				}
 			}
 
 			// change width on drag the resize div
@@ -199,6 +205,10 @@ Version:
 				$("#content-left-right-resize").css("left", ui.pageX);
 				$("#content-left").css("width", ui.pageX);
 				$("#content-right").css("left", ui.pageX + 7).width($("#content").width() - $("#content-left").width() - 7);
+
+				var canvas = window.document.getElementById('SingleCanvas');
+				if (canvas)
+				canvas.width = $("#content").width() - $("#content-left").width() - 30;
 			}
 			var tabsHeight = $(window).height() - $("#header").outerHeight(true) - 8 - $("#content-bottom").outerHeight(true);
 

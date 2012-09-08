@@ -1688,8 +1688,8 @@ dm.base.diagram("cs.connector", {
 
             var p11 = $('#'+ fromId + "_Border").position();
             var p21 = $('#' + toId + "_Border").position();
-            var scrollTop = 0; //$("#" + this.parrent.euid).scrollTop(),
-            scrollLeft = 0;//$("#" + this.parrent.euid).scrollLeft();
+            var scrollTop = 0;//$("#" + this.parrent.euid).scrollTop(),
+            scrollLeft = 0; //$("#" + this.parrent.euid).scrollLeft();
 
             if ((epoints == undefined) || (epoints.length ==0)) {
                 var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width()) ;
@@ -1716,13 +1716,17 @@ dm.base.diagram("cs.connector", {
          var x2 = p2.left + p21.left;
          var y2 = p2.top + p21.top;
         */      
+		        scrollTop = $("#" + this.parrent.euid).scrollTop();
+                scrollLeft = $("#" + this.parrent.euid).scrollLeft();
 
                 var newpoints = [];
-                newpoints[0] = [x1 + scrollLeft,y1 + scrollTop];
+                newpoints[0] = [x1,y1];
                 for (i=1;i<=epoints.length;++i) {
-                    newpoints[i] = epoints[i-1];          
+                    newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
+					newpoints[i][0] -= scrollLeft;
+					newpoints[i][1] -= scrollTop;
                 }
-                newpoints[epoints.length + 1] = [x2 + scrollLeft,y2 + scrollTop];
+                newpoints[epoints.length + 1] = [x2,y2];
                 return newpoints;
             }
         },
