@@ -75,8 +75,8 @@ Version:
 								      if ($(this).attr("aux") == did.options.type) {
 									     $("#accordion").accordion({ active: index });
 									  }
-							});
-							did.draw();
+							  });
+							  did.draw();
 						   }
 						}
 						self.updateFrameWork(true);

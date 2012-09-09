@@ -1703,12 +1703,15 @@ dm.base.diagram("cs.connector", {
                 return newpoints;
             }
             else {
-                var lln = epoints.length -1;
-                var x1 = this._getRValue(p1.left + p11.left, epoints[0][0], $('#'+ fromId).width()) ;
-                var y1 = this._getRValue(p1.top + p11.top, epoints[0][1], $('#'+ fromId).height()) ;
+		        scrollTop = $("#" + this.parrent.euid).scrollTop();
+                scrollLeft = $("#" + this.parrent.euid).scrollLeft();
 
-                var x2 = this._getRValue(p2.left + p21.left, epoints[lln][0], $('#' + toId).width());
-                var y2 = this._getRValue(p2.top + p21.top, epoints[lln][1], $('#' + toId).height());
+                var lln = epoints.length -1;
+                var x1 = this._getRValue(p1.left + p11.left, epoints[0][0] - scrollLeft, $('#'+ fromId).width()) ;
+                var y1 = this._getRValue(p1.top + p11.top, epoints[0][1] - scrollTop, $('#'+ fromId).height()) ;
+
+                var x2 = this._getRValue(p2.left + p21.left, epoints[lln][0] - scrollLeft, $('#' + toId).width());
+                var y2 = this._getRValue(p2.top + p21.top, epoints[lln][1] - scrollTop, $('#' + toId).height());
 
        /*
          var x1 = p1.left + p11.left;
@@ -1716,9 +1719,6 @@ dm.base.diagram("cs.connector", {
          var x2 = p2.left + p21.left;
          var y2 = p2.top + p21.top;
         */      
-		        scrollTop = $("#" + this.parrent.euid).scrollTop();
-                scrollLeft = $("#" + this.parrent.euid).scrollLeft();
-
                 var newpoints = [];
                 newpoints[0] = [x1,y1];
                 for (i=1;i<=epoints.length;++i) {
