@@ -754,17 +754,19 @@ dm['dm'] = dm.dm;
 //#ifdef EDITOR
     //@proexp
     _dropConnector: function(ui) {
-        var result = undefined;
+        var result = undefined,
+		scrollLeft = $("#" + this.euid).scrollLeft(),
+		scrollTop = $("#" + this.euid).scrollTop();
         for (i in this.elements) {
             var e = $("#" + this.elements[i].euid + "_Border");
             var p = e.position(),
             w = e.width(),
             h = e.height();
 
-            if ((ui.position.left > p.left)
-                    && (ui.position.left < p.left + w)
-                    && (ui.position.top > p.top)
-                    && (ui.position.top < p.top + h)) {
+            if ((ui.position.left > p.left + scrollLeft)
+                    && (ui.position.left < p.left + w + scrollLeft)
+                    && (ui.position.top > p.top + scrollTop)
+                    && (ui.position.top < p.top + h + scrollTop)) {
                 result = this.elements[i];
             }
         }
