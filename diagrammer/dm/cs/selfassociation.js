@@ -80,8 +80,8 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
        
        var p11 = $('#'+ fromId + "_Border").position();
        var p21 = p11;
-       var scrollTop = $("#" + this.parrent.euid).scrollTop(),
-           scrollLeft = $("#" + this.parrent.euid).scrollLeft();
+       var scrollTop = 0;//$("#" + this.parrent.euid).scrollTop(),
+           scrollLeft = 0;//$("#" + this.parrent.euid).scrollLeft();
 
        
        if ((epoints == undefined) || (epoints.length ==0)) {
@@ -89,7 +89,7 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
          var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height()) ;
          var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width());
          var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height());
-         var newpoints = [[x1 + scrollLeft,y1 + scrollTop], [x2 + scrollLeft,y2 + scrollTop]];
+         var newpoints = [[x1 + scrollLeft,y1 - scrollTop], [x2 + scrollLeft,y2 - scrollTop]];
         return newpoints;
        }
        else {
@@ -107,11 +107,11 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
          var y2 = p2.top + p21.top;
 */      
         var newpoints = [];
-        newpoints[0] = [x1 + scrollLeft,y1 + scrollTop];
+        newpoints[0] = [x1 + scrollLeft,y1 - scrollTop];
         for (i=1;i<=epoints.length;++i) {
           newpoints[i] = epoints[i-1];          
         }
-        newpoints[epoints.length + 1] = [x2 + scrollLeft,y2 + scrollTop];
+        newpoints[epoints.length + 1] = [x2 + scrollLeft,y2 - scrollTop];
         return newpoints;
        }
     }
