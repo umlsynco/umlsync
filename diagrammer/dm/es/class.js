@@ -104,8 +104,12 @@ dm.base.diagram("es.class", dm['es']['element'], {
          var border = "#"+this.euid + "_Border";
          var self = this;
          // stop-function is a fix for attributes area which became not resizizable with black points after internal resize usage
-         $("#"+this.euid + " .ClassAttributes").resizable({ handles: 's-l', alsoResize: border, stop: function(event, ui) { $("#"+self.euid + " .ClassAttributes").css({width:"100%"}); } });
-         $("#"+this.euid + " .ClassOperations").resizable({ handles: 's-l', alsoResize: border });
+         $("#"+this.euid + " .ClassAttributes").resizable({handles: 's-l',
+		                                                   alsoResize: border,
+		                                                   stop: function(event, ui) { $("#"+self.euid + " .ClassAttributes").css({width:"100%"}); } });
+         $("#"+this.euid + " .ClassOperations").resizable({ handles: 's-l', alsoResize: border,
+														   resize: function(event, ui) { if ($(border).width() < ui.size.width) $(this).width($(border).width());}
+		 });
          
          $("#" + this.euid + " #sortable").sortable().disableSelection();
          $("#" + this.euid + " #sortable-atr").sortable().disableSelection();

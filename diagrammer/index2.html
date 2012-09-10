@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="js/3pp/simple-color-picker/jquery.simple-color-picker.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="./js/3pp/tablesorter/themes/blue/style.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="./js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>  
-  <script src="js/jquery.min.js"></script>
-  <script src="js/jquery-ui.js"></script>
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery-ui-1.8.23.custom.min.js"></script>
   <script src="js/jquery.scrollabletab.js"></script>
   <script src="js/jquery.cookie.js"></script>
   <script src="js/ui.selectmenu.js"></script>
@@ -59,7 +59,7 @@
   
   <script>
  // $.log = function() {};
-  
+
   $(document).ready(function() {
     var Loader = new dm.base.loader("./");
     var fw = new dm.hs.framework(Loader);
@@ -169,7 +169,7 @@
 </div>
 
 <div id="body">
-  <div class="nav" id="header">
+  <div class="nav ui-state-active" id="header">
   <div>
     <ul id="header-menu" class="menu_left">
       <li><a href="#">Project</a>

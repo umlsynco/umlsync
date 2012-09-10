@@ -1179,7 +1179,32 @@ dm['dm'] = dm.dm;
             var self = this;
 
             var axis111 = this.options['axis'] || false;
-            var elmt = $('#' + this.euid  + '_Border').draggable({
+            var elmt = $('#' + this.euid  + '_Border')
+            .resizable({
+			'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
+			'scroll': true,
+			'handles': this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u',
+			'alsoResize': '#' + this.euid + '_Border .ElementResizeArea', 
+                'stop': function() {
+                  if (self.onResizeComplete) {
+                    self.onResizeComplete();
+                  }
+                  self.parrent.draw();
+                },
+                'resize': function(event, ui) {
+				  var dh = ui.size.height - $(this).css("height");
+				  $(this).css("height", ui.size.height);
+				  $('#' + self.euid + '_Border .ElementResizeArea').width($('#' + self.euid + "_Border").width()); // work-around for synchronization of resizeAlso area
+
+                  if (self.onResizeComplete) {
+                    self.onResizeComplete();
+                  }
+                  self.parrent.draw();
+                }
+            })
+			.draggable({
+              'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
+			  'scroll': true,
               'start': function(event, ui) {
                 self.operation_start = {left: ui.position.left, top: ui.position.top};
                 parrentClass.onDragStart(self, ui);
@@ -1242,20 +1267,6 @@ dm['dm'] = dm.dm;
               }
       }) // draggable completed*/
             // CSS  hack for chnaging view of resizable element "ui-resizable-*-u"
-            .resizable({ 'handles': this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u', 'alsoResize': '#' + this.euid + '_Border .ElementResizeArea', 
-                'stop': function() {
-                if (self.onResizeComplete) {
-                    self.onResizeComplete();
-                }
-                self.parrent.draw();
-            },
-            'resize': function() {
-                if (self.onResizeComplete) {
-                    self.onResizeComplete();
-                }
-                self.parrent.draw();
-            }      
-            })
             .bind('contextmenu', function(e) {
                 e.preventDefault();
                 // Check that context menu manager already loaded
@@ -1691,7 +1702,7 @@ dm.base.diagram("cs.connector", {
             var scrollTop = 0;//$("#" + this.parrent.euid).scrollTop(),
             scrollLeft = 0; //$("#" + this.parrent.euid).scrollLeft();
 
-            if ((epoints == undefined) || (epoints.length ==0)) {
+            if ((epoints == undefined) || (epoints.length == 0)) {
                 var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width()) ;
                 var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height()) ;
 
