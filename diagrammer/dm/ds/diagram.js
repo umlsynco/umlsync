@@ -1376,8 +1376,11 @@ dm['dm'] = dm.dm;
             this.options.dragStart = true;
 
             if (isbase == undefined) {
-                var p = $("#" + this.euid + "_Border").position();
-                this.start_operation = {left:p.left, top:p.top};
+                var p = $("#" + this.euid + "_Border").position(),
+				scrollLeft = $("#" + this.parrent.euid).scrollLeft(),
+				scrollTop = $("#" + this.parrent.euid).scrollTop();
+
+                this.start_operation = {left:p.left + scrollLeft, top:p.top + scrollTop};
             }
         },
         //@proexp
@@ -1386,7 +1389,8 @@ dm['dm'] = dm.dm;
                 return;
             if (!this.start_operation)
                 alert("THERE IS NO this.start_operation for: " + this.euid + this.options.dragStart);
-            $("#" + this.euid + "_Border").css({'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top});
+            $("#" + this.euid + "_Border")
+			.css({'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top});
 
         },
         //@proexp

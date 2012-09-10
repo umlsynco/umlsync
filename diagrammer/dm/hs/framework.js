@@ -81,6 +81,15 @@ Version:
 						}
 						self.updateFrameWork(true);
 					},
+					'show': function(event, ui) {
+						if (self['diagrams']) {
+							self.selectedDiagramId = "#" + ui.panel.id;
+							var did = self['diagrams'][self.selectedDiagramId];
+							if (did) {
+							  did.draw();
+						   }
+						}
+					},
 /*					'remove': function(event, ui) { // it is too late to save diagram at this moment
 						self.updateFrameWork(true);
 					}*/
