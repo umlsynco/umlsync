@@ -1607,9 +1607,10 @@ dm.base.diagram("cs.connector", {
             return false;
         },
         //@proexp        
-        startTransform: function(x,y) {
+        startTransform: function(x1,y1) {
             this.eppos = undefined;
-
+   		    var x =  x1 + $("#" + this.parrent.euid).scrollLeft(),
+		        y = y1 + $("#" + this.parrent.euid).scrollTop();
             if ((this.cleanOnNextTransform) && (this.epoints.length == 1)) {
                 this.cleanOnNextTransform = false;
                 this.epoints.splice(0, 1);
@@ -1632,7 +1633,7 @@ dm.base.diagram("cs.connector", {
             if (this.eppos == undefined) {
                 this.points = this._getConnectionPoints(this.from, this.toId, this.epoints);
                 newPoint = [];
-                newPoint[0] = x; newPoint[1] = y;
+                newPoint[0] = x1; newPoint[1] = y1;
                 for (i=0;i<this.points.length-1;++i) {
                     if (this.canRemovePoint(this.points[i], this.points[i+1], newPoint)) {
     this.eppos = i;
@@ -1641,16 +1642,24 @@ dm.base.diagram("cs.connector", {
                 }
             } else {
                 this.epoints[this.eppos] = [];
-                this.epoints[this.eppos][0] = x;
-                this.epoints[this.eppos][1] = y;
             }
+
+            this.epoints[this.eppos][0] = x;
+            this.epoints[this.eppos][1] = y;
+
 
             if (this.onStartTransform != undefined)
                 this.onStartTransform(x,y);
         },
         //@proexp
-        stopTransform: function(x,y) {
-            this.epoints[this.eppos][0] = x;
+        stopTransform: function(x1,y1) {
+            if (this.eppos == undefined) {
+			  return;
+			}
+   		    var x = x1 + $("#" + this.parrent.euid).scrollLeft(),
+  		        y = y1 + $("#" + this.parrent.euid).scrollTop();
+
+			this.epoints[this.eppos][0] = x;
             this.epoints[this.eppos][1] = y;
 
             var isEqualPoint = function(p1, p2) {
@@ -1686,8 +1695,10 @@ dm.base.diagram("cs.connector", {
                 this.onStopTransform(x,y);
         },
         //@proexp
-        TransformTo: function(x,y) {
+        TransformTo: function(x1,y1) {
             if (this.eppos != undefined) {
+   		    var x =  x1 + $("#" + this.parrent.euid).scrollLeft(),
+		        y = y1 + $("#" + this.parrent.euid).scrollTop();
                 this.epoints[this.eppos][0] = x;
                 this.epoints[this.eppos][1] = y;
                 if ($.isFunction(this.onTransform))
@@ -1750,6 +1761,7 @@ dm.base.diagram("cs.connector", {
         //@proexp
         onDragStart: function(ui) {
             if (this.epoints.length > 0) {
+ 
                 this.epoints_drag = [];
                 // clone this.epoints
                 for (i in this.epoints) {
