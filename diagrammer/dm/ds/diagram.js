@@ -1226,9 +1226,9 @@ dm['dm'] = dm.dm;
                     ui.position.top = 3;
                 }
 
-                if (ui.position.left < 140) {
-                    $(this).css("left", 140);
-                    ui.position.left = 140;
+                if (ui.position.left < 0) {
+                    $(this).css("left", 0);
+                    ui.position.left = 0;
                 }
                 $.log("D STOP:" + self.euid);
                 parrentClass.onDragStop(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
