@@ -1,13 +1,14 @@
 /**
   *  
   */
+//@aspect
 (function( $, dm, undefined ) {
 
 dm.base.diagram("es.class", dm['es']['element'], {
     options: {
-        nameTemplate: 'Class',
-        width: '150px',
-        height: '64px'
+        'nameTemplate': 'Class',
+        'width': '150px',
+        'height': '64px'
     },
     _getAux: function(aux) {
       var auxmap = [];
@@ -21,7 +22,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       return auxmap[aux];      
     },
-    
+//@ifdef EDITOR
     addMethod: function(desc) {
        $('<li><a class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .ClassOperations #sortable").find("a").editable();
        $("#" + this.euid + " #sortable").sortable("refresh");
@@ -33,59 +34,60 @@ dm.base.diagram("es.class", dm['es']['element'], {
     _update: function() {
        var p = $("#" + this.euid + "_Border").position();
 
-       this.options.pageX = p.left;
-       this.options.pageY = p.top;
-       this.options.width = $("#" + this.euid + "_Border").width();
-       this.options.height = $("#" + this.euid + "_Border").height();
+       this.options['pageX'] = p.left;
+       this.options['pageY'] = p.top;
+       this.options['width'] = $("#" + this.euid + "_Border").width();
+       this.options['height'] = $("#" + this.euid + "_Border").height();
 
        // Height of attributes and operations. Width is the same for all components
-       this.options.height_a = $("#" + this.euid + "_Border .ClassAttributes").height();
-       this.options.height_o = $("#" + this.euid + "_Border .ClassOperations").height();
+       this.options['height_a'] = $("#" + this.euid + "_Border .ClassAttributes").height();
+       this.options['height_o'] = $("#" + this.euid + "_Border .ClassOperations").height();
 
-       this.options.name = "" + $("#" + this.euid + " .ClassName" ).html();
-       this.options.aux = $("#" + this.euid + " .UMLSyncEntityHead .ClassAux" ).html();
-       this.options.operations = new Array();
-       this.options.attributes = new Array();
+       this.options['name'] = "" + $("#" + this.euid + " .ClassName" ).html();
+       this.options['aux'] = $("#" + this.euid + " .UMLSyncEntityHead .ClassAux" ).html();
+       this.options['operations'] = new Array();
+       this.options['attributes'] = new Array();
        var self = this;
        
        $("#" + this.euid + " .ClassOperations .operation").each(function(i) {
-         self.options.operations.push($(this).html());
+         self.options['operations'].push($(this).html());
        });
 
        $("#" + this.euid + " .ClassAttributes .attribute").each(function(i) {
-         self.options.attributes.push($(this).html());
+         self.options['attributes'].push($(this).html());
        });
     },
+//@endif
     _create: function() {
        
-       if (this.options.aux && (this.options.aux != "")) {
-           this.aux = "&lt&lt " + this._getAux(this.options.aux) + " &gt&gt";
+       if (this.options['aux'] && (this.options['aux'] != "")) {
+           this.aux = "&lt&lt " + this._getAux(this.options['aux']) + " &gt&gt";
        } else {
         this.aux = "";
        }
        var operations = "",
            attributes = "";
 
-        for (var i in this.options.operations) {
-           operations += '<li><a class="editablefield operation">' + this.options.operations[i] + '</a></li>';
+        for (var i in this.options['operations']) {
+           operations += '<li><a class="editablefield operation">' + this.options['operations'][i] + '</a></li>';
         }
     
-        for (var i in this.options.attributes) {
-           attributes += '<li><a class="editablefield attribute">' + this.options.attributes[i] +'</a></li>';
+        for (var i in this.options['attributes']) {
+           attributes += '<li><a class="editablefield attribute">' + this.options['attributes'][i] +'</a></li>';
         }
 
       // HTML for class structure creation
       this.innerHtmlClassInfo = '\
         <div id="' + this.euid + '" class="UMLSyncClass grElement">\
         <div class="UMLSyncClassHeader">\
-        <a class="editablefield ClassName">' + this.options.name + '</a><br>\
+        <a class="editablefield ClassName">' + this.options['name'] + '</a><br>\
         <a class="editablefield ClassAux">'+ this.aux +'</a>\
         </div>\
         <div class="ClassAttributes"><ul id="sortable-atr">' +  attributes + '</ul></div>\
         <div class="ClassOperations ElementResizeArea"><ul id="sortable">' +  operations + '</ul></div>\
         </div>\
       ';
-      $("#" + this.parrent.euid).append(this.innerHtmlClassInfo);
+      $("#" + this['parrent'].euid).append(this.innerHtmlClassInfo);
 
       this.element = $("#"  + this.euid);
     },
@@ -99,6 +101,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
     if (this.options.height_a)
         $('#' + this.euid  + '_Border .ClassAttributes').css('height', this.options.height_a);
  
+ //@ifdef EDITOR
       if (this.parrent.options.editable) {
       
          var border = "#"+this.euid + "_Border";
@@ -114,7 +117,9 @@ dm.base.diagram("es.class", dm['es']['element'], {
          $("#" + this.euid + " #sortable").sortable().disableSelection();
          $("#" + this.euid + " #sortable-atr").sortable().disableSelection();
       }
+//@endif
     },
+//@ifdef EDITOR
     getName: function() {
       this.options.name = "" + $("#" + this.euid + " .ClassName" ).html();
       return this.options.name;
@@ -122,9 +127,10 @@ dm.base.diagram("es.class", dm['es']['element'], {
     getAux: function() {
       return $("#" + this.euid + " .UMLSyncEntityHead .ClassAux" ).html();
     },
+//@endif
     ec: 0
 });
 
 
-
+//@aspect
 })(jQuery, dm);

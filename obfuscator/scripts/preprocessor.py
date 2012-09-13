@@ -92,4 +92,5 @@ if __name__=="__main__":
         preprocess (sys.argv[1], sys.argv[2])
     else:
         print instructions
+    sys.exit(0)
 

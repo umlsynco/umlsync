@@ -20,7 +20,7 @@ instructions = "zipit.py:  Simple zipfile creation script." + \
 
 def postprocess(infile, outfile):
   rf = open(infile, 'r')
-  wf = open(outfile, 'w')
+  wf = open(outfile, 'wc')
   dm = "dm"
 
   for line in rf:

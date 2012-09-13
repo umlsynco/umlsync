@@ -71,11 +71,13 @@ Version:
 							self.selectedDiagramId = "#" + ui.panel.id;
 							var did = self['diagrams'][self.selectedDiagramId];
 							if (did) {
+//@ifdef EDITOR
 							  $("#accordion").find("h3").each(function(index) {
 								      if ($(this).attr("aux") == did.options.type) {
 									     $("#accordion").accordion({ active: index });
 									  }
 							  });
+//@endif
 							  did.draw();
 						   }
 						}
@@ -103,9 +105,11 @@ Version:
 					    ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
 					// TODO: Add dialog "Would you like to store diagram ?"
 					if (self['diagrams'] && self['diagrams'][ahref]) {
+//@ifdef EDITOR
 					  	  var diagram = self['diagrams'][ahref];
 					      var data = diagram.getDescription();
                           self.saveDiagram(diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
+//@endif
 					}
 					$tabs.tabs('remove', index);
 			});
@@ -497,6 +501,7 @@ Version:
 			 */
 		},   
 		initializeKeyHandler: function(Loader) {
+//@ifdef EDITOR
 			var fw = this;
 			$(window).bind( 'keypress', function(e) {
 				var mon = [99,118,120,121,122,115];
@@ -618,6 +623,7 @@ Version:
 				}
 			}
 			);
+//@endif
 		},
 		initializeToolBox: function(Loader) {
 			var fw=this;

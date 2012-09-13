@@ -124,6 +124,7 @@ Version:
                       }
                 });//ajax
             },
+//@ifdef EDITOR
             //@proexp
             'LoadDiagramMenuData': function(type, callback) {
                 // There is no dependency on main menu load sequence
@@ -201,6 +202,7 @@ Version:
                 data:type
                 });
             },
+//@endif
             //@proexp
             'Diagram': function(dName, dType, options, parrent, argCallback) {
 
@@ -241,7 +243,9 @@ Version:
                     if (argCallback) {
                         argCallback(newdiagram);
                     }
+//@ifdef EDITOR
                     self['CreateDiagramMenu'](opt.diagram, newdiagram);
+//@endif
                     return newdiagram;
                 },
                 data: opt

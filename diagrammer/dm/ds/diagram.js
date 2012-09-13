@@ -123,7 +123,7 @@ dm['dm'] = dm.dm;
                 self.destroy();
             });
 
-            this._trigger( "create" );
+            //this._trigger( "create" );
 
             this['_init']();
         } else {
@@ -131,7 +131,7 @@ dm['dm'] = dm.dm;
             alert("Please, declare method _create() for diagram element " + this.euid);
         }
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     getDescription: function(key, value) {
         var kv = !(key || value || false);
@@ -180,11 +180,7 @@ dm['dm'] = dm.dm;
     //@overwrite
     _update: function() {
     },
-//#endif
-    //@proexp
-    _getCreateOptions: function() {
-        return $.metadata && $.metadata.get( this.element[0] )[ this.euid ];
-    },
+//@endif
     //@overwrite
     _create: function(){},
     //@overwrite
@@ -236,6 +232,7 @@ dm['dm'] = dm.dm;
         // TODO: REDIRECT ON inherited function !!!
         return this;
     },
+    /*
     //@proexp
     _trigger: function( type, event, data ) {
         var callback = this.options[type];
@@ -261,7 +258,7 @@ dm['dm'] = dm.dm;
         return !( $.isFunction(callback) &&
                 callback['call']( this.element[0], event, data ) === false ||
                 event['isDefaultPrevented']() );
-    }
+    }*/ // I have no idea what is this stuff for ... 
     };
 
     //@print
@@ -307,7 +304,7 @@ dm['dm'] = dm.dm;
                 var iDiagram = this;
 
 				$("#" + this.euid + ".UMLSyncClassDiagram").scroll(function() {iDiagram.draw();});
-//#ifdef EDITOR
+//@ifdef EDITOR
 				/*
                 $("#" + this.euid + "_Canvas").droppable({
                     drop: function( event, ui ) {
@@ -398,7 +395,7 @@ dm['dm'] = dm.dm;
                 }
                 });*/
 
-//#endif
+//@endif
                 /** Canvas extra functionality handling:
                  *   1. Hide resize GUI helpers on canvas click
                  *   2. Position locator is debug functionality
@@ -453,6 +450,7 @@ dm['dm'] = dm.dm;
                       e.stopPropagation();
                     }
                 })
+//@ifdef EDITOR
                 .mouseup(function(e) {
                     var p = $(this).offset(),
                     x = e.pageX - p.left,
@@ -464,15 +462,13 @@ dm['dm'] = dm.dm;
                     x = e.pageX - p.left,
                     y = e.pageY - p.top;
                     diag.startConnectorTransform(x,y);
-//#ifdef EDITOR
+
                     if ((diag.selectedconntector)
                       && (!dm['dm']['fw']['CtrlDown'])) {
                       diag.selectedconntector._setOption("selected", true);
                       e.stopPropagation();
                     }
-//#endif
                 })
-//#ifdef EDITOR
                 .bind('contextmenu', function(e) {
                     if (diag.selectedconntector) {
     diag.menuCtx['HideAll']();
@@ -482,7 +478,7 @@ dm['dm'] = dm.dm;
     diag.multipleSelection = true; // work around to hide connector selection on click
                     }
                 })
-//#endif
+//@endif
                 ;
 
                 // create an empty lists for connectors and elements
@@ -529,7 +525,7 @@ dm['dm'] = dm.dm;
                 this.reverted_operations = new Array(); // Array of reverted operations of diagram
 
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     _update: function() {
         this.options['connectors'] = this.connectors;
@@ -541,7 +537,7 @@ dm['dm'] = dm.dm;
         this.options['elements'] = this.elements;
 
     },
-//#endif
+//@endif
     //@proexp
     _init: function () {
         // It is necessary to init mouse over listener
@@ -578,7 +574,7 @@ dm['dm'] = dm.dm;
             if (callback)
                 callback(obj);
         });
-//#ifdef EDITOR
+//@ifdef EDITOR
         // If it is editable diagram
         if (this.options['editable']) {
             // Load the context menu for element
@@ -591,10 +587,10 @@ dm['dm'] = dm.dm;
             if ((this.menuIcon != undefined) && (options['menu'] != undefined))
                 this.menuIcon['load'](options['menu']);
         }
-//#endif
+//@endif
         return options.euid;
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     _setWidgetsOption: function( key, value ) {
         if (key == "selected") {
@@ -653,7 +649,7 @@ dm['dm'] = dm.dm;
 
         this.draw(); // work-around to re-draw connectors after options update
     },
-//#endif
+//@endif
     /**
      * \class Function.
      * TODO: think about lifeline diagram
@@ -669,7 +665,7 @@ dm['dm'] = dm.dm;
         }
         return undefined;
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     /**
      * \class Function.
      */
@@ -689,7 +685,7 @@ dm['dm'] = dm.dm;
         }
 
     },
-//#endif
+//@endif
     //@proexp
     removeElement: function(euid) {
         var el = this.elements;
@@ -703,7 +699,7 @@ dm['dm'] = dm.dm;
         }
 
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     /**
      * \class Function.
      * remove connector from the list of updatable connectors
@@ -728,7 +724,7 @@ dm['dm'] = dm.dm;
         }
 
     },
-//#endif
+//@endif
 
     /**
      * \class Function.
@@ -751,7 +747,7 @@ dm['dm'] = dm.dm;
             }
         });
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     _dropConnector: function(ui) {
         var result = undefined,
@@ -842,7 +838,7 @@ dm['dm'] = dm.dm;
             }
         }
     },
-//#endif
+//@endif
     //@proexp    
     onDragStart: function(el, ui) {
         el.onDragStart(ui, true);
@@ -937,22 +933,26 @@ dm['dm'] = dm.dm;
     //@proexp
      isPointOnLine: function(x,y) {
         if (this.connectors.length > 0) {
+//@ifdef EDITOR
             if (this.transformStarted == true) {
                 this.selectedconntector.TransformTo(x,y);
                 this.draw();
                 return true;
             }
-
+//@endif
             for (c in this.connectors) {        
                 if (this.connectors[c].isPointOnLine(x,y)) {
                     if (this.connectors[c] != this.selectedconntector) {
     this.selectedconntector = this.connectors[c];
     this.draw();
+
+//@ifdef EDITOR
     if (this.selectedconntector._showMenu != undefined) {
         this.selectedconntector._showMenu(x,y, true);
     }
+//@endif
                     }
-                    return true;             
+                    return true;
                 }
             }
         }
@@ -960,14 +960,18 @@ dm['dm'] = dm.dm;
         // Hide selected connector
         // because it is no longer highlited
         if (this.selectedconntector != undefined) {
+//@ifdef EDITOR
             if (this.selectedconntector._showMenu != undefined) {
                 this.selectedconntector._showMenu(x,y, false);
             }
+//@endif
             this.selectedconntector = undefined;
             this.draw();
         }
+
         return false;
     },
+//@ifdef EDITOR
     /**
      * \class Function.
      * The connector transfomation function.
@@ -990,12 +994,13 @@ dm['dm'] = dm.dm;
             this.selectedconntector.stopTransform(x,y);
         this.transformStarted = false;
     },
+//@endif
     /**
      * \class Function.
      */
     //@proexp
      _mouseClick: function(refElement) {
-//#ifdef EDITOR
+//@ifdef EDITOR
         var mtype = (refElement == undefined) ? undefined : refElement.options['menu'];
         var ctrlDown = dm['dm']['fw']['CtrlDown'];
         this.clickedElement = refElement;
@@ -1062,9 +1067,9 @@ dm['dm'] = dm.dm;
             this.selectedElement._setOption("selected", true);
             this.draw();
         }
-//#endif
+//@endif
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     reportOperation: function(operation, euid, before, after) {
         this.operations.push([operation, euid, before, after]);
@@ -1090,7 +1095,7 @@ dm['dm'] = dm.dm;
             }
         }
     }
-//#endif
+//@endif
     });
     
     //@print
@@ -1128,7 +1133,7 @@ dm['dm'] = dm.dm;
             // create element at possition which described in jsonDesc
             alert("Could not create virtual element !!!");
         },
-//#ifdef EDITOR
+//@ifdef EDITOR
         //@proexp
         _update: function() {
             var p = $("#" + this.euid + "_Border").position();
@@ -1145,7 +1150,7 @@ dm['dm'] = dm.dm;
                 }
             }
         },
-//#endif
+//@endif
         //@proexp
         _init: function () {
             if (this.options['height']) {
@@ -1182,6 +1187,7 @@ dm['dm'] = dm.dm;
 
             var axis111 = this.options['axis'] || false;
             var elmt = $('#' + this.euid  + '_Border')
+//@ifdef EDITOR
             .resizable({
 			'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
 			'scroll': true,
@@ -1278,10 +1284,12 @@ dm['dm'] = dm.dm;
                     self.parrent.menuCtx['visit'](self, e.pageX , e.pageY );
                 }
             })
+//@endif
             .css({'position':'absolute'})
             .css('top', this.options['pageY'])
             .css('left', this.options['pageX']);
 
+//@ifdef EDITOR
             // Hide element resize points which was
             // added on the previous step
             $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
@@ -1291,7 +1299,7 @@ dm['dm'] = dm.dm;
             if (this.parrent.options['editable']) {
                 $("#" + this.euid + " .editablefield").editable();
             }
-
+//@endif
             // You need to select element to start DND
             $('#'+this.euid)
             .click(function(e) {
@@ -1301,12 +1309,13 @@ dm['dm'] = dm.dm;
             })       
             .mouseenter(function (){
                 $('#' + this.id +'_Border').css({'border':'3px solid #414141'}).animate({left:'-=3px', top:'-=3px'},0);
-                $('#' + this.id +'_FS').css({'visibility':'visible'});
                 $('#' + this.id +'_REF').css({'visibility':'visible'});
+//@ifdef EDITOR
                 // Show the  menu if element was selected
                if (self.parrent.menuIcon) {
                     self.parrent.menuIcon['Show'](this.id, self);
                 }
+//@endif
                 //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
             })
             .mouseleave(function (){
@@ -1316,14 +1325,12 @@ dm['dm'] = dm.dm;
                 if (self.parrent.menuIcon) {
                     self.parrent.menuIcon['Hide'](this.id);
                  }
-                //$(".elmenu-" + self.menutype).animate({opacity:"0"});;
-//                if (!self.options.selected) {
-                $('#' + this.id +'_FS').css({'visibility':'hidden'});
                 $('#' + this.id +'_REF').css({'visibility':'hidden'});
-//                }
+
             })
-            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>")
-            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
+            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>");
+// Feat size no longer supported, potential collizion with another Software
+//            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
 
             if (this.options['subdiagram']) {
                 $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(function() {
@@ -1364,9 +1371,8 @@ dm['dm'] = dm.dm;
             } else if (key == "z-index") {
                 $("#" + this.euid + '_Border ').css(key, value);
             }
-
-            return this;
         },
+//@ifdef EDITOR
         //@proexp
         onDragStart: function(ui, isbase) {
             if (this.options.dragStart != undefined)
@@ -1410,7 +1416,8 @@ dm['dm'] = dm.dm;
             $.log("DSTOP: " + this.euid);
             this.options.dragStart = undefined;
             this.start_operation = undefined;
-        }    
+        }
+//@endif
         });
 
         //@print
@@ -1427,8 +1434,17 @@ dm.base.diagram("cs.connector", {
         },
         //@proexp
         addLable: function(text, x, y) {
-            this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>").appendTo("#" + this.parrent.euid).css("left", x).css("top", y).draggable().editable());
+            this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>")
+            .appendTo("#" + this.parrent.euid)
+            .css("left", x)
+            .css("top", y)
+//@ifdef EDITOR
+            .draggable()
+            .editable()
+//@endif
+            );
         },
+//@ifdef EDITOR
         //@proexp
         getDescription: function() {
             var item = '{',
@@ -1467,6 +1483,7 @@ dm.base.diagram("cs.connector", {
             item +=  '}';
             return item; 
         },
+//@endif
         //@proexp
         _create: function () {
             //@proexp
@@ -1587,6 +1604,7 @@ dm.base.diagram("cs.connector", {
             }
             return false;          
         },
+//@ifdef EDITOR
         //@proexp
         canRemovePoint: function(p1,p2,rp) {
             if ((p1 == undefined)
@@ -1704,7 +1722,8 @@ dm.base.diagram("cs.connector", {
                 if ($.isFunction(this.onTransform))
                     this.onTransform(x,y);
             }
-        },    
+        },
+//@endif
         //@proexp
         _getConnectionPoints: function(fromId, toId, epoints) {
 
@@ -1758,6 +1777,7 @@ dm.base.diagram("cs.connector", {
                 return newpoints;
             }
         },
+//@ifdef EDITOR
         //@proexp
         onDragStart: function(ui) {
             if (this.epoints.length > 0) {
@@ -1803,6 +1823,7 @@ dm.base.diagram("cs.connector", {
             this.epoints_drag = undefined;
             this.lables_drag = undefined;
         }
+//@endif
         });
         //@print
 //@aspect
