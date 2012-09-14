@@ -284,17 +284,21 @@ dm['dm'] = dm.dm;
     //@proexp
     _create: function () {
 	//<div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
+//@ifdef VIEWER
+        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
+                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
+                <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
+                </div></div>');
+        this.canvas = window.document.getElementById(this.euid +'_Canvas');
+//@else
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
                 <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
                 </div></div>');
+        this.canvas = window.document.getElementById('SingleCanvas');
+//@endif
 
-
-				//<canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
-				//<p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
-                
                 this.max_zindex = 100;
-                //this.canvas = window.document.getElementById(this.euid +'_Canvas');
-				this.canvas = window.document.getElementById('SingleCanvas');
 
                 // Diagram canvas drop element
                 // It is not necessary for regular usage
@@ -888,6 +892,8 @@ dm['dm'] = dm.dm;
      */
     //@proexp
      draw: function() {
+         if (!this.canvas)
+           return;
         var ctx = this.canvas.getContext("2d");
 
         ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
@@ -1215,7 +1221,7 @@ dm['dm'] = dm.dm;
 			  'scroll': true,
               'start': function(event, ui) {
                 self.operation_start = {left: ui.position.left, top: ui.position.top};
-                parrentClass.onDragStart(self, ui);
+                parrentClass['onDragStart'](self, ui);
               },
               'drag': function(event, ui) {
                 if (parrentClass != undefined) {
@@ -1224,7 +1230,7 @@ dm['dm'] = dm.dm;
                 if (self.$moveit != undefined) {
                     $("#" + self.$moveit).css("left", 200);
                 }
-                parrentClass.onDragMove(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
+                parrentClass['onDragMove'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
               },
               'stop': function(event, ui) {
                 if (ui.position.top < 0) {
@@ -1750,15 +1756,17 @@ dm.base.diagram("cs.connector", {
                 return newpoints;
             }
             else {
-		        scrollTop = $("#" + this.parrent.euid).scrollTop();
+//@ifdef EDITOR
+                scrollTop = $("#" + this.parrent.euid).scrollTop();
                 scrollLeft = $("#" + this.parrent.euid).scrollLeft();
-
+//@endif
                 var lln = epoints.length -1;
                 var x1 = this._getRValue(p1.left + p11.left, epoints[0][0] - scrollLeft, $('#'+ fromId).width()) ;
                 var y1 = this._getRValue(p1.top + p11.top, epoints[0][1] - scrollTop, $('#'+ fromId).height()) ;
 
                 var x2 = this._getRValue(p2.left + p21.left, epoints[lln][0] - scrollLeft, $('#' + toId).width());
                 var y2 = this._getRValue(p2.top + p21.top, epoints[lln][1] - scrollTop, $('#' + toId).height());
+
 
        /*
          var x1 = p1.left + p11.left;

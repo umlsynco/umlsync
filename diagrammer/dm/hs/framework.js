@@ -61,15 +61,15 @@ Version:
 
 			var $tabs = $("#tabs").tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
 			      	'add': function(event, ui) {
-						if (self['diagrams']) {
+						if (self.diagrams) {
 							self.selectedDiagramId = "#" + ui.panel.id;
 						}
                         $tabs.tabs('select', '#' + ui.panel.id);
 					},
 					'select': function(event, ui) {
-						if (self['diagrams']) {
+						if (self.diagrams) {
 							self.selectedDiagramId = "#" + ui.panel.id;
-							var did = self['diagrams'][self.selectedDiagramId];
+							var did = self.diagrams[self.selectedDiagramId];
 							if (did) {
 //@ifdef EDITOR
 							  $("#accordion").find("h3").each(function(index) {
@@ -84,9 +84,9 @@ Version:
 						self.updateFrameWork(true);
 					},
 					'show': function(event, ui) {
-						if (self['diagrams']) {
+						if (self.diagrams) {
 							self.selectedDiagramId = "#" + ui.panel.id;
-							var did = self['diagrams'][self.selectedDiagramId];
+							var did = self.diagrams[self.selectedDiagramId];
 							if (did) {
 							  did.draw();
 						   }
@@ -104,9 +104,9 @@ Version:
 					var index = $('li', $tabs).index($(this).parent().parent()),
 					    ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
 					// TODO: Add dialog "Would you like to store diagram ?"
-					if (self['diagrams'] && self['diagrams'][ahref]) {
+					if (self.diagrams && self.diagrams[ahref]) {
 //@ifdef EDITOR
-					  	  var diagram = self['diagrams'][ahref];
+					  	  var diagram = self.diagrams[ahref];
 					      var data = diagram.getDescription();
                           self.saveDiagram(diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
 //@endif
@@ -153,6 +153,13 @@ Version:
 		//@proexp
 		'LoadMainMenu':function(callback) {
 			dm.dm.loader.LoadMainMenuData(callback);
+		},
+		//@proexp
+		'activeDiagram':function() {
+			if (this.diagrams && this.selectedDiagramId) {
+				return this.diagrams[this.selectedDiagramId];
+			}
+			return null;
 		},
 		//@proexp
 		'registerViewManager': function(viewmanager, type) {
@@ -477,7 +484,7 @@ Version:
 			}
 			if (self.views[viewid])
 			self.views[viewid].view.loadDiagram(path, {
-			  success: function(json) {
+			  'success': function(json) {
 				var tabname = "#"+ self.options.tabRight + "-" + self.counter;
 				self.counter++;
 				$.struct = json;
@@ -488,7 +495,7 @@ Version:
 				});
 				self.updateFrameWork(true);
 			  },
-			  error: function() {alert("FAILED to load:" + path);}});
+			  'error': function() {alert("FAILED to load:" + path);}});
 		},
         //@proexp
 		'loadCode': function(url, name) {

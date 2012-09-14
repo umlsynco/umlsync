@@ -40,9 +40,9 @@ Version:
 				$.ajax({
 		          url: urlArg + node.getAbsolutePath() + ".json",
 				  dataType: 'json',
-                  success: callback.success,
-			      error:callback.error
-		        });
+				  success: callback.success,
+				  error:callback.error
+		           });
 			},
 			newfolder:function(path,name,callback) {
 				if (callback) callback({isFolder:true,isLazy:true,title:name});

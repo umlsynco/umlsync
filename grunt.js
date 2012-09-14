@@ -1,6 +1,30 @@
 module.exports = function(grunt) {
 
-  var projectFiles = [
+  var editorFiles = [
+            'dm/dm/loader.js',
+            'dm/ds/diagram.js',
+            'dm/hs/framework.js',
+            'dm/ms/ds/common.js',
+            'dm/es/class.js',
+            'dm/es/note.js',
+            'dm/es/interface.js',
+            'dm/es/component.js',
+            'dm/es/package.js',
+            'dm/es/image.js',
+            'dm/es/objinstance.js',
+            'dm/es/port.js',
+/*            'dm/ds/base.js',
+            'dm/ms/us/us.js',
+
+            'dm/es/class.js',
+/*            'dm/es/*.js',
+            'dm/cs/*.js',
+            'dm/ms/ctx/default.js',
+            'dm/ms/ctx/class.js',
+            'dm/ms/ctx/connector.js'*/
+            ];
+
+  var viewerFiles = [
             'dm/dm/loader.js',
             'dm/ds/diagram.js',
             'dm/hs/framework.js',
@@ -68,8 +92,8 @@ module.exports = function(grunt) {
 
   var expandedListOfFiles = new Array();
 
-  for (p in projectFiles) {
-           var file = "viewer/" + projectFiles[p],
+  for (p in editorFiles) {
+           var file = "editor/" + editorFiles[p],
             severalFiles = grunt.file.expandFiles(file);
           if (severalFiles.length > 0) {
               expandedListOfFiles = expandedListOfFiles.concat(severalFiles)
@@ -78,23 +102,23 @@ module.exports = function(grunt) {
           }
   }
 
-  projectFiles = expandedListOfFiles;
+  editorFiles = expandedListOfFiles;
 
   var taskPP0 = "commandline:init_externals commandline:create_dirs";
 
-  for (p in projectFiles) {
-      var file = projectFiles[p],
+  for (p in editorFiles) {
+      var file = editorFiles[p],
           cutext = file.substring(0,file.length-2);
       taskPP0 += " pythonscript:pre0"+ file;
       initProjectConfig['pythonscript']["pre0" + file] =  {
-        src: projectFiles[p],
-        dst: "VIEWER",
+        src: editorFiles[p],
+        dst: "EDITOR",
         script: 'obfuscator/scripts/preprocessor0.py',
       };
 
       // pre-processor target
       initProjectConfig['pythonscript']["pre" + file] =  {
-        src: projectFiles[p],
+        src: editorFiles[p],
         dst: cutext + "pre.js",
         script: 'obfuscator/scripts/preprocessor.py',
       };
@@ -133,7 +157,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-closure-compiler');
 
   // Default task.
-  grunt.registerTask('viewer', taskPP0);
+  grunt.registerTask('editor', taskPP0);
   grunt.registerTask('default', taskPP0 + defaultTasks);
 
   // Clean task

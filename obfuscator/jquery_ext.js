@@ -28,6 +28,8 @@ jQuery.draggable = function(event) {}
 jQuery.droppable = function(event) {}
 jQuery.resizable = function(event) {}
 jQuery.resizable = function(event) {}
+jQuery.sortable = function(event) {}
+jQuery.disableSelection = function(event) {}
 jQuery.Event = function(event) {}
 jQuery.isFunction = function(event) {}
 jQuery.trigger = function(event) {}
@@ -35,17 +37,39 @@ jQuery.resize = function(event) {}
 jQuery.css = function(event) {}
 jQuery.editable =  function(event) {}
 jQuery.jqsimplemenu =  function(event) {}
+jQuery.html =  function(event) {}
+jQuery.addClass =  function(event) {}
+jQuery.removeClass =  function(event) {}
 
 ui.helper.data = $.ui.helper.data;
 ui.draggable = $.ui.draggable;
+ui.size.width();
+ui.size.height();
 
 var $ = jQuery;
 var ui = {panel:{id:0}};
-var IView = {tree:{}, euid:1, remove:{}, newfolder:{}};
+var IView = {tree:{},
+             euid:1,
+	    remove:{},
+	    newfolder:{},
+	    init:{},
+	    info:{},
+	    loadDiagram:{}
+	    };
+
 var node = { append: {}};
 
 var dm={ds:{},es:{},cs:{},base:{},dm:{},hs:{},ms:{},menu:{}};
 
-$.log = function(event) {}
-$.aspect = function(event) {}
+$.log = function(event) {};
+$.aspect = function(event) {};
 var s = false;
+this.options.name = {};
+this.options.width = {};
+this.options.height = {};
+this.options.pageY = {};
+this.options.pageX = {};
+this.parrent.euid = {};
+this.options.dropped = {};
+this.options.color = {};
+this.options.aux = {};

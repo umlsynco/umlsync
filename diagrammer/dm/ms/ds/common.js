@@ -18,13 +18,15 @@ Version:
   2.0.0 (2012-07-17)
  */
 
-
+//@aspect
 (function($, dm, undefined) {
-    dm.ms = dm.ms || {};
-    dm.ms.ds = dm.ms.ds || {};   // diagram menu  
-    dm.ms.es = dm.ms.es || {};   // element menu 
-    dm.ms.ctx = dm.ms.ctx || {}; // context menu for diagram
+//    dm.ms = dm.ms || {};
+//    dm.ms.ds = dm.ms.ds || {};   // diagram menu  
+//    dm.ms.es = dm.ms.es || {};   // element menu 
+//    dm.ms.ctx = dm.ms.ctx || {}; // context menu for diagram
 
+	//@export:dm.ms.ctx.common:plain
+    dm.ms.ctx = dm.ms.ctx || {};
 
     dm.ms.ctx.common = function(menuBuilder, options, actions) {
         this.options = options;  
@@ -77,6 +79,9 @@ Version:
 			$("#socializethis2").hide();
         };
     };
+    
+    //@print
+    dm['ms']['ctx']['common'] = dm.ms.ctx.common;
 
 //    Common context menu for element for the diagram
 //    One instance for each diagram
@@ -85,6 +90,8 @@ Version:
 //    param loader - common loader for components
 //    param diagram.id - diagram unique DIV id 
 //    diagram - the diagram class
+
+	//@export:dm.ms.ContextMenuBuilder:plain
     dm.ms.ContextMenuBuilder = function(loader, diagram, dmb) {
         this.diagram = diagram;
         this.dmb = dmb;
@@ -131,7 +138,10 @@ Version:
         this.load('connector');
     }
 
-//    Common element menu loader
+    //@print
+
+    //Common element menu loader
+	//@export:dm.ms.IconMenuBuilder:plain
     dm.ms.IconMenuBuilder = function(hmenus, diagram, dmb) {
         this.menus = [];
         this.diagram = diagram;
@@ -280,7 +290,10 @@ Version:
         diagram.setMenuBuilder("icon", this);
     }
 
-//    Common diagram menu loader
+    //@print
+
+    //Common diagram menu loader
+    //@export:dm.ms.ds.common:plain
     dm.ms.ds.common = function(type, diagram, loader) {
 
         //elements counter
@@ -404,12 +417,13 @@ Version:
                 var menus = [];
 
 	            var fw = dm.dm.fw;
-				var diagram = fw['diagrams'][fw.selectedDiagramId];
+				var diagram = fw.activeDiagram();
                 var loadElement = diagramMenuBuilder.getElementById(this.id);
 
                 if ((loadElement != undefined) && (loadElement.menu != undefined))
                     iconMenuBuilder.load(this.id, loadElement);
-                diagram.Element(loadElement.type, loadElement);
+                if (diagram)
+                  diagram.Element(loadElement.type, loadElement);
             });
 
             $("#accordion .connectorSelector").mouseenter(function() {$(this).addClass('hover');}).mouseleave(function() {$(this).removeClass('hover');})
@@ -468,5 +482,5 @@ Version:
 		} // Menu not active
 		});
     }
-
+//@aspect
 })(jQuery, dm);

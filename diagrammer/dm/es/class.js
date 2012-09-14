@@ -5,12 +5,12 @@
 (function( $, dm, undefined ) {
 
 dm.base.diagram("es.class", dm['es']['element'], {
-    options: {
+    'options': {
         'nameTemplate': 'Class',
         'width': '150px',
         'height': '64px'
     },
-    _getAux: function(aux) {
+    '_getAux': function(aux) {
       var auxmap = [];
       auxmap["Class"] = "";
       auxmap["Interface"] = "interface";
@@ -23,15 +23,15 @@ dm.base.diagram("es.class", dm['es']['element'], {
       return auxmap[aux];      
     },
 //@ifdef EDITOR
-    addMethod: function(desc) {
+    'addMethod': function(desc) {
        $('<li><a class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .ClassOperations #sortable").find("a").editable();
        $("#" + this.euid + " #sortable").sortable("refresh");
     },
-    addField: function(desc) {
+    'addField': function(desc) {
        $('<li><a class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .ClassAttributes #sortable-atr").find("a").editable();
        $("#" + this.euid + " #sortable-atr").sortable("refresh");
     },
-    _update: function() {
+    '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
 
        this.options['pageX'] = p.left;
@@ -58,10 +58,10 @@ dm.base.diagram("es.class", dm['es']['element'], {
        });
     },
 //@endif
-    _create: function() {
+    '_create': function() {
        
        if (this.options['aux'] && (this.options['aux'] != "")) {
-           this.aux = "&lt&lt " + this._getAux(this.options['aux']) + " &gt&gt";
+           this.aux = "&lt&lt " + this['_getAux'](this.options['aux']) + " &gt&gt";
        } else {
         this.aux = "";
        }
@@ -91,27 +91,28 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       this.element = $("#"  + this.euid);
     },
-    _init: function() {
-    if (this.options.height)
+    '_init': function() {
+    if (this.options['height'])
     $('#' + this.euid  + '_Border')
-         .css('width', this.options.width).css('height', this.options.height);
+         .css('width', this.options['width']).css('height', this.options['height']);
     if (this.options.height_o)
-      $('#' + this.euid  + '_Border .ClassOperations').css('height', this.options.height_o);
+      $('#' + this.euid  + '_Border .ClassOperations').css('height', this.options['height_o']);
 
-    if (this.options.height_a)
-        $('#' + this.euid  + '_Border .ClassAttributes').css('height', this.options.height_a);
+    if (this.options['height_a'])
+        $('#' + this.euid  + '_Border .ClassAttributes').css('height', this.options['height_a']);
  
  //@ifdef EDITOR
-      if (this.parrent.options.editable) {
+      if (this['parrent'].options['editable']) {
       
          var border = "#"+this.euid + "_Border";
          var self = this;
          // stop-function is a fix for attributes area which became not resizizable with black points after internal resize usage
-         $("#"+this.euid + " .ClassAttributes").resizable({handles: 's-l',
-		                                                   alsoResize: border,
-		                                                   stop: function(event, ui) { $("#"+self.euid + " .ClassAttributes").css({width:"100%"}); } });
-         $("#"+this.euid + " .ClassOperations").resizable({ handles: 's-l', alsoResize: border,
-														   resize: function(event, ui) { if ($(border).width() < ui.size.width) $(this).width($(border).width());}
+         $("#"+this.euid + " .ClassAttributes").resizable({'handles': 's-l',
+		                                                   'alsoResize': border,
+		                                                   'stop': function(event, ui) {
+                                                                $("#"+self.euid + " .ClassAttributes").css({'width':"100%"}); } });
+         $("#"+this.euid + " .ClassOperations").resizable({'handles': 's-l', 'alsoResize': border,
+														   'resize': function(event, ui) { if ($(border).width() < ui.size.width) $(this).width($(border).width());}
 		 });
          
          $("#" + this.euid + " #sortable").sortable().disableSelection();
@@ -120,15 +121,15 @@ dm.base.diagram("es.class", dm['es']['element'], {
 //@endif
     },
 //@ifdef EDITOR
-    getName: function() {
-      this.options.name = "" + $("#" + this.euid + " .ClassName" ).html();
-      return this.options.name;
+    'getName': function() {
+      this.options['name'] = "" + $("#" + this.euid + " .ClassName" ).html();
+      return this.options['name'];
     },
-    getAux: function() {
+    'getAux': function() {
       return $("#" + this.euid + " .UMLSyncEntityHead .ClassAux" ).html();
     },
 //@endif
-    ec: 0
+    'ec': 0
 });
 
 

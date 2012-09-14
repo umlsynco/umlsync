@@ -1,14 +1,16 @@
 /**
   *  
   */
+//@aspect
 (function( $, dm, undefined ) {
+
 dm.base.diagram("es.interface", dm.es.element, {
-    options: {
-        nameTemplate: "Interface",
-        width:'30px',
-        height:'30px'
+    'options': {
+        'nameTemplate': "Interface",
+        'width':'30px',
+        'height':'30px'
     },
-    _update: function() {
+    '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
        this.options.pageX = p.left;
        this.options.pageY = p.top;
@@ -18,14 +20,14 @@ dm.base.diagram("es.interface", dm.es.element, {
        this.options.name = $("#" + this.euid + " #lable" ).html();
        
     },
-    _create: function() {
+    '_create': function() {
       this.innerHtml = '<div id="' + this.euid + '" style="width:100%;height:100%;">\
                         <div id="Circle" class="UMLSyncInterface grElement"></div>\
                         </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
     },
-    _init: function() {
+    '_init': function() {
       this.options.width = this.options.height;
       $('#' + this.euid  + '_Border')
          .css('width', this.options.width)
@@ -52,4 +54,6 @@ dm.base.diagram("es.interface", dm.es.element, {
       }
     }
 });
+
+//@aspect
 })(jQuery, dm);
