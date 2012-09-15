@@ -1,10 +1,13 @@
 module.exports = function(grunt) {
 
   var editorFiles = [
+// Base files
             'dm/dm/loader.js',
             'dm/ds/diagram.js',
             'dm/hs/framework.js',
             'dm/ms/ds/common.js',
+            'dm/ms/us/us.js',
+// Elements
             'dm/es/class.js',
             'dm/es/note.js',
             'dm/es/interface.js',
@@ -13,6 +16,7 @@ module.exports = function(grunt) {
             'dm/es/image.js',
             'dm/es/objinstance.js',
             'dm/es/port.js',
+// Connectors
 'dm/cs/aggregation.js',
 'dm/cs/generalization.js',
 'dm/cs/nested.js',
@@ -22,18 +26,22 @@ module.exports = function(grunt) {
 'dm/cs/realization.js',
 'dm/cs/selfassociation.js',
 'dm/cs/dependency.js',
+// Diagram extentions
+            'dm/ds/base.js',
+            'dm/ds/sequence.js',
+// Context menu for elements
+            'dm/ms/ctx/default.js',
+            'dm/ms/ctx/sequence.js',
+            'dm/ms/ctx/entity.js',
+            'dm/ms/ctx/stereotype.js',
+            'dm/ms/ctx/connector.js'
+
+// Postponed connectors
 /*   dm/cs/lifeline.js        dm/cs/onetoone.js
 dm/cs/bitransition.js  dm/cs/llselfcall.js      
 dm/cs/composition.js   dm/cs/llsequence.js      
     dm/cs/manytomany.js      dm/cs/transition.js
 './dm/cs/onetomany.js'*/
-            'dm/ds/base.js',
-            'dm/ds/sequence.js',
-/*            'dm/ms/us/us.js',
-/*            'dm/es/*.js',
-            'dm/ms/ctx/default.js',
-            'dm/ms/ctx/class.js',
-            'dm/ms/ctx/connector.js'*/
             ];
 
   var viewerFiles = [

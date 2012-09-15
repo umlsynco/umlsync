@@ -16,10 +16,8 @@ Version:
   2.0.0 (2012-07-17)
  */
 
-
+//@aspect
 (function($, dm, undefined) {
-  dm = dm || {};
-  dm.ms = dm.ms || {};
 
   /*
    * /param url - path to diagrams description JSON
@@ -31,7 +29,7 @@ Version:
    *   6. Handle errors
    */
 
-  dm.ms.us = function(handler, options) {
+  dm.ms['us'] = function(handler, options) {
 
     $.extend(true, this.options, options);
     this.handler = handler;
@@ -41,16 +39,16 @@ Version:
     self = this;
 
     // 1. Load JSON from url
-    handler.LoadMainMenu(function(data, urlPrefix) {
+    handler['LoadMainMenu'](function(data, urlPrefix) {
       var items = [];
 
-      for (d in data) {
-        var image = (data[d].image[0][so.image] != undefined) ? "list-style-image:url(\'"+ urlPrefix + data[d].image[0][so.image] + "\')" : "list-style-type:none";
-        items.push('<li class="diagramSelector" style="cursor:pointer;' + image + ';" id="'  + data[d].diagram +'">' +
-        data[d].description + '</li>');
+      for (var i in data) {
+        var image = (data[i]['image'][0][so['image']] != undefined) ? "list-style-image:url(\'"+ urlPrefix + data[i]['image'][0][so['image']] + "\')" : "list-style-type:none";
+        items.push('<li class="diagramSelector" style="cursor:pointer;' + image + ';" id="'  + data[i]['diagram'] +'">' +
+        data[i]['description'] + '</li>');
       }
 
-      innerHtml = items.join('');
+      var innerHtml = items.join('');
       innerHtml = '<form>\
         <fieldset><div id="vp_main_menu34" style="scroll:auto;height:40px;"><ul>' + innerHtml + '</ul></div>\
         <p><label class="left" for="name">Name:</label><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
@@ -59,26 +57,26 @@ Version:
       $(innerHtml).appendTo("#vp_main_menu");
 
       $( "#vp_main_menu" ).dialog({
-        autoOpen: true,
+        'autoOpen': true,
 //        minHeight: 430,
-        minWidth: 350,
-        modal: true,
-        buttons: {
+        'minWidth': 350,
+        'modal': true,
+        'buttons': {
           "Create": function() {
             var diagram_name = $("#vp_main_menu input").val(),
             fullname = diagram_name;
             if (diagram_name != '') {
-              if (!self.handler.checkDiagramName(diagram_name)) {
+              if (!self.handler['checkDiagramName'](diagram_name)) {
                 diagram_name += "(2)";
               }
               var sp = diagram_name.split("/");
               if (sp.length > 1)
                 diagram_name = sp[sp.length-1];
-              self.handler.addDiagram("base", self.selected, diagram_name, {'fullname': fullname, 'viewid': $("#vp_main_menu select").val()});
+              self.handler['addDiagram']("base", self.selected, diagram_name, {'fullname': fullname, 'viewid': $("#vp_main_menu select").val()});
             }
             $(this).dialog("close");
           },
-          Cancel: function() {
+          'Cancel': function() {
             $(this).dialog("close");
           }
         },
@@ -107,12 +105,12 @@ Version:
     );
   };
 
-  dm.ms.us.prototype = {
-      options: {
-        image: "small",
-        url: "dm/ms/us/main.json",
-        id: "ListDiagramMenu"
+  dm.ms['us'].prototype = {
+      'options': {
+        'image': "small",
+        'url': "dm/ms/us/main.json",
+        'id': "ListDiagramMenu"
       }
   };
-
+//@aspect
 })(jQuery, dm);

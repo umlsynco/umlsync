@@ -3,9 +3,10 @@
   *          How to use heritance of context menus ?
   * 
   */
+//@aspect
 (function( $, dm, undefined ) {
 
-dm.ms.ctx.connector = function(menuBuilder) {
+dm.ms.ctx['connector'] = function(menuBuilder) {
   var self = this;
   return new dm.ms.ctx.common(menuBuilder, {id: "connector", uid:"connectorEUI"}, {
            'Add "Text"': {
@@ -29,5 +30,5 @@ dm.ms.ctx.connector = function(menuBuilder) {
             }
         });
 }
-
+//@aspect
 })(jQuery, dm);

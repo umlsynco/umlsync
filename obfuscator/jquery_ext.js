@@ -42,7 +42,8 @@ jQuery.addClass =  function(event) {}
 jQuery.removeClass =  function(event) {}
 jQuery.attr =  function(event) {}
 jQuery.accordion =  function(event) {}
-
+jQuery.dialog  =   function(event) {}
+jQuery.val = function(event) {}
 ui.helper.data = $.ui.helper.data;
 ui.draggable = $.ui.draggable;
 ui.size.width();

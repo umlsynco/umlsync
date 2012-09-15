@@ -2,9 +2,10 @@
  *   Class: context menu for stereotype element
  * 
  */
+//@aspect
 (function( $, dm, undefined ) {
     var ctx = dm.ms.ctx;
-    ctx.stereotype = function(menuBuilder) {
+    ctx['stereotype'] = function(menuBuilder) {
         var loadUrl = "http://localhost:8000/";//menuBuilder.loader.url;
 
         return new dm.ms.ctx.common(menuBuilder, {id: "stereotype", uid:"stereotypeECtx"}, {
@@ -26,4 +27,5 @@
         }
         });
     };
+//@aspect
 })(jQuery, dm);
