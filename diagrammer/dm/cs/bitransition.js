@@ -15,10 +15,8 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function($, dm, undefined) {
-dm = dm || {};
-dm.cs = dm.cs || {};
 
 dm.base.diagram("cs.bitransition", dm.cs.connector, {
     'draw': function(c, points, color) {
@@ -73,4 +71,5 @@ dm.base.diagram("cs.bitransition", dm.cs.connector, {
             c.closePath();            
     }
     });
+//@aspect
 })(jQuery, dm);

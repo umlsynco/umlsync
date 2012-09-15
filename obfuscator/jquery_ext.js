@@ -40,6 +40,8 @@ jQuery.jqsimplemenu =  function(event) {}
 jQuery.html =  function(event) {}
 jQuery.addClass =  function(event) {}
 jQuery.removeClass =  function(event) {}
+jQuery.attr =  function(event) {}
+jQuery.accordion =  function(event) {}
 
 ui.helper.data = $.ui.helper.data;
 ui.draggable = $.ui.draggable;
@@ -73,3 +75,4 @@ this.parrent.euid = {};
 this.options.dropped = {};
 this.options.color = {};
 this.options.aux = {};
+var dm={base:{},menu:{},ds:{},cs:{},hs:{},dm:{},ms:{ctx:{},ds:{}}};window.dm=dm;dm.base=dm.base;dm.menu=dm.menu;dm.ds=dm.ds;dm.cs=dm.cs;dm.es=dm.es;dm.hs=dm.hs;dm.dm=dm.dm;

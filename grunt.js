@@ -13,12 +13,24 @@ module.exports = function(grunt) {
             'dm/es/image.js',
             'dm/es/objinstance.js',
             'dm/es/port.js',
-/*            'dm/ds/base.js',
-            'dm/ms/us/us.js',
-
-            'dm/es/class.js',
+'dm/cs/aggregation.js',
+'dm/cs/generalization.js',
+'dm/cs/nested.js',
+'dm/cs/anchor.js',
+'dm/cs/iobserver.js',
+'dm/cs/association.js',
+'dm/cs/realization.js',
+'dm/cs/selfassociation.js',
+'dm/cs/dependency.js',
+/*   dm/cs/lifeline.js        dm/cs/onetoone.js
+dm/cs/bitransition.js  dm/cs/llselfcall.js      
+dm/cs/composition.js   dm/cs/llsequence.js      
+    dm/cs/manytomany.js      dm/cs/transition.js
+'./dm/cs/onetomany.js'*/
+            'dm/ds/base.js',
+            'dm/ds/sequence.js',
+/*            'dm/ms/us/us.js',
 /*            'dm/es/*.js',
-            'dm/cs/*.js',
             'dm/ms/ctx/default.js',
             'dm/ms/ctx/class.js',
             'dm/ms/ctx/connector.js'*/
@@ -106,19 +118,19 @@ module.exports = function(grunt) {
 
   var taskPP0 = "commandline:init_externals commandline:create_dirs";
 
-  for (p in editorFiles) {
-      var file = editorFiles[p],
+  for (p in expandedListOfFiles) {
+      var file = expandedListOfFiles[p],
           cutext = file.substring(0,file.length-2);
       taskPP0 += " pythonscript:pre0"+ file;
       initProjectConfig['pythonscript']["pre0" + file] =  {
-        src: editorFiles[p],
+        src: expandedListOfFiles[p],
         dst: "EDITOR",
         script: 'obfuscator/scripts/preprocessor0.py',
       };
 
       // pre-processor target
       initProjectConfig['pythonscript']["pre" + file] =  {
-        src: editorFiles[p],
+        src: expandedListOfFiles[p],
         dst: cutext + "pre.js",
         script: 'obfuscator/scripts/preprocessor.py',
       };
@@ -127,7 +139,7 @@ module.exports = function(grunt) {
       initProjectConfig['pythonscript']["post" + file] =  {
         src: cutext + "min.a.js",
         dst: cutext + "min.js",
-        script: 'obfuscator/scripts/postprocessor.py',
+        script: 'obfuscator/scripts/postprocessor0.py',
       };
 
       // closure compiler target

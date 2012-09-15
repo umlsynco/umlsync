@@ -23,7 +23,8 @@ var dm = (function( window, undefined ) {
     dm.ds = {};
     dm.cs = {};
     dm.hs = {};
-	dm.dm = {};
+    dm.dm = {};
+    dm.ms = {ctx:{},ds:{}};
 
     return dm;
 })(window);
@@ -38,6 +39,10 @@ dm['cs'] = dm.cs;
 dm['es'] = dm.es;
 dm['hs'] = dm.hs;
 dm['dm'] = dm.dm;
+dm['ms'] = dm.ms;
+dm['ctx'] = dm.ms.ctx;
+
+
 
 //@aspect
 (function( $, dm, undefined ) {

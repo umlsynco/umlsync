@@ -15,13 +15,11 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function($, dm, undefined) {
-dm = dm || {};
-dm.cs = dm.cs || {};
 
 dm.base.diagram("cs.onetoone", dm.cs.connector, {
-    draw: function(c, points, color) {
+    'draw': function(c, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -83,4 +81,5 @@ dm.base.diagram("cs.onetoone", dm.cs.connector, {
             c.closePath();            
     }
     });
+//@aspect
 })(jQuery, dm);

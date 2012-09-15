@@ -15,13 +15,11 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function($, dm, undefined) {
-dm = dm || {};
-dm.cs = dm.cs || {};
 
 dm.base.diagram("cs.lifeline", dm.cs.connector, {
-    draw: function(context2, points, color) {
+    'draw': function(context2, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -36,7 +34,7 @@ dm.base.diagram("cs.lifeline", dm.cs.connector, {
             context2.stroke();
             context2.closePath();
     },
-    _init: function() {
+    '_init': function() {
 
       var p11 = $('#'+ this.options.fromId + "_Border").position();
       if (!p11) {
@@ -51,7 +49,7 @@ dm.base.diagram("cs.lifeline", dm.cs.connector, {
       this.epoints[0][1] = p11.top + h; //this.dtop;
       
     },
-    _getConnectionPoints: function(fromId, toId, epoints) {
+    '_getConnectionPoints': function(fromId, toId, epoints) {
        if (fromId != toId)
          alert("SELF-CONNECTION suppose the same source and destination element");
        //alert(" Get connection points: " + fromId + "  " + toId);
@@ -112,15 +110,16 @@ dm.base.diagram("cs.lifeline", dm.cs.connector, {
         return newpoints;
        }
     },
-    _showMenu: function(x,y, flag, c) {
+    '_showMenu': function(x,y, flag, c) {
        if (flag) {
          this.parrent.menuIcon.Show(this.from, x, y);
        } else {
         // this.parrent.menuIcon.Hide(this.from, x, y);
        }
     },
-    isPointOnLine: function() {
+    'isPointOnLine': function() {
         return false;
     }
     });
+//@aspect
 })(jQuery, dm);

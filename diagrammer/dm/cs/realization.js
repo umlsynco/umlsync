@@ -15,13 +15,11 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function($, dm, undefined) {
-dm = dm || {};
-dm.cs = dm.cs || {};
 
 dm.base.diagram("cs.realization", dm.cs.connector, {
-    dashedLine: function(p1,p2, c) {
+    'dashedLine': function(p1,p2, c) {
       var x2 = p2[0],
       x1 = p1[0],
       y2 = p2[1],
@@ -52,7 +50,7 @@ dm.base.diagram("cs.realization", dm.cs.connector, {
       }
     
     },
-    draw: function(c, points, color) {
+    'draw': function(c, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -101,4 +99,5 @@ dm.base.diagram("cs.realization", dm.cs.connector, {
             c.closePath();            
     }
     });
+//@aspect
 })(jQuery, dm);

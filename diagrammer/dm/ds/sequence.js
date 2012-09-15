@@ -13,7 +13,7 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function( $, dm, undefined ) {
 dm.base.diagram("ds.sequence", dm.ds.base, {
     'onDragStart': function(el, ui, isConnector) {
@@ -139,4 +139,5 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
           this.connectors[i].onDragStop(ui);
     }
 });
+//@aspect
 })(jQuery, dm);

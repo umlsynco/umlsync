@@ -24,7 +24,7 @@
             'height': 700,
             'type': 'base'
         },
-        _init: function() {
+        '_init': function() {
         }
     });
 //@aspect
