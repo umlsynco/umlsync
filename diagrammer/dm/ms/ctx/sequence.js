@@ -8,7 +8,7 @@
 dm.ms.ctx['sequence'] = function(menuBuilder) {
   var url = menuBuilder.loader.url;
 
-  return new dm.ms.ctx.common(menuBuilder, {id: "sequence", uid:"sequenceECtx"}, {
+  return new dm.ms.ctx['common'](menuBuilder, {id: "sequence", uid:"sequenceECtx"}, {
            'Copy  Ctrl-C': {
                 click: function(element) {  
                 },

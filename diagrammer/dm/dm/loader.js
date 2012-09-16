@@ -60,7 +60,6 @@ Version:
                 }
                 
                 if ((isAjaxCallback && instance._loadQueue.length > 0) || (instance._loadQueue.length == 1 && !instance.working)) {
-                    
                     instance.working = true;
                     item = instance._loadQueue.shift();
                     
@@ -155,17 +154,17 @@ Version:
                 this._addToLoadQueue({
                     url: "/dm/ms/" + type + "/" + specific +".js", 
                     precondition: function() {
-                    if ((dm.ms[type] == undefined)
+                      if ((dm.ms[type] == undefined)
                             || (dm.ms[type][specific] == undefined)) {
                         return true;
-                    }
-                    return false;
-                },
-                callback: function(opt) { 
+                      }
+                      return false;
+                   },
+                   callback: function(opt) { 
                     return new dm.ms[type][specific](opt);
-                },
-                data: options
-                });
+                   },
+                    data: options
+                   });
             },
             //@proexp
             'CreateContextMenu': function(name, menuBuilder) {

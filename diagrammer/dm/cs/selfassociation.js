@@ -18,7 +18,8 @@ Version:
 //@aspect
 (function($, dm, undefined) {
 
-dm.base.diagram("cs.selfassociation", dm.cs.connector, {
+dm.base.diagram("cs.selfassociation", dm.cs['connector'], {
+
     'draw': function(context2, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
@@ -35,9 +36,9 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
             context2.closePath();
     },
     '_init': function() {
-      var p11 = $('#'+ this.from + "_Border").position();
+      var p11 = $('#'+ this['from'] + "_Border").position();
       if (!p11) {
-         alert("Not found " + this.from);
+         alert("Not found " + this['from']);
          return;
       }
       
@@ -59,9 +60,9 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
          alert("SELF-CONNECTION suppose the same source and destination element");
        //alert(" Get connection points: " + fromId + "  " + toId);
 
-      var p11 = $('#'+ this.from + "_Border").position();
+      var p11 = $('#'+ this['from'] + "_Border").position();
       if (!p11) {
-         alert("Not found " + this.from);
+         alert("Not found " + this['from']);
          return;
       }
 
@@ -78,7 +79,7 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
        
        var p11 = $('#'+ fromId + "_Border").position();
        var p21 = p11;
-       var scrollTop = 0;//$("#" + this.parrent.euid).scrollTop(),
+       var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
            scrollLeft = 0;//$("#" + this.parrent.euid).scrollLeft();
 
        

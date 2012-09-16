@@ -18,8 +18,8 @@ Version:
 //@aspect
 (function($, dm, undefined) {
 
-dm.base.diagram("cs.realization", dm.cs.connector, {
-    'dashedLine': function(p1,p2, c) {
+dm.base.diagram("cs.realization", dm.cs['connector'], {
+    dashedLine: function(p1,p2, c) {
       var x2 = p2[0],
       x1 = p1[0],
       y2 = p2[1],
@@ -96,7 +96,7 @@ dm.base.diagram("cs.realization", dm.cs.connector, {
             c.lineTo(x5, y5);
             c.lineTo(x3, y3);
             c.stroke();
-            c.closePath();            
+            c.closePath();
     }
     });
 //@aspect

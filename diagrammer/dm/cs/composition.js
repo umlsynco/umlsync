@@ -18,7 +18,7 @@ Version:
 //@aspect
 (function($, dm, undefined) {
 
-dm.base.diagram("cs.composition", dm.cs.connector, {
+dm.base.diagram("cs.composition", dm.cs['connector'], {
     'draw': function(context2, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;

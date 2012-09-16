@@ -25,10 +25,8 @@ Version:
 //    dm.ms.es = dm.ms.es || {};   // element menu 
 //    dm.ms.ctx = dm.ms.ctx || {}; // context menu for diagram
 
-	//@export:dm.ms.ctx.common:plain
-    dm.ms.ctx = dm.ms.ctx || {};
 
-    dm.ms.ctx.common = function(menuBuilder, options, actions) {
+    dm.ms.ctx['common'] = function(menuBuilder, options, actions) {
         this.options = options;  
         var menu = $('<ul id="'+options.uid +'" class="context-menu" ></ul>').hide().appendTo("#" + menuBuilder.diagramId);
         menuBuilder.append(this, options.id); // element Class Context append to diagram
@@ -42,7 +40,7 @@ Version:
             menuItem.appendTo(menu).bind('click', function(e) {
                 item_options.click(menuBuilder.currentElement, self.x, self.y);
                 e.preventDefault();
-                menuBuilder.HideAll();
+                menuBuilder['HideAll']();
                 e.stopPropagation();
             }).mouseenter(function(event) { $(this).addClass('hover');
 			  if(item_options.mouseenter) {
@@ -56,7 +54,7 @@ Version:
 			});
         });
 
-        this.Show = function(element, x, y) {
+        this['Show'] = function(element, x, y) {
             $(".context-menu").hide();
             //show element context menu
 			var $did = $("#" + menuBuilder.diagramId);
@@ -73,7 +71,7 @@ Version:
 			$("#socializethis2").css({"left":x, "top":y-60}).show();
         };
 
-        this.Hide = function() {
+        this['Hide'] = function() {
 		    $(".context-menu").hide();
             $("#" + menuBuilder.diagramId + " #" + options.uid).hide();
 			$("#socializethis2").hide();
@@ -81,7 +79,8 @@ Version:
     };
     
     //@print
-    dm['ms']['ctx']['common'] = dm.ms.ctx.common;
+    dm.ms['ctx'] = dm.ms.ctx;
+
 
 //    Common context menu for element for the diagram
 //    One instance for each diagram
@@ -112,7 +111,7 @@ Version:
 
         this.visit = function(element, x, y) {
             if (this.currentMenu != undefined) {
-                this.currentMenu.Hide();
+                this.currentMenu['Hide']();
                 this.currentMenu = undefined;
                 this.currentElement = undefined;
             }
@@ -123,12 +122,12 @@ Version:
             this.currentMenu = this.menus[element.options.ctx_menu];
             this.currentElement = element;
             if (this.currentMenu != undefined)
-                this.currentMenu.Show(element, x, y); // TODO: relocate to element position  
+                this.currentMenu['Show'](element, x, y); // TODO: relocate to element position  
         }
 
-        this.HideAll = function() {
+        this['HideAll'] = function() {
             if (this.currentMenu != undefined)
-                this.currentMenu.Hide();
+                this.currentMenu['Hide']();
             this.currentMenu = undefined;
             this.currentElement = undefined;
         };
@@ -150,13 +149,13 @@ Version:
         this.dmb = dmb;
 
         // Prepared the list of connectors for menus 
-        for (d in hmenus) {
-            this.menus[hmenus[d].id] = [];
-            for (t in hmenus[d].items) {
-                this.menus[hmenus[d].id][hmenus[d].items[t].el] = [];
-                var connectors = hmenus[d].items[t].cs;
-                for (c in connectors) {
-                    this.menus[hmenus[d].id][hmenus[d].items[t].el][connectors[c].connector] = connectors[c].image;
+        for (var dd in hmenus) {
+            this.menus[hmenus[dd]['id']] = [];
+            for (var tt in hmenus[dd]['items']) {
+                this.menus[hmenus[dd]['id']][hmenus[dd]['items'][tt]['el']] = [];
+                var connectors = hmenus[dd]['items'][tt]['cs'];
+                for (var cc in connectors) {
+                    this.menus[hmenus[dd]['id']][hmenus[dd]['items'][tt]['el']][connectors[cc]['connector']] = connectors[cc]['image'];
                 }
             }     
         }
@@ -170,8 +169,8 @@ Version:
 
             // lets create the menu
             var menu_items = [];
-            for (c in this.menus[menu_id])       // element descriptor
-                for (r in this.menus[menu_id][c])  // connector descriptor
+            for (var c in this.menus[menu_id])       // element descriptor
+                for (var r in this.menus[menu_id][c])  // connector descriptor
                     menu_items.push("<img src='" + dm.dm.loader.url + this.menus[menu_id][c][r] +"' id='" + r +"' title='"+ r + "' aux='" + c + "' style='padding:1px;'></img>");
 
             var cells = menu_items.join('');
@@ -191,35 +190,35 @@ Version:
             //               ONE FOR USUAL MENU AND ANOTHER ONE FOR SELF-CONNECTABLE ITEMS
             //               WHICH DOESN'T REQUIRE THE 2-nd ELEMENT
             $("#" + this.diagram.euid + " .elmenu-" + menu_id + " img").draggable({
-                appendTo: "#" + iconMenuBuilder.diagram.euid,
-                helper: function(event) {
+                'appendTo': "#" + iconMenuBuilder.diagram.euid,
+                'helper': function(event) {
                   // Use the double wrapper because of element's structrure
                   return $("<div id='ConnectionHelper_Border' style='border:solid black;border-width:1px;'>" + 
                     "<div id='ConnectionHelper' style='border:solid yellow;border-width:1px;'> [ x ]</div></div>");
                 },
-                start: function(event) {
+                'start': function(event) {
                   var tid = $(this).attr("aux");
                   var element = iconMenuBuilder.dmb.getElementById(tid),
                       lcon = iconMenuBuilder.dmb.getConnectorById(this.id);
 
                   if ((element != undefined) && (element.element != undefined))
                     dm.dm.loader.LoadElement(element.element);
-                  if ((lcon != undefined) && (lcon.oneway)) {
+                  if ((lcon != undefined) && (lcon['oneway'])) {
 				      $.log("CONNECTOR: " + lcon.connector);
                       iconMenuBuilder.diagram.Connector(lcon.connector,
-                           {fromId: iconMenuBuilder.currentElement,
-						    toId: iconMenuBuilder.currentElement});
+                           {'fromId': iconMenuBuilder.currentElement,
+						    'toId': iconMenuBuilder.currentElement});
                     } else {
-                       iconMenuBuilder.diagram.Connector(this.id, {fromId: iconMenuBuilder.currentElement, toId: "ConnectionHelper"});
+                       iconMenuBuilder.diagram.Connector(this.id, {'fromId': iconMenuBuilder.currentElement, 'toId': "ConnectionHelper"});
                     }
                 },
-                drag: function(event) {iconMenuBuilder.diagram.draw();},
-                stop: function(event, ui) {
+                'drag': function(event) {iconMenuBuilder.diagram.draw();},
+                'stop': function(event, ui) {
                   var tid = $(this).attr("aux"),
                       element = $.extend({}, iconMenuBuilder.dmb.getElementById(tid)),
                       lcon = iconMenuBuilder.dmb.getConnectorById(this.id);
 
-                  if ((element != undefined) && ((lcon == undefined) || (!lcon.oneway))) {
+                  if ((element != undefined) && ((lcon == undefined) || (!lcon['oneway']))) {
                     // Remove the temporary connector
                     iconMenuBuilder.diagram.removeConnector(iconMenuBuilder.currentElement, "ConnectionHelper", this.id);
                     element.pageX = ui.position.left;
@@ -228,7 +227,7 @@ Version:
                     var thisid = this.id;
                     var handleConnector = function(toElement) {
                          iconMenuBuilder.diagram.Connector(thisid,
-                             {fromId: fromElement.euid, toId: toElement.euid},
+                             {'fromId': fromElement.euid, 'toId': toElement.euid},
                              function(connector) {
                                if (fromElement.dropHelper)
                                  fromElement.dropHelper(ui, connector);
@@ -254,17 +253,17 @@ Version:
             .mouseleave(function() {$("#" + diagram.euid + " .elmenu-" + menu_id).animate({opacity:"0"});});
             this.menus[menu_id].loaded = true;
         }
-        this.Enable = function(id, menu, el) {
+        this['Enable'] = function(id, menu, el) {
             this.currentMenu = menu;
             this.currentElement = id;
             this.refEl = el;
             $(".elmenu-" + this.currentMenu).css({display:"block"});
         }
-        this.Disable = function(id) {
+        this['Disable'] = function(id) {
             $(".elmenu-" + this.currentMenu).css({display:"none"});     
             this.currentMenu = undefined;
         }
-        this.Show = function(id, x, y) {
+        this['Show'] = function(id, x, y) {
             if (this.currentElement == id) {
                 if (y == undefined) {
                     this.refEl = x;
@@ -283,7 +282,7 @@ Version:
                 $(".elmenu-" + this.currentMenu).stop().css("left", x).css("top", y).animate({opacity:"1"});
             }
         }
-        this.Hide = function(id) {
+        this['Hide'] = function(id) {
             if (this.currentElement == id)
                 $(".elmenu-" + this.currentMenu).stop().animate({opacity:"0"});
         };
@@ -293,8 +292,8 @@ Version:
     //@print
 
     //Common diagram menu loader
-    //@export:dm.ms.ds.common:plain
-    dm.ms.ds.common = function(type, diagram, loader) {
+    dm.ms['ds'] = dm.ms.ds;
+    dm.ms.ds['common'] = function(type, diagram, loader) {
 
         //elements counter
         this.ec = 0;
@@ -317,12 +316,12 @@ Version:
             diagramMenuBuilder.connectors = [];
 
             // Prepare the list of elements. Clickable left side menu 
-            for (d in elements) {
+            for (var d in elements) {
                 // the list of elements
                 diagramMenuBuilder.elements[elements[d].description] = elements[d];
                 diagramMenuBuilder.elements[elements[d].description].editable = true;
 
-                var image = (elements[d].image[0]["small"]) ? "list-style-image:url(\'" +dm.dm.loader.url +  elements[d].image[0]["small"] + "\')" : "list-style-type:none";
+                var image = (elements[d]['image'][0]["small"]) ? "list-style-image:url(\'" +dm.dm.loader.url +  elements[d]['image'][0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="elementSelector" style="cursor:pointer;' + image
     + ';" id="'  + elements[d].description +'" imgpath="' + elements[d].image_path + '">' +
     elements[d].description + '</li>');
@@ -330,15 +329,15 @@ Version:
             }
 
             // Prepare the list of connectors. Clickable left side menu 
-            for (d in connectors) {
+            for (var d in connectors) {
                 var desc = connectors[d].connector;
-                if (connectors[d].oneway)
+                if (connectors[d]['oneway'])
                     desc = connectors[d].description;
 
                 diagramMenuBuilder.connectors[desc] = connectors[d];
                 diagramMenuBuilder.connectors[desc].editable = true;
 
-                var image = (connectors[d].image[0]["small"]) ? "list-style-image:url(\'" + dm.dm.loader.url + connectors[d].image[0]["small"] + "\')" : "list-style-type:none";
+                var image = (connectors[d]['image'][0]["small"]) ? "list-style-image:url(\'" + dm.dm.loader.url + connectors[d]['image'][0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="connectorSelector" style="cursor:pointer;' + image
     + ';" id="'  + connectors[d].connector +'">' +
     connectors[d].description + '</li>');

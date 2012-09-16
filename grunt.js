@@ -162,10 +162,15 @@ dm/cs/composition.js   dm/cs/llsequence.js
         }
       };
 
+      initProjectConfig['commandline'][file] = {
+        cmd: 'cat ./obfuscator/license.txt > ' + file +' && cat ' + cutext + "min.js >> " + file + ' &&rm -f ' + cutext + "pre.js " + cutext + "min.a.js " + cutext + "min.js"
+      };
+
       defaultTasks += ' pythonscript:pre' + file;
       defaultTasks += ' closure-compiler:' + file;
       defaultTasks += ' pythonscript:post' + file;
       defaultTasks += ' commandline:sync_viewer_externals';
+      defaultTasks += ' commandline:' + file;
   }
 
   grunt.initConfig(initProjectConfig);

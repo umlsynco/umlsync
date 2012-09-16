@@ -18,8 +18,8 @@ Version:
 //@aspect
 (function($, dm, undefined) {
 
-dm.base.diagram("cs.anchor", dm.cs.connector, {
-   'dashedLine': function(p1,p2, c) {
+dm.base.diagram("cs.anchor", dm.cs['connector'], {
+   dashedLine: function(p1,p2, c) {
         var x2 = p2[0],
         x1 = p1[0],
         y2 = p2[1],
@@ -42,7 +42,7 @@ dm.base.diagram("cs.anchor", dm.cs.connector, {
         ex = dashe * cosa,
         ey = dashe * sina;
 
-        for (i=0; i<(gip/(dashf + dashe)); ++i) {
+        for (var i=0; i<(gip/(dashf + dashe)); ++i) {
             c.moveTo(x1, y1);
 
             c.lineTo(x1+fx, y1+fy);

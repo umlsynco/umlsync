@@ -8,7 +8,7 @@
 
 dm.ms.ctx['connector'] = function(menuBuilder) {
   var self = this;
-  return new dm.ms.ctx.common(menuBuilder, {id: "connector", uid:"connectorEUI"}, {
+  return new dm.ms.ctx['common'](menuBuilder, {id: "connector", uid:"connectorEUI"}, {
            'Add "Text"': {
                 click: function(element, x, y) {
                   if (element.addLable) {

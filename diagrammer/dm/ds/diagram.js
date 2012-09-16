@@ -144,7 +144,7 @@ dm['ctx'] = dm.ms.ctx;
         var item = '{',
         comma = '';
         this._update();
-        for (i in this.options) {
+        for (var i in this.options) {
             if (this.options[i] != undefined) {
                 if (proto.options[i] != undefined) {
                     if ((proto.options[i] != this.options[i]) || (i == 'type')) {
@@ -157,7 +157,7 @@ dm['ctx'] = dm.ms.ctx;
     var c = '';
     item += comma + '"' + i + '":[';
     comma = ',';
-    for (j in obj) {
+    for (var j in obj) {
         // Do not add element if it is not selected
         if (kv || (obj[j].option(key) == value)) {
             if (obj[j] && obj[j].getDescription) {
@@ -495,13 +495,13 @@ dm['ctx'] = dm.ms.ctx;
                 this.elements = [];
 
                 // For all elements in JSON description try to create an element
-                for (i in this.options['elements']) {
+                for (var i in this.options['elements']) {
                     // How to get options which described in menu JSON ? 
                     this.Element(this.options['elements'][i].type, this.options['elements'][i]);
                 }
 
                 // For all connectors in JSON description try to create a connector 
-                for (i in this.options['connectors']) {
+                for (var i in this.options['connectors']) {
                     this.options['connectors'][i]['stored'] = true;
                     this.Connector(this.options['connectors'][i]['type'], this.options['connectors'][i]);
                     // TODO: find elements IDs and add connectors between elements
@@ -514,12 +514,12 @@ dm['ctx'] = dm.ms.ctx;
 
                 // Perform function on diagram load completion
                 dm['dm']['loader']['OnLoadComplete'](function() {
-                    for (i in diag.elements) {
+                    for (var i in diag.elements) {
     var d = diag.elements[i].options['dropped'];
     if (d) {
         diag.elements[i]._dropped = new Array();
-        for (ii in d) {
-            for (iii in diag.elements) {
+        for (var ii in d) {
+            for (var iii in diag.elements) {
                 if (diag.elements[iii].options['id'] == d[ii]) {
                     diag.elements[i]._dropped.push(diag.elements[iii].euid);
                     break; // from the neares for
@@ -539,7 +539,7 @@ dm['ctx'] = dm.ms.ctx;
     _update: function() {
         this.options['connectors'] = this.connectors;
         var i = 0;
-        for (r in this.elements) {
+        for (var r in this.elements) {
             this.elements[r].options['id'] = i;
             i++;
         }
@@ -604,9 +604,9 @@ dm['ctx'] = dm.ms.ctx;
     _setWidgetsOption: function( key, value ) {
         if (key == "selected") {
             this.multipleSelection = value;
-            for (i in this.elements)
+            for (var i in this.elements)
                 this.elements[i]._setOption( key, value );
-            for (i in this.connectors)
+            for (var i in this.connectors)
                 this.connectors[i]._setOption( key, value );
         } if (key == "z-index") { // Z-index supported by elements only (not applicable for connectors)
             var newmax = this.max_zindex,
@@ -614,7 +614,7 @@ dm['ctx'] = dm.ms.ctx;
             max_z = undefined,
             min_not_selected_z = undefined;
             // Identify the minimal z-index in selection
-            for (i in this.elements) {
+            for (var i in this.elements) {
                 var r = this.elements[i].option(key);
                 if (this.elements[i].option("selected")) {
                     min_z = ((min_z == undefined) || r<min_z) ? r : min_z;
@@ -628,7 +628,7 @@ dm['ctx'] = dm.ms.ctx;
 
             $.log("Min Z-INDEX: " + min_z);
             var flag = (value == "front") ? true : false;
-            for (i in this.elements)
+            for (var i in this.elements)
                 if (this.elements[i].option("selected")) {
                     if (flag) {
     var zi = this.elements[i].option(key) + this.max_zindex - min_z + 1;
@@ -648,10 +648,10 @@ dm['ctx'] = dm.ms.ctx;
                 }
             this.max_zindex = newmax + 1;
         } else {
-            for (i in this.elements)
+            for (var i in this.elements)
                 if (this.elements[i].option("selected"))
                     this.elements[i]._setOption( key, value );
-            for (i in this.connectors)
+            for (var i in this.connectors)
                 if (this.connectors[i].option("selected"))
                     this.connectors[i]._setOption( key, value );
         }
@@ -665,7 +665,7 @@ dm['ctx'] = dm.ms.ctx;
      */
     //@proexp
     checkdrop: function(x,y) {
-        for (d in this.elements) {
+        for (var d in this.elements) {
             var p = $("#" + this.elements[d].id + "_Border").position();
 
             if ((x > p.left) && (x < p.left + 140) && (y > p.top) && (y < p.top + 140))  {
@@ -698,7 +698,7 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     removeElement: function(euid) {
         var el = this.elements;
-        for (k in el) {
+        for (var k in el) {
             if (el[k].euid == euid) {
                 delete el[k];
                 el.splice(k, 1);
@@ -718,13 +718,15 @@ dm['ctx'] = dm.ms.ctx;
      */
     //@proexp
      removeConnector: function (fromId, toId, type) {
+
         if (this.connectors.length > 0) {
-            for (c in this.connectors) {        
-                if (((this.connectors[c].from  == fromId) || (fromId == undefined))
-    && ((this.connectors[c].toId == toId) || (toId == undefined))) {
-                    for (i in this.connectors[c].lables) {
-    this.connectors[c].lables[i].remove();
+            for (var c in this.connectors) {
+                if (((this.connectors[c]['from']  == fromId) || (fromId == undefined))
+    && ((this.connectors[c]['toId'] == toId) || (toId == undefined))) {
+                    for (var i in this.connectors[c].lables) {
+                        this.connectors[c].lables[i].remove();
                     }
+                    $.log("REMOVE: " + c);
                     delete this.connectors[c];
                     this.connectors.slice(c,1);
                 }
@@ -762,7 +764,7 @@ dm['ctx'] = dm.ms.ctx;
         var result = undefined,
 		scrollLeft = $("#" + this.euid).scrollLeft(),
 		scrollTop = $("#" + this.euid).scrollTop();
-        for (i in this.elements) {
+        for (var i in this.elements) {
             var e = $("#" + this.elements[i].euid + "_Border");
             var p = e.position(),
             w = e.width(),
@@ -780,7 +782,7 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     _dropSubDiagram: function(path, event, ui) {
         var d, z = 0;
-        for (i in this.elements) {
+        for (var i in this.elements) {
             var e = $("#" + this.elements[i].euid + "_Border");
             var p = e.offset(),
             w = e.width(),
@@ -814,7 +816,7 @@ dm['ctx'] = dm.ms.ctx;
     },
     //@proexp
     _dropElement: function(element, ui) {
-        for (i in this.elements) {
+        for (var i in this.elements) {
             if (this.elements[i].options['acceptdrop']
                     && (this.elements[i].euid != element.euid)) {
                 var e = $("#" + this.elements[i].euid + "_Border");
@@ -828,7 +830,7 @@ dm['ctx'] = dm.ms.ctx;
     && (ui.position.top < p.top + h)) {
                     this.elements[i]._dropped = this.elements[i]._dropped || new Array();
                     var notfound = true;
-                    for (j in this.elements[i]._dropped) {
+                    for (var j in this.elements[i]._dropped) {
     if (this.elements[i]._dropped[j] == element.euid) {
         notfound = false;
         break;
@@ -837,7 +839,7 @@ dm['ctx'] = dm.ms.ctx;
                     if (notfound)
     this.elements[i]._dropped.push(element.euid);
                 } else {
-                    for (j in this.elements[i]._dropped) {
+                    for (var j in this.elements[i]._dropped) {
     if (this.elements[i]._dropped[j] == element.euid) {
         this.elements[i]._dropped.splice(j,1);
         break;
@@ -853,7 +855,7 @@ dm['ctx'] = dm.ms.ctx;
         el.onDragStart(ui, true);
 
         if (this.multipleSelection)
-            for (i in this.elements) {
+            for (var i in this.elements) {
                 if (this.elements[i] != el
     && this.elements[i].option("selected")
     && this.elements[i].option("dragStart") == undefined) {
@@ -861,32 +863,32 @@ dm['ctx'] = dm.ms.ctx;
                 }
             }
 
-        for (i in this.connectors)
-            if (this.elements[this.connectors[i].from].option("dragStart")
-                    && this.elements[this.connectors[i].toId].option("dragStart"))
+        for (var i in this.connectors)
+            if (this.elements[this.connectors[i]['from']].option("dragStart")
+                    && this.elements[this.connectors[i]['toId']].option("dragStart"))
                 this.connectors[i].onDragStart(ui);
 
     },
 
     //@proexp
     onDragMove: function(el, ui) {
-        for (i in this.elements)
+        for (var i in this.elements)
             if (this.elements[i].option("dragStart") != undefined
                     && this.elements[i] != el)
                 this.elements[i].onDragMove(ui);
-        for (i in this.connectors)
+        for (var i in this.connectors)
             if (this.connectors[i].option("dragStart"))
                 this.connectors[i].onDragMove(ui);
     },
     //@proexp
     onDragStop: function(el, ui) {
         el.onDragStop();
-        for (i in this.elements)
+        for (var i in this.elements)
             if (this.elements[i].option("dragStart") != undefined
                     && this.elements[i] != el)
                 this.elements[i].onDragStop(ui);
 
-        for (i in this.connectors)
+        for (var i in this.connectors)
             if (this.connectors[i].option("dragStart"))
                 this.connectors[i].onDragStop(ui);
     },
@@ -908,7 +910,7 @@ dm['ctx'] = dm.ms.ctx;
 //            ctx.strokeRect(0, 0, 1000, 500);
 
 
-            for (c in this.connectors) {
+            for (var c in this.connectors) {
                 ctx.lineWidth = 1;
 
                 if (this.connectors[c].options['linewidth'] != undefined) {
@@ -951,7 +953,7 @@ dm['ctx'] = dm.ms.ctx;
                 return true;
             }
 //@endif
-            for (c in this.connectors) {        
+            for (var c in this.connectors) {        
                 if (this.connectors[c].isPointOnLine(x,y)) {
                     if (this.connectors[c] != this.selectedconntector) {
     this.selectedconntector = this.connectors[c];
@@ -1156,7 +1158,7 @@ dm['ctx'] = dm.ms.ctx;
 
             if (this._dropped) {
                 this.options['dropped'] = new Array();
-                for (i in this._dropped) {
+                for (var i in this._dropped) {
                     this.options['dropped'].push(this.parrent.elements[this._dropped[i]].options['id']);
                 }
             }
@@ -1389,7 +1391,7 @@ dm['ctx'] = dm.ms.ctx;
             if (this.options.dragStart != undefined)
                 return;
 
-            for (i in this._dropped)
+            for (var i in this._dropped)
                 this.parrent.elements[this._dropped[i]].onDragStart(ui);
 
             this.options.dragStart = true;
@@ -1468,11 +1470,11 @@ dm.base.diagram("cs.connector", {
             item += '"epoints":[';
             var comma = "",
             c;
-            for (i in this.epoints) {
+            for (var i in this.epoints) {
                 item +=  comma + '{';
                 comma = ',';
                 c='';
-                for (j in this.epoints[i]) {
+                for (var j in this.epoints[i]) {
                     item +=  c + '"' + j + '":"' + this.epoints[i][j] + '"';
                     c=',';
                 }
@@ -1484,7 +1486,7 @@ dm.base.diagram("cs.connector", {
                 item += ',"lables":[';
                 comma = "";
                 c = "";
-                for (i in this.lables) {
+                for (var i in this.lables) {
                     var p = this.lables[i].position();
                     item +=  comma + '{"name":"' + this.lables[i].html() + '","x":"' + p.left + '","y":"' + p.top + '"}';
                     comma = ',';
@@ -1501,34 +1503,34 @@ dm.base.diagram("cs.connector", {
             this.epoints = [];
             this.cleanOnNextTransform = false;
             if (this.options['stored']) {
-                for (i in this.parrent.elements) {
+                for (var i in this.parrent.elements) {
 //                    alert("ELEMENT: " + this.parrent.elements[i].euid);
                     if (this.parrent.elements[i].options['id'] == this.options['fromId']) {
-    this.from = this.parrent.elements[i].euid;
+    this['from'] = this.parrent.elements[i].euid;
                     }
                     if (this.parrent.elements[i].options['id'] == this.options['toId']) {
-    this.toId = this.parrent.elements[i].euid;
+    this['toId'] = this.parrent.elements[i].euid;
                     }
                 }
                 if (this.options['epoints']) {
                     dm.debug = dm.debug || {};
                     dm.debug[this.euid] = this.options['epoints'];
                     this.epoints = new Array();
-                    for (i in this.options['epoints']) {
+                    for (var i in this.options['epoints']) {
     this.epoints[i] = {};
     this.epoints[i][0] = parseInt(this.options['epoints'][i][0], 10);
     this.epoints[i][1] = parseInt(this.options['epoints'][i][1], 10);
                     }
                 }
-                this.options['fromId'] = this.from;
-                this.options['toId'] = this.toId;
+                this.options['fromId'] = this['from'];
+                this.options['toId'] = this['toId'];
             }
             else {
-                this.from = this.options['fromId'];
-                this.toId = this.options['toId'];
+                this['from'] = this.options['fromId'];
+                this['toId'] = this.options['toId'];
             }
             this.lables = new Array();
-            for (i in this.options['lables']) {
+            for (var i in this.options['lables']) {
                 var l = this.options['lables'][i];
                 this.addLable(l.name, parseInt(l.x), parseInt(l.y));
             }
@@ -1548,7 +1550,7 @@ dm.base.diagram("cs.connector", {
             c.strokeStyle = color;
 
             c.moveTo(points[0][0], points[0][1]);
-            for (i=1; i<points.length; ++i) {
+            for (var i=1; i<points.length; ++i) {
                 c.lineTo(points[i][0], points[i][1]);
             }
             c.stroke();
@@ -1565,10 +1567,9 @@ dm.base.diagram("cs.connector", {
                 // TODO: identify context by this,parent
                 return;
             }
-
-            this.points = this._getConnectionPoints(this.from, this.toId, this.epoints);
+            this.points = this['_getConnectionPoints'](this['from'], this['toId'], this.epoints);
             this.gip = [];
-            for (i=0;i<this.points.length-1;++i) {
+            for (var i=0;i<this.points.length-1;++i) {
                 var dy = this.points[i][1] - this.points[i+1][1],
                 dx = this.points[i][0] - this.points[i+1][0];
                 this.gip[i] = Math.sqrt(dx*dx + dy*dy);
@@ -1601,7 +1602,7 @@ dm.base.diagram("cs.connector", {
             if (this.points == undefined)
                 return false;
 
-            for (i=0;i<this.points.length-1;++i) {
+            for (var i=0;i<this.points.length-1;++i) {
                 var dx1 = x - this.points[i][0],
                 dy1 = y - this.points[i][1],
                 dx = this.points[i+1][0] - x,
@@ -1645,7 +1646,7 @@ dm.base.diagram("cs.connector", {
                 this.epoints.splice(0, 1);
             }
 
-            for (c=0; c<this.epoints.length; ++c) {
+            for (var c=0; c<this.epoints.length; ++c) {
                 if ((this.epoints[c][0] - 12 < x) && (this.epoints[c][0] + 12 > x)
     && (this.epoints[c][1] - 12 < y) && (this.epoints[c][1] + 12> y)) {
                     this.eppos = c;
@@ -1660,10 +1661,11 @@ dm.base.diagram("cs.connector", {
             }
 
             if (this.eppos == undefined) {
-                this.points = this._getConnectionPoints(this.from, this.toId, this.epoints);
+                $.log("FROM : " + this['from']);
+                this.points = this['_getConnectionPoints'](this['from'], this['toId'], this.epoints);
                 newPoint = [];
                 newPoint[0] = x1; newPoint[1] = y1;
-                for (i=0;i<this.points.length-1;++i) {
+                for (var i=0;i<this.points.length-1;++i) {
                     if (this.canRemovePoint(this.points[i], this.points[i+1], newPoint)) {
     this.eppos = i;
     this.epoints.splice(i, 0, newPoint);
@@ -1746,7 +1748,7 @@ dm.base.diagram("cs.connector", {
 
             var p11 = $('#'+ fromId + "_Border").position();
             var p21 = $('#' + toId + "_Border").position();
-            var scrollTop = 0;//$("#" + this.parrent.euid).scrollTop(),
+            var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
             scrollLeft = 0; //$("#" + this.parrent.euid).scrollLeft();
 
             if ((epoints == undefined) || (epoints.length == 0)) {
@@ -1781,7 +1783,7 @@ dm.base.diagram("cs.connector", {
         */      
                 var newpoints = [];
                 newpoints[0] = [x1,y1];
-                for (i=1;i<=epoints.length;++i) {
+                for (var i=1;i<=epoints.length;++i) {
                     newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
 					newpoints[i][0] -= scrollLeft;
 					newpoints[i][1] -= scrollTop;
@@ -1797,7 +1799,7 @@ dm.base.diagram("cs.connector", {
  
                 this.epoints_drag = [];
                 // clone this.epoints
-                for (i in this.epoints) {
+                for (var i in this.epoints) {
                     this.epoints_drag[i] = {};
                     this.epoints_drag[i][0] = this.epoints[i][0];
                     this.epoints_drag[i][1] = this.epoints[i][1];
@@ -1807,7 +1809,7 @@ dm.base.diagram("cs.connector", {
             if (this.lables && this.lables.length > 0) {
                 this.lables_drag = [];
                 // clone this.epoints
-                for (i in this.lables) {
+                for (var i in this.lables) {
                     var p = this.lables[i].position();
                     this.lables_drag[i] = {};
                     this.lables_drag[i][0] = p.left;
@@ -1819,12 +1821,12 @@ dm.base.diagram("cs.connector", {
         onDragMove: function(ui) {
             if (this.options.dragStart == undefined)
                 return;
-            for (i in this.epoints_drag) {
+            for (var i in this.epoints_drag) {
                 this.epoints[i][0] = this.epoints_drag[i][0] + ui.left;
                 this.epoints[i][1] = this.epoints_drag[i][1] + ui.top;
             }
 
-            for (i in this.lables_drag) {
+            for (var i in this.lables_drag) {
                 this.lables[i].css({left:this.lables_drag[i][0] + ui.left,
                     top: this.lables_drag[i][1] + ui.top});
             }

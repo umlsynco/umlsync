@@ -18,8 +18,8 @@ Version:
 //@aspect
 (function($, dm, undefined) {
 
-dm.base.diagram("cs.dependency", dm.cs.connector, {
-    'dashedLine': function(p1,p2, c) {
+dm.base.diagram("cs.dependency", dm.cs['connector'], {
+    dashedLine: function(p1,p2, c) {
       var x2 = p2[0],
       x1 = p1[0],
       y2 = p2[1],
