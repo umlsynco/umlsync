@@ -108,7 +108,7 @@ Version:
 //@ifdef EDITOR
 					  	  var diagram = self.diagrams[ahref];
 					      var data = diagram.getDescription();
-                          self.saveDiagram(diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
+                          self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
 //@endif
 					}
 					$tabs.tabs('remove', index);

@@ -163,7 +163,9 @@ dm/cs/composition.js   dm/cs/llsequence.js
       };
 
       initProjectConfig['commandline'][file] = {
-        cmd: 'cat ./obfuscator/license.txt > ' + file +' && cat ' + cutext + "min.js >> " + file + ' &&rm -f ' + cutext + "pre.js " + cutext + "min.a.js " + cutext + "min.js"
+        cmd: 'cat ./obfuscator/license.txt > ' + file +' && cat ' + cutext + "min.js >> " + file
+             + ' &&rm -f ' + cutext + "pre.js " + cutext + "min.a.js " + cutext + "min.js"
+             + ' &&rm -f ' + cutext + "min.a.js.report.txt "
       };
 
       defaultTasks += ' pythonscript:pre' + file;

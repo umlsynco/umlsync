@@ -124,8 +124,9 @@ dm['ctx'] = dm.ms.ctx;
             this._baseinit();
 
             var self = this;
-            $(this.element).bind("remove." + this.euid, function() {
-                self.destroy();
+            $(this.element).bind("remove." + this.euid, self, function(event) {
+                event.data.destroy();
+                $.HHHHHHHHHHHHHHHHHHHHHHH =event.data;
             });
 
             //this._trigger( "create" );
@@ -182,18 +183,20 @@ dm['ctx'] = dm.ms.ctx;
         item += '}';
         return item;
     },
-    //@overwrite
+    //@proexp
     _update: function() {
+        $.log("_update");
     },
 //@endif
-    //@overwrite
-    _create: function(){},
-    //@overwrite
-    _init: function(){},
-    //@overwrite
-    _baseinit: function(){},
-    //@overwrite
-    _destroy: function(){},
+    //@proexp
+    _create: function(){$.log("_create");},
+    //@proexp
+    _init: function(){$.log("_init");},
+    //@proexp
+    _baseinit: function(){$.log("_baseinit");},
+
+    //@proexp
+    _destroy: function(){$.log("_destroy");},
     destroy: function() {
         this['_destroy']();
 

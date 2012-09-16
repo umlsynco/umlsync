@@ -16,7 +16,7 @@
 */
 //@aspect
 (function( $, dm, undefined ) {
-    dm['base']['diagram']("ds.base", dm['ds']['diagram'], {
+    dm['base']['diagram']("ds.base", dm.ds['diagram'], {
         diagramName: "BaseDiagram",
         diagramEventPrefix: "CD",
         'options': {

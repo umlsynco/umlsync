@@ -80,6 +80,8 @@ this.parrent.euid = {};
 this.options.dropped = {};
 this.options.color = {};
 this.options.aux = {};
+this.option = function(val) {this.val = val;};
+this.epoints = {};
 var dm={base:{},menu:{},ds:{},cs:{},hs:{},dm:{},ms:{ctx:{},ds:{}}};window.dm=dm;dm.base=dm.base;dm.menu=dm.menu;dm.ds=dm.ds;dm.cs=dm.cs;dm.es=dm.es;dm.hs=dm.hs;dm.dm=dm.dm;
 dm.dm.fw = {};
 dm.cs.connector = {};
