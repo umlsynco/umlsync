@@ -16,6 +16,9 @@ jQuery.tabs();
 jQuery.live();
 jQuery.dynatree();
 
+jQuery.hide();
+jQuery.show();
+
 jQuery.keydown = function(event) {}
 jQuery.keyup = function(event) {}
 jQuery.index = function(event) {}
@@ -28,6 +31,8 @@ jQuery.draggable = function(event) {}
 jQuery.droppable = function(event) {}
 jQuery.resizable = function(event) {}
 jQuery.resizable = function(event) {}
+jQuery.sortable = function(event) {}
+jQuery.disableSelection = function(event) {}
 jQuery.Event = function(event) {}
 jQuery.isFunction = function(event) {}
 jQuery.trigger = function(event) {}
@@ -35,17 +40,49 @@ jQuery.resize = function(event) {}
 jQuery.css = function(event) {}
 jQuery.editable =  function(event) {}
 jQuery.jqsimplemenu =  function(event) {}
-
+jQuery.html =  function(event) {}
+jQuery.addClass =  function(event) {}
+jQuery.removeClass =  function(event) {}
+jQuery.attr =  function(event) {}
+jQuery.accordion =  function(event) {}
+jQuery.dialog  =   function(event) {}
+jQuery.val = function(event) {}
+jQuery.is = function(event) {}
 ui.helper.data = $.ui.helper.data;
 ui.draggable = $.ui.draggable;
+ui.size.width();
+ui.size.height();
 
 var $ = jQuery;
 var ui = {panel:{id:0}};
-var IView = {tree:{}, euid:1, remove:{}, newfolder:{}};
+var IView = {tree:{},
+             euid:1,
+	    remove:{},
+	    newfolder:{},
+	    init:{},
+	    info:{},
+	    loadDiagram:{}
+	    };
+
 var node = { append: {}};
 
 var dm={ds:{},es:{},cs:{},base:{},dm:{},hs:{},ms:{},menu:{}};
 
-$.log = function(event) {}
-$.aspect = function(event) {}
+$.log = function(event) {};
+$.aspect = function(event) {};
 var s = false;
+this.options.name = {};
+this.options.width = {};
+this.options.height = {};
+this.options.pageY = {};
+this.options.pageX = {};
+this.parrent.euid = {};
+this.options.dropped = {};
+this.options.color = {};
+this.options.aux = {};
+this.option = function(val) {this.val = val;};
+this.epoints = {};
+var dm={base:{},menu:{},ds:{},cs:{},hs:{},dm:{},ms:{ctx:{},ds:{}}};window.dm=dm;dm.base=dm.base;dm.menu=dm.menu;dm.ds=dm.ds;dm.cs=dm.cs;dm.es=dm.es;dm.hs=dm.hs;dm.dm=dm.dm;
+dm.dm.fw = {};
+dm.cs.connector = {};
+dm.es.element = {};

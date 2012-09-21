@@ -2,12 +2,13 @@
   *   Class: context menu for class element
   * 
   */
+//@aspect
 (function( $, dm, undefined ) {
 
-dm.ms.ctx.sequence = function(menuBuilder) {
+dm.ms.ctx['sequence'] = function(menuBuilder) {
   var url = menuBuilder.loader.url;
 
-  return new dm.ms.ctx.common(menuBuilder, {id: "sequence", uid:"sequenceECtx"}, {
+  return new dm.ms.ctx['common'](menuBuilder, {id: "sequence", uid:"sequenceECtx"}, {
            'Copy  Ctrl-C': {
                 click: function(element) {  
                 },
@@ -134,5 +135,5 @@ $("#vp_main_menu2 .close").click(function() { $("#vp_main_menu2").remove();});
 			}
         });
 }
-
+//@aspect
 })(jQuery, dm);

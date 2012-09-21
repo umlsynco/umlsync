@@ -20,8 +20,8 @@ instructions = "zipit.py:  Simple zipfile creation script." + \
 
 def preprocess(infile, outfile):
   rf = open(infile, 'r')
-  wf = open(outfile, 'w')
-  exportf = open("./externals_ext.js", 'w')
+  wf = open(outfile, 'wc')
+  exportf = open("./externals_ext.js", 'wc')
   aspecNextLine = False
   exportNextLine = False
   printExport = ""
@@ -92,4 +92,5 @@ if __name__=="__main__":
         preprocess (sys.argv[1], sys.argv[2])
     else:
         print instructions
+    sys.exit(0)
 

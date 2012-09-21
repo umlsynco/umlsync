@@ -15,13 +15,11 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function($, dm, undefined) {
-dm = dm || {};
-dm.cs = dm.cs || {};
 
-dm.base.diagram("cs.composition", dm.cs.connector, {
-    draw: function(context2, points, color) {
+dm.base.diagram("cs.composition", dm.cs['connector'], {
+    'draw': function(context2, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -74,5 +72,5 @@ dm.base.diagram("cs.composition", dm.cs.connector, {
             
     }
     });
-
+//@aspect
 })(jQuery, dm);

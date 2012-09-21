@@ -1,15 +1,16 @@
 /**
   *  
   */
+//@aspect
 (function( $, dm, undefined ) {
 dm.base.diagram("es.package", dm.es.element, {
-    options: {
-        nameTemplate: "Package",
-        droppable: true,
-        acceptdrop: "package",
-        height_b: "60px"
+    'options': {
+        'nameTemplate': "Package",
+        'droppable': true,
+        'acceptdrop': "package",
+        'height_b': "60px"
     },
-    _update: function() {
+    '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
        this.options.pageX = p.left;
        this.options.pageY = p.top;
@@ -27,7 +28,7 @@ dm.base.diagram("es.package", dm.es.element, {
          }
        }
     },
-    _create: function() {
+    '_create': function() {
       // HTML for class structure creation
       var aux = (this.options.aux != undefined) ? "<a>&lt&lt" + this.options.aux + "&gt&gt</a><br><b>" : "";
       this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncPacket">\
@@ -39,16 +40,16 @@ dm.base.diagram("es.package", dm.es.element, {
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
     },
-    _init: function() {
+    '_init': function() {
       $('#' + this.euid  + '_Border')
          .css('width', this.options.width);
 
       $('#' + this.euid  + '_Border .UMLSyncPacketBody')
          .css('width', this.options.width);
 
-      if (this.options.height_b)
+      if (this.options['height_b'])
         $('#' + this.euid  + '_Border .UMLSyncPacketBody').
-          css('height', this.options.height_b);
+          css('height', this.options['height_b']);
           
       if (this.options.color) {
           $("#" + this.euid + " .UMLSyncPacketTab").css("background-color", this.options.color);
@@ -58,7 +59,7 @@ dm.base.diagram("es.package", dm.es.element, {
       if (this.options["z-index"])
           this.element.css("z-index", this.options["z-index"]);
     },
-    _setOption: function( key, value ) {
+    '_setOption': function( key, value ) {
         this.options[ key ] = value;
         if (key == "color") {
             $("#" + this.euid + " .UMLSyncPacketTab").css("background-color", value);
@@ -79,4 +80,5 @@ dm.base.diagram("es.package", dm.es.element, {
         return this;
     }
 });
+//@aspect
 })(jQuery, dm);

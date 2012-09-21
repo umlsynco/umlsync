@@ -15,13 +15,11 @@ URL:
 Version:
   2.0.0 (2012-07-12)
  */
-
+//@aspect
 (function($, dm, undefined) {
-    dm = dm || {};
-    dm.cs = dm.cs || {};
 
-    dm.base.diagram("cs.anchor", dm.cs.connector, {
-        dashedLine: function(p1,p2, c) {
+dm.base.diagram("cs.anchor", dm.cs['connector'], {
+   dashedLine: function(p1,p2, c) {
         var x2 = p2[0],
         x1 = p1[0],
         y2 = p2[1],
@@ -44,7 +42,7 @@ Version:
         ex = dashe * cosa,
         ey = dashe * sina;
 
-        for (i=0; i<(gip/(dashf + dashe)); ++i) {
+        for (var i=0; i<(gip/(dashf + dashe)); ++i) {
             c.moveTo(x1, y1);
 
             c.lineTo(x1+fx, y1+fy);
@@ -52,7 +50,7 @@ Version:
             y1+= (ey + fy);
         }
     },
-    draw: function(c, points, color) {
+    'draw': function(c, points, color) {
         if ((points == null) || (points.length < 2)) {
             return;
         }
@@ -70,5 +68,5 @@ Version:
         }
     }
     });
-
+//@aspect
 })(jQuery, dm);

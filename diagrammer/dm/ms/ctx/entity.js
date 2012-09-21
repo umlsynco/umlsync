@@ -2,12 +2,13 @@
   *   Class: context menu for class element
   * 
   */
+//@aspect
 (function( $, dm, undefined ) {
 
 dm.ms.ctx.entity = function(menuBuilder) {
   var url = menuBuilder.loader.url;
 
-  return new dm.ms.ctx.common(menuBuilder, {id: "entity", uid:"classECtx"}, {
+  return new dm.ms.ctx['common'](menuBuilder, {'id': "entity", 'uid':"classECtx"}, {
            '  Add field': {
                 click: function(element) {
                   if (element.options.type == 'entity') {
@@ -18,5 +19,5 @@ dm.ms.ctx.entity = function(menuBuilder) {
             }
         });
 }
-
+//@aspect
 })(jQuery, dm);

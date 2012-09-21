@@ -23,7 +23,8 @@ var dm = (function( window, undefined ) {
     dm.ds = {};
     dm.cs = {};
     dm.hs = {};
-	dm.dm = {};
+    dm.dm = {};
+    dm.ms = {ctx:{},ds:{}};
 
     return dm;
 })(window);
@@ -38,6 +39,10 @@ dm['cs'] = dm.cs;
 dm['es'] = dm.es;
 dm['hs'] = dm.hs;
 dm['dm'] = dm.dm;
+dm['ms'] = dm.ms;
+dm['ctx'] = dm.ms.ctx;
+
+
 
 //@aspect
 (function( $, dm, undefined ) {
@@ -119,11 +124,12 @@ dm['dm'] = dm.dm;
             this._baseinit();
 
             var self = this;
-            $(this.element).bind("remove." + this.euid, function() {
-                self.destroy();
+            $(this.element).bind("remove." + this.euid, self, function(event) {
+                event.data.destroy();
+                $.HHHHHHHHHHHHHHHHHHHHHHH =event.data;
             });
 
-            this._trigger( "create" );
+            //this._trigger( "create" );
 
             this['_init']();
         } else {
@@ -131,7 +137,7 @@ dm['dm'] = dm.dm;
             alert("Please, declare method _create() for diagram element " + this.euid);
         }
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     getDescription: function(key, value) {
         var kv = !(key || value || false);
@@ -139,7 +145,7 @@ dm['dm'] = dm.dm;
         var item = '{',
         comma = '';
         this._update();
-        for (i in this.options) {
+        for (var i in this.options) {
             if (this.options[i] != undefined) {
                 if (proto.options[i] != undefined) {
                     if ((proto.options[i] != this.options[i]) || (i == 'type')) {
@@ -152,7 +158,7 @@ dm['dm'] = dm.dm;
     var c = '';
     item += comma + '"' + i + '":[';
     comma = ',';
-    for (j in obj) {
+    for (var j in obj) {
         // Do not add element if it is not selected
         if (kv || (obj[j].option(key) == value)) {
             if (obj[j] && obj[j].getDescription) {
@@ -177,22 +183,20 @@ dm['dm'] = dm.dm;
         item += '}';
         return item;
     },
-    //@overwrite
-    _update: function() {
-    },
-//#endif
     //@proexp
-    _getCreateOptions: function() {
-        return $.metadata && $.metadata.get( this.element[0] )[ this.euid ];
+    _update: function() {
+        $.log("_update");
     },
-    //@overwrite
-    _create: function(){},
-    //@overwrite
-    _init: function(){},
-    //@overwrite
-    _baseinit: function(){},
-    //@overwrite
-    _destroy: function(){},
+//@endif
+    //@proexp
+    _create: function(){$.log("_create");},
+    //@proexp
+    _init: function(){$.log("_init");},
+    //@proexp
+    _baseinit: function(){$.log("_baseinit");},
+
+    //@proexp
+    _destroy: function(){$.log("_destroy");},
     destroy: function() {
         this['_destroy']();
 
@@ -236,6 +240,7 @@ dm['dm'] = dm.dm;
         // TODO: REDIRECT ON inherited function !!!
         return this;
     },
+    /*
     //@proexp
     _trigger: function( type, event, data ) {
         var callback = this.options[type];
@@ -261,7 +266,7 @@ dm['dm'] = dm.dm;
         return !( $.isFunction(callback) &&
                 callback['call']( this.element[0], event, data ) === false ||
                 event['isDefaultPrevented']() );
-    }
+    }*/ // I have no idea what is this stuff for ... 
     };
 
     //@print
@@ -287,17 +292,21 @@ dm['dm'] = dm.dm;
     //@proexp
     _create: function () {
 	//<div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
+//@ifdef VIEWER
+        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
+                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
+                <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
+                </div></div>');
+        this.canvas = window.document.getElementById(this.euid +'_Canvas');
+//@else
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
                 <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
                 </div></div>');
+        this.canvas = window.document.getElementById('SingleCanvas');
+//@endif
 
-
-				//<canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
-				//<p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
-                
                 this.max_zindex = 100;
-                //this.canvas = window.document.getElementById(this.euid +'_Canvas');
-				this.canvas = window.document.getElementById('SingleCanvas');
 
                 // Diagram canvas drop element
                 // It is not necessary for regular usage
@@ -307,7 +316,7 @@ dm['dm'] = dm.dm;
                 var iDiagram = this;
 
 				$("#" + this.euid + ".UMLSyncClassDiagram").scroll(function() {iDiagram.draw();});
-//#ifdef EDITOR
+//@ifdef EDITOR
 				/*
                 $("#" + this.euid + "_Canvas").droppable({
                     drop: function( event, ui ) {
@@ -398,7 +407,7 @@ dm['dm'] = dm.dm;
                 }
                 });*/
 
-//#endif
+//@endif
                 /** Canvas extra functionality handling:
                  *   1. Hide resize GUI helpers on canvas click
                  *   2. Position locator is debug functionality
@@ -453,6 +462,7 @@ dm['dm'] = dm.dm;
                       e.stopPropagation();
                     }
                 })
+//@ifdef EDITOR
                 .mouseup(function(e) {
                     var p = $(this).offset(),
                     x = e.pageX - p.left,
@@ -464,15 +474,13 @@ dm['dm'] = dm.dm;
                     x = e.pageX - p.left,
                     y = e.pageY - p.top;
                     diag.startConnectorTransform(x,y);
-//#ifdef EDITOR
+
                     if ((diag.selectedconntector)
                       && (!dm['dm']['fw']['CtrlDown'])) {
                       diag.selectedconntector._setOption("selected", true);
                       e.stopPropagation();
                     }
-//#endif
                 })
-//#ifdef EDITOR
                 .bind('contextmenu', function(e) {
                     if (diag.selectedconntector) {
     diag.menuCtx['HideAll']();
@@ -482,7 +490,7 @@ dm['dm'] = dm.dm;
     diag.multipleSelection = true; // work around to hide connector selection on click
                     }
                 })
-//#endif
+//@endif
                 ;
 
                 // create an empty lists for connectors and elements
@@ -490,13 +498,13 @@ dm['dm'] = dm.dm;
                 this.elements = [];
 
                 // For all elements in JSON description try to create an element
-                for (i in this.options['elements']) {
+                for (var i in this.options['elements']) {
                     // How to get options which described in menu JSON ? 
                     this.Element(this.options['elements'][i].type, this.options['elements'][i]);
                 }
 
                 // For all connectors in JSON description try to create a connector 
-                for (i in this.options['connectors']) {
+                for (var i in this.options['connectors']) {
                     this.options['connectors'][i]['stored'] = true;
                     this.Connector(this.options['connectors'][i]['type'], this.options['connectors'][i]);
                     // TODO: find elements IDs and add connectors between elements
@@ -509,12 +517,12 @@ dm['dm'] = dm.dm;
 
                 // Perform function on diagram load completion
                 dm['dm']['loader']['OnLoadComplete'](function() {
-                    for (i in diag.elements) {
+                    for (var i in diag.elements) {
     var d = diag.elements[i].options['dropped'];
     if (d) {
         diag.elements[i]._dropped = new Array();
-        for (ii in d) {
-            for (iii in diag.elements) {
+        for (var ii in d) {
+            for (var iii in diag.elements) {
                 if (diag.elements[iii].options['id'] == d[ii]) {
                     diag.elements[i]._dropped.push(diag.elements[iii].euid);
                     break; // from the neares for
@@ -529,19 +537,19 @@ dm['dm'] = dm.dm;
                 this.reverted_operations = new Array(); // Array of reverted operations of diagram
 
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     _update: function() {
         this.options['connectors'] = this.connectors;
         var i = 0;
-        for (r in this.elements) {
+        for (var r in this.elements) {
             this.elements[r].options['id'] = i;
             i++;
         }
         this.options['elements'] = this.elements;
 
     },
-//#endif
+//@endif
     //@proexp
     _init: function () {
         // It is necessary to init mouse over listener
@@ -578,7 +586,7 @@ dm['dm'] = dm.dm;
             if (callback)
                 callback(obj);
         });
-//#ifdef EDITOR
+//@ifdef EDITOR
         // If it is editable diagram
         if (this.options['editable']) {
             // Load the context menu for element
@@ -591,17 +599,17 @@ dm['dm'] = dm.dm;
             if ((this.menuIcon != undefined) && (options['menu'] != undefined))
                 this.menuIcon['load'](options['menu']);
         }
-//#endif
+//@endif
         return options.euid;
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     _setWidgetsOption: function( key, value ) {
         if (key == "selected") {
             this.multipleSelection = value;
-            for (i in this.elements)
+            for (var i in this.elements)
                 this.elements[i]._setOption( key, value );
-            for (i in this.connectors)
+            for (var i in this.connectors)
                 this.connectors[i]._setOption( key, value );
         } if (key == "z-index") { // Z-index supported by elements only (not applicable for connectors)
             var newmax = this.max_zindex,
@@ -609,7 +617,7 @@ dm['dm'] = dm.dm;
             max_z = undefined,
             min_not_selected_z = undefined;
             // Identify the minimal z-index in selection
-            for (i in this.elements) {
+            for (var i in this.elements) {
                 var r = this.elements[i].option(key);
                 if (this.elements[i].option("selected")) {
                     min_z = ((min_z == undefined) || r<min_z) ? r : min_z;
@@ -623,7 +631,7 @@ dm['dm'] = dm.dm;
 
             $.log("Min Z-INDEX: " + min_z);
             var flag = (value == "front") ? true : false;
-            for (i in this.elements)
+            for (var i in this.elements)
                 if (this.elements[i].option("selected")) {
                     if (flag) {
     var zi = this.elements[i].option(key) + this.max_zindex - min_z + 1;
@@ -643,24 +651,24 @@ dm['dm'] = dm.dm;
                 }
             this.max_zindex = newmax + 1;
         } else {
-            for (i in this.elements)
+            for (var i in this.elements)
                 if (this.elements[i].option("selected"))
                     this.elements[i]._setOption( key, value );
-            for (i in this.connectors)
+            for (var i in this.connectors)
                 if (this.connectors[i].option("selected"))
                     this.connectors[i]._setOption( key, value );
         }
 
         this.draw(); // work-around to re-draw connectors after options update
     },
-//#endif
+//@endif
     /**
      * \class Function.
      * TODO: think about lifeline diagram
      */
     //@proexp
     checkdrop: function(x,y) {
-        for (d in this.elements) {
+        for (var d in this.elements) {
             var p = $("#" + this.elements[d].id + "_Border").position();
 
             if ((x > p.left) && (x < p.left + 140) && (y > p.top) && (y < p.top + 140))  {
@@ -669,7 +677,7 @@ dm['dm'] = dm.dm;
         }
         return undefined;
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     /**
      * \class Function.
      */
@@ -689,11 +697,11 @@ dm['dm'] = dm.dm;
         }
 
     },
-//#endif
+//@endif
     //@proexp
     removeElement: function(euid) {
         var el = this.elements;
-        for (k in el) {
+        for (var k in el) {
             if (el[k].euid == euid) {
                 delete el[k];
                 el.splice(k, 1);
@@ -703,7 +711,7 @@ dm['dm'] = dm.dm;
         }
 
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     /**
      * \class Function.
      * remove connector from the list of updatable connectors
@@ -713,13 +721,15 @@ dm['dm'] = dm.dm;
      */
     //@proexp
      removeConnector: function (fromId, toId, type) {
+
         if (this.connectors.length > 0) {
-            for (c in this.connectors) {        
-                if (((this.connectors[c].from  == fromId) || (fromId == undefined))
-    && ((this.connectors[c].toId == toId) || (toId == undefined))) {
-                    for (i in this.connectors[c].lables) {
-    this.connectors[c].lables[i].remove();
+            for (var c in this.connectors) {
+                if (((this.connectors[c]['from']  == fromId) || (fromId == undefined))
+    && ((this.connectors[c]['toId'] == toId) || (toId == undefined))) {
+                    for (var i in this.connectors[c].lables) {
+                        this.connectors[c].lables[i].remove();
                     }
+                    $.log("REMOVE: " + c);
                     delete this.connectors[c];
                     this.connectors.slice(c,1);
                 }
@@ -728,7 +738,7 @@ dm['dm'] = dm.dm;
         }
 
     },
-//#endif
+//@endif
 
     /**
      * \class Function.
@@ -751,13 +761,13 @@ dm['dm'] = dm.dm;
             }
         });
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     _dropConnector: function(ui) {
         var result = undefined,
 		scrollLeft = $("#" + this.euid).scrollLeft(),
 		scrollTop = $("#" + this.euid).scrollTop();
-        for (i in this.elements) {
+        for (var i in this.elements) {
             var e = $("#" + this.elements[i].euid + "_Border");
             var p = e.position(),
             w = e.width(),
@@ -775,7 +785,7 @@ dm['dm'] = dm.dm;
     //@proexp
     _dropSubDiagram: function(path, event, ui) {
         var d, z = 0;
-        for (i in this.elements) {
+        for (var i in this.elements) {
             var e = $("#" + this.elements[i].euid + "_Border");
             var p = e.offset(),
             w = e.width(),
@@ -809,7 +819,7 @@ dm['dm'] = dm.dm;
     },
     //@proexp
     _dropElement: function(element, ui) {
-        for (i in this.elements) {
+        for (var i in this.elements) {
             if (this.elements[i].options['acceptdrop']
                     && (this.elements[i].euid != element.euid)) {
                 var e = $("#" + this.elements[i].euid + "_Border");
@@ -823,7 +833,7 @@ dm['dm'] = dm.dm;
     && (ui.position.top < p.top + h)) {
                     this.elements[i]._dropped = this.elements[i]._dropped || new Array();
                     var notfound = true;
-                    for (j in this.elements[i]._dropped) {
+                    for (var j in this.elements[i]._dropped) {
     if (this.elements[i]._dropped[j] == element.euid) {
         notfound = false;
         break;
@@ -832,7 +842,7 @@ dm['dm'] = dm.dm;
                     if (notfound)
     this.elements[i]._dropped.push(element.euid);
                 } else {
-                    for (j in this.elements[i]._dropped) {
+                    for (var j in this.elements[i]._dropped) {
     if (this.elements[i]._dropped[j] == element.euid) {
         this.elements[i]._dropped.splice(j,1);
         break;
@@ -842,13 +852,13 @@ dm['dm'] = dm.dm;
             }
         }
     },
-//#endif
+//@endif
     //@proexp    
     onDragStart: function(el, ui) {
         el.onDragStart(ui, true);
 
         if (this.multipleSelection)
-            for (i in this.elements) {
+            for (var i in this.elements) {
                 if (this.elements[i] != el
     && this.elements[i].option("selected")
     && this.elements[i].option("dragStart") == undefined) {
@@ -856,32 +866,32 @@ dm['dm'] = dm.dm;
                 }
             }
 
-        for (i in this.connectors)
-            if (this.elements[this.connectors[i].from].option("dragStart")
-                    && this.elements[this.connectors[i].toId].option("dragStart"))
+        for (var i in this.connectors)
+            if (this.elements[this.connectors[i]['from']].option("dragStart")
+                    && this.elements[this.connectors[i]['toId']].option("dragStart"))
                 this.connectors[i].onDragStart(ui);
 
     },
 
     //@proexp
     onDragMove: function(el, ui) {
-        for (i in this.elements)
+        for (var i in this.elements)
             if (this.elements[i].option("dragStart") != undefined
                     && this.elements[i] != el)
                 this.elements[i].onDragMove(ui);
-        for (i in this.connectors)
+        for (var i in this.connectors)
             if (this.connectors[i].option("dragStart"))
                 this.connectors[i].onDragMove(ui);
     },
     //@proexp
     onDragStop: function(el, ui) {
         el.onDragStop();
-        for (i in this.elements)
+        for (var i in this.elements)
             if (this.elements[i].option("dragStart") != undefined
                     && this.elements[i] != el)
                 this.elements[i].onDragStop(ui);
 
-        for (i in this.connectors)
+        for (var i in this.connectors)
             if (this.connectors[i].option("dragStart"))
                 this.connectors[i].onDragStop(ui);
     },
@@ -892,6 +902,8 @@ dm['dm'] = dm.dm;
      */
     //@proexp
      draw: function() {
+         if (!this.canvas)
+           return;
         var ctx = this.canvas.getContext("2d");
 
         ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
@@ -901,7 +913,7 @@ dm['dm'] = dm.dm;
 //            ctx.strokeRect(0, 0, 1000, 500);
 
 
-            for (c in this.connectors) {
+            for (var c in this.connectors) {
                 ctx.lineWidth = 1;
 
                 if (this.connectors[c].options['linewidth'] != undefined) {
@@ -937,22 +949,26 @@ dm['dm'] = dm.dm;
     //@proexp
      isPointOnLine: function(x,y) {
         if (this.connectors.length > 0) {
+//@ifdef EDITOR
             if (this.transformStarted == true) {
                 this.selectedconntector.TransformTo(x,y);
                 this.draw();
                 return true;
             }
-
-            for (c in this.connectors) {        
+//@endif
+            for (var c in this.connectors) {        
                 if (this.connectors[c].isPointOnLine(x,y)) {
                     if (this.connectors[c] != this.selectedconntector) {
     this.selectedconntector = this.connectors[c];
     this.draw();
+
+//@ifdef EDITOR
     if (this.selectedconntector._showMenu != undefined) {
         this.selectedconntector._showMenu(x,y, true);
     }
+//@endif
                     }
-                    return true;             
+                    return true;
                 }
             }
         }
@@ -960,14 +976,18 @@ dm['dm'] = dm.dm;
         // Hide selected connector
         // because it is no longer highlited
         if (this.selectedconntector != undefined) {
+//@ifdef EDITOR
             if (this.selectedconntector._showMenu != undefined) {
                 this.selectedconntector._showMenu(x,y, false);
             }
+//@endif
             this.selectedconntector = undefined;
             this.draw();
         }
+
         return false;
     },
+//@ifdef EDITOR
     /**
      * \class Function.
      * The connector transfomation function.
@@ -990,12 +1010,13 @@ dm['dm'] = dm.dm;
             this.selectedconntector.stopTransform(x,y);
         this.transformStarted = false;
     },
+//@endif
     /**
      * \class Function.
      */
     //@proexp
      _mouseClick: function(refElement) {
-//#ifdef EDITOR
+//@ifdef EDITOR
         var mtype = (refElement == undefined) ? undefined : refElement.options['menu'];
         var ctrlDown = dm['dm']['fw']['CtrlDown'];
         this.clickedElement = refElement;
@@ -1062,9 +1083,9 @@ dm['dm'] = dm.dm;
             this.selectedElement._setOption("selected", true);
             this.draw();
         }
-//#endif
+//@endif
     },
-//#ifdef EDITOR
+//@ifdef EDITOR
     //@proexp
     reportOperation: function(operation, euid, before, after) {
         this.operations.push([operation, euid, before, after]);
@@ -1090,7 +1111,7 @@ dm['dm'] = dm.dm;
             }
         }
     }
-//#endif
+//@endif
     });
     
     //@print
@@ -1128,7 +1149,7 @@ dm['dm'] = dm.dm;
             // create element at possition which described in jsonDesc
             alert("Could not create virtual element !!!");
         },
-//#ifdef EDITOR
+//@ifdef EDITOR
         //@proexp
         _update: function() {
             var p = $("#" + this.euid + "_Border").position();
@@ -1140,12 +1161,12 @@ dm['dm'] = dm.dm;
 
             if (this._dropped) {
                 this.options['dropped'] = new Array();
-                for (i in this._dropped) {
+                for (var i in this._dropped) {
                     this.options['dropped'].push(this.parrent.elements[this._dropped[i]].options['id']);
                 }
             }
         },
-//#endif
+//@endif
         //@proexp
         _init: function () {
             if (this.options['height']) {
@@ -1182,6 +1203,7 @@ dm['dm'] = dm.dm;
 
             var axis111 = this.options['axis'] || false;
             var elmt = $('#' + this.euid  + '_Border')
+//@ifdef EDITOR
             .resizable({
 			'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
 			'scroll': true,
@@ -1209,7 +1231,7 @@ dm['dm'] = dm.dm;
 			  'scroll': true,
               'start': function(event, ui) {
                 self.operation_start = {left: ui.position.left, top: ui.position.top};
-                parrentClass.onDragStart(self, ui);
+                parrentClass['onDragStart'](self, ui);
               },
               'drag': function(event, ui) {
                 if (parrentClass != undefined) {
@@ -1218,7 +1240,7 @@ dm['dm'] = dm.dm;
                 if (self.$moveit != undefined) {
                     $("#" + self.$moveit).css("left", 200);
                 }
-                parrentClass.onDragMove(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
+                parrentClass['onDragMove'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
               },
               'stop': function(event, ui) {
                 if (ui.position.top < 0) {
@@ -1278,10 +1300,12 @@ dm['dm'] = dm.dm;
                     self.parrent.menuCtx['visit'](self, e.pageX , e.pageY );
                 }
             })
+//@endif
             .css({'position':'absolute'})
             .css('top', this.options['pageY'])
             .css('left', this.options['pageX']);
 
+//@ifdef EDITOR
             // Hide element resize points which was
             // added on the previous step
             $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
@@ -1291,7 +1315,7 @@ dm['dm'] = dm.dm;
             if (this.parrent.options['editable']) {
                 $("#" + this.euid + " .editablefield").editable();
             }
-
+//@endif
             // You need to select element to start DND
             $('#'+this.euid)
             .click(function(e) {
@@ -1301,12 +1325,13 @@ dm['dm'] = dm.dm;
             })       
             .mouseenter(function (){
                 $('#' + this.id +'_Border').css({'border':'3px solid #414141'}).animate({left:'-=3px', top:'-=3px'},0);
-                $('#' + this.id +'_FS').css({'visibility':'visible'});
                 $('#' + this.id +'_REF').css({'visibility':'visible'});
+//@ifdef EDITOR
                 // Show the  menu if element was selected
                if (self.parrent.menuIcon) {
                     self.parrent.menuIcon['Show'](this.id, self);
                 }
+//@endif
                 //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
             })
             .mouseleave(function (){
@@ -1316,14 +1341,12 @@ dm['dm'] = dm.dm;
                 if (self.parrent.menuIcon) {
                     self.parrent.menuIcon['Hide'](this.id);
                  }
-                //$(".elmenu-" + self.menutype).animate({opacity:"0"});;
-//                if (!self.options.selected) {
-                $('#' + this.id +'_FS').css({'visibility':'hidden'});
                 $('#' + this.id +'_REF').css({'visibility':'hidden'});
-//                }
+
             })
-            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>")
-            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
+            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>");
+// Feat size no longer supported, potential collizion with another Software
+//            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
 
             if (this.options['subdiagram']) {
                 $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(function() {
@@ -1364,15 +1387,14 @@ dm['dm'] = dm.dm;
             } else if (key == "z-index") {
                 $("#" + this.euid + '_Border ').css(key, value);
             }
-
-            return this;
         },
+//@ifdef EDITOR
         //@proexp
         onDragStart: function(ui, isbase) {
             if (this.options.dragStart != undefined)
                 return;
 
-            for (i in this._dropped)
+            for (var i in this._dropped)
                 this.parrent.elements[this._dropped[i]].onDragStart(ui);
 
             this.options.dragStart = true;
@@ -1410,7 +1432,8 @@ dm['dm'] = dm.dm;
             $.log("DSTOP: " + this.euid);
             this.options.dragStart = undefined;
             this.start_operation = undefined;
-        }    
+        }
+//@endif
         });
 
         //@print
@@ -1427,8 +1450,17 @@ dm.base.diagram("cs.connector", {
         },
         //@proexp
         addLable: function(text, x, y) {
-            this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>").appendTo("#" + this.parrent.euid).css("left", x).css("top", y).draggable().editable());
+            this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>")
+            .appendTo("#" + this.parrent.euid)
+            .css("left", x)
+            .css("top", y)
+//@ifdef EDITOR
+            .draggable()
+            .editable()
+//@endif
+            );
         },
+//@ifdef EDITOR
         //@proexp
         getDescription: function() {
             var item = '{',
@@ -1441,11 +1473,11 @@ dm.base.diagram("cs.connector", {
             item += '"epoints":[';
             var comma = "",
             c;
-            for (i in this.epoints) {
+            for (var i in this.epoints) {
                 item +=  comma + '{';
                 comma = ',';
                 c='';
-                for (j in this.epoints[i]) {
+                for (var j in this.epoints[i]) {
                     item +=  c + '"' + j + '":"' + this.epoints[i][j] + '"';
                     c=',';
                 }
@@ -1457,7 +1489,7 @@ dm.base.diagram("cs.connector", {
                 item += ',"lables":[';
                 comma = "";
                 c = "";
-                for (i in this.lables) {
+                for (var i in this.lables) {
                     var p = this.lables[i].position();
                     item +=  comma + '{"name":"' + this.lables[i].html() + '","x":"' + p.left + '","y":"' + p.top + '"}';
                     comma = ',';
@@ -1467,40 +1499,41 @@ dm.base.diagram("cs.connector", {
             item +=  '}';
             return item; 
         },
+//@endif
         //@proexp
         _create: function () {
             //@proexp
             this.epoints = [];
             this.cleanOnNextTransform = false;
             if (this.options['stored']) {
-                for (i in this.parrent.elements) {
+                for (var i in this.parrent.elements) {
 //                    alert("ELEMENT: " + this.parrent.elements[i].euid);
                     if (this.parrent.elements[i].options['id'] == this.options['fromId']) {
-    this.from = this.parrent.elements[i].euid;
+    this['from'] = this.parrent.elements[i].euid;
                     }
                     if (this.parrent.elements[i].options['id'] == this.options['toId']) {
-    this.toId = this.parrent.elements[i].euid;
+    this['toId'] = this.parrent.elements[i].euid;
                     }
                 }
                 if (this.options['epoints']) {
                     dm.debug = dm.debug || {};
                     dm.debug[this.euid] = this.options['epoints'];
                     this.epoints = new Array();
-                    for (i in this.options['epoints']) {
+                    for (var i in this.options['epoints']) {
     this.epoints[i] = {};
     this.epoints[i][0] = parseInt(this.options['epoints'][i][0], 10);
     this.epoints[i][1] = parseInt(this.options['epoints'][i][1], 10);
                     }
                 }
-                this.options['fromId'] = this.from;
-                this.options['toId'] = this.toId;
+                this.options['fromId'] = this['from'];
+                this.options['toId'] = this['toId'];
             }
             else {
-                this.from = this.options['fromId'];
-                this.toId = this.options['toId'];
+                this['from'] = this.options['fromId'];
+                this['toId'] = this.options['toId'];
             }
             this.lables = new Array();
-            for (i in this.options['lables']) {
+            for (var i in this.options['lables']) {
                 var l = this.options['lables'][i];
                 this.addLable(l.name, parseInt(l.x), parseInt(l.y));
             }
@@ -1520,7 +1553,7 @@ dm.base.diagram("cs.connector", {
             c.strokeStyle = color;
 
             c.moveTo(points[0][0], points[0][1]);
-            for (i=1; i<points.length; ++i) {
+            for (var i=1; i<points.length; ++i) {
                 c.lineTo(points[i][0], points[i][1]);
             }
             c.stroke();
@@ -1537,10 +1570,9 @@ dm.base.diagram("cs.connector", {
                 // TODO: identify context by this,parent
                 return;
             }
-
-            this.points = this._getConnectionPoints(this.from, this.toId, this.epoints);
+            this.points = this['_getConnectionPoints'](this['from'], this['toId'], this.epoints);
             this.gip = [];
-            for (i=0;i<this.points.length-1;++i) {
+            for (var i=0;i<this.points.length-1;++i) {
                 var dy = this.points[i][1] - this.points[i+1][1],
                 dx = this.points[i][0] - this.points[i+1][0];
                 this.gip[i] = Math.sqrt(dx*dx + dy*dy);
@@ -1573,7 +1605,7 @@ dm.base.diagram("cs.connector", {
             if (this.points == undefined)
                 return false;
 
-            for (i=0;i<this.points.length-1;++i) {
+            for (var i=0;i<this.points.length-1;++i) {
                 var dx1 = x - this.points[i][0],
                 dy1 = y - this.points[i][1],
                 dx = this.points[i+1][0] - x,
@@ -1587,6 +1619,7 @@ dm.base.diagram("cs.connector", {
             }
             return false;          
         },
+//@ifdef EDITOR
         //@proexp
         canRemovePoint: function(p1,p2,rp) {
             if ((p1 == undefined)
@@ -1616,7 +1649,7 @@ dm.base.diagram("cs.connector", {
                 this.epoints.splice(0, 1);
             }
 
-            for (c=0; c<this.epoints.length; ++c) {
+            for (var c=0; c<this.epoints.length; ++c) {
                 if ((this.epoints[c][0] - 12 < x) && (this.epoints[c][0] + 12 > x)
     && (this.epoints[c][1] - 12 < y) && (this.epoints[c][1] + 12> y)) {
                     this.eppos = c;
@@ -1631,10 +1664,11 @@ dm.base.diagram("cs.connector", {
             }
 
             if (this.eppos == undefined) {
-                this.points = this._getConnectionPoints(this.from, this.toId, this.epoints);
+                $.log("FROM : " + this['from']);
+                this.points = this['_getConnectionPoints'](this['from'], this['toId'], this.epoints);
                 newPoint = [];
                 newPoint[0] = x1; newPoint[1] = y1;
-                for (i=0;i<this.points.length-1;++i) {
+                for (var i=0;i<this.points.length-1;++i) {
                     if (this.canRemovePoint(this.points[i], this.points[i+1], newPoint)) {
     this.eppos = i;
     this.epoints.splice(i, 0, newPoint);
@@ -1704,7 +1738,8 @@ dm.base.diagram("cs.connector", {
                 if ($.isFunction(this.onTransform))
                     this.onTransform(x,y);
             }
-        },    
+        },
+//@endif
         //@proexp
         _getConnectionPoints: function(fromId, toId, epoints) {
 
@@ -1716,7 +1751,7 @@ dm.base.diagram("cs.connector", {
 
             var p11 = $('#'+ fromId + "_Border").position();
             var p21 = $('#' + toId + "_Border").position();
-            var scrollTop = 0;//$("#" + this.parrent.euid).scrollTop(),
+            var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
             scrollLeft = 0; //$("#" + this.parrent.euid).scrollLeft();
 
             if ((epoints == undefined) || (epoints.length == 0)) {
@@ -1731,15 +1766,17 @@ dm.base.diagram("cs.connector", {
                 return newpoints;
             }
             else {
-		        scrollTop = $("#" + this.parrent.euid).scrollTop();
+//@ifdef EDITOR
+                scrollTop = $("#" + this.parrent.euid).scrollTop();
                 scrollLeft = $("#" + this.parrent.euid).scrollLeft();
-
+//@endif
                 var lln = epoints.length -1;
                 var x1 = this._getRValue(p1.left + p11.left, epoints[0][0] - scrollLeft, $('#'+ fromId).width()) ;
                 var y1 = this._getRValue(p1.top + p11.top, epoints[0][1] - scrollTop, $('#'+ fromId).height()) ;
 
                 var x2 = this._getRValue(p2.left + p21.left, epoints[lln][0] - scrollLeft, $('#' + toId).width());
                 var y2 = this._getRValue(p2.top + p21.top, epoints[lln][1] - scrollTop, $('#' + toId).height());
+
 
        /*
          var x1 = p1.left + p11.left;
@@ -1749,7 +1786,7 @@ dm.base.diagram("cs.connector", {
         */      
                 var newpoints = [];
                 newpoints[0] = [x1,y1];
-                for (i=1;i<=epoints.length;++i) {
+                for (var i=1;i<=epoints.length;++i) {
                     newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
 					newpoints[i][0] -= scrollLeft;
 					newpoints[i][1] -= scrollTop;
@@ -1758,13 +1795,14 @@ dm.base.diagram("cs.connector", {
                 return newpoints;
             }
         },
+//@ifdef EDITOR
         //@proexp
         onDragStart: function(ui) {
             if (this.epoints.length > 0) {
  
                 this.epoints_drag = [];
                 // clone this.epoints
-                for (i in this.epoints) {
+                for (var i in this.epoints) {
                     this.epoints_drag[i] = {};
                     this.epoints_drag[i][0] = this.epoints[i][0];
                     this.epoints_drag[i][1] = this.epoints[i][1];
@@ -1774,7 +1812,7 @@ dm.base.diagram("cs.connector", {
             if (this.lables && this.lables.length > 0) {
                 this.lables_drag = [];
                 // clone this.epoints
-                for (i in this.lables) {
+                for (var i in this.lables) {
                     var p = this.lables[i].position();
                     this.lables_drag[i] = {};
                     this.lables_drag[i][0] = p.left;
@@ -1786,12 +1824,12 @@ dm.base.diagram("cs.connector", {
         onDragMove: function(ui) {
             if (this.options.dragStart == undefined)
                 return;
-            for (i in this.epoints_drag) {
+            for (var i in this.epoints_drag) {
                 this.epoints[i][0] = this.epoints_drag[i][0] + ui.left;
                 this.epoints[i][1] = this.epoints_drag[i][1] + ui.top;
             }
 
-            for (i in this.lables_drag) {
+            for (var i in this.lables_drag) {
                 this.lables[i].css({left:this.lables_drag[i][0] + ui.left,
                     top: this.lables_drag[i][1] + ui.top});
             }
@@ -1803,6 +1841,7 @@ dm.base.diagram("cs.connector", {
             this.epoints_drag = undefined;
             this.lables_drag = undefined;
         }
+//@endif
         });
         //@print
 //@aspect

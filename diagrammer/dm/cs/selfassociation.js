@@ -15,13 +15,12 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function($, dm, undefined) {
-dm = dm || {};
-dm.cs = dm.cs || {};
 
-dm.base.diagram("cs.selfassociation", dm.cs.connector, {
-    draw: function(context2, points, color) {
+dm.base.diagram("cs.selfassociation", dm.cs['connector'], {
+
+    'draw': function(context2, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -36,10 +35,10 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
             context2.stroke();
             context2.closePath();
     },
-    _init: function() {
-      var p11 = $('#'+ this.from + "_Border").position();
+    '_init': function() {
+      var p11 = $('#'+ this['from'] + "_Border").position();
       if (!p11) {
-         alert("Not found " + this.from);
+         alert("Not found " + this['from']);
          return;
       }
       
@@ -56,14 +55,14 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
       this.epoints[2][0] = p11.left + 180;
       this.epoints[2][1] = p11.top + 20;
     },
-    _getConnectionPoints: function(fromId, toId, epoints) {
+    '_getConnectionPoints': function(fromId, toId, epoints) {
        if (fromId != toId)
          alert("SELF-CONNECTION suppose the same source and destination element");
        //alert(" Get connection points: " + fromId + "  " + toId);
 
-      var p11 = $('#'+ this.from + "_Border").position();
+      var p11 = $('#'+ this['from'] + "_Border").position();
       if (!p11) {
-         alert("Not found " + this.from);
+         alert("Not found " + this['from']);
          return;
       }
 
@@ -80,7 +79,7 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
        
        var p11 = $('#'+ fromId + "_Border").position();
        var p21 = p11;
-       var scrollTop = 0;//$("#" + this.parrent.euid).scrollTop(),
+       var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
            scrollLeft = 0;//$("#" + this.parrent.euid).scrollLeft();
 
        
@@ -116,4 +115,5 @@ dm.base.diagram("cs.selfassociation", dm.cs.connector, {
        }
     }
     });
+//@aspect
 })(jQuery, dm);

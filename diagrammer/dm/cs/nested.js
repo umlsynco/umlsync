@@ -15,11 +15,11 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function($, dm, undefined) {
 
-dm.base.diagram("cs.nested", dm.cs.connector, {
-    draw: function(context2, points, color) {
+dm.base.diagram("cs.nested", dm.cs['connector'], {
+    'draw': function(context2, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -33,7 +33,7 @@ dm.base.diagram("cs.nested", dm.cs.connector, {
             
             var sina = dy/gip,
             cosa = dx/gip,
-            z = x-3;
+            z = x-3,
             x3 = points[ep][0] - Math.sqrt(x*x*3/4)*cosa,
             y3 = points[ep][1] - Math.sqrt(x*x*3/4)*sina,
             x6 = points[ep][0] - Math.sqrt(x*x*3)*cosa,
@@ -41,11 +41,11 @@ dm.base.diagram("cs.nested", dm.cs.connector, {
             x4 = x3 + z * sina/2,
             y4 = y3 - z * cosa/2,
             x5 = x3 - z * sina/2,
-            y5 = y3 + z * cosa/2;
+            y5 = y3 + z * cosa/2,
             x31 = points[ep][0] - Math.sqrt(z*z*3/4)*cosa,
             y31 = points[ep][1] - Math.sqrt(z*z*3/4)*sina,
             x61 = points[ep][0] - Math.sqrt(z*z*3)*cosa,
-            y61 = points[ep][1] - Math.sqrt(z*z*3)*sina,
+            y61 = points[ep][1] - Math.sqrt(z*z*3)*sina;
             
             context2.beginPath();
             context2.fillStyle = color;
@@ -76,4 +76,5 @@ dm.base.diagram("cs.nested", dm.cs.connector, {
         
     }
     });
+//@aspect
 })(jQuery, dm);

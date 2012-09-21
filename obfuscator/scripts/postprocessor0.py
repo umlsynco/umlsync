@@ -22,6 +22,13 @@ def postprocess(infile, outfile):
   rf = open(infile, 'r')
   wf = open(outfile, 'wc')
   dm = "dm"
+  skip = False
+
+  if "diagram.min.js" in outfile:
+      skip = True
+    #wf.write("var dm={base:{},menu:{},ds:{},cs:{},hs:{},dm:{},ms:{ctx:{},ds:{}}};window.dm=dm;dm.base=dm.base;dm.menu=dm.menu;dm.ds=dm.ds;dm.cs=dm.cs;dm.es=dm.es;dm.hs=dm.hs;dm.dm=dm.dm;")
+  else:
+      wf.write("(function($, dm, undefined) {")
 
   for line in rf:
     if "$.aspect(\"" in line:
@@ -38,11 +45,15 @@ def postprocess(infile, outfile):
         if len(asp) == 2:
           aspect = ("%s%s%s") % (asp[0],dm,asp[1])
         newline = newline[end+3:]
-        result += aspect
+        if skip:
+            result += aspect
       result += newline
       wf.write(result)
     else:
       wf.write(line)
+
+  if not skip:
+    wf.write("})(jQuery, dm);")
   rf.close()
   wf.close()
 

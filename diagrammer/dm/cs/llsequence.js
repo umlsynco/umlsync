@@ -15,13 +15,11 @@ URL:
 Version:
   2.0.0 (2012-07-12)
 */
-
+//@aspect
 (function($, dm, undefined) {
-dm = dm || {};
-dm.cs = dm.cs || {};
 
 dm.base.diagram("cs.llsequence", dm.cs.connector, {
-    draw: function(c, points, color) {
+    'draw': function(c, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -72,7 +70,7 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
             c.stroke();
             c.closePath();            
     },
-    _getConnectionPoints: function(fromId, toId, epoints) {
+    '_getConnectionPoints': function(fromId, toId, epoints) {
        var p1 = $('#'+ fromId).position();
        
        var p2 = $('#' + toId).position();
@@ -134,14 +132,14 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
        }
      }
     },
-    _updateEPoints: function(ui) {
+    '_updateEPoints': function(ui) {
         return;
       this.epoints = [[ui.position.left, ui.position.top]];
       this.cleanOnNextTransform = true;
       this.eppos = 0;
       this.parrent.draw();
     },
-    getAutocomplete: function() {
+    'getAutocomplete': function() {
         if (this.parrent == undefined)
           return null;
 
@@ -150,27 +148,28 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
          return this.parrent.elements[this.toId].getAutocomplete();
         return null;
     },
-    addLable: function(text, x, y) {
+    'addLable': function(text, x, y) {
       var self = this;
       this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>").appendTo("#" + this.parrent.euid)
       .css("left", x).css("top", y)
       .draggable().editable({onAutocomplete:function() { return self.getAutocomplete() }}));
     },
-    canRemovePoint: function() {
+    'canRemovePoint': function() {
         return true;
     },
-    onStartTransform: function(x,y) {
+    'onStartTransform': function(x,y) {
         $.log("onStartTransform: " + y);
         this.drag_info  = y;
         this.parrent.onDragStart(this, {left:0, top:0}, true);
     },
-    onTransform: function(x,y) {
+    'onTransform': function(x,y) {
         $.log("onTransform: " + (y - this.drag_info));
         this.parrent.onDragMove(this, {left:0, top:y - this.drag_info}, true);
     },
-    onStopTransform: function(x,y) {
+    'onStopTransform': function(x,y) {
         $.log("onStopTransform: " + (y - this.drag_info));
         this.parrent.onDragStop(this, {left:0, top:y - this.drag_info}, true);
     }
     });
+//@aspect
 })(jQuery, dm);

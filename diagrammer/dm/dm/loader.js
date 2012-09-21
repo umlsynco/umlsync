@@ -32,12 +32,14 @@ Version:
  */
 //@aspect
 (function($, dm, undefined) {
-    //@export:dm.base.loader:plain
+
+    // singleton object
+    dm.dm.loader = dm.dm.loader || null; 
+
+    //@export:dm.base.loader:plain 
     dm.base.loader = function(urlArg) {
 
-        this.instance = null; 
-     
-        var createInstance = function() { 
+       var createInstance = function() { 
             this.working = false;
  
             return {
@@ -58,7 +60,6 @@ Version:
                 }
                 
                 if ((isAjaxCallback && instance._loadQueue.length > 0) || (instance._loadQueue.length == 1 && !instance.working)) {
-                    
                     instance.working = true;
                     item = instance._loadQueue.shift();
                     
@@ -124,6 +125,7 @@ Version:
                       }
                 });//ajax
             },
+//@ifdef EDITOR
             //@proexp
             'LoadDiagramMenuData': function(type, callback) {
                 // There is no dependency on main menu load sequence
@@ -152,17 +154,17 @@ Version:
                 this._addToLoadQueue({
                     url: "/dm/ms/" + type + "/" + specific +".js", 
                     precondition: function() {
-                    if ((dm.ms[type] == undefined)
+                      if ((dm.ms[type] == undefined)
                             || (dm.ms[type][specific] == undefined)) {
                         return true;
-                    }
-                    return false;
-                },
-                callback: function(opt) { 
+                      }
+                      return false;
+                   },
+                   callback: function(opt) { 
                     return new dm.ms[type][specific](opt);
-                },
-                data: options
-                });
+                   },
+                    data: options
+                   });
             },
             //@proexp
             'CreateContextMenu': function(name, menuBuilder) {
@@ -194,13 +196,14 @@ Version:
                     return false;
                 },
                 callback: function(data) {
-                    var obj = new dm['ms']['ds']['common'](data, diagram, self2);
-                    if (callback2 != undefined)
-                        callback2(obj);
+                    var obj = new dm['ms']['ds']['common'](data.type, diagram, self2);
+                    if (data.callback != undefined)
+                        data.callback(obj);
                 },
-                data:type
+                data:{type:type, callback:callback2}
                 });
             },
+//@endif
             //@proexp
             'Diagram': function(dName, dType, options, parrent, argCallback) {
 
@@ -241,7 +244,9 @@ Version:
                     if (argCallback) {
                         argCallback(newdiagram);
                     }
+//@ifdef EDITOR
                     self['CreateDiagramMenu'](opt.diagram, newdiagram);
+//@endif
                     return newdiagram;
                 },
                 data: opt
@@ -335,17 +340,15 @@ Version:
         };
         
         var getInstance = function() { 
-            if (!this.instance) { 
+            if (!dm.dm.loader) { 
                 // create a instance 
-                this.instance = createInstance(); 
-                this.instance.url = urlArg; // Some reference in diagram's menu
-                this.instance.working = false;
-                // Global export
-                dm['dm']['loader'] = this.instance;
+                dm.dm['loader'] = new createInstance(); 
+                dm.dm['loader']['url'] = urlArg; // Some reference in diagram's menu
+                dm.dm['loader'].working = false;
             } 
      
             // return the instance of the singletonClass 
-            return this.instance; 
+            return dm.dm['loader']; 
         }
         return getInstance(); 
     };

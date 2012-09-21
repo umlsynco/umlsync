@@ -16,7 +16,7 @@
 */
 //@aspect
 (function( $, dm, undefined ) {
-    dm['base']['diagram']("ds.base", dm['ds']['diagram'], {
+    dm['base']['diagram']("ds.base", dm.ds['diagram'], {
         diagramName: "BaseDiagram",
         diagramEventPrefix: "CD",
         'options': {
@@ -24,7 +24,7 @@
             'height': 700,
             'type': 'base'
         },
-        _init: function() {
+        '_init': function() {
         }
     });
 //@aspect
