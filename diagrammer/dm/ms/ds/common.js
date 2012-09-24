@@ -20,12 +20,6 @@ Version:
 
 //@aspect
 (function($, dm, undefined) {
-//    dm.ms = dm.ms || {};
-//    dm.ms.ds = dm.ms.ds || {};   // diagram menu  
-//    dm.ms.es = dm.ms.es || {};   // element menu 
-//    dm.ms.ctx = dm.ms.ctx || {}; // context menu for diagram
-
-
     dm.ms.ctx['common'] = function(menuBuilder, options, actions) {
         this.options = options;  
         var menu = $('<ul id="'+options.uid +'" class="context-menu" ></ul>').hide().appendTo("#" + menuBuilder.diagramId);
@@ -293,6 +287,7 @@ Version:
 
     //Common diagram menu loader
     dm.ms['ds'] = dm.ms.ds;
+    dm.dm.dmc = 0; // Diagram menus counter 
     dm.ms.ds['common'] = function(type, diagram, loader) {
 
         //elements counter
@@ -303,8 +298,9 @@ Version:
         var diagramMenuBuilder = this;
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
-
-            var innerHtml = "<div id='testmenu' style='padding-left:0;'><ul style='overflow:hidden;'>";
+            var euid = "testmenu-" + dm.dm.dmc;
+            var innerHtml = "<div id='"+euid+"' style='padding-left:0;'><ul style='overflow:hidden;'>";
+            dm.dm.dmc++;
 
             var ddata = json;
             var elements = ddata[0]['elements'],
@@ -350,40 +346,6 @@ Version:
             // Append menu to diagram
             //$("#" + diagram.euid).append(innerHtml);
 		
-			var menuIsActive = false;
-			var len = $("#accordion").length;
-			if (len) {
-			  var idx = -1;
-			  len = 0; // Wrong length earlier, have to re-calculate it again
-			  $("#accordion").find("h3").each(function(index) {
-			    ++len;
-				if ($(this).attr("aux") == type) {
-				  idx = index;
-				  menuIsActive = true;
-				}
-			  });
-			  
-			  if (idx < 0) {
-			   $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({active: len,
-			       changestart: function(event, ui) {
-						var newIndex = $(ui.newHeader).index('h3');
-                        return false;//$(this).accordion( "option" , "active" ) == newIndex;
-				}
-				});
-			  } else {
-			    $("#accordion").accordion({active: idx,
-			       changestart: function(event, ui) {
-						var newIndex = $(ui.newHeader).index('h3');
-                        return false; //$(this).accordion( "option" , "active" ) == newIndex;
-				}
-				});
-			  }
-			} else {
-  			    $("#tabs").append("<div class='diagram-menu'><div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
-				$("#accordion").accordion({active: 0 });
-				$(".diagram-menu").draggable({'containment': '#tabs'});
-			}
-
             // Identify the parrent class for diagram
             // TODO:   Prvide class reference as argument instead for diagram.id
             // var d1 = diagram.id;
@@ -407,29 +369,34 @@ Version:
             // TODO: put both menu builders to the 
             var iconMenuBuilder = new dm.ms.IconMenuBuilder(hmenus, diagram, diagramMenuBuilder),
             ctxMenuBuilder = new dm.ms.ContextMenuBuilder(loader, diagram, diagramMenuBuilder);
-       if (!menuIsActive) {
-            $("#accordion .elementSelector")
-            .mouseenter(function() {$(this).addClass('hover');})
-            .mouseleave(function() {$(this).removeClass('hover');})  
-            .click(function(){
-                self.ec++;
-                var menus = [];
 
-	            var fw = dm.dm.fw;
-				var diagram = fw.activeDiagram();
-                var loadElement = diagramMenuBuilder.getElementById(this.id);
+            var fw = dm.dm.fw;
+            if (!fw['ActivateDiagramMenu'](type)) {
+                
+                fw['CreateDiagramMenu'](type, innerHtml, function() { 
+                   $("#" + euid + " .elementSelector")
+                   .mouseenter(function() {$(this).addClass('hover');})
+                   .mouseleave(function() {$(this).removeClass('hover');})  
+                   .click(function(){
+                      self.ec++;
+                      var menus = [];
+                      var fw = dm.dm.fw;
+                      var diagram = fw.activeDiagram();
+                      var loadElement = diagramMenuBuilder.getElementById(this.id);
 
-                if ((loadElement != undefined) && (loadElement.menu != undefined))
-                    iconMenuBuilder.load(this.id, loadElement);
-                if (diagram)
-                  diagram.Element(loadElement.type, loadElement);
-            });
+                      if ((loadElement != undefined) && (loadElement.menu != undefined))
+                        iconMenuBuilder.load(this.id, loadElement);
+                      if (diagram)
+                        diagram.Element(loadElement.type, loadElement);
+                   });
 
-            $("#accordion .connectorSelector").mouseenter(function() {$(this).addClass('hover');}).mouseleave(function() {$(this).removeClass('hover');})
-            .click(function(e){
-                $(this).addClass('selected');
-                var selConn = this.id;
-                e.stopPropagation();
+                   $("#" + euid + " .connectorSelector")
+                   .mouseenter(function() {$(this).addClass('hover');})
+                   .mouseleave(function() {$(this).removeClass('hover');})
+                   .click(function(e){
+                      $(this).addClass('selected');
+                      var selConn = this.id;
+                      e.stopPropagation();
                 // TODO:  diagram.EnableConnectionHelper
                 /*
       $("#" + diagram.id + " .UMLSyncClassBorder").draggable(
@@ -477,8 +444,9 @@ Version:
           });*/
                 // TODO: enable drag helper for connectors
                 //dm.dm.loader.Connector(this.euid, self.options, {}, self.diagram);
-            });
-		} // Menu not active
+                    });
+            }); // CreateDiagramMenu
+            } // if !ActivateDiagramMenu
 		});
     }
 //@aspect

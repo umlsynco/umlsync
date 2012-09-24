@@ -72,11 +72,7 @@ Version:
 							var did = self.diagrams[self.selectedDiagramId];
 							if (did) {
 //@ifdef EDITOR
-							  $("#accordion").find("h3").each(function(index) {
-								      if ($(this).attr("aux") == did.options.type) {
-									     $("#accordion").accordion({ active: index });
-									  }
-							  });
+							  self['ActivateDiagramMenu'](did.options['type']);
 //@endif
 							  did.draw();
 						   }
@@ -151,6 +147,49 @@ Version:
 			content:"content"
 		},
 		// Loading the main menu JSON description and put it as argument to callback function 
+		//@proexp
+		'CreateDiagramMenu':function(type, innerHtml, callback) {
+			  var len = $("#accordion").length;
+			  if (len) {
+				  $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({'active': len});
+     		  } else {
+				  /*
+				   <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+<span id="ui-dialog-title-vp_main_menu" class="ui-dialog-title">Creating new diagram</span>
+<a class="ui-dialog-titlebar-close ui-corner-all" href="#" role="button">
+<span class="ui-icon ui-icon-closethick">close</span>
+</a>
+</div>   */
+				  
+  			    $("#tabs").append("<div class='diagram-menu'><div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
+				$("#accordion").accordion({'active': 0 });
+				$(".diagram-menu").draggable({'containment': '#tabs'});
+			  }
+			  if (callback) {
+				  callback(len); // len == index
+			  }
+		},
+		//@proexp
+		'ActivateDiagramMenu':function(type) {
+			var menuIsActive = false;
+			var len = $("#accordion").length;
+			if (len) {
+			  var idx = -1;
+			  len = 0; // Wrong length earlier, have to re-calculate it again
+			  $("#accordion").find("h3").each(function(index) {
+			    ++len;
+				if ($(this).attr("aux") == type) {
+				  idx = index;
+				  menuIsActive = true;
+				}
+			  });
+			  
+			  if (idx >=0) {
+			    $("#accordion").accordion({'active': idx});
+			  }
+			}
+			return menuIsActive;
+		},
 		//@proexp
 		'LoadMainMenu':function(callback) {
 			dm.dm.loader.LoadMainMenuData(callback);
