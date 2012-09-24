@@ -108,6 +108,7 @@ Version:
 //@ifdef EDITOR
 					  	  var diagram = self.diagrams[ahref];
 					      var data = diagram.getDescription();
+					      $.log()
                           self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
 //@endif
 					}
@@ -487,11 +488,11 @@ Version:
 			  'success': function(json) {
 				var tabname = "#"+ self.options.tabRight + "-" + self.counter;
 				self.counter++;
-				$.struct = json;
 				$("#" + self.options.tabs).tabs("add", tabname, json.name);
 				dm.dm.loader.Diagram(json.type, "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;
+					obj.options['viewid'] = viewid;
 				});
 				self.updateFrameWork(true);
 			  },

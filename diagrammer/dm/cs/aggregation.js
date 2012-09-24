@@ -50,7 +50,7 @@ Version:
 
         context2.moveTo(points[0][0], points[0][1]);
 //        context2.arc(points[0][0], points[0][1], 3, 0, Math.PI * 2, true);
-for (i=1; i<ep; ++i) {
+for (var i=1; i<ep; ++i) {
     context2.lineTo(points[i][0], points[i][1]);
 //    context2.arc(points[i][0], points[i][1], 3, 0, Math.PI * 2, true);
 }

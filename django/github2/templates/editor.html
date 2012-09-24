@@ -5,7 +5,6 @@
   <title>UML Framework: UMLSync</title>
   <link href="css/gray-start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css"/>
   <link rel="stylesheet" href="css/main.css" type="text/css" media="screen"/>
-  <link rel="stylesheet/less" href="css/main.less" type="text/css" media="screen"/>
   <link rel="stylesheet" href="js/3pp/simple-color-picker/jquery.simple-color-picker.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="./js/3pp/tablesorter/themes/blue/style.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="./js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>  
@@ -60,16 +59,31 @@
   <script src="./dm/hs/framework.js"></script>
   
   <script>
- // $.log = function() {};
+// $.log = function() {};
+
 
   $(document).ready(function() {
     var Loader = new dm.base.loader("./");
     var fw = new dm.hs.framework(Loader);
+    var gh = new dm.ms.gh(fw);
+
+    $.ajax({
+            url: 'https://api.github.com/user/repos?access_token=' + "{{ access_token }}",
+                  dataType: 'jsonp',
+                  success: function(mdata) {
+                       var data = mdata.data;
+                       gh.menu(data, function(repo) {
+          var IGhView = new dm.base.GithubView(repo);
+          fw.addView2('Github', IGhView);
+});
+                  },
+                  error:function() {alert("FAILED to get the list of repositories from GitHub. for {{ user }}");}
+         });
 
     // Initialize header menu on the left
     $('#header-menu').jqsimplemenu();
     
-/*
+
   // CSRF support for AJAX. Uses for server-side security.
   $(document).ajaxSend(function(event, xhr, settings) {
     function getCookie(name) {
@@ -106,19 +120,13 @@
     if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     }
-  });  
-*/
+  });
 
     var menu = new dm.ms.us(fw);
-    var gh = new dm.ms.gh(fw);
-    gh.menu({}, function() {alert(called);});
-    
 
     // List of default loaded diagrams
-    //fw.loadDiagram("./test/Project1/ERDiagram.json");
-    //fw.loadDiagram("./test/Project1/PackageDiagram.json");
-	  var IFilesView = new dm.base.LocalFilesView("./tests/");
-	  fw.addView2('SandBox', IFilesView);
+    //	  var IFilesView = new dm.base.LocalFilesView("./tests/");
+    //	  fw.addView2('SandBox', IFilesView);
 
     $("#dialog-form").dialog({
       autoOpen: false,
@@ -161,6 +169,20 @@
 </script>
 </head>
 <body>
+<!--
+{% if social_auth.associated %}
+  <h3>Disconnect accounts</h3>
+  <ul>
+  {% for type, accounts in social_auth.associated.items %}
+    {% for account in accounts %}
+    <li>
+        <span class="disconnect"><a href={% url "socialauth_disconnect_individual" account.provider account.id %}>{{ account.provider|title }} (ID {{ account.id }})</a></span>
+    </li>
+    {% endfor %}
+  {% endfor %}
+  </ul>
+{% endif %}
+-->
 <div id="dialog-form" title="Create new project">
   <p class="validateTips">All form fields are required.</p>
   <form>
@@ -179,29 +201,48 @@
     <ul id="header-menu" class="menu_left">
       <li><a href="#">Project</a>
         <ul>
-          <li><a id="newproject" href="#">New project</a></li>
+          <li><a id="change_repo" href="#">Change repository</a></li>
+          <li><a id="change_branch" href="#">Change branch</a></li>
           <li><a id="vp_main_menu_ref" rel="#vp_main_menu2" href="#">New diagram</a></li>
-          <li><a href="#vp_main_menu2_ref">Open code project</a></li>
+          <li><a href="new_gist_diagram">New gist diagram</a></li>
         </ul>
       </li>
-      <li><a href="http://umlsync.org/about">Actions</a></li>
+      <li><a href="#">Actions</a>
+        <ul>
+          <li><a href="#">Post for review </a></li>
+        </ul>
+      </li>
+      <li><a href="#">Edit</a>
       <ul>
-        <li><a href="#">Post for review </a></li>
-        <li><a href="#">Do something</a></li>
+        <li><a href="#">Undo </a></li>
+        <li><a href="#">Redo</a></li>
+        <li><a href="#">Cut </a></li>
+        <li><a href="#">Copy</a></li>
+        <li><a href="#">Past</a></li>
+        <li><a href="#">Delete</a></li>
+        <li><a href="#">Select All </a></li>
       </ul>
-      <li><a href="http://umlsync.org">Edit</a></li>
+      </li>
       <li id='Views'><a href="#">Views</a>
         <ul>
-          <li><a href="#">SandBox</a></li>
-		      <li><a id="localconnection" href="#">Local views ...</a></li>
-		    </ul>
+          <li><a href="#">Connect Googlecode</a></li>
+          <li><a href="#">Connect Sourceforge</a></li>
+          <li><a id="localconnection" href="#">Connect Eclipse ...</a></li>
+        </ul>
       </li>
     </ul>
   </div>
   <div>
     <ul class="menu_right">
-        <li><a href="http://http://umlsync.org/">Log out</a></li>
-        <li><a href="http://127.0.0.1:8000/about">About</a></li>
+{% if user.is_authenticated %}
+           <li> {{ user.username }}</li>
+           <li> {{ user.access_token }} token </li>
+
+{% else %}
+            <li><a href="http://umlsync.org/login/">log in </a></li>
+{% endif %} 
+        <li><a href="#">Log out</a></li>
+        <li><a href="#">About</a></li>
         <li><a href="#">Settings </a></li>
         <li><a href="#">Report a bug</a></li>
     </ul>

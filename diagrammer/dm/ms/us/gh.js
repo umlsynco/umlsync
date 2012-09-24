@@ -1,4 +1,3 @@
-//@aspect
 (function($, dm, undefined) {
 
   dm.ms['gh'] = function(handler, options) {
@@ -8,8 +7,11 @@
       var items = [];
 
       for (var i in data) {
-	    var name = data[i]['name'];
-        items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'">' + name + '</li>');
+         if (!data[i]['private']) {
+	    var name = data[i]['name'],
+                pr = (data[i]['private']) ? "Private: ":"Public: ";
+            items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr +  data[i]['full_name'] + '</li>');
+         }
       }
 
       var innerHtml = items.join('');
@@ -21,7 +23,7 @@
 
       $( "#vp_main_menu_3" ).dialog({
         'autoOpen': true,
-//        minHeight: 430,
+
         'minWidth': 350,
         'modal': true,
         'buttons': {
@@ -36,14 +38,14 @@
             $(this).dialog("close");
           }
         },
-        //FIXME: is this needed?
+
         close: function() {
-          //allFields.val( "" ).removeClass( "ui-state-error" );
+
         }
       });
 
       $(".diagramSelector").click(function() {
-        self.selected = this.id;
+        self.selected = $(this).attr('url');
         $(".diagramSelector").css("background-color","#eee").css("color", "#000");
         $(this).css("background-color","#5D689A").css("color", "#fff");
       });
@@ -57,5 +59,5 @@
         'id': "ListDiagramMenu"
       }
   };
-//@aspect
 })(jQuery, dm);
+

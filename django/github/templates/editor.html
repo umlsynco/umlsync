@@ -3,30 +3,29 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>UML Framework: UMLSync</title>
-  <link href="css/gray-start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css"/>
-  <link rel="stylesheet" href="css/main.css" type="text/css" media="screen"/>
-  <link rel="stylesheet/less" href="css/main.less" type="text/css" media="screen"/>
-  <link rel="stylesheet" href="js/3pp/simple-color-picker/jquery.simple-color-picker.css" type="text/css" media="screen"/>
-  <link rel="stylesheet" href="./js/3pp/tablesorter/themes/blue/style.css" type="text/css" media="screen"/>
-  <link rel="stylesheet" href="./js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>  
-  <script src="js/jquery.js"></script>
-  <script src="js/jquery-ui.js"></script>
-  <script src="js/jquery.scrollabletab.js"></script>
-  <script src="js/jquery.cookie.js"></script>
-  <script src="js/ui.selectmenu.js"></script>
-  <script type="text/javascript" src="js/3pp/simple-color-picker/jquery.simple-color-picker.js"></script>
-  <script type="text/javascript" src="js/jqsimplemenu.js"></script>
-  <link rel="stylesheet" href="css/simple_menu.css" type="text/css" media="screen" />
-  <link rel="stylesheet" href="css/jqsimplemenu.css" type="text/css" media="screen" />
+  <link href="../static/css/gray-start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="../static/css/main.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="../static/js/3pp/simple-color-picker/jquery.simple-color-picker.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="../static/./js/3pp/tablesorter/themes/blue/style.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="../static/./js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>  
+  <script src="../static/js/jquery.js"></script>
+  <script src="../static/js/jquery-ui.js"></script>
+  <script src="../static/js/jquery.scrollabletab.js"></script>
+  <script src="../static/js/jquery.cookie.js"></script>
+  <script src="../static/js/ui.selectmenu.js"></script>
+  <script type="text/javascript" src="../static/js/3pp/simple-color-picker/jquery.simple-color-picker.js"></script>
+  <script type="text/javascript" src="../static/js/jqsimplemenu.js"></script>
+  <link rel="stylesheet" href="../static/css/simple_menu.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../static/css/jqsimplemenu.css" type="text/css" media="screen" />
   <link rel='stylesheet' type='text/css' href='js/3pp/skin/ui.dynatree.css'>
-  <script src="./js/3pp/jLog/jLog.min.js"></script>
-  <script src="./js/3pp/editable/editable.js"></script>
-  <script src="./js/3pp/metadata/jquery.metadata.js"></script>
-  <script src="./js/3pp/tablesorter/jquery.tablesorter.js"></script>
-  <script src="./js/3pp/jquery.tools.min.js"></script>
-  <script src="./js/3pp/contextmenu/jquery.contextmenu.js"></script>
-  <script src="./js/3pp/dynatree/jquery.dynatree.js" type="text/javascript"></script>
-  <script src="./js/3pp/base64/jquery.base64.js"></script>
+  <script src="../static/./js/3pp/jLog/jLog.min.js"></script>
+  <script src="../static/./js/3pp/editable/editable.js"></script>
+  <script src="../static/./js/3pp/metadata/jquery.metadata.js"></script>
+  <script src="../static/./js/3pp/tablesorter/jquery.tablesorter.js"></script>
+  <script src="../static/./js/3pp/jquery.tools.min.js"></script>
+  <script src="../static/./js/3pp/contextmenu/jquery.contextmenu.js"></script>
+  <script src="../static/./js/3pp/dynatree/jquery.dynatree.js" type="text/javascript"></script>
+  <script src="../static/./js/3pp/base64/jquery.base64.js"></script>
   <style>
     body { font-size: 62.5%; }
     label, input { display: inline; }
@@ -41,35 +40,50 @@
     .left2 { overflow: hidden; display: block; padding: 0 6px 0 5px; }
     .left2 input { width: 100%; }  
   </style>    
-  <script src="./dm/ds/diagram.js"></script>
-  <script src="./dm/ds/base.js"></script>
-  <script src="dm/ms/ds/common.js"></script>
-  <script src="./dm/ds/sequence.js"></script>
-  <script src="./dm/dm/loader.js"></script>
-  <script src="./dm/dm/LocalhostView.js"></script>
-  <script src="./dm/dm/Githubview.js"></script>
-  <script src="./dm/dm/LocalFilesView.js"></script>
-  <script src="./dm/dm/SelfAnalysisView.js"></script>
-  <script src="./dm/hs/menu.js"></script>
-  <script src="./dm/ms/us/us.js"></script>
-  <script src="./dm/ms/us/gh.js"></script>
-  <script src="./dm/cs/nested.js"></script>
-  <script src="./dm/cs/aggregation.js"></script>
-  <script src="./dm/cs/composition.js"></script>
-  <script src="./dm/cs/transition.js"></script>
-  <script src="./dm/hs/framework.js"></script>
+  <script src="../static/./dm/ds/diagram.js"></script>
+  <script src="../static/./dm/ds/base.js"></script>
+  <script src="../static/dm/ms/ds/common.js"></script>
+  <script src="../static/./dm/ds/sequence.js"></script>
+  <script src="../static/./dm/dm/loader.js"></script>
+  <script src="../static/./dm/dm/LocalhostView.js"></script>
+  <script src="../static/./dm/dm/Githubview.js"></script>
+  <script src="../static/./dm/dm/LocalFilesView.js"></script>
+  <script src="../static/./dm/dm/SelfAnalysisView.js"></script>
+  <script src="../static/./dm/hs/menu.js"></script>
+  <script src="../static/./dm/ms/us/us.js"></script>
+  <script src="../static/./dm/ms/us/gh.js"></script>
+  <script src="../static/./dm/cs/nested.js"></script>
+  <script src="../static/./dm/cs/aggregation.js"></script>
+  <script src="../static/./dm/cs/composition.js"></script>
+  <script src="../static/./dm/cs/transition.js"></script>
+  <script src="../static/./dm/hs/framework.js"></script>
   
   <script>
- // $.log = function() {};
+// $.log = function() {};
+
 
   $(document).ready(function() {
-    var Loader = new dm.base.loader("./");
+    var Loader = new dm.base.loader("http://localhost:8000/static/");
     var fw = new dm.hs.framework(Loader);
+    var gh = new dm.ms.gh(fw);
+
+    $.ajax({
+            url: 'https://api.github.com/user/repos?access_token=' + "{{ access_token }}",
+                  dataType: 'jsonp',
+                  success: function(mdata) {
+                       var data = mdata.data;
+                       gh.menu(data, function(repo) {
+          var IGhView = new dm.base.GithubView(repo, "{{ access_token }}");
+          fw.addView2('Github', IGhView);
+});
+                  },
+                  error:function() {alert("FAILED to get the list of repositories from GitHub. for {{ user }}");}
+         });
 
     // Initialize header menu on the left
     $('#header-menu').jqsimplemenu();
     
-/*
+
   // CSRF support for AJAX. Uses for server-side security.
   $(document).ajaxSend(function(event, xhr, settings) {
     function getCookie(name) {
@@ -106,19 +120,13 @@
     if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     }
-  });  
-*/
+  });
 
     var menu = new dm.ms.us(fw);
-    var gh = new dm.ms.gh(fw);
-    gh.menu({}, function() {alert(called);});
-    
 
     // List of default loaded diagrams
-    //fw.loadDiagram("./test/Project1/ERDiagram.json");
-    //fw.loadDiagram("./test/Project1/PackageDiagram.json");
-	  var IFilesView = new dm.base.LocalFilesView("./tests/");
-	  fw.addView2('SandBox', IFilesView);
+    //	  var IFilesView = new dm.base.LocalFilesView("./tests/");
+    //	  fw.addView2('SandBox', IFilesView);
 
     $("#dialog-form").dialog({
       autoOpen: false,
@@ -161,6 +169,20 @@
 </script>
 </head>
 <body>
+<!--
+{% if social_auth.associated %}
+  <h3>Disconnect accounts</h3>
+  <ul>
+  {% for type, accounts in social_auth.associated.items %}
+    {% for account in accounts %}
+    <li>
+        <span class="disconnect"><a href={% url "socialauth_disconnect_individual" account.provider account.id %}>{{ account.provider|title }} (ID {{ account.id }})</a></span>
+    </li>
+    {% endfor %}
+  {% endfor %}
+  </ul>
+{% endif %}
+-->
 <div id="dialog-form" title="Create new project">
   <p class="validateTips">All form fields are required.</p>
   <form>
@@ -179,29 +201,48 @@
     <ul id="header-menu" class="menu_left">
       <li><a href="#">Project</a>
         <ul>
-          <li><a id="newproject" href="#">New project</a></li>
+          <li><a id="change_repo" href="#">Change repository</a></li>
+          <li><a id="change_branch" href="#">Change branch</a></li>
           <li><a id="vp_main_menu_ref" rel="#vp_main_menu2" href="#">New diagram</a></li>
-          <li><a href="#vp_main_menu2_ref">Open code project</a></li>
+          <li><a href="new_gist_diagram">New gist diagram</a></li>
         </ul>
       </li>
-      <li><a href="http://umlsync.org/about">Actions</a></li>
+      <li><a href="#">Actions</a>
+        <ul>
+          <li><a href="#">Post for review </a></li>
+        </ul>
+      </li>
+      <li><a href="#">Edit</a>
       <ul>
-        <li><a href="#">Post for review </a></li>
-        <li><a href="#">Do something</a></li>
+        <li><a href="#">Undo </a></li>
+        <li><a href="#">Redo</a></li>
+        <li><a href="#">Cut </a></li>
+        <li><a href="#">Copy</a></li>
+        <li><a href="#">Past</a></li>
+        <li><a href="#">Delete</a></li>
+        <li><a href="#">Select All </a></li>
       </ul>
-      <li><a href="http://umlsync.org">Edit</a></li>
+      </li>
       <li id='Views'><a href="#">Views</a>
         <ul>
-          <li><a href="#">SandBox</a></li>
-		      <li><a id="localconnection" href="#">Local views ...</a></li>
-		    </ul>
+          <li><a href="#">Connect Googlecode</a></li>
+          <li><a href="#">Connect Sourceforge</a></li>
+          <li><a id="localconnection" href="#">Connect Eclipse ...</a></li>
+        </ul>
       </li>
     </ul>
   </div>
   <div>
     <ul class="menu_right">
-        <li><a href="http://http://umlsync.org/">Log out</a></li>
-        <li><a href="http://127.0.0.1:8000/about">About</a></li>
+{% if user.is_authenticated %}
+           <li> {{ user.username }}</li>
+           <li> {{ user.access_token }} token </li>
+
+{% else %}
+            <li><a href="http://umlsync.org/login/">log in </a></li>
+{% endif %} 
+        <li><a href="#">Log out</a></li>
+        <li><a href="#">About</a></li>
         <li><a href="#">Settings </a></li>
         <li><a href="#">Report a bug</a></li>
     </ul>
