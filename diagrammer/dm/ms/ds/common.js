@@ -299,7 +299,7 @@ Version:
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
             var euid = "testmenu-" + dm.dm.dmc;
-            var innerHtml = "<div id='"+euid+"' style='padding-left:0;'><ul style='overflow:hidden;'>";
+            var innerHtml = "<div id='"+euid+"' class='toobox-item' style='padding-left:0;'><ul style='overflow:hidden;'>";
             dm.dm.dmc++;
 
             var ddata = json;
