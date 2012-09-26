@@ -76,7 +76,9 @@ a {
 .ui-resizable-nw-u {
   position: absolute;
   width: 5%;
+  min-width: 5px;
   height: 5%;
+  min-height: 5px;
   border-left: 2px solid black;
   border-top: 2px solid black;
   top: -4px;
@@ -87,6 +89,8 @@ a {
 .ui-resizable-ne-u {
   position: absolute;
   width: 5%;
+  min-width: 5px;
+  min-height: 5px;
   height: 5%;
   border-right: 2px solid black;
   border-top: 2px solid black;
@@ -99,6 +103,8 @@ a {
   position: absolute;
   width: 5%;
   height: 5%;
+  min-width: 5px;
+  min-height: 5px;
   border-bottom: 2px solid black;
   border-right: 2px solid black;
   bottom: -4px;
@@ -110,6 +116,8 @@ a {
   position: absolute;
   width: 5%;
   height: 5%;
+  min-width: 5px;
+  min-height: 5px;
   border-left: 2px solid black;
   border-bottom: 2px solid black;
   bottom: -4px;
