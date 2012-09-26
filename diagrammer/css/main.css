@@ -10,67 +10,77 @@ a {
   text-decoration: none;
 }
 
+.UMLSyncClass  div{
+  margin: 0 0px;
+  padding: 0;
+  border: 1px solid black;
+  text-decoration: none;
+  text-align: center;
+}
+
 .ui-resizable-s-l {
   position: absolute;
   width: 10%;
-  height: 3px;
-  background-color: white;
-  border: 0px;
-  bottom: 4px;
+  height: 2px;
+  background-color: #97F7A1;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
   left: 45%;
   cursor: s-resize;
 }
 
 .ui-resizable-s-u {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
-  border: 0px;
+  width: 10%;
+  height: 4px;
+  background-color: #97F7A1;
+  border-bottom: 2px solid black;
+  border-top: 2px solid black;
   bottom: 4px;
-  left: 50%;
+  left: 45%;
   cursor: s-resize;
 }
 
 .ui-resizable-e-u {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
-  border: 0px;
-  top: 50%;
+  width: 4px;
+  height: 10%;
+  background-color: #97F7A1;
+  border-right: 2px solid black;
+  top: 45%;
   right: 4px;
   cursor: e-resize;
 }
 
 .ui-resizable-n-u {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
+  width: 10%;
+  height: 4px;
+  background-color: #97F7A1;
+  border-top: 2px solid black;
   top: 4px;
-  left: 50%;
+  left: 45%;
   cursor: n-resize;
-  border: 0px;
 }
 
 .ui-resizable-w-u {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
-  border: 0px;
-  top: 50%;
+  width: 4px;
+  height: 10%;
+  background-color: #97F7A1;
+  border-left: 2px solid black;
+  top: 45%;
   left: 4px;
   cursor: w-resize;
 }
 
 .ui-resizable-nw-u {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
-  border: 0px;
+  width: 4px;
+  height: 4px;
+  background-color: #97F7A1;
+  border-left: 2px solid black;
+  border-top: 2px solid black;
   top: 4px;
   left: 4px;
   cursor: nw-resize;
@@ -78,10 +88,11 @@ a {
 
 .ui-resizable-ne-u {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
-  border: 0px;
+  width: 4px;
+  height: 4px;
+  background-color: #97F7A1;
+  border-right: 2px solid black;
+  border-top: 2px solid black;
   top: 4px;
   right: 4px;
   cursor: ne-resize;
@@ -89,10 +100,11 @@ a {
 
 .ui-resizable-se-u {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
-  border: 0px;
+  width: 4px;
+  height: 4px;
+  background-color: #97F7A1;
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
   bottom: 4px;
   right: 4px;
   cursor: se-resize;
@@ -100,10 +112,11 @@ a {
 
 .ui-resizable-sw-u {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
-  border: 0px;
+  width: 4px;
+  height: 4px;
+  background-color: #97F7A1;
+  border-left: 2px solid black;
+  border-bottom: 2px solid black;
   bottom: 4px;
   left: 4px;
   cursor: sw-resize;
@@ -184,14 +197,6 @@ a {
   -webkit-box-shadow: inset 0 0 10px #000000;
   box-shadow: inset 0 0 10px #000000;
 */
-}
-
-.UMLSyncClass div {
-  margin: 0 0px;
-  padding: 0;
-  border: 1px solid black;
-  text-decoration: none;
-  text-align: center;
 }
 
 .UMLSyncClassHeader {
