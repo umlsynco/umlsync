@@ -1200,6 +1200,7 @@ dm['ctx'] = dm.ms.ctx;
 
             var parrentClass = this.parrent;
             var self = this;
+			self.highlighted = false;
 
             var axis111 = this.options['axis'] || false;
             var elmt = $('#' + this.euid  + '_Border')
@@ -1324,8 +1325,11 @@ dm['ctx'] = dm.ms.ctx;
                 e.stopPropagation();
             })       
             .mouseenter(function (){
-                $('#' + this.id +'_Border').css({'border':'3px solid #414141'}).animate({left:'-=3px', top:'-=3px'},0);
-                $('#' + this.id +'_REF').css({'visibility':'visible'});
+			    if (!self.options.selected && !self.highlighted) {
+				  self.highlighted = true;
+                  $('#' + this.id +'_Border').css({'border':'3px solid #97F7A1'}).animate({left:'-=3px', top:'-=3px'},0);
+                  $('#' + this.id +'_REF').css({'visibility':'visible'});
+				}
 //@ifdef EDITOR
                 // Show the  menu if element was selected
                if (self.parrent.menuIcon) {
@@ -1335,7 +1339,10 @@ dm['ctx'] = dm.ms.ctx;
                 //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
             })
             .mouseleave(function (){
-                $('#' + this.id +'_Border').css({'border':'0px solid #87CEEF'}).animate({left:'+=3px', top:'+=3px'},0);
+			    if (!self.options.selected) {
+                    $('#' + this.id +'_Border').css({'border':'0px solid #97F7A1'}).animate({left:'+=3px', top:'+=3px'},0);
+					self.highlighted = false;
+				}
 
                 //Check if this.euid is the same as selected
                 if (self.parrent.menuIcon) {
@@ -1345,6 +1352,7 @@ dm['ctx'] = dm.ms.ctx;
 
             })
             .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>");
+
 // Feat size no longer supported, potential collizion with another Software
 //            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
 
@@ -1380,10 +1388,19 @@ dm['ctx'] = dm.ms.ctx;
                 $.log("ff: " + value);
                 $("#" + this.euid).css(key, value);
             } else if (key == "selected") {
-                if (value)
+                if (value) {
+				    
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
-                else
+					if (!this.highlighted) {
+					  $('#' + this.euid +'_Border').css({'border':'3px solid #97F7A1'}).animate({left:'-=3px', top:'-=3px'},0);
+					  this.highlighted = true;
+					}
+				}
+                else {
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
+                    $('#' + this.euid +'_Border').css({'border':'0px solid #97F7A1'}).animate({left:'+=3px', top:'+=3px'},0);
+					this.highlighted = false;
+				}
             } else if (key == "z-index") {
                 $("#" + this.euid + '_Border ').css(key, value);
             }

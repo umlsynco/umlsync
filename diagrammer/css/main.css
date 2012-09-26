@@ -32,93 +32,93 @@ a {
 .ui-resizable-s-u {
   position: absolute;
   width: 10%;
-  height: 4px;
+  height: 2px;
   background-color: #97F7A1;
   border-bottom: 2px solid black;
-  border-top: 2px solid black;
-  bottom: 4px;
+  #border-top: 2px solid black;
+  bottom: -4px;
   left: 45%;
   cursor: s-resize;
 }
 
 .ui-resizable-e-u {
   position: absolute;
-  width: 4px;
+  width: 2px;
   height: 10%;
   background-color: #97F7A1;
   border-right: 2px solid black;
   top: 45%;
-  right: 4px;
+  right: -4px;
   cursor: e-resize;
 }
 
 .ui-resizable-n-u {
   position: absolute;
   width: 10%;
-  height: 4px;
+  height: 2px;
   background-color: #97F7A1;
   border-top: 2px solid black;
-  top: 4px;
+  top: -4px;
   left: 45%;
   cursor: n-resize;
 }
 
 .ui-resizable-w-u {
   position: absolute;
-  width: 4px;
+  width: 2px;
   height: 10%;
   background-color: #97F7A1;
   border-left: 2px solid black;
   top: 45%;
-  left: 4px;
+  left: -4px;
   cursor: w-resize;
 }
 
 .ui-resizable-nw-u {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 2px;
+  height: 2px;
   background-color: #97F7A1;
   border-left: 2px solid black;
   border-top: 2px solid black;
-  top: 4px;
-  left: 4px;
+  top: -4px;
+  left: -4px;
   cursor: nw-resize;
 }
 
 .ui-resizable-ne-u {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 2px;
+  height: 2px;
   background-color: #97F7A1;
   border-right: 2px solid black;
   border-top: 2px solid black;
-  top: 4px;
-  right: 4px;
+  top: -4px;
+  right: -4px;
   cursor: ne-resize;
 }
 
 .ui-resizable-se-u {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 2px;
+  height: 2px;
   background-color: #97F7A1;
   border-bottom: 2px solid black;
   border-right: 2px solid black;
-  bottom: 4px;
-  right: 4px;
+  bottom: -4px;
+  right: -4px;
   cursor: se-resize;
 }
 
 .ui-resizable-sw-u {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 2px;
+  height: 2px;
   background-color: #97F7A1;
   border-left: 2px solid black;
   border-bottom: 2px solid black;
-  bottom: 4px;
-  left: 4px;
+  bottom: -4px;
+  left: -4px;
   cursor: sw-resize;
 }
 
@@ -173,13 +173,14 @@ a {
 }
 
 .UMLSyncClassBorder {
-  padding: 10px;
-  border: 0px solid black;
+  padding: 2px;
+  margin: 0px;
+  border: 0px solid #97F7A1;
   position: absolute;
   width: 150px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 15px;
+  #-webkit-border-radius: 10px;
+  #-moz-border-radius: 10px;
+  #border-radius: 15px;
   z-index: 999;
 }
 
