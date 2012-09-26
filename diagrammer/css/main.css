@@ -67,7 +67,6 @@ a {
   position: absolute;
   width: 2px;
   height: 10%;
-  background-color: #97F7A1;
   border-left: 2px solid black;
   top: 45%;
   left: -4px;
@@ -76,9 +75,8 @@ a {
 
 .ui-resizable-nw-u {
   position: absolute;
-  width: 2px;
-  height: 2px;
-  background-color: #97F7A1;
+  width: 5%;
+  height: 5%;
   border-left: 2px solid black;
   border-top: 2px solid black;
   top: -4px;
@@ -88,9 +86,8 @@ a {
 
 .ui-resizable-ne-u {
   position: absolute;
-  width: 2px;
-  height: 2px;
-  background-color: #97F7A1;
+  width: 5%;
+  height: 5%;
   border-right: 2px solid black;
   border-top: 2px solid black;
   top: -4px;
@@ -100,9 +97,8 @@ a {
 
 .ui-resizable-se-u {
   position: absolute;
-  width: 2px;
-  height: 2px;
-  background-color: #97F7A1;
+  width: 5%;
+  height: 5%;
   border-bottom: 2px solid black;
   border-right: 2px solid black;
   bottom: -4px;
@@ -112,9 +108,8 @@ a {
 
 .ui-resizable-sw-u {
   position: absolute;
-  width: 2px;
-  height: 2px;
-  background-color: #97F7A1;
+  width: 5%;
+  height: 5%;
   border-left: 2px solid black;
   border-bottom: 2px solid black;
   bottom: -4px;

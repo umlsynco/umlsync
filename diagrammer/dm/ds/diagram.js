@@ -126,7 +126,6 @@ dm['ctx'] = dm.ms.ctx;
             var self = this;
             $(this.element).bind("remove." + this.euid, self, function(event) {
                 event.data.destroy();
-                $.HHHHHHHHHHHHHHHHHHHHHHH =event.data;
             });
 
             //this._trigger( "create" );

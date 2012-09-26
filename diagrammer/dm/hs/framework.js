@@ -104,7 +104,6 @@ Version:
 //@ifdef EDITOR
 					  	  var diagram = self.diagrams[ahref];
 					      var data = diagram.getDescription();
-					      $.log()
                           self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
 //@endif
 					}
