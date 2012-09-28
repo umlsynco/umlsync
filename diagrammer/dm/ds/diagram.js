@@ -921,11 +921,12 @@ dm['ctx'] = dm.ms.ctx;
 
                 if (this.connectors[c].options['selected']) {
                     ctx.lineWidth += 2;
-                    this.connectors[c].redraw(ctx, "blue");
+                    this.connectors[c].redraw(ctx, "#43EC28");
                     ctx.lineWidth -= 2;
+					this.connectors[c].redraw(ctx);
                 }
                 else if (this.selectedconntector == this.connectors[c]) {
-                    this.connectors[c].redraw(ctx, "blue");
+                    this.connectors[c].redraw(ctx, "#43EC28");
 
                 }
                 else {

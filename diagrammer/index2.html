@@ -51,8 +51,7 @@
   <script src="./dm/dm/LocalFilesView.js"></script>
   <script src="./dm/dm/SelfAnalysisView.js"></script>
   <script src="./dm/hs/menu.js"></script>
-  <script src="./dm/ms/us/us.js"></script>
-  <script src="./dm/ms/us/gh.js"></script>
+  <script src="./dm/ms/us/dialogs.js"></script>
   <script src="./dm/cs/nested.js"></script>
   <script src="./dm/cs/aggregation.js"></script>
   <script src="./dm/cs/composition.js"></script>
@@ -108,48 +107,23 @@
     }
   });  
 */
-
-    var menu = new dm.ms.us(fw);
-    var gh = new dm.ms.gh(fw);
-    gh.menu({}, function() {alert(called);});
-    
-
-    // List of default loaded diagrams
-    //fw.loadDiagram("./test/Project1/ERDiagram.json");
-    //fw.loadDiagram("./test/Project1/PackageDiagram.json");
-	  var IFilesView = new dm.base.LocalFilesView("./tests/");
-	  fw.addView2('SandBox', IFilesView);
-
-    $("#dialog-form").dialog({
-      autoOpen: false,
-      height: 250,
-      width: 350,
-      modal: true,
-      buttons: {
-        "Create a new project": function() {
-          var ch = $("#" + viewId + " #tree").dynatree("getTree").getRoot().getChildren();
-          for (i in ch) {
-            if (ch[i].data.title == "Projects") {
-              ch[i].addChild({title: $("#name").val(), isFolder:true, tooltip: $("#description").val()});
-              break;
-            }
-          }
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-        }
-      },
-      close: function() {
-        //allFields.val( "" ).removeClass( "ui-state-error" );
-      }
-    });       
-    $("#newproject")
+    var IGithubView = new dm.base.GithubView("https://api.github.com/repos/EvgenyAlexeyev/umlsync/");
+  	    IGithubView.euid = "Github";
+		fw.addView2('Github', IGithubView);
+    IGithubView.init();
+      
+    $("#repo-selection-dialog_ref")
       .click(function() {
-        $( "#dialog-form" ).dialog( "open" );
-      });
+	    dm.dm.dialogs['Activate']("repo-selection-dialog");
+    });
+	
+    $("#new-project-dialog_ref")
+      .click(function() {
+	    dm.dm.dialogs['Activate']("new-project-dialog");
+    });
 
-    $("#header-menu #vp_main_menu_ref").click(function(){
-      $( "#vp_main_menu" ).dialog( "open" );
+    $("#header-menu #new-diagram-dialog_ref").click(function(){
+	  dm.dm.dialogs['Activate']("new-diagram-dialog");
     });
 
     $("#localconnection" )
@@ -161,28 +135,16 @@
 </script>
 </head>
 <body>
-<div id="dialog-form" title="Create new project">
-  <p class="validateTips">All form fields are required.</p>
-  <form>
-    <fieldset>
-      <label for="name">Name</label>
-      <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
-      <label for="description">Description</label>
-      <input type="textarea" name="description" id="description" value="" class="text ui-widget-content ui-corner-all" />
-    </fieldset>
-  </form>
-</div>
-
 <div id="body">
   <div class="nav ui-state-active" id="header">
   <div>
     <ul id="header-menu" class="menu_left">
       <li><a href="#">Project</a>
         <ul>
-          <li><a id="change_repo" href="#">Change repository</a></li>
-          <li><a id="change_branch" href="#">Change branch</a></li>
-          <li><a id="vp_main_menu_ref" rel="#vp_main_menu2" href="#">New diagram</a></li>
-          <li><a href="new_gist_diagram">New gist diagram</a></li>
+          <li><a id="repo-selection-dialog_ref" href="#">Change repository</a></li>
+          <li><a id="new-project-dialog_ref" href="#">Change branch</a></li>
+          <li><a id="new-diagram-dialog_ref" href="#">New diagram</a></li>
+          <li><a href="new_gist_diagram" href="#">New gist diagram</a></li>
         </ul>
       </li>
       <li><a href="#">Actions</a>

@@ -97,6 +97,23 @@ Version:
 		    euid: "Github",
             // Check if loging required
             init: function() {
+			  $.ajax({
+				url: 'https://api.github.com/user/repos',
+                  dataType: 'jsonp',
+                  success: function(mdata) {
+                       var data = mdata.data;
+					
+					  data = [{name:"umlsync",
+					           full_name:"EvgenyAlexeyev/umlsync",
+							   url: "https://api.github.com/repos/EvgenyAlexeyev/umlsync",
+							   private: false}];
+					
+                    dm.dm.dialogs['SelectRepoDialog'](data, function(repo) {
+				      var IGhView = new dm.base.GithubView(repo, "{{ access_token }}");
+				      dm.dm.fw.addView2('Github', IGhView);
+				    });
+  			  }
+			  });
             },
             info: function(callback) {
                 // TODO: define github view capabilities

@@ -41,6 +41,10 @@ Version:
 			this.diagrams = this.diagrams || {};
 
 			this.initializeToolBox(dm.dm.loader);
+			if (dm.ms['dg']) {
+			  dm.dm['dialogs'] = new dm.ms['dg'](this);
+			  this.initMainMenu();
+			}
 
 			// Think about field set 
 			$("#" + this.options.content).append('\
@@ -186,9 +190,11 @@ Version:
 			}
 			return menuIsActive;
 		},
-		//@proexp
-		'LoadMainMenu':function(callback) {
-			dm.dm.loader.LoadMainMenuData(callback);
+		initMainMenu:function() {
+			dm.dm.loader.LoadMainMenuData(function(data) {
+			   dm.dm.dialogs['NewDiagramDialog'](data);
+			});
+			dm.dm.dialogs['NewProject']();
 		},
 		//@proexp
 		'activeDiagram':function() {
