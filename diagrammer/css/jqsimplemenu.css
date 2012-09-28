@@ -31,7 +31,7 @@ div.box
 {
     position: absolute;
     z-index: -1;
-    background-color: #75CDD2;
+    background-color: #EEEEEE;
     left: 0;
     top: 0;
     border-radius: 4px 4px 0px 0px;
@@ -57,7 +57,7 @@ li.right-menu > a
 }
 .menu a.selected
 {
-    background-color: #75CDD2;
+    background-color: #EEEEEE;
     border-radius: 0px 4px 4px 4px;
     -moz-border-radius: 0px 4px 4px 4px;
     -webkit-border-radius: 0px 4px 4px 4px;
@@ -74,7 +74,7 @@ li.right-menu > a
     display: none;
     width: 200px;
     top: 2.5em; /*padding-right: 10px;*/
-    background-color: #75CDD2; /*-moz-opacity: .50;     filter: alpha(opacity=50);     opacity: .50;*/
+    background-color: #EEEEEE; /*-moz-opacity: .50;     filter: alpha(opacity=50);     opacity: .50;*/
     border-radius: 0px 4px 4px 4px;
     -moz-border-radius: 0px 4px 4px 4px;
     -webkit-border-radius: 0px 4px 4px 4px;

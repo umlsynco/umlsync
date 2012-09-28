@@ -132,7 +132,7 @@ dm['ctx'] = dm.ms.ctx;
 
             this['_init']();
         } else {
-            // TODO: change on even to dialog manager !!!
+            // TODO: change on even to ERROR manager !!!
             alert("Please, declare method _create() for diagram element " + this.euid);
         }
     },
