@@ -2,110 +2,110 @@
   {
    "elements": [
 	{"type": "component",
-	 "description": "Component",
-	 "menu":"vp-component-menu",
-	 "image": [{"small": "./dm/icons/us/es/component/Component.png"}]
+	 "title": "Component",
+	 "menu":"us-component-menu",
+	 "icon": "./dm/icons/us/es/component/Component.png"
 	},
 	{"type": "interface",
-	 "description": "Interface",
+	 "title": "Interface",
 	 "lable":"true",
-	 "menu":"vp-component-menu",
-	 "image": [{"small": "./dm/icons/us/es/component/Interface.png"}]
+	 "menu":"us-component-menu",
+	 "icon": "./dm/icons/us/es/component/Interface.png"
 	},
 	{"type": "port",
-	 "description": "Port",
-	 "menu":"vp-component-menu",
-	 "image": [{"small": "./dm/icons/us/es/component/Port.png"}]
+	 "title": "Port",
+	 "menu":"us-component-menu",
+	 "icon": "./dm/icons/us/es/component/Port.png"
 	},
 	{"type": "instance",
-	 "description": "Instance Specification",
-	 "menu":"vp-component-menu",
-	 "image": [{"small": "./dm/icons/us/es/component/InstanceSpecification.png"}]
+	 "title": "Instance Specification",
+	 "menu":"us-component-menu",
+	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
 	},
 	{"type": "note",
-	 "description": "Note",
-	 "image": [{"small": "./dm/icons/us/es/common/Note.png"}]
+	 "title": "Note",
+	 "icon": "./dm/icons/us/es/common/Note.png"
 	}
     ],
     "connectors": [
       {"connector":"dependency",
-	   "description":"Dependency",
-	   "image": [{"small": "./dm/icons/us/cs/dependency.png"}]
+	   "title":"Dependency",
+	   "icon": "./dm/icons/us/cs/dependency.png"
 	  },
       {"connector":"generalization",
-	   "description":"Generalization",
-	   "image": [{"small": "./dm/icons/us/cs/generalization.png"}]
+	   "title":"Generalization",
+	   "icon": "./dm/icons/us/cs/generalization.png"
 	  },
       {"connector":"realization",
-	   "description":"Realization",
-	   "image": [{"small": "./dm/icons/us/cs/realization.png"}]
+	   "title":"Realization",
+	   "icon": "./dm/icons/us/cs/realization.png"
 	  },
       {"connector":"association",
-	   "description":"Association",
-	   "image": [{"small": "./dm/icons/us/cs/association.png"}]
+	   "title":"Association",
+	   "icon": "./dm/icons/us/cs/association.png"
 	  },
       {"connector":"aggregation",
-	   "description":"Aggregation",
-	   "image": [{"small": "./dm/icons/us/cs/aggregation.png"}]
+	   "title":"Aggregation",
+	   "icon": "./dm/icons/us/cs/aggregation.png"
 	  },
       {"connector":"composition",
-	   "description":"Composition",
-	   "image": [{"small": "./dm/icons/us/cs/composition.png"}]
+	   "title":"Composition",
+	   "icon": "./dm/icons/us/cs/composition.png"
 	  },
       {"connector":"anchor",
-	   "description":"Anchor",
-	   "image": [{"small": "./dm/icons/us/cs/AnchorToNote.png"}]
+	   "title":"Anchor",
+	   "icon": "./dm/icons/us/cs/AnchorToNote.png"
 	  },
       {"connector":"anchor",
-	   "description":"Constraint",
-	   "image": [{"small": "./dm/icons/us/cs/Constrain.png"}]
+	   "title":"Constraint",
+	   "icon": "./dm/icons/us/cs/Constrain.png"
 	  },
       {"connector":"nested",
-	   "description":"Containment",
-	   "image": [{"small": "./dm/icons/us/cs/nested.png"}]
+	   "title":"Containment",
+	   "icon": "./dm/icons/us/cs/nested.png"
 	  },
       {"connector":"iobserver",
-	   "description":"Interface Observer",
-	   "image": [{"small": "./dm/icons/us/cs/nested.png"}]
+	   "title":"Interface Observer",
+	   "icon": "./dm/icons/us/cs/nested.png"
 	  }
     ],
     "menus": [
-	  {"id":"vp-component-menu",
+	  {"id":"us-component-menu",
 	   "items": [
 				{"el":"Component",
 				 "cs":[
 						{"connector":"association",
-						 "image":"dm/icons/us/cs/association.png"
+						 "icon":"dm/icons/us/cs/association.png"
 						},
 						{"connector":"aggregation",
-						 "image":"dm/icons/us/cs/aggregation.png"
+						 "icon":"dm/icons/us/cs/aggregation.png"
 						},
 						{"connector":"composition",
-						 "image":"dm/icons/us/cs/composition.png"
+						 "icon":"dm/icons/us/cs/composition.png"
 						},
 						{"connector":"iobserver",
-						 "image":"dm/icons/us/cs/composition.png"
+						 "icon":"dm/icons/us/cs/composition.png"
 						}
 					  ]
 				},
 				{"el":"Interface",
 				 "cs":[
 						{"connector":"realization",
-						 "image":"dm/icons/us/cs/interface.png"
+						 "icon":"dm/icons/us/cs/interface.png"
 						}
 					  ]
 				},
 				{"el":"Port",
 				 "cs":[
 						{"connector":"association",
-						 "image":"dm/icons/us/cs/association.gif"
+						 "icon":"dm/icons/us/cs/association.gif"
 						}
 					  ]
 				},
 				{"el":"Note",
 				 "cs":[
 						{"connector":"anchor",
-						 "image":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}
 			 ]

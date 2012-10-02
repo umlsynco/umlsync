@@ -2,97 +2,97 @@
   {
    "elements": [
 	{"type": "package",
-	 "description": "Package",
-	 "menu":"vp-package-menu",
-	 "image": [{"small": "./dm/icons/us/es/package/Package.png"}]
+	 "title": "Package",
+	 "menu":"us-package-menu",
+	 "icon": "./dm/icons/us/es/package/Package.png"
 	},
 	{"type": "package",
 	 "aux": "subsystem",
-	 "description": "Subsystem",
-	 "menu":"vp-package-menu",
+	 "title": "Subsystem",
+	 "menu":"us-package-menu",
 	 "dropable":"package",
-	 "image": [{"small": "./dm/icons/us/es/package/Subsystem.png"}]
+	 "icon": "./dm/icons/us/es/package/Subsystem.png"
 	},
 	{"type": "note",
-	 "description": "Note",
-	 "menu":"vp-note-menu",
-	 "image": [{"small": "./dm/icons/us/es/common/note.png"}]
+	 "title": "Note",
+	 "menu":"us-note-menu",
+	 "icon": "./dm/icons/us/es/common/note.png"
 	}
     ],
     "connectors": [
       {"connector":"dependency",
-	   "description":"Dependency",
-	   "image": [{"small": "./dm/icons/us/cs/dependency.png"}]
+	   "title":"Dependency",
+	   "icon": "./dm/icons/us/cs/dependency.png"
 	  },
       {"connector":"dependency",
-	   "description":"Import",
-	   "image": [{"small": "./dm/icons/us/cs/Import.png"}]
+	   "title":"Import",
+	   "icon": "./dm/icons/us/cs/Import.png"
 	  },
       {"connector":"dependency",
-	   "description":"Access",
-	   "image": [{"small": "./dm/icons/us/cs/Access.png"}]
+	   "title":"Access",
+	   "icon": "./dm/icons/us/cs/Access.png"
 	  },
       {"connector":"generalization",
-	   "description":"Generalization",
-	   "image": [{"small": "./dm/icons/us/cs/generalization.png"}]
+	   "title":"Generalization",
+	   "icon": "./dm/icons/us/cs/generalization.png"
 	  },
       {"connector":"dependency",
-	   "description":"Merge",
-	   "image": [{"small": "./dm/icons/us/cs/Merge.png"}]
+	   "title":"Merge",
+	   "icon": "./dm/icons/us/cs/Merge.png"
 	  },
       {"connector":"nested",
-	   "description":"Containment",
-	   "image": [{"small": "./dm/icons/us/cs/nested.png"}]
+	   "title":"Containment",
+	   "icon": "./dm/icons/us/cs/nested.png"
 	  }
     ],
     "menus": [
-	  {"id":"vp-package-menu",
+	  {"id":"us-package-menu",
 	   "items": [
 				{"el":"Package",
 				 "cs":[
 						{"connector":"dependency",
-						 "image":"dm/icons/us/cs/dependency.png"
+						 "icon":"dm/icons/us/cs/dependency.png"
 						},
 						{"connector":"access",
-						 "image":"dm/icons/us/cs/access.png"
+						 "icon":"dm/icons/us/cs/access.png"
 						},
 						{"connector":"import",
-						 "image":"dm/icons/us/cs/import.png"
+						 "icon":"dm/icons/us/cs/import.png"
 						},
 						{"connector":"generalization",
-						 "image":"dm/icons/us/cs/generalization.png"
+						 "icon":"dm/icons/us/cs/generalization.png"
 						},
 						{"connector":"realization",
-						 "image":"dm/icons/us/cs/realization.png"
+						 "icon":"dm/icons/us/cs/realization.png"
 						},
 						{"connector":"dependency",
-						 "image":"dm/icons/us/cs/merge.png"
+						 "icon":"dm/icons/us/cs/merge.png"
 						},
 						{"connector":"nested",
-						 "image":"dm/icons/us/cs/nested.png"
+						 "icon":"dm/icons/us/cs/nested.png"
 						}
 					  ]
 				},
 				{"el":"Note",
 				 "cs":[
 						{"connector":"anchor",
-						 "image":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}
 			 ]
 	  },
-	  {"id":"vp-note-menu",
+	  {"id":"us-note-menu",
 	   "items": [
 				{"el":"Package",
 				 "cs":[
 						{"connector":"anchor",
-						 "image":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				},
 				{"el":"Note",
 				 "cs":[
 						{"connector":"anchor",
-						 "image":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}
 			 ]

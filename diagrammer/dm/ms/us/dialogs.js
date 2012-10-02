@@ -43,22 +43,24 @@ Version:
 	},
 	'NewDiagramDialog':function(data) {
 
-		var items = [],
-		so = this.options, urlPrefix="./", self = this;
-		for (var i in data) {
-			var image = (data[i]['image'][0][so['image']] != undefined) ? "list-style-image:url(\'"+ urlPrefix + data[i]['image'][0][so['image']] + "\')" : "list-style-type:none";
-			items.push('<li class="diagramSelector" style="cursor:pointer;' + image + ';" id="'  + data[i]['diagram'] +'">' +
-					data[i]['description'] + '</li>');
-		}
-
-		var innerHtml = items.join('');
-		innerHtml = '<form>\
-			<fieldset><div id="selectable-list" style="scroll:auto;height:40px;"><ul>' + innerHtml + '</ul></div>\
+		var innerHtml = '<form>\
+			<fieldset><div id="selectable-list" style="scroll:auto;height:40px;"><ul id="diagram-menu"></ul></div>\
 			<p><label class="left" for="name">Name:</label><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
 			</p></fieldset></form>';
 			$("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
 			$(innerHtml).appendTo("#new-diagram-dialog");
 
+            var self = this;
+            $("#diagram-menu").listmenu({
+	           selector: "diagram-selector",
+	           selectable: true,
+	           data:data,
+	           onSelect: function(item) {
+	             self.selected = item.id;
+                 var val = $("#new-diagram-dialog input").val();
+                 $("#new-diagram-dialog input").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram"); 
+	           }
+            });
 
 			$( "#new-diagram-dialog" ).dialog({
 				'autoOpen': true,

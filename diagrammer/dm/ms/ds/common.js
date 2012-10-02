@@ -150,7 +150,7 @@ Version:
                 this.menus[hmenus[dd]['id']][hmenus[dd]['items'][tt]['el']] = [];
                 var connectors = hmenus[dd]['items'][tt]['cs'];
                 for (var cc in connectors) {
-                    this.menus[hmenus[dd]['id']][hmenus[dd]['items'][tt]['el']][connectors[cc]['connector']] = connectors[cc]['image'];
+                    this.menus[hmenus[dd]['id']][hmenus[dd]['items'][tt]['el']][connectors[cc]['connector']] = connectors[cc]['icon'];
                 }
             }     
         }
@@ -158,6 +158,7 @@ Version:
         this.load = function(menu_id) {
             // Check that menu type is defined
             // And that it was not load before
+
             if ((this.menus[menu_id] == undefined)
                     || ($("#" + this.diagram.euid + " .elmenu-" + menu_id).is("div")))
                 return;
@@ -300,7 +301,7 @@ Version:
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
             var euid = "testmenu-" + dm.dm.dmc;
-            var innerHtml = "<div id='"+euid+"' class='toobox-item' style='padding-left:0;'><ul style='overflow:hidden;'>";
+            var innerHtml = "<div id='"+euid+"' class='toobox-item' style='padding-left:0;'><ul id='list-item' style='overflow:hidden;'>";
             dm.dm.dmc++;
 
             var ddata = json;
@@ -315,34 +316,39 @@ Version:
             // Prepare the list of elements. Clickable left side menu 
             for (var d in elements) {
                 // the list of elements
-                diagramMenuBuilder.elements[elements[d].description] = elements[d];
-                diagramMenuBuilder.elements[elements[d].description].editable = true;
-
+                diagramMenuBuilder.elements[elements[d].title] = elements[d];
+                diagramMenuBuilder.elements[elements[d].title].editable = true;
+/*
                 var image = (elements[d]['image'][0]["small"]) ? "list-style-image:url(\'" +dm.dm.loader.url +  elements[d]['image'][0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="elementSelector" style="cursor:pointer;' + image
     + ';" id="'  + elements[d].description +'" imgpath="' + elements[d].image_path + '">' +
     elements[d].description + '</li>');
 	//<li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>
+*/
             }
+
+            var self = this;
 
             // Prepare the list of connectors. Clickable left side menu 
             for (var d in connectors) {
                 var desc = connectors[d].connector;
                 if (connectors[d]['oneway'])
-                    desc = connectors[d].description;
+                    desc = connectors[d].title;
 
                 diagramMenuBuilder.connectors[desc] = connectors[d];
                 diagramMenuBuilder.connectors[desc].editable = true;
-
+/*
                 var image = (connectors[d]['image'][0]["small"]) ? "list-style-image:url(\'" + dm.dm.loader.url + connectors[d]['image'][0]["small"] + "\')" : "list-style-type:none";
                 items.push('<li class="connectorSelector" style="cursor:pointer;' + image
     + ';" id="'  + connectors[d].connector +'">' +
     connectors[d].description + '</li>');
 	//<li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>
+	*/
             }
 
-            innerHtml += items.join('');
+            //innerHtml += items.join('');
             innerHtml += "</ul></div>";
+			
 
             // Append menu to diagram
             //$("#" + diagram.euid).append(innerHtml);
@@ -375,19 +381,41 @@ Version:
             if (!fw['ActivateDiagramMenu'](type)) {
                 
                 fw['CreateDiagramMenu'](type, innerHtml, function() { 
-                   $("#" + euid + " .elementSelector")
+            $("#list-item").listmenu({
+	           selector: "elementSelector",
+	           selectable: false,
+			   path:"./",
+	           data:elements,
+	           onSelect: function(item) {
+	             self.ec++;
+                 var menus = [];
+                 var fw = dm.dm.fw;
+                 var diagram = fw.activeDiagram();
+				 
+                 var loadElement = diagramMenuBuilder.getElementById(item.title);
+
+                 if ((loadElement != undefined) && (loadElement.menu != undefined)) {
+                     iconMenuBuilder.load(item.title, loadElement);
+                    if (diagram)
+                      diagram.Element(loadElement.type, loadElement);
+				 }
+	           }
+            });
+
+			$("#list-item").listmenu({
+	           selector: "connectorSelector",
+	           selectable: true,
+			   path:"./",
+	           data:connectors,
+	           onSelect: function(item) {
+	             alert("selected connector");
+	           }
+            });
+              
+/*			  $("#" + euid + " .elementSelector")
                    .hover(function() {$(this).addClass('hover');}, function() {$(this).removeClass('hover');})  
                    .click(function(){
-                      self.ec++;
-                      var menus = [];
-                      var fw = dm.dm.fw;
-                      var diagram = fw.activeDiagram();
-                      var loadElement = diagramMenuBuilder.getElementById(this.id);
-
-                      if ((loadElement != undefined) && (loadElement.menu != undefined))
-                        iconMenuBuilder.load(this.id, loadElement);
-                      if (diagram)
-                        diagram.Element(loadElement.type, loadElement);
+                      
                    });
 
                    $("#" + euid + " .connectorSelector")
@@ -443,8 +471,10 @@ Version:
           });*/
                 // TODO: enable drag helper for connectors
                 //dm.dm.loader.Connector(this.euid, self.options, {}, self.diagram);
-                    });
-            }); // CreateDiagramMenu
+//                    });
+            
+			
+			}); // CreateDiagramMenu
             } // if !ActivateDiagramMenu
 		});
     }
