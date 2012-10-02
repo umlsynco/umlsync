@@ -300,8 +300,9 @@ Version:
         var diagramMenuBuilder = this;
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
-            var euid = "testmenu-" + dm.dm.dmc;
-            var innerHtml = "<div id='"+euid+"' class='toobox-item' style='padding-left:0;'><ul id='list-item' style='overflow:hidden;'>";
+            var euid = "testmenu-" + dm.dm.dmc,
+			    ulid = "list-item" + dm.dm.dmc;
+            var innerHtml = "<div id='"+euid+"' class='toobox-item' style='padding-left:0;'><ul id='"+ulid+"' style='overflow:hidden;'>";
             dm.dm.dmc++;
 
             var ddata = json;
@@ -381,7 +382,7 @@ Version:
             if (!fw['ActivateDiagramMenu'](type)) {
                 
                 fw['CreateDiagramMenu'](type, innerHtml, function() { 
-            $("#list-item").listmenu({
+            $("#"+ulid).listmenu({
 	           selector: "elementSelector",
 	           selectable: false,
 			   path:"./",
@@ -394,7 +395,8 @@ Version:
 				 
                  var loadElement = diagramMenuBuilder.getElementById(item.title);
 
-                 if ((loadElement != undefined) && (loadElement.menu != undefined)) {
+                 if (loadElement != undefined) {
+				    if  (loadElement.menu != undefined)
                      iconMenuBuilder.load(item.title, loadElement);
                     if (diagram)
                       diagram.Element(loadElement.type, loadElement);
@@ -402,7 +404,7 @@ Version:
 	           }
             });
 
-			$("#list-item").listmenu({
+			$("#"+ulid).listmenu({
 	           selector: "connectorSelector",
 	           selectable: true,
 			   path:"./",

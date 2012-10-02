@@ -24,6 +24,7 @@
 	},
 	{"type": "note",
 	 "description": "Note",
+	 "menu": "vp-component-menu",
 	 "image": [{"small": "./dm/icons/vp/es/component/InstanceSpecification.png"}]
 	}
     ],

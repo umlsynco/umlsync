@@ -28,7 +28,7 @@
 	},
 	{"type": "note",
 	 "title": "Note",
-	 "menu": "note-menu",
+	 "menu": "us-note-menu",
 	 "icon": "/dm/icons/us/es/common/Note.png"
 	}
     ],
@@ -102,7 +102,7 @@
 				}
 			 ]
 	  },
-	  {"id":"note-menu",
+	  {"id":"us-note-menu",
 	   "items": [
 				{"el":"Class",
 				 "cs":[
