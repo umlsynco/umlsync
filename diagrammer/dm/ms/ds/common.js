@@ -36,15 +36,16 @@ Version:
                 e.preventDefault();
                 menuBuilder['HideAll']();
                 e.stopPropagation();
-            }).mouseenter(function(event) { $(this).addClass('hover');
-			  if(item_options.mouseenter) {
-			    item_options.mouseenter(menuBuilder.currentElement, event);
+            }).hover(function(event) {
+			    $(this).addClass('hover');
+			      if(item_options.mouseenter) {
+			        item_options.mouseenter(menuBuilder.currentElement, event);
+			    }
+			  },
+              function(event) { $(this).removeClass('hover');
+			    if(item_options.mouseleave) {
+			      item_options.mouseleave(menuBuilder.currentElement, event);
 			  }
-			})
-            .mouseleave(function(event) { $(this).removeClass('hover');
-			  if(item_options.mouseleave) {
-			    item_options.mouseleave(menuBuilder.currentElement, event);
-			}
 			});
         });
 
@@ -375,8 +376,7 @@ Version:
                 
                 fw['CreateDiagramMenu'](type, innerHtml, function() { 
                    $("#" + euid + " .elementSelector")
-                   .mouseenter(function() {$(this).addClass('hover');})
-                   .mouseleave(function() {$(this).removeClass('hover');})  
+                   .hover(function() {$(this).addClass('hover');}, function() {$(this).removeClass('hover');})  
                    .click(function(){
                       self.ec++;
                       var menus = [];
@@ -391,8 +391,7 @@ Version:
                    });
 
                    $("#" + euid + " .connectorSelector")
-                   .mouseenter(function() {$(this).addClass('hover');})
-                   .mouseleave(function() {$(this).removeClass('hover');})
+                   .hover(function() {$(this).addClass('hover');}, function() {$(this).removeClass('hover');})
                    .click(function(e){
                       $(this).addClass('selected');
                       var selConn = this.id;

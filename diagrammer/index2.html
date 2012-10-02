@@ -17,6 +17,7 @@
   <script src="js/ui.selectmenu.js"></script>
   <script type="text/javascript" src="js/3pp/simple-color-picker/jquery.simple-color-picker.js"></script>
   <script type="text/javascript" src="js/jqsimplemenu.js"></script>
+  <script type="text/javascript" src="js/jquery.combomenu.js"></script>
   <link rel="stylesheet" href="css/simple_menu.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/jqsimplemenu.css" type="text/css" media="screen" />
   <link rel='stylesheet' type='text/css' href='js/3pp/skin/ui.dynatree.css'>
@@ -67,7 +68,33 @@
     var fw = new dm.hs.framework(Loader);
 
     // Initialize header menu on the left
-    $('#header-menu').jqsimplemenu();
+    $('#header-menu').combomenu({menu:{
+		'Project': {
+		  'Change repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
+		  'Change branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
+		  'New diagram': {handler:function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}},
+		  'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
+		},
+		'Actions': {
+		  'Post for review':{handler: function() {	  }}
+		},
+		'Edit':{
+		  'Un-do':{handler: function(){		  }},
+		  'Re-do':{handler: function(){		  }},
+		  'Cut':{handler: function(){		  }},
+		  'Copy':{handler: function(){		  }},
+		  'Past':{handler: function(){		  }},
+		  'Delete':{handler: function(){		  }},
+		  'Select All':{handler: function(){		  }}
+		},
+		'Views':{
+		  'Google code':{handler: function(){		  }},
+		  'Sourceforege':{handler: function(){		  }},
+		  'Github':{handler: function(){		  }},
+		  'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
+		}
+	},
+	prefix: "filemenu"});
     
 /*
   // CSRF support for AJAX. Uses for server-side security.
@@ -113,24 +140,7 @@
 		fw.addView2('Github', IGithubView);
     IGithubView.init();
       
-    $("#repo-selection-dialog_ref")
-      .click(function() {
-	    dm.dm.dialogs['Activate']("repo-selection-dialog");
-    });
-	
-    $("#new-project-dialog_ref")
-      .click(function() {
-	    dm.dm.dialogs['Activate']("new-project-dialog");
-    });
-
-    $("#header-menu #new-diagram-dialog_ref").click(function(){
-	  dm.dm.dialogs['Activate']("new-diagram-dialog");
-    });
-
-    $("#localconnection" )
-      .click(function() {
-        fw.registerViewManager("http://localhost:8000/vm/", "jsonp");
-    });
+    
   });
   
 </script>
@@ -139,7 +149,8 @@
 <div id="body">
   <div class="nav ui-state-active" id="header">
   <div>
-    <ul id="header-menu" class="menu_left">
+    <ul id="header-menu" class="menu_left"></ul>
+	<!--
       <li><a href="#">Project</a>
         <ul>
           <li><a id="repo-selection-dialog_ref" href="#">Change repository</a></li>
@@ -171,7 +182,7 @@
           <li><a id="localconnection" href="#">Connect Eclipse ...</a></li>
         </ul>
       </li>
-    </ul>
+    </ul-->
   </div>
   <div>
     <ul class="menu_right">

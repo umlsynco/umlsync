@@ -96,14 +96,20 @@ Version:
 				$("#new-diagram-dialog input").val(folder + val.substr(val.lastIndexOf('/')));
 			});
 
-			$(".diagramSelector").click(function() {
+			$("#new-diagram-dialog .diagramSelector").click(function() {
 				self.selected = this.id;
-				$(".diagramSelector").css("background-color","#eee").css("color", "#000");
-				$(this).css("background-color","#5D689A").css("color", "#fff");
+				$(".diagramSelector").removeClass('selected');
+
+				$(this).addClass('selected');
+
 				var val = $("#new-diagram-dialog input").val();
 				$("#new-diagram-dialog input").val(val.substr(0, val.lastIndexOf('/') + 1) + this.id + "Diagram"); 
 				//  $("#vp_main_menu .finish").css("background-color","#5D689A").css("cursor","pointer");
-			});
+			}).hover(function () {
+                    $(this).addClass('hover');
+                }, function () {
+                    $(this).removeClass('hover');
+            });
 	},
 	'SelectRepoDialog': function(data, callback) {
 		var items = [];
