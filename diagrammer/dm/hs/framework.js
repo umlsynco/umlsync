@@ -154,7 +154,7 @@ Version:
 		'CreateDiagramMenu':function(type, innerHtml, callback) {
 			  var len = $("#accordion").length;
 			  if (len) {
-				  $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({'active': len});
+				  $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({'active': len, autoHeight:false});
      		  } else {
 				var header = '<div id="diagram-menu-header" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">\
 <span id="ui-dialog-title-vp_main_menu" class="ui-dialog-title">Toolbox</span>\
@@ -162,7 +162,7 @@ Version:
 <span class="ui-icon ui-icon-closethick">close</span></a></div>';
 				  
   			    $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
-				$("#accordion").accordion({'active': 0 });
+				$("#accordion").accordion({'active': 0, autoHeight:false});
 				$(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
 			  }
 			  if (callback) {

@@ -103,6 +103,7 @@
             });
         }
     });
+
     $.fn.extend({
         listmenu: function (options) {
 			
@@ -128,10 +129,11 @@
                 //add class .drop-down to all of the menus having drop-down items
                 var menu = $(this);
 
-                $('> li a', menu).hover(function () {
-                  $(this).parent().addClass('hover');
-                }, function () {
-                  $(this).parent().removeClass('hover');
+                $('> li', menu).hover(function () {
+                  $(this).addClass('hover');
+                },
+				function (e) {
+                  $("> li", $(this).parent()).removeClass('hover');
                 });
 				
 				var $selector = (options.selector) ? $('> .'+options.selector, menu) : $('> li', menu);

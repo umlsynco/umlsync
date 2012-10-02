@@ -25,6 +25,18 @@ Version:
         var menu = $('<ul id="'+options.uid +'" class="context-menu" ></ul>').hide().appendTo("#" + menuBuilder.diagramId);
         menuBuilder.append(this, options.id); // element Class Context append to diagram
         var self = this;
+		
+		$(menu).listmenu({
+	           data:actions,
+	           onSelect: function(item) {
+  			      if (item.click)
+				    item.click(menuBuilder.currentElement, self.x, self.y);
+				  //e.preventDefault();
+                  menuBuilder['HideAll']();
+			   }
+		});
+		
+		/*
         $.each(actions, function(name, item_options) {
             var menuItem = $('<li><a href="#">'+name+'</a></li>');
 
@@ -47,7 +59,7 @@ Version:
 			      item_options.mouseleave(menuBuilder.currentElement, event);
 			  }
 			});
-        });
+        });*/
 
         this['Show'] = function(element, x, y) {
             $(".context-menu").hide();
