@@ -160,15 +160,20 @@ content = {
 		        });
 			  }
 			},
-			'ctx_menu': {
-			   "Reload": function(node) {
-			      node.reloadChildren();
-			   },
-			   "Open": function(node) {
-			     // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
-                 if ((!node.data.isFolder)
+			'ctx_menu': [
+				{
+					title:"Reload",
+					click: function(node) {
+						node.reloadChildren();
+					}
+				},
+				{
+					title:"Open",
+					click: function(node) {
+					// TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
+					  if ((!node.data.isFolder)
                         && (node.data.title.indexOf(".json") != -1)) {
-					dm.dm.fw.loadDiagram(self.euid, node);
+						dm.dm.fw.loadDiagram(self.euid, node);
                     /*$.ajax({
                         accepts: 'application/vnd.github-blob.raw',
                         dataType: 'jsonp',
@@ -179,17 +184,27 @@ content = {
                            alert('Oops there was an error');
                         },
                     });*/
-				 }
+				      }
+					} // click
 			   },
-			   "Save": function(node) {
-			   },
-			   "New folder": function(node) {
-			     this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
-			   },
-			   "Remove": function(node) {
-			     this.remove(node.getAbsolutePath(), function() {node.remove();});
-			   }
-			},
+			   {
+					title: "Save",
+					click:function(node) {
+					},
+				},
+				{
+					title:"New folder",
+					click: function(node) {
+						this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
+					}
+				},
+			   {
+					title:"Remove",
+					click: function(node) {
+						this.remove(node.getAbsolutePath(), function() {node.remove();});
+					}
+				}
+			],
             tree: {
                 persist: true,
                 initAjax: {

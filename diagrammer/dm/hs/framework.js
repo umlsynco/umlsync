@@ -293,21 +293,19 @@ Version:
 			var self = this;
 
 			function initCtxMenu(vid, items) {
-			  var innerHtml = '<ul id="view-'+  vid +'" class="context-menu" >';
-			  for (r in items) {
-				innerHtml += '<li class="menu-item"><a id="'+r+'">'+r+'</a></li>'
-			  }
-			  innerHtml += '</ul>';
-              $(innerHtml).hide().appendTo('body');
+              $('<ul id="view-'+  vid +'" class="context-menu" ></ul>').hide().appendTo('body');
+			  $("#view-"+vid).listmenu({
+	           selector: "menu-item",
+			   path:"./",
+	           data:items,
+	           onSelect: function(item) {
+	             if (item.click) {
+				   item.click(activeNode)
+				   $(".context-menu").hide();
+				 }
+	           }
+              });
 			  $.log("ADD: view-" + vid);
-
-			  $("#view-"+vid + " .menu-item A").click(function() {
-			       items[this.id](activeNode);
-				   //$("#view-"+vid).hide();  //Hide the conceate context menu
-				   $(".context-menu").hide(); // Hide all context menus
-			  });
-			  $("#view-"+vid + " .menu-item").mouseenter(function(event) { $(this).addClass('hover'); })
-              .mouseleave(function(event) { $(this).removeClass('hover');});
 			}
 
             self.views = self.views || {};
@@ -325,7 +323,6 @@ Version:
 				      nm = IView.euid + "-" + counter;
 				  for (h in rs) {
 				    self.views[IView.euid]['element_menu'][rs[h]] = nm;
-					$.log("INIT: " + rs[h]);
 				  }
 				  initCtxMenu(nm, IView['element_menu'][r]);
 				  counter++;
