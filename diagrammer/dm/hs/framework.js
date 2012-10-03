@@ -63,7 +63,9 @@ Version:
 				self.updateFrameWork(true);
 			});
 
-			var $tabs = $("#tabs").tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+			var $tabs = $("#tabs")
+			        .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+					'scrollable': true,
 			      	'add': function(event, ui) {
 						if (self.diagrams) {
 							self.selectedDiagramId = "#" + ui.panel.id;
@@ -91,11 +93,13 @@ Version:
 							  did.draw();
 						   }
 						}
-					},
+					}
 /*					'remove': function(event, ui) { // it is too late to save diagram at this moment
 						self.updateFrameWork(true);
 					}*/
 					});
+					$("> ul", $tabs).css("overflow","hidden");
+					
 
 					
             $("#tabs").append('<canvas id="SingleCanvas" class="UMLSyncCanvas" style="left:20px;top:48px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
@@ -114,9 +118,12 @@ Version:
 					$tabs.tabs('remove', index);
 			});
 
-			var $treetabs = $("#treetabs").tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>'});
+			var $treetabs = $("#treetabs")
+			   .tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+			   'scrollable': true});
+			   
 
-			
+
 			$('#treetabs span.ui-test').live('click', function() {
 				var index = $('li', $treetabs).index($(this).parent());
 				$treetabs.tabs('remove', index);
@@ -250,6 +257,7 @@ Version:
 
 				$("#" + this.options.content).height(hhh)
 				.children("DIV").height(hhh)
+				.children(".ui-scrollable-tabs").height(hhh - 6)
 				.children(".ui-tabs").height(hhh - 6)
 				.children(".ui-tabs-panel").height(hhh - 51)
 				.children("div").height(hhh - 58);
@@ -286,9 +294,16 @@ Version:
 		'addView2': function(name, IView) {
 			//TODO: don't load view if name/euid is reserved yet !
 			//      it could help to prevent some mess with localhost views
-			var id = '#diagramTree-'+ this.left_counter;
+			var id = 'diagramTree-'+ this.left_counter;
 			this.left_counter++;
+			$("#treetabs").append("<div id='"+id+"'></div>");
+			id = "#" + id;
 			$("#treetabs").tabs("add", id, name);
+			var $treetabs = $("#treetabs");
+		setTimeout(function(){
+			$treetabs.append(jQuery(id));
+		},1000)
+		
 			$(id).append("<div id='tree'></div>");
 			var self = this;
 
@@ -492,9 +507,14 @@ Version:
 		},
         //@proexp
 		'addDiagram': function(baseType, type, name, options) {
-			var tabname = "#"+ this.options.tabRight + "-" + this.counter;
+			var tabname = this.options.tabRight + "-" + this.counter;
+			
+			$("#" + this.options.tabs)
+			.append('<div id="'+tabname+'"></div>')
+			.tabs('add','#'+tabname,name);
+			tabname = "#" + tabname;
+			//tabs("add", tabname, name);
 			this.counter++;
-			$("#" + this.options.tabs).tabs("add", tabname, name);
 			if (type == "sequence")
 				baseType = "sequence";
 			var self = this;
@@ -524,9 +544,13 @@ Version:
 			if (self.views[viewid])
 			self.views[viewid].view.loadDiagram(path, {
 			  'success': function(json) {
-				var tabname = "#"+ self.options.tabRight + "-" + self.counter;
+				var tabname = self.options.tabRight + "-" + self.counter;
 				self.counter++;
+				
+				$("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
+				tabname = "#" + tabname; 
 				$("#" + self.options.tabs).tabs("add", tabname, json.name);
+				
 				dm.dm.loader.Diagram(json.type, "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;

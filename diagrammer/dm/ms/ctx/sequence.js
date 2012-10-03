@@ -124,7 +124,7 @@ $("#vp_main_menu2 .close").click(function() { $("#vp_main_menu2").remove();});
             },*/
 			{
 				title: 'View specific >>',
-			  mouseenter: function(element, event) {  // element is the jquery obj clicked on when context menu launched
+				mouseenter: function(element, event) {  // element is the jquery obj clicked on when context menu launched
 			    if (element && element.options) {
 				  var viewid = element.options.viewid || element.parrent.options.viewid;
 				  var p = $(event.currentTarget).offset();

@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+
+<link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery-ui.js"></script>
+<script type="text/javascript" src="js/jquery.scrollabletab.js"></script>
+<script type="text/javascript" src="js/jquery.init.js"></script>
+<!--<script type='text/javascript' src="https://raw.github.com/brandonaaron/jquery-mousewheel/master/jquery.mousewheel.js"></script>-->
+
+<style type='text/css'>
+body { margin:100px 400px; }
+
+#tabs {
+    font-size: .8em !important;
+	width:auto;
+	margin:5px;
+	padding:0;
+	border:0 !important;
+	overflow:hidden;
+}
+
+/*scrollable tabs css*/
+.ui-scrollable-tabs { overflow:hidden; position:relative; width:800px; }
+
+.ui-scrollable-tabs .ui-tabs-nav {
+	width:1000000px;
+	padding:1px 0 0 1px;
+	border-left:none;
+	border-right:none;
+	padding-top:1px;
+	position:relative;
+}
+
+.ui-scrollable-tabs .ui-tabs .ui-tabs-closable li a {
+	padding-right:5px;
+}
+
+.ui-scrollable-tabs .ui-tabs-nav-arrows {
+	left: 0;
+	margin: 0;
+	margin:0 5px;
+	padding: 0;
+	position: absolute;
+	right: 0;
+	top: 5px;
+}
+
+/*IE7 fix*/
+*:first-child+html .ui-scrollable-tabs .ui-tabs-nav-arrows {
+	z-index:1;
+}
+
+.ui-scrollable-tabs .ui-tabs .ui-tabs-nav li {
+	margin:0 1px 0;
+}
+
+.ui-tabs-nav li .ui-tabs-close {
+	float:left;
+	margin-top:8px;
+	margin-right:4px;
+	border:none;
+	cursor:pointer;
+}
+
+.ui-scrollable-tabs .ui-tabs-nav-arrows .ui-tabs-arrow-next { float:right; }
+
+.ui-scrollable-tabs .ui-tabs-nav-arrows .ui-tabs-arrow-previous { float:left; }
+
+.ui-scrollable-tabs .ui-tabs-nav-arrows li {
+    list-style:none;
+    position:relative;
+    cursor:pointer;
+    margin:0;
+    padding:0;
+	display:none;
+	z-index:1;
+}
+
+.ui-scrollable-tabs .ui-tabs-nav-arrows li a {
+    display: block;
+	padding:8px 0 9px;
+}
+
+</style>
+</head>
+<body>
+
+<a id="addUiTab" href="#">Add new tab</a> | <a id="removeTab" href="#">Remove last tab</a><br /><br />
+
+    <div id="tabs">
+        <ul>
+        </ul>
+   </div>
+
+</body>
+</html>
+

@@ -292,12 +292,12 @@ dm['ctx'] = dm.ms.ctx;
     _create: function () {
 	//<div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
 //@ifdef VIEWER
-        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
-                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
-                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
-                <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
-                </div></div>');
-        this.canvas = window.document.getElementById(this.euid +'_Canvas');
+//        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
+//                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+//                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
+//                <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
+//                </div></div>');
+//        this.canvas = window.document.getElementById(this.euid +'_Canvas');
 //@else
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
                 <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
