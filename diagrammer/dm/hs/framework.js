@@ -115,6 +115,7 @@ Version:
 					      var data = diagram.getDescription();
                           self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
 //@endif
+						delete self.diagrams[ahref];
 					}
 					$tabs.tabs('remove', index);
 			});

@@ -52,12 +52,15 @@ Version:
 		   });
 		},
 		save: function(path, data, description) {
-		    alert("SAVE: to " + path);
+		    
+			if (path.indexOf(".umlsync") <= 0) {
+			  path += ".umlsync";
+			}
             $.ajax({
                 'type': 'GET',
                 'url': urlArg +'/save',
                 'dataType': 'jsonp',
-                'data': {'diagram':data, 'path': path + ".umlsync", 'description':description},
+                'data': {'diagram':data, 'path': path, 'description':description},
                 'success': function(ddd) {alert("DONE COOL !!!!" + ddd);}
             });
 		},
