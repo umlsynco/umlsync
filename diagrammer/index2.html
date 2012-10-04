@@ -145,7 +145,10 @@
 		fw.addView2('Github', IGithubView);
     IGithubView.init();
       
-    
+		$("li").live("mouseenter", function() {
+		    
+			$(this).attr( {"title": this.id});
+		});
   });
   
 </script>

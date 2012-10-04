@@ -98,7 +98,8 @@ Version:
 						self.updateFrameWork(true);
 					}*/
 					});
-					$("> ul", $tabs).css("overflow","hidden");
+					$("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
+
 					
 
 					
@@ -120,7 +121,7 @@ Version:
 
 			var $treetabs = $("#treetabs")
 			   .tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
-			   'scrollable': true});
+			   'scrollable': true}).css({'background-color':"#7E8380", 'background':"none"});
 			   
 
 
@@ -536,6 +537,20 @@ Version:
         //@proexp
 		'loadDiagram': function(viewid, path) {
 		    $.log("VIEWID IS:" + viewid);
+			
+			var self = this,
+			absPath = path.getAbsolutePath();
+			if (self.diagrams) {
+				for (var r in self.diagrams) {
+				  var d = self.diagrams[r];
+				  if ((d.options.viewid == viewid)
+				    && (d.options.fullname == absPath)) {
+					$("#tabs").tabs('select', d.parrent);
+					return;
+				  }
+				}
+			}
+			
 		    var self = this;
 		    if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
 			  alert("View: " + viewid + " was not initialize.");
@@ -551,6 +566,7 @@ Version:
 				tabname = "#" + tabname; 
 				$("#" + self.options.tabs).tabs("add", tabname, json.name);
 				
+				json['fullname'] = absPath;
 				dm.dm.loader.Diagram(json.type, "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;

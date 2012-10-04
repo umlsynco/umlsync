@@ -69,25 +69,30 @@ Version:
 				success: function(data) {if (callback) callback(data);}
 			});
 		},
-		'ctx_menu': {
-			"Reload": function(node) {
+		'ctx_menu':
+		[
+		{
+		  title: "Reload",
+		  click : function(node) {
 			node.reloadChildren();
+		  }
 		},
-		"Open": function(node) {
-
+		{
+		title: "Open",
+		click: function(node) {
 			// TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
 			if (!node.data.isFolder) {
 				if ($("#tab-" + node.data.key).length == 0) {
 					if ('diagramclass' == node.data.addClass)
-						dm.dm.fw.loadDiagram(self.euid, node);
+						dm.dm.fw.loadDiagram(self.euid, node); // Create tab first and load content later
 
 					if ('cfile' == node.data.addClass)
 						dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
 
 					// Urgly hack for diagram selection menu
-					var val = $("#vp_main_menu input").val();
-					val.substr(val.lastIndexOf('/'))
-					$("#vp_main_menu input").val(node.parent.getAbsolutePath() + '/' + val.substr(val.lastIndexOf('/')));
+					//var val = $("#vp_main_menu input").val();
+					//val.substr(val.lastIndexOf('/'))
+					//$("#vp_main_menu input").val(node.parent.getAbsolutePath() + '/' + val.substr(val.lastIndexOf('/')));
 				}
 			} else {
 				// Ugly hack for diagram selection menu
@@ -97,15 +102,25 @@ Version:
 				$("#vp_main_menu input").val(node.getAbsolutePath() + val.substr(val.lastIndexOf('/')));
 			}
 		},
-		"Save": function(node) {
 		},
-		"New folder": function(node) {
-			this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
+		{
+			title: "Save",
+			click:	function(node) {
+		    },
 		},
-		"Remove": function(node) {
-			this.remove(node.getAbsolutePath(), function() {node.remove();});
+		{
+			title: "New folder",
+			click: function(node) {
+				this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
+			},
+		},
+		{
+			title:"Remove",
+			click: function(node) {
+				this.remove(node.getAbsolutePath(), function() {node.remove();});
+			}
 		}
-		},
+		],
 		"element_menu":	{
 		  "Package,Subsystem": {
 			"Internal packages": function(element) {
@@ -433,9 +448,9 @@ Version:
 						dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
 
 					// Urgly hack for diagram selection menu
-					var val = $("#vp_main_menu input").val();
-					val.substr(val.lastIndexOf('/'))
-					$("#vp_main_menu input").val(node.parent.getAbsolutePath() + '/' + val.substr(val.lastIndexOf('/')));
+					//var val = $("#vp_main_menu input").val();
+					//val.substr(val.lastIndexOf('/'))
+					//$("#vp_main_menu input").val(node.parent.getAbsolutePath() + '/' + val.substr(val.lastIndexOf('/')));
 				}
 			} else {
 				// Ugly hack for diagram selection menu

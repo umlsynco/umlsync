@@ -31,7 +31,7 @@ div.box
 {
     position: absolute;
     z-index: -1;
-    background-color: #EEEEEE;
+    background-color: #9DAA9D;
     left: 0;
     top: 0;
     border-radius: 4px 4px 0px 0px;
@@ -74,7 +74,7 @@ li.right-menu > a
     display: none;
     width: 200px;
     top: 2.5em; /*padding-right: 10px;*/
-    background-color: #EEEEEE; /*-moz-opacity: .50;     filter: alpha(opacity=50);     opacity: .50;*/
+    background-color: #9DAA9D; /*-moz-opacity: .50;     filter: alpha(opacity=50);     opacity: .50;*/
     border-radius: 0px 4px 4px 4px;
     -moz-border-radius: 0px 4px 4px 4px;
     -webkit-border-radius: 0px 4px 4px 4px;
