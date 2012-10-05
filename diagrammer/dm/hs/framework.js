@@ -103,7 +103,7 @@ Version:
 					
 
 					
-            $("#tabs").append('<canvas id="SingleCanvas" class="UMLSyncCanvas" style="left:20px;top:48px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
+            $("#tabs").append('<canvas id="SingleCanvas" class="UMLSyncCanvas" style="left:18px;top:44px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
 
 			$('#tabs span.ui-test').live('click', function() {
 					var index = $('li', $tabs).index($(this).parent().parent()),
@@ -255,20 +255,41 @@ Version:
 		updateFrameWork: function(resizeAll, ui) {
 			if (resizeAll) {
 				// setup height for content and left - resize -right conent DIV's
-				var hhh = $(window).height() - $("#" + this.options.top).outerHeight(true) - 2 - $("#"+this.options.content+"-bottom").outerHeight(true);
+				// header border 1px => total 2px (border top, border-bottom)
+				// content border 1px => total 2px (border top, border-bottom)
+				// and -1 to get real height
+				var hhh = $(window).height() - $("#" + this.options.top).outerHeight(true) - 5 - $("#"+this.options.content+"-bottom").outerHeight(true);
 
-				$("#" + this.options.content).height(hhh)
-				.children("DIV").height(hhh)
-				.children(".ui-scrollable-tabs").height(hhh - 6)
-				.children(".ui-tabs").height(hhh - 6)
-				.children(".ui-tabs-panel").height(hhh - 51)
-				.children("div").height(hhh - 58);
-                $("#" + this.options.content + "-right").width($("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 6);
+				var $ch1 = $("#" + this.options.content).height(hhh)  // set height of middle:  #content
+				.children("DIV").height(hhh)                          // #content-left; #content-right; #content-left-right-resize;  No border for this items available
+				.children(".ui-scrollable-tabs").height(hhh - 2)      // 1px solid border defined for .ui-scrollable-tabs
+				.children(".ui-tabs").height(hhh - 8);                // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
+				
+				var $ch;
+				if ($ch1.children(".ui-tabs-panel").length) {
+				  hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)				
+				  $ch = $ch1.children(".ui-tabs-panel").height(hhh)
+				    .children("div").height(hhh - 24); // Border 1px + padding 11
+					hhh -= 24;
+				 }
+
+ 			    // recalculate the content 
+				var wd = $("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 6;
+                $("#" + this.options.content + "-right").width(wd);
 
                 var canvas = window.document.getElementById('SingleCanvas');
 				if (canvas) {
-				  canvas.height = hhh - 58;
-				  canvas.width = ($("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 30);
+				  if ($ch) {
+  				    var s = $ch.offset();
+				    canvas.left = s.x;
+				    canvas.top = s.y;
+				  }
+				  canvas.height = hhh - 11; // 11-is scroll element size
+				  if ($(".UMLSyncClassDiagram").length) {
+			        canvas.width = ($(".UMLSyncClassDiagram").width() - 12);
+				  } else {
+				    canvas.width = wd - 40 - 12;
+				  }
 				}
 			}
 
@@ -276,11 +297,19 @@ Version:
 			else if (ui != undefined) {
 				$("#content-left-right-resize").css("left", ui.pageX);
 				$("#content-left").css("width", ui.pageX);
-				$("#content-right").css("left", ui.pageX + 7).width($("#content").width() - $("#content-left").width() - 7);
+
+				var wd = $("#content").width() - $("#content-left").width() - 6;
+				$("#content-right").css("left", ui.pageX + 7).width(wd);
 
 				var canvas = window.document.getElementById('SingleCanvas');
-				if (canvas)
-				canvas.width = $("#content").width() - $("#content-left").width() - 30;
+				if (canvas) {
+				  canvas.width = $("#content").width() - $("#content-left").width() - 40;
+				  if ($(".UMLSyncClassDiagram").length) {
+			        canvas.width = ($(".UMLSyncClassDiagram").width() - 12);
+				  } else {
+				    canvas.width = wd - 40 - 12;
+				  }
+				}
 			}
 			var tabsHeight = $(window).height() - $("#header").outerHeight(true) - 8 - $("#content-bottom").outerHeight(true);
 
