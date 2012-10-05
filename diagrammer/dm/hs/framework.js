@@ -253,6 +253,7 @@ Version:
 			}
 		},
 		updateFrameWork: function(resizeAll, ui) {
+		    $.log("updateFrameWork " + resizeAll);
 			if (resizeAll) {
 				// setup height for content and left - resize -right conent DIV's
 				// header border 1px => total 2px (border top, border-bottom)
@@ -558,6 +559,8 @@ Version:
 		//@proexp
 		'saveDiagram': function(viewId, path, data, description) {
 		    var self = this;
+			alert(data);
+			alert(viewId);
 		    if (!self.views || !self.views[viewId] || !self.views[viewId].view) {
 			  alert("View: " + viewId + " was not initialize.");
 			  return;

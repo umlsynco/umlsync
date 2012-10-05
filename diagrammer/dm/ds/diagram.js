@@ -1225,6 +1225,7 @@ dm['ctx'] = dm.ms.ctx;
                     self.onResizeComplete();
                   }
                   self.parrent.draw();
+				  event.stopPropagation();
                 }
             })
 			.draggable({

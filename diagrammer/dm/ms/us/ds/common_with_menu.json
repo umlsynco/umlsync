@@ -1,0 +1,28 @@
+[
+  {
+   "elements": [
+	{"type": "rectangle",
+	 "title": "Rectangle",
+	 "icon": "./dm/icons/us/es/component/Component.png"
+	},
+	{"type": "circle",
+	 "title": "Circle",
+	 "lable":"true",
+	 "icon": "./dm/icons/us/es/component/Interface.png"
+	},
+	{"type": "port",
+	 "title": "Squere",
+	 "menu":"us-component-menu",
+	 "icon": "./dm/icons/us/es/component/Port.png"
+	},
+	{"type": "note",
+	 "title": "Text Lable",
+	 "icon": "./dm/icons/us/es/common/Note.png"
+	}
+    ],
+    "connectors": [
+    ],
+    "menus": [
+	]
+   }
+]
