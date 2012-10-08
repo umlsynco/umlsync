@@ -1209,7 +1209,7 @@ dm['ctx'] = dm.ms.ctx;
 			'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
 			'scroll': true,
 			'handles': this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u',
-			'alsoResize': '#' + this.euid + '_Border .ElementResizeArea', 
+			'alsoResize': '#' + this.euid + '_Border .us-element-resizable-area', 
                 'stop': function() {
                   if (self.onResizeComplete) {
                     self.onResizeComplete();
@@ -1219,7 +1219,7 @@ dm['ctx'] = dm.ms.ctx;
                 'resize': function(event, ui) {
 				  var dh = ui.size.height - $(this).css("height");
 				  $(this).css("height", ui.size.height);
-				  $('#' + self.euid + '_Border .ElementResizeArea').width($('#' + self.euid + "_Border").width()); // work-around for synchronization of resizeAlso area
+				  $('#' + self.euid + '_Border .us-element-resizable-area').width($('#' + self.euid + "_Border").width()); // work-around for synchronization of resizeAlso area
 
                   if (self.onResizeComplete) {
                     self.onResizeComplete();

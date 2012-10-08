@@ -238,59 +238,13 @@ a {
 }
 
 
-.UMLSyncPacketBorder {
-  padding: 10px;
-  border: 0px solid #87CEEB;
-  position: absolute;
-  left: 100px;
-  top: 300px; 
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 15px;
-}
-
-.UMLSyncPacket {
+.us-package {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-.UMLSyncNoteBorder {
-  padding: 10px;
-  border: 0px solid #87CEEB;
-  position: absolute;
-  height: 40px;
-  width: 100px;
-  left: 100px;
-  top: 300px; 
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 15px;
-}  
-
-.UMLSyncNote {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border: 1px solid black;
-}
-
-.UMLSyncInstance {
-  position: relative;
-  width: 100%;
-  height: 45px;
-  border: 1px solid black;
-  text-align: center;
-}
-
-.UMLSyncPort {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border: 1px solid black;
-}
-
-.UMLSyncPacketTab {
+.us-package-tab {
   padding: 0px;
   border: 1px;
   position: relative;
@@ -299,7 +253,7 @@ a {
   border: 1px solid black;
 }
 
-.UMLSyncPacketBody {
+.us-package-body {
   padding: 0px;
   border: 1px;
   position: relative;
@@ -308,13 +262,38 @@ a {
   text-align: center;
 }
 
-.UMLSyncNoteCorner {
+.us-note {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+}
+
+.us-note-corner {
   position: absolute;
   height: 16px;
   width: 16px;
   right: -1px;
   top: -1px;
 }
+
+.us-instance {
+  position: relative;
+  width: 100%;
+  height: 45px;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.us-port {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+}
+
+
+
 
 
 .UMLSyncCollaboration {

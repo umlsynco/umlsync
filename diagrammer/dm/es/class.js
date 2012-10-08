@@ -84,7 +84,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
         <a class="editablefield us-class-aux">'+ this.aux +'</a>\
         </div>\
         <div class="us-class-attributes"><ul class="us-sortable">' +  attributes + '</ul></div>\
-        <div class="us-class-operations ElementResizeArea"><ul class="us-sortable">' +  operations + '</ul></div>\
+        <div class="us-class-operations us-element-resizable-area"><ul class="us-sortable">' +  operations + '</ul></div>\
         </div>\
       ';
       $("#" + this['parrent'].euid).append(this.innerHtmlClassInfo);
