@@ -12,7 +12,7 @@ dm.base.diagram("es.venn", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncVenn ElementResizeArea">\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-venn us-element-resizable-area">\
        <a class="editablefield" style="text-align:left;position:relative;top:30%">' + this.options.name + '</a></div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#" + this.euid);

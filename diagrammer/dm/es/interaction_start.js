@@ -13,7 +13,7 @@ dm.base.diagram("es.interaction_start", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncInteractionStartNode ElementResizeArea">\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-interaaction-start us-element-resizable-area">\
                         </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);

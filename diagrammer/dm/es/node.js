@@ -10,7 +10,7 @@ dm.base.diagram("es.node", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncComponent ElementResizeArea" style="border:0px;">\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-component us-element-resizable-area" style="border:0px;">\
     <table id="table_' + this.euid + '" style="width:100%;height:100%;border:1px solid black;border-collapse:collapse;border-spacing:0;">\
     <tr><td style="width:13px;height:14px;"></td>\
         <td></td>\

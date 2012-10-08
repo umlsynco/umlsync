@@ -11,8 +11,8 @@ dm.base.diagram("es.diamond", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncDiamondW ElementResizeArea">\
-      <div id="' + this.euid + '_D" class="UMLSyncDiamond"></div>\
+      this.innerHtml = '<div id="' + this.euid + '" class="is-diamond-w us-element-resizable-area">\
+      <div id="' + this.euid + '_D" class="us-diamond"></div>\
                         </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
@@ -21,7 +21,7 @@ dm.base.diagram("es.diamond", dm.es.element, {
       $('#' + this.euid  + '_Border')
          .css('width', this.options.width);
 
-      $('#' + this.euid  + '_Border .UMLSyncDiamondW')
+      $('#' + this.euid  + '_Border .is-diamond-w')
          .css('width', this.options.width).css('height', this.options.height);
 
      var mm = this.options.height, nnn = (mm)/2;

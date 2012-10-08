@@ -21,7 +21,7 @@ dm.base.diagram("es.rectangle", dm.es.element, {
     },
     '_create': function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncComponent ElementResizeArea grElement">\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-component us-element-resizable-area grElement">\
     <a class="editablefield Name" style="text-align:left;position:relative;top:30%">' + this.options.name + '</a>\
                         </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
@@ -32,7 +32,7 @@ dm.base.diagram("es.rectangle", dm.es.element, {
       $('#' + this.euid  + '_Border')
          .css('width', this.options.width);
 
-      $('#' + this.euid  + '_Border .UMLSyncComponent')
+      $('#' + this.euid  + '_Border .us-component')
          .css('width', this.options.width).css('height', this.options.height);
     }
 });

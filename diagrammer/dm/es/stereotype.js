@@ -39,7 +39,7 @@ dm.base.diagram("es.stereotype", dm['es']['element'], {
        this.options.height_o = $("#" + this.euid + "_Border .ClassOperations").height();
 
        this.options.name = "" + $("#" + this.euid + " .ClassName" ).html();
-       this.options.aux = $("#" + this.euid + " .UMLSyncEntityHead .ClassAux" ).html();
+       this.options.aux = $("#" + this.euid + " .us-class-head .ClassAux" ).html();
        this.options.operations = new Array();
        this.options.attributes = new Array();
        var self = this;
@@ -72,8 +72,8 @@ dm.base.diagram("es.stereotype", dm['es']['element'], {
 
       // HTML for class structure creation
       this.innerHtmlClassInfo = '\
-        <div id="' + this.euid + '" class="UMLSyncClass">\
-        <div class="UMLSyncStereotypeHeader">\
+        <div id="' + this.euid + '" class="us-class">\
+        <div class="us-stereotype-header">\
         &lt;&lt;Stereotype&gt;&gt;<br>\
         <a class="editablefield ClassName">' + this.options.name + '</a><br>\
         <a class="editablefield ClassAux">'+ this.aux +'</a>\
@@ -113,7 +113,7 @@ dm.base.diagram("es.stereotype", dm['es']['element'], {
       return this.options.name;
     },
     getAux: function() {
-      return $("#" + this.euid + " .UMLSyncEntityHead .ClassAux" ).html();
+      return $("#" + this.euid + " .us-class-head .ClassAux" ).html();
     },
     ec: 0
 });

@@ -22,7 +22,7 @@ dm.base.diagram("es.circle", dm.es.element, {
     },
     '_create': function() {
       this.innerHtml = '<div id="' + this.euid + '" style="width:100%;height:100%;text-align:center;">\
-                        <div id="Circle" class="UMLSyncInterface grElement" >\
+                        <div id="Circle" class="us-interfaces grElement" >\
 						<a class="editablefield Name" style="text-align:center;position:relative;top:30%">' + this.options.name + '</a>\
 						</div>\
                         </div>';
@@ -47,7 +47,7 @@ dm.base.diagram("es.circle", dm.es.element, {
          var m = w;
          if (w > h ) 
             m = h;
-         $(self + " .UMLSyncInterface").width(m).height(m);
+         $(self + " .us-interfaces").width(m).height(m);
 
       });
        $.log("INIT INTERFACE : " + this.options.name);

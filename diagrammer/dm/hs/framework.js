@@ -745,7 +745,7 @@ Version:
 			var fw=this;
 			// Place for logo !!!
 			//$("body").append('<img src="./images/logo.png" style="position:fixed;top:0;left:0;"/>');
-			$("body").append('<div id="socializethis2" class="trashbox2">\
+			$("body").append('<div id="context-toolbox" class="us-context-toolbox">\
 					<select name="speedAa" id="speedAa" style="border: 1px solid #B3C7E1;width:60px;"></select>\
 					<select name="borderWidth" id="borderWidth" style="border: 1px solid #B3C7E1;"></select>\
 					<button class="ui-button"><span class="ui-icon ui-icon-font-big"/></button>\
@@ -767,7 +767,7 @@ Version:
 					<button class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>
 					*/
 
-	$("#socializethis2").click(function(){ $(".context-menu").hide();});				
+	$("#context-toolbox").click(function(){ $(".context-menu").hide();});				
 //					$("#vp_main_menu_ref").click(function(){
 //  					  $( "#vp_main_menu" ).dialog( "open" );
 //				    });

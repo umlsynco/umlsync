@@ -22,7 +22,7 @@ dm.base.diagram("es.finalstate", dm.es.element, {
          var m = w;
          if (w > h ) 
             m = h;
-         $(self + " .UMLSyncInterface").width(m).height(m);
+         $(self + " .us-interface").width(m).height(m);
 
       });
     }

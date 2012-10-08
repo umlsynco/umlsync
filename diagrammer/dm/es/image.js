@@ -13,7 +13,7 @@ dm.base.diagram("es.image", dm.es.element, {
     },
     '_create': function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" style="width:100%;height:100%;" class="ElementResizeArea">\
+      this.innerHtml = '<div id="' + this.euid + '" style="width:100%;height:100%;" class="us-element-resizable-area">\
         <img id="'+ this.euid + 'img" src="' + this.options['image_path'] +  '" width="' + this.options.width +'px"></img>\
       </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);

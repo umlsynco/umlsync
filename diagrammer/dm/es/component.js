@@ -21,8 +21,8 @@ dm.base.diagram("es.component", dm.es.element, {
     },
     '_create': function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncComponent ElementResizeArea grElement">\
-                        <img src="images/component.png" style="position:absolute;top:3px;right:17px"></img>\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-component us-element-resizable-area grElement">\
+                        <img src="./images/component.png" style="position:absolute;top:3px;right:17px"></img>\
                         <a class="editablefield" style="text-align:left;position:relative;top:30%">&laquo;interface&raquo;</a><br>\
     <a class="editablefield Name" style="text-align:left;position:relative;top:30%">' + this.options.name + '</a>\
                         </div>';
@@ -34,7 +34,7 @@ dm.base.diagram("es.component", dm.es.element, {
       $('#' + this.euid  + '_Border')
          .css('width', this.options.width);
 
-      $('#' + this.euid  + '_Border .UMLSyncComponent')
+      $('#' + this.euid  + '_Border .us-component')
          .css('width', this.options.width).css('height', this.options.height);
     }
 });

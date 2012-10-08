@@ -12,8 +12,8 @@ dm.base.diagram("es.datastore", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncDataStore">\
-                        <table class="ElementResizeArea" cellspacing=0 style="margin:0;"><tr><td style="vertical-align:middle;background-color:gray;border-right:1px solid black;width:27px;"><h3>D</h3></td>\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-datastore">\
+                        <table class="us-element-resizable-area" cellspacing=0 style="margin:0;"><tr><td style="vertical-align:middle;background-color:gray;border-right:1px solid black;width:27px;"><h3>D</h3></td>\
     <td style="vertical-align:middle;"><a class="editablefield">' + this.options.name + '</a></td></tr></table>\
                         </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);

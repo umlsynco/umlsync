@@ -75,13 +75,13 @@ Version:
 
             //$("#" + menuBuilder.diagramId + " #" + options.uid).css({"left":x-pz.left, "top":y - pz.top}).show();
 			$("#" + menuBuilder.diagramId + " #" + options.uid).css({"left":x-pz.left + scrollLeft, "top":y - pz.top + scrollTop}).show();
-			$("#socializethis2").css({"left":x, "top":y-60}).show();
+			$("#context-toolbox").css({"left":x, "top":y-60}).show();
         };
 
         this['Hide'] = function() {
 		    $(".context-menu").hide();
             $("#" + menuBuilder.diagramId + " #" + options.uid).hide();
-			$("#socializethis2").hide();
+			$("#context-toolbox").hide();
         };
     };
     

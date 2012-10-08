@@ -11,11 +11,11 @@ dm.base.diagram("es.signal", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="ElementResizeArea"> <div class="UMLSyncComponent2"></div>\
-      <div id="' + this.euid + '_T" class="UMLSyncSignal Rhdtb1"></div>\
-      <div id="' + this.euid + '_B" class="UMLSyncSignal2 Rhdtb"></div>\
-      <div id="' + this.euid + '_B" class="UMLSyncSignal1 Rhdtb1"></div>\
-      <div id="' + this.euid + '_B" class="UMLSyncSignal12 Rhdtb"></div>\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-element-resizable-area"> <div class="us-signal"></div>\
+      <div id="' + this.euid + '_T" class="us-signal Rhdtb1"></div>\
+      <div id="' + this.euid + '_B" class="us-signal2 Rhdtb"></div>\
+      <div id="' + this.euid + '_B" class="us-signal1 Rhdtb1"></div>\
+      <div id="' + this.euid + '_B" class="us-signal12 Rhdtb"></div>\
       </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
@@ -24,7 +24,7 @@ dm.base.diagram("es.signal", dm.es.element, {
       $('#' + this.euid  + '_Border')
          .css('width', this.options.width);
 
-      $('#' + this.euid  + '_Border .UMLSyncComponent2')
+      $('#' + this.euid  + '_Border .us-signal')
          .css('width', this.options.width).css('height', this.options.height);
 
      var mm = this.options.height, nnn = (mm)/2;
@@ -40,12 +40,12 @@ dm.base.diagram("es.signal", dm.es.element, {
             m1 = h1;
          $("#" + this.id).width(m1).height(m1);
         
-         var w = $("#" + self.euid + " .UMLSyncComponent2").width(),
-             h = $("#" + self.euid + " .UMLSyncComponent2").height();
+         var w = $("#" + self.euid + " .us-signal").width(),
+             h = $("#" + self.euid + " .us-signal").height();
          var m = w;
          if (w > h ) 
             m = h;
-         $("#" + self.euid+ " .UMLSyncComponent2").width(m).height(m);
+         $("#" + self.euid+ " .us-signal").width(m).height(m);
          
          $("#" + self.euid+ " .Rhdtb").css("border-bottom-width", m/2);
          

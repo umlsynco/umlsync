@@ -22,7 +22,7 @@ dm.base.diagram("es.decision_node", dm.es.element, {
        width_b = this.options.size / 2;
        height_b = this.options.size / 2;
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="ElementResizeArea UMLSyncVenn">\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-element-resizable-area us-venn">\
                         <svg width="' + this.options.size + '" height="' + this.options.size + '" version="1.1" xmlns="http://www.w3.org/2000/svg">\
     <g trasform="scale(1,3)">\
     <rect x = "' + x_b + '" y = "' + y_b + '" width = "'+ width_b + '" height = "' + 

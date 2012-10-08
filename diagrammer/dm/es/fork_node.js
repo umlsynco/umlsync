@@ -12,7 +12,7 @@ dm.base.diagram("es.fork_node", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncForkNode ElementResizeArea"></div>';
+      this.innerHtml = '<div id="' + this.euid + '" class="us-forknode us-element-resizable-area"></div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
     },

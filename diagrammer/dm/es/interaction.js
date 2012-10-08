@@ -8,8 +8,8 @@ dm.base.diagram("es.interaction", dm.es.element, {
     },
     _create: function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="UMLSyncInteraction ElementResizeArea">\
-                        <div class="UMLSyncInteractionHead"><a class="editablefield">' + this.options.name + '</a></div>\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-interaction us-element-resizable-area">\
+                        <div class="us-interation-head"><a class="editablefield">' + this.options.name + '</a></div>\
     <ul style="list-style-type:none;padding:0px;" >\
     <li><a class="editablefield">add something</a></li>\
     </ul>\
