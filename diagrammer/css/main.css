@@ -10,14 +10,6 @@ a {
   text-decoration: none;
 }
 
-.UMLSyncClass  div{
-  margin: 0 0px;
-  padding: 0;
-  border: 1px solid black;
-  text-decoration: none;
-  text-align: center;
-}
-
 .ui-resizable-s-l {
   position: absolute;
   width: 10%;
@@ -125,7 +117,7 @@ a {
   cursor: sw-resize;
 }
 
-.extreference {
+.us-element-ref {
   position: absolute;
   width: 10px;
   height: 10px;
@@ -135,7 +127,7 @@ a {
   cursor: sw-resize;
 }
 
-.fitsize {
+.us-element-min {
   position: absolute;
   width: 10px;
   height: 10px;
@@ -145,14 +137,7 @@ a {
   cursor: sw-resize;
 }
 
-.HResizer {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: black;
-}
-
-.UMLSyncClassDiagram {
+.us-diagram {
   border: 1px solid green;
   width: 100%;
   height: 100%;
@@ -162,7 +147,7 @@ a {
   background-image: url('../images/bground_sq.png');
 }
 
-.UMLSyncCanvas {
+.us-canvas {
   border: 1px solid grey;
   background-color: none;
   position: absolute;
@@ -170,66 +155,53 @@ a {
   pointer-events: none;
 }
 
-.UMLSyncCanvasBackground {
+.us-canvas-bg {
   z-index: 0;
   pointer-events: none;
 }
 
-.UMLSyncClassBorder {
+.us-element-border {
   padding: 2px;
   margin: 0px;
   border: 0px solid #97F7A1;
   position: absolute;
   width: 150px;
-  #-webkit-border-radius: 10px;
-  #-moz-border-radius: 10px;
-  #border-radius: 15px;
   z-index: 999;
 }
 
-.UMLSyncClass {
+.us-class{
   padding: 0px;
   border: 0px;
   margin: 0 0px;
-  /*background-color: #87CEEB;*/
   position: relative;
   height: 100%;
-  //box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
-  
-/*
-  -moz-box-shadow: inset 0 0 30px #000000;
-  -webkit-box-shadow: inset 0 0 10px #000000;
-  box-shadow: inset 0 0 10px #000000;
-*/
 }
 
-.UMLSyncClassHeader {
+.us-class div{
+  margin: 0 0px;
+  padding: 0;
+  border: 1px solid black;
+  text-decoration: none;
+  text-align: center;
+}
+
+.us-class-header {
   height: 20px;
   width: 100%;
 }
 
-.UMLSyncStereotypeHeader {
+.us-class-stereotype {
   height: 30px;
   width: 100%;
 }
 
-.UMLSyncClassAttributes {
-  width: 100%;
-  height: 10px;
-}
-
-.UMLSyncClassOperations {
-  width: 100%;
-  height: 10px;
-}
-
-.UMLSyncClass div ul {
+.us-class div ul {
   padding: 0;
   margin: 2px;
   position: relative;
 }
 
-.UMLSyncClass div li {
+.us-class div li {
   margin: 0 0px;
   padding: 0px;
   position: heritage;
@@ -237,19 +209,34 @@ a {
   display: block;
 }
 
-.UMLSyncClass div li a {
+.us-class div li a {
   margin: 0;
   padding: 0;
   display: block;
   position: heritage;
-  color: White; 
+  color: black; 
   text-decoration: none;
 }
 
-.UMLSyncClass div li em {
+.us-class div li em {
   background: #87CEEB;
   display: none;
 }
+
+.us-class-attributes {
+ border: 0px;
+ width: 100%;
+ height: 20px;
+ overflow: hidden;
+}
+
+.us-class-operations {
+ border: 0px;
+ width: 100%;
+ height: 20px;
+ overflow: hidden;
+}
+
 
 .UMLSyncPacketBorder {
   padding: 10px;
@@ -518,20 +505,6 @@ a {
   float: left;
   width: 100%;
   height: 100%;
-}
-
-.ClassAttributes {
- border: 0px;
- width: 100%;
- height: 20px;
- overflow: hidden;
-}
-
-.ClassOperations {
- border: 0px;
- width: 100%;
- height: 20px;
- overflow: hidden;
 }
 
 .UMLSyncComponent {
@@ -1022,4 +995,22 @@ span.cfolder span.dynatree-icon {
 
 .ui-scrollable-tabs .ui-tabs-nav-arrows li a {
     display: block;
+}
+
+
+
+@media print {
+   .diagram-menu, #content-left, .header-nav, #content-bottom {
+		display:none !important;
+   }
+   
+   .us-diagram  {
+		left: 0;
+		width:100%;
+		height:100%;
+   }
+   
+   .us-element-border {
+	 display:block !important;
+   }
 }

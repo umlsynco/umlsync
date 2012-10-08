@@ -312,8 +312,8 @@ Version:
         var diagramMenuBuilder = this;
 
         dm.dm.loader.LoadDiagramMenuData(type, function(json) {
-            var euid = "testmenu-" + dm.dm.dmc,
-			    ulid = "list-item" + dm.dm.dmc;
+            var euid = "element-menu-" + dm.dm.dmc,
+			    ulid = "element-item-" + dm.dm.dmc;
             var innerHtml = "<div id='"+euid+"' class='toobox-item' style='padding-left:0;'><ul id='"+ulid+"' style='overflow:hidden;'>";
             dm.dm.dmc++;
 
@@ -395,7 +395,7 @@ Version:
                 
                 fw['CreateDiagramMenu'](type, innerHtml, function() { 
             $("#"+ulid).listmenu({
-	           selector: "elementSelector",
+	           selector: "element-selector",
 	           selectable: false,
 			   path:"./",
 	           data:elements,
@@ -417,7 +417,7 @@ Version:
             });
 
 			$("#"+ulid).listmenu({
-	           selector: "connectorSelector",
+	           selector: "connector-selector",
 	           selectable: true,
 			   path:"./",
 	           data:connectors,
@@ -440,7 +440,7 @@ Version:
                       e.stopPropagation();
                 // TODO:  diagram.EnableConnectionHelper
                 /*
-      $("#" + diagram.id + " .UMLSyncClassBorder").draggable(
+      $("#" + diagram.id + " .us-element-border").draggable(
           {appendTo: "#" + diagram.id,
                     helper:function(event) {
                         return $("<div id='ConnectionHelper_Border' style='border:solid black;border-width:1px;'> <div id='ConnectionHelper' style='border:solid yellow;border-width:1px;'> [ x ]</div></div>");
@@ -469,7 +469,7 @@ Version:
                       // Remove selection from menu item
                       $('.connectorSelector').removeClass('selected');
                // Enable DND for elements again
-               $("#" + diagram.id + " .UMLSyncClassBorder").draggable( { helper : 'original', start:function(){},  stop:function(){}, drag:function(){
+               $("#" + diagram.id + " .us-element-border").draggable( { helper : 'original', start:function(){},  stop:function(){}, drag:function(){
 
 
 

@@ -4,7 +4,7 @@ body {
   font-family: Arial;
 }
 
-.nav {
+.header-nav {
   border-bottom: 1px solid #DDDDDD;
   list-style: none outside none;
   margin: 0;
@@ -34,7 +34,7 @@ body {
 }
 
 
-.menu_left {
+.header-menu-left {
   border: 0px solid #DDDDDD;
   list-style: none outside none;
   position: absolute;
@@ -44,7 +44,7 @@ body {
   padding: 0;
 }
 
-.menu_left li {
+.header-menu-left li {
   display: inline;
 }
 
@@ -52,7 +52,7 @@ body {
   display: inline;
 }
 
-.menu_right {
+.header-menu-right {
   border: 0px solid #DDDDDD;
   list-style: none outside none;
   position: relative;
@@ -62,7 +62,7 @@ body {
   padding: 0;
 }
 
-.menu_right li {
+.header-menu-right li {
   display: inline;
 }
 

@@ -290,17 +290,17 @@ dm['ctx'] = dm.ms.ctx;
         },
     //@proexp
     _create: function () {
-	//<div class="UMLSyncCanvasBackground" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
+	//<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
 //@ifdef VIEWER
-//        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
-//                <canvas id="' + this.euid +'_Canvas" class="UMLSyncCanvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+//        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
+//                <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
 //                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
-//                <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
+//                <div class="us-canvas-bg" style="width:100%;height:100%;">\
 //                </div></div>');
 //        this.canvas = window.document.getElementById(this.euid +'_Canvas');
 //@else
-        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="UMLSyncClassDiagram" width="100%" height="100%">\
-                <div class="UMLSyncCanvasBackground" style="width:100%;height:100%;">\
+        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
+                <div class="us-canvas-bg" style="width:100%;height:100%;">\
                 </div></div>');
         this.canvas = window.document.getElementById('SingleCanvas');
 //@endif
@@ -314,7 +314,7 @@ dm['ctx'] = dm.ms.ctx;
 
                 var iDiagram = this;
 
-				$("#" + this.euid + ".UMLSyncClassDiagram").scroll(function() {iDiagram.draw();});
+				$("#" + this.euid + ".us-diagram").scroll(function() {iDiagram.draw();});
 //@ifdef EDITOR
 				/*
                 $("#" + this.euid + "_Canvas").droppable({
@@ -1196,7 +1196,7 @@ dm['ctx'] = dm.ms.ctx;
                 poz = " style='top:" +this.options['pageY'] + "px;left:" + this.options['pageX'] + "px;' ";
             }
 
-            $(this.element).wrap('<div id="' + this.euid + '_Border"' + poz + ' class="UMLSyncClassBorder"></div>');
+            $(this.element).wrap('<div id="' + this.euid + '_Border"' + poz + ' class="us-element-border"></div>');
 
             var parrentClass = this.parrent;
             var self = this;
@@ -1352,10 +1352,10 @@ dm['ctx'] = dm.ms.ctx;
                 $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
             })
-            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='extreference' style='z-index:99999;visibility:hidden;'></img>");
+            .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>");
 
-// Feat size no longer supported, potential collizion with another Software
-//            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='fitsize' style='z-index:99999;visibility:hidden;'></img>");
+// Feat size no longer supported, potential collizion with another Software Copyrights :(
+//            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='us-element-min' style='z-index:99999;visibility:hidden;'></img>");
 
             if (this.options['subdiagram']) {
                 $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(function() {

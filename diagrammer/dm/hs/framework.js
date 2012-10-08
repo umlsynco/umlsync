@@ -103,7 +103,7 @@ Version:
 					
 
 					
-            $("#tabs").append('<canvas id="SingleCanvas" class="UMLSyncCanvas" style="left:18px;top:44px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
+            $("#tabs").append('<canvas id="SingleCanvas" class="us-canvas" style="left:18px;top:44px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
 
 			$('#tabs span.ui-test').live('click', function() {
 					var index = $('li', $tabs).index($(this).parent().parent()),
@@ -151,11 +151,11 @@ Version:
 
 	  framework.prototype = {
 		options: {
-			tabRight:"diag",
-			tabLeft:"view",
+			tabRight:"diag-",
+			tabLeft:"view-",
 			tabs:"tabs",
-			top:"header",
-			bottom:"bottom",
+			top:"content-header",
+			bottom:"content-bottom",
 			content:"content"
 		},
 		// Loading the main menu JSON description and put it as argument to callback function 
@@ -286,8 +286,8 @@ Version:
 				    canvas.top = s.y;
 				  }
 				  canvas.height = hhh - 11; // 11-is scroll element size
-				  if ($(".UMLSyncClassDiagram").length) {
-			        canvas.width = ($(".UMLSyncClassDiagram").width() - 12);
+				  if ($(".us-diagram").length) {
+			        canvas.width = ($(".us-diagram").width() - 12);
 				  } else {
 				    canvas.width = wd - 40 - 12;
 				  }
@@ -305,14 +305,14 @@ Version:
 				var canvas = window.document.getElementById('SingleCanvas');
 				if (canvas) {
 				  canvas.width = $("#content").width() - $("#content-left").width() - 40;
-				  if ($(".UMLSyncClassDiagram").length) {
-			        canvas.width = ($(".UMLSyncClassDiagram").width() - 12);
+				  if ($(".us-diagram").length) {
+			        canvas.width = ($(".us-diagram").width() - 12);
 				  } else {
 				    canvas.width = wd - 40 - 12;
 				  }
 				}
 			}
-			var tabsHeight = $(window).height() - $("#header").outerHeight(true) - 8 - $("#content-bottom").outerHeight(true);
+			var tabsHeight = $(window).height() - $("#content-header").outerHeight(true) - 8 - $("#content-bottom").outerHeight(true);
 
 			$("#tabs").width($("#content").width() - $("#content-left").width() - 13);//.height(tabsHeight);
 			$("#tabs .ui-tabs-panel") //.height(tabsHeight-45)
@@ -326,15 +326,12 @@ Version:
 		'addView2': function(name, IView) {
 			//TODO: don't load view if name/euid is reserved yet !
 			//      it could help to prevent some mess with localhost views
-			var id = 'diagramTree-'+ this.left_counter;
+			var id = this.options.tabLeft+ this.left_counter;
 			this.left_counter++;
 			$("#treetabs").append("<div id='"+id+"'></div>");
 			id = "#" + id;
 			$("#treetabs").tabs("add", id, name);
 			var $treetabs = $("#treetabs");
-		setTimeout(function(){
-			$treetabs.append(jQuery(id));
-		},1000)
 		
 			$(id).append("<div id='tree'></div>");
 			var self = this;
@@ -501,7 +498,7 @@ Version:
 		},
 		//@proexp
 		addView: function(name, options, toolbox) {
-			var id = '#diagramTree-'+ this.left_counter;
+			var id = "#" + this.options.tabLeft+ this.left_counter;
 			this.left_counter++;
 			$("#treetabs").tabs("add", id, name);
 			$(id).append("<div id='tree'></div>");

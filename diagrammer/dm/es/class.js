@@ -24,12 +24,12 @@ dm.base.diagram("es.class", dm['es']['element'], {
     },
 //@ifdef EDITOR
     'addMethod': function(desc) {
-       $('<li><a class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .ClassOperations #sortable").find("a").editable();
-       $("#" + this.euid + " #sortable").sortable("refresh");
+       $('<li><a class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable();
+       $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh");
     },
     'addField': function(desc) {
-       $('<li><a class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .ClassAttributes #sortable-atr").find("a").editable();
-       $("#" + this.euid + " #sortable-atr").sortable("refresh");
+       $('<li><a class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable();
+       $("#" + this.euid + ".us-class-attributes .us-sortable").sortable("refresh");
     },
     '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
@@ -40,20 +40,20 @@ dm.base.diagram("es.class", dm['es']['element'], {
        this.options['height'] = $("#" + this.euid + "_Border").height();
 
        // Height of attributes and operations. Width is the same for all components
-       this.options['height_a'] = $("#" + this.euid + "_Border .ClassAttributes").height();
-       this.options['height_o'] = $("#" + this.euid + "_Border .ClassOperations").height();
+       this.options['height_a'] = $("#" + this.euid + "_Border .us-class-attributes").height();
+       this.options['height_o'] = $("#" + this.euid + "_Border .us-class-operations").height();
 
-       this.options['name'] = "" + $("#" + this.euid + " .ClassName" ).html();
-       this.options['aux'] = $("#" + this.euid + " .UMLSyncEntityHead .ClassAux" ).html();
+       this.options['name'] = "" + $("#" + this.euid + " .us-class-name" ).html();
+       this.options['aux'] = $("#" + this.euid + " .us-class-header .us-class-aux" ).html();
        this.options['operations'] = new Array();
        this.options['attributes'] = new Array();
        var self = this;
        
-       $("#" + this.euid + " .ClassOperations .operation").each(function(i) {
+       $("#" + this.euid + " .us-class-operations .operation").each(function(i) {
          self.options['operations'].push($(this).html());
        });
 
-       $("#" + this.euid + " .ClassAttributes .attribute").each(function(i) {
+       $("#" + this.euid + " .us-class-attributes .attribute").each(function(i) {
          self.options['attributes'].push($(this).html());
        });
     },
@@ -78,13 +78,13 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       // HTML for class structure creation
       this.innerHtmlClassInfo = '\
-        <div id="' + this.euid + '" class="UMLSyncClass grElement">\
-        <div class="UMLSyncClassHeader">\
-        <a class="editablefield ClassName">' + this.options['name'] + '</a><br>\
-        <a class="editablefield ClassAux">'+ this.aux +'</a>\
+        <div id="' + this.euid + '" class="us-class grElement">\
+        <div class="us-class-header">\
+        <a class="editablefield us-class-name">' + this.options['name'] + '</a><br>\
+        <a class="editablefield us-class-aux">'+ this.aux +'</a>\
         </div>\
-        <div class="ClassAttributes"><ul id="sortable-atr">' +  attributes + '</ul></div>\
-        <div class="ClassOperations ElementResizeArea"><ul id="sortable">' +  operations + '</ul></div>\
+        <div class="us-class-attributes"><ul class="us-sortable">' +  attributes + '</ul></div>\
+        <div class="us-class-operations ElementResizeArea"><ul class="us-sortable">' +  operations + '</ul></div>\
         </div>\
       ';
       $("#" + this['parrent'].euid).append(this.innerHtmlClassInfo);
@@ -96,10 +96,10 @@ dm.base.diagram("es.class", dm['es']['element'], {
     $('#' + this.euid  + '_Border')
          .css('width', this.options['width']).css('height', this.options['height']);
     if (this.options.height_o)
-      $('#' + this.euid  + '_Border .ClassOperations').css('height', this.options['height_o']);
+      $('#' + this.euid  + '_Border .us-class-operations').css('height', this.options['height_o']);
 
     if (this.options['height_a'])
-        $('#' + this.euid  + '_Border .ClassAttributes').css('height', this.options['height_a']);
+        $('#' + this.euid  + '_Border .us-class-attributes').css('height', this.options['height_a']);
  
  //@ifdef EDITOR
       if (this['parrent'].options['editable']) {
@@ -107,27 +107,27 @@ dm.base.diagram("es.class", dm['es']['element'], {
          var border = "#"+this.euid + "_Border";
          var self = this;
          // stop-function is a fix for attributes area which became not resizizable with black points after internal resize usage
-         $("#"+this.euid + " .ClassAttributes").resizable({'handles': 's-l',
+         $("#"+this.euid + " .us-class-attributes").resizable({'handles': 's-l',
 		                                                   'alsoResize': border,
 		                                                   'stop': function(event, ui) {
-                                                                $("#"+self.euid + " .ClassAttributes").css({'width':"100%"}); } });
-/*         $("#"+this.euid + " .ClassOperations").resizable({'handles': 's-l', 'alsoResize': border,
+                                                                $("#"+self.euid + " .us-class-attributes").css({'width':"100%"}); } });
+/*         $("#"+this.euid + " .us-class-operations").resizable({'handles': 's-l', 'alsoResize': border,
 														   'resize': function(event, ui) { if ($(border).width() < ui.size.width) $(this).width($(border).width());}
 											   
 		 });
 */         
-         $("#" + this.euid + " #sortable").sortable().disableSelection();
-         $("#" + this.euid + " #sortable-atr").sortable().disableSelection();
+         $("#" + this.euid + " .us-class-operations .us-sortable").sortable().disableSelection();
+         $("#" + this.euid + " .us-class-attributes .us-sortable").sortable().disableSelection();
       }
 //@endif
     },
 //@ifdef EDITOR
     'getName': function() {
-      this.options['name'] = "" + $("#" + this.euid + " .ClassName" ).html();
+      this.options['name'] = "" + $("#" + this.euid + " .us-class-name" ).html();
       return this.options['name'];
     },
     'getAux': function() {
-      return $("#" + this.euid + " .UMLSyncEntityHead .ClassAux" ).html();
+      return $("#" + this.euid + " .us-class-header .us-class-aux" ).html();
     },
 //@endif
     'ec': 0
