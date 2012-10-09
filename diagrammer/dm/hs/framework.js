@@ -59,8 +59,10 @@ Version:
 			// they should be replaced on valid values
 			var self = this;
 			self.updateFrameWork(true); // $(window).trigger("resize");
-			$(window).resize(function() {
-				self.updateFrameWork(true);
+			$(window).resize(function(e) {
+			  if ((e.target === window) || (e.target == window)) {
+  			    self.updateFrameWork(true);
+			  }
 			});
 
 			var $tabs = $("#tabs")
@@ -154,8 +156,8 @@ Version:
 			tabRight:"diag-",
 			tabLeft:"view-",
 			tabs:"tabs",
-			top:"content-header",
-			bottom:"content-bottom",
+			top:"#content-header",
+			bottom:"#content-bottom",
 			content:"content"
 		},
 		// Loading the main menu JSON description and put it as argument to callback function 
@@ -259,7 +261,7 @@ Version:
 				// header border 1px => total 2px (border top, border-bottom)
 				// content border 1px => total 2px (border top, border-bottom)
 				// and -1 to get real height
-				var hhh = $(window).height() - $("#" + this.options.top).outerHeight(true) - 5 - $("#"+this.options.content+"-bottom").outerHeight(true);
+				var hhh = $(window).height() - $(this.options.top).outerHeight(true) - 5 - $("#"+this.options.content+"-bottom").outerHeight(true);
 
 				var $ch1 = $("#" + this.options.content).height(hhh)  // set height of middle:  #content
 				.children("DIV").height(hhh)                          // #content-left; #content-right; #content-left-right-resize;  No border for this items available
@@ -312,13 +314,13 @@ Version:
 				  }
 				}
 			}
-			var tabsHeight = $(window).height() - $("#content-header").outerHeight(true) - 8 - $("#content-bottom").outerHeight(true);
+			var tabsHeight = $(window).height() - $(this.options.top).outerHeight(true) - 8 - $(this.options.bottom).outerHeight(true);
 
 			$("#tabs").width($("#content").width() - $("#content-left").width() - 13);//.height(tabsHeight);
 			$("#tabs .ui-tabs-panel") //.height(tabsHeight-45)
 			.children("DIV")
 			.width($("#content").width() - $("#content-left").width() - 32);
-			//.height($(window).height() - $("#content").position().top - 55 -  $("#content-bottom").height());
+			//.height($(window).height() - $("#content").position().top - 55 -  $(this.options.bottom).height());
 			//$("#treetabs .ui-tabs-panel").height(tabsHeight-45);
 
 		},
@@ -536,7 +538,7 @@ Version:
 		},
         //@proexp
 		'addDiagram': function(baseType, type, name, options) {
-			var tabname = this.options.tabRight + "-" + this.counter;
+			var tabname = this.options.tabRight + this.counter;
 			
 			$("#" + this.options.tabs)
 			.append('<div id="'+tabname+'"></div>')
