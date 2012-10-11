@@ -205,7 +205,7 @@ Version:
 			dm.dm.loader.LoadMainMenuData(function(data) {
 			   dm.dm.dialogs['NewDiagramDialog'](data);
 			});
-			dm.dm.dialogs['NewProject']();
+			dm.dm.dialogs['NewFolder']();
 		},
 		//@proexp
 		'activeDiagram':function() {
@@ -526,6 +526,12 @@ Version:
 			}
 			return id;
 		},
+		getActiveView: function() {
+			if (this.views["cp"] && this.views["cp"].view) {
+			  return this.views["cp"].view;
+			}
+			return null;
+		},
         //@proexp
 		'checkDiagramName': function(name) {
 			var foundName = false;
@@ -549,17 +555,17 @@ Version:
 			if (type == "sequence")
 				baseType = "sequence";
 			var self = this;
+			var vid = options.viewid;
 			dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
 					, function(obj) {
 				self.diagrams[tabname] = obj;
+				self.views[vid].view.save(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
 			});
 			this.updateFrameWork(true);
 		},
 		//@proexp
 		'saveDiagram': function(viewId, path, data, description) {
 		    var self = this;
-			alert(data);
-			alert(viewId);
 		    if (!self.views || !self.views[viewId] || !self.views[viewId].view) {
 			  alert("View: " + viewId + " was not initialize.");
 			  return;
@@ -576,7 +582,7 @@ Version:
 				for (var r in self.diagrams) {
 				  var d = self.diagrams[r];
 				  if ((d.options.viewid == viewid)
-				    && (d.options.fullname == absPath)) {
+				    && (d.options.fullname == absPath || ((d.options.fullname + ".umlsync") == absPath))) {
 					$("#tabs").tabs('select', d.parrent);
 					return;
 				  }

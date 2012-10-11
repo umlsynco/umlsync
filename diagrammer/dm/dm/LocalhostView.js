@@ -43,6 +43,9 @@ Version:
 			}
 			});
 		},
+		getActivePath: function() {
+			return self.activePath || "/";
+		},
 		'loadDiagram':function(node, callback) {
 		   $.ajax({
 		     url: urlArg + '/open?path='+ node.getAbsolutePath(),
@@ -61,15 +64,21 @@ Version:
                 'url': urlArg +'/save',
                 'dataType': 'jsonp',
                 'data': {'diagram':data, 'path': path, 'description':description},
-                'success': function(ddd) {alert("DONE COOL !!!!" + ddd);}
+                'success': function(ddd) {
+					var dt = $("#view-2 #tree").dynatree("getTree");
+						dt.loadKeyPath(path, function(t,c,s) {}, "title");
+				}
             });
 		},
-		newfolder:function(path,name,callback) {
-			$.ajax({
+		newfolder:function(path,callback) {
+		   dm.dm.dialogs['Activate']("new-project-dialog", function(name) {
+			  $.ajax({
 				type: 'GET',
-				url: urlArg + '/newfolder?' + path +'key='+ name,
+				url: urlArg + '/newfolder?path=' + path +'&key='+ name,
 				dataType: 'jsonp',
 				success: function(data) {if (callback) callback(data);}
+			  });
+			
 			});
 		},
 		'ctx_menu':
@@ -97,12 +106,6 @@ Version:
 					//val.substr(val.lastIndexOf('/'))
 					//$("#vp_main_menu input").val(node.parent.getAbsolutePath() + '/' + val.substr(val.lastIndexOf('/')));
 				}
-			} else {
-				// Ugly hack for diagram selection menu
-				var val = $("#vp_main_menu input").val();
-				val.substr(val.lastIndexOf('/'))
-				dm.dm.fw.views[uid].active = node.getAbsolutePath();
-				$("#vp_main_menu input").val(node.getAbsolutePath() + val.substr(val.lastIndexOf('/')));
 			}
 		},
 		},
@@ -114,13 +117,19 @@ Version:
 		{
 			title: "New folder",
 			click: function(node) {
-				this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
+				self.newfolder(node.getAbsolutePath(), function(desc) {node.addChild(desc);});
+			},
+		},
+		{
+			title: "New diagram",
+			click: function(node) {
+			    dm.dm.dialogs['Activate']("new-diagram-dialog");
 			},
 		},
 		{
 			title:"Remove",
 			click: function(node) {
-				this.remove(node.getAbsolutePath(), function() {node.remove();});
+				self.remove(node.getAbsolutePath(), function() {node.remove();});
 			}
 		}
 		],
@@ -443,6 +452,7 @@ Version:
 		}, // onLazyRead
 		onActivate: function(node) {
 			if (!node.data.isFolder) {
+				self.activePath = node.getAbsolutePath();
 				if ($("#tab-" + node.data.key).length == 0) {
 					if ('diagramclass' == node.data.addClass)
 						dm.dm.fw.loadDiagram(self.euid, node);

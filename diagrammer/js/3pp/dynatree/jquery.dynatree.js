@@ -1477,7 +1477,7 @@ DynaTreeNode.prototype = {
 	/**
 	 * Make sure the node with a given key path is available in the tree.
 	 */
-	_loadKeyPath: function(keyPath, callback) {
+	_loadKeyPath: function(keyPath, callback, field) {
 		var tree = this.tree;
 		tree.logDebug("%s._loadKeyPath(%s)", this, keyPath);
 		if(keyPath === ""){
@@ -1491,11 +1491,23 @@ DynaTreeNode.prototype = {
 
 		for(var i=0, l=this.childList.length; i < l; i++){
 			var child = this.childList[i];
-			if( child.data.key === seg ){
+			if( child.data[field] === seg ){
 				if(segList.length === 0) {
 					// Found the end node
 					callback.call(tree, child, "ok");
 
+				}else if(segList.length === 1 && child.data.isLazy && field == "title"){
+				    child.reloadChildren(function(node, isOk){
+						// After loading, look for direct child with that key
+						if(isOk){
+							tree.logDebug("%s._loadKeyPath(%s) -> reloaded %s.", node, keyPath, node);
+							callback.call(tree, child, "loaded");
+							node._loadKeyPath(segList.join(tree.options.keyPathSeparator), callback, field);
+						}else{
+							tree.logWarning("%s._loadKeyPath(%s) -> reloadChildren() failed.", self, keyPath);
+							callback.call(tree, child, "error");
+						}
+					});
 				}else if(child.data.isLazy && (child.childList === null || child.childList === undefined)){
 					tree.logDebug("%s._loadKeyPath(%s) -> reloading %s...", this, keyPath, child);
 					var self = this;
@@ -1504,7 +1516,7 @@ DynaTreeNode.prototype = {
 						if(isOk){
 							tree.logDebug("%s._loadKeyPath(%s) -> reloaded %s.", node, keyPath, node);
 							callback.call(tree, child, "loaded");
-							node._loadKeyPath(segList.join(tree.options.keyPathSeparator), callback);
+							node._loadKeyPath(segList.join(tree.options.keyPathSeparator), callback, field);
 						}else{
 							tree.logWarning("%s._loadKeyPath(%s) -> reloadChildren() failed.", self, keyPath);
 							callback.call(tree, child, "error");
@@ -1515,7 +1527,7 @@ DynaTreeNode.prototype = {
 				} else {
 					callback.call(tree, child, "loaded");
 					// Look for direct child with that key
-					child._loadKeyPath(segList.join(tree.options.keyPathSeparator), callback);
+					child._loadKeyPath(segList.join(tree.options.keyPathSeparator), callback, field);
 				}
 				return;
 			}
@@ -2410,8 +2422,10 @@ DynaTree.prototype = {
 		return dtnode;
 	},
 
-	loadKeyPath: function(keyPath, callback) {
+	loadKeyPath: function(keyPath, callback, field) {
 		var segList = keyPath.split(this.options.keyPathSeparator);
+		field = field || "key";
+
 		// Remove leading '/'
 		if(segList[0] === ""){
 			segList.shift();
@@ -2422,7 +2436,7 @@ DynaTree.prototype = {
 			segList.shift();
 		}
 		keyPath = segList.join(this.options.keyPathSeparator);
-		return this.tnRoot._loadKeyPath(keyPath, callback);
+		return this.tnRoot._loadKeyPath(keyPath, callback, field);
 	},
 
 	selectKey: function(key, select) {

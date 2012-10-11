@@ -1254,7 +1254,6 @@ dm['ctx'] = dm.ms.ctx;
                     $(this).css("left", 0);
                     ui.position.left = 0;
                 }
-                $.log("D STOP:" + self.euid);
                 parrentClass.onDragStop(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
 
                 if (self.options['droppable']) {
