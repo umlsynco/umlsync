@@ -8,14 +8,17 @@
   <script src="http://raw.github.com/michael/github/master/github.js"></script>
   <script>
   $(document).ready(function() {
+    username = "{{ user }}";
+    access_token = "{{access_token}}";
     var github = new Github({
-      token: "{{access_token}}",
+      token: access_token,
       auth: "oauth"
     });
     var user = github.getUser();
-    var repo = github.getRepo("kalaidin", "octotest");
+    var repo = github.getRepo(username, "octotest");
     repo.show(function(err, repo) { console.log(repo) });
-    repo.write('master', 'path/test.txt', 'Test Commit', 'Test Commit', function(err) {});
+    //repo.write('master', 'path/test.txt', 'Test Commit', 'Test Commit', function(err) {});
+    repo.getTree('master?recursive=true', function(err, tree) { console.log(tree) });
   });
 </script>
 </head>
