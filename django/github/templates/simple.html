@@ -13,9 +13,9 @@
       auth: "oauth"
     });
     var user = github.getUser();
-    //user.repos(function(err, repos) { console.log(repos)});
-    var repo = github.getRepo("kalaidin", "umlsync");
-    repo.show(function(err, repo) { console.log(repo)});
+    var repo = github.getRepo("kalaidin", "octotest");
+    repo.show(function(err, repo) { console.log(repo) });
+    repo.write('master', 'path/test.txt', 'Test Commit', 'Test Commit', function(err) {});
   });
 </script>
 </head>
