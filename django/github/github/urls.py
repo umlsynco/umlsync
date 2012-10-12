@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls.defaults import *
 
 # from django.views.generic.simple import redirect_to
 
@@ -11,9 +11,9 @@ urlpatterns = patterns('',
 #    url(r'^login/$', redirect_to, {'url': 'login/github'}),
     # Examples:
 
-    url(r'^$', 'editor.views.editor', name='index.html'),
-    url(r'^editor/', 'editor.views.editor2', name='editor.html'),
-    url(r'^login-error/', 'editor.views.error', name='editor.html'),
+    url(r'^$', 'editor.views.editor', name='simple.html'),
+    url(r'^editor/', 'editor.views.editor2', name='simple.html'),
+    url(r'^login-error/', 'editor.views.error', name='simple.html'),
     # url(r'^github/', include('github.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

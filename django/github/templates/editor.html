@@ -236,7 +236,7 @@
     <ul class="menu_right">
 {% if user.is_authenticated %}
            <li> {{ user.username }}</li>
-           <li> {{ user.access_token }} token </li>
+           <li> {{ access_token }} token </li>
 
 {% else %}
             <li><a href="http://umlsync.org/login/">log in </a></li>

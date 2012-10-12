@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>UML Framework: UMLSync</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="http://raw.github.com/michael/github/master/lib/underscore-min.js"></script>
+  <script src="http://raw.github.com/michael/github/master/github.js"></script>
+  <script>
+  $(document).ready(function() {
+    var github = new Github({
+      token: "{{access_token}}",
+      auth: "oauth"
+    });
+    var user = github.getUser();
+    //user.repos(function(err, repos) { console.log(repos)});
+    var repo = github.getRepo("kalaidin", "umlsync");
+    repo.show(function(err, repo) { console.log(repo)});
+  });
+</script>
+</head>
+<body>
+User: {{ user }} <br>
+Access token: {{ access_token }}
+</body>
+</html>
