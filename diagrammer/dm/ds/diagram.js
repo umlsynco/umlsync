@@ -694,6 +694,20 @@ dm['ctx'] = dm.ms.ctx;
     },
 //@endif
     //@proexp
+    removeSelectedElements: function() {
+        var el = this.elements;
+        for (var k in el) {
+            if (el[k].options.selected) {
+			    var euid = el[k].euid;
+                this.removeConnector(el[k].euid, undefined);
+				this.removeConnector(undefined, el[k].euid);
+                delete el[k];
+                el.splice(k, 1);
+                $('#' +  euid + '_Border').remove();
+            }
+        }
+    },
+    //@proexp
     removeElement: function(euid) {
         var el = this.elements;
         for (var k in el) {
@@ -704,7 +718,6 @@ dm['ctx'] = dm.ms.ctx;
                 break;
             }
         }
-
     },
 //@ifdef EDITOR
     /**
@@ -724,7 +737,6 @@ dm['ctx'] = dm.ms.ctx;
                     for (var i in this.connectors[c].lables) {
                         this.connectors[c].lables[i].remove();
                     }
-                    $.log("REMOVE: " + c);
                     delete this.connectors[c];
                     this.connectors.slice(c,1);
                 }
@@ -1188,6 +1200,8 @@ dm['ctx'] = dm.ms.ctx;
             var p = $("#" + this.euid + "_Border").position();
             this.options['pageX'] = p.left;
             this.options['pageY'] = p.top;
+            this.options['left'] = p.left;
+            this.options['top'] = p.top;
             this.options['width'] = $("#" + this.euid + "_Border").width();
             this.options['height'] = $("#" + this.euid + "_Border").height();
             this.options['name'] = $("#" + this.euid + " .Name").html();

@@ -638,15 +638,22 @@ Version:
                      alert("KeyKode: which = " + e.which  + " keyCode=" + e.keyCode);
                }
 				 */
-				if (e.keyCode == 46) {
-					if (fw.diagrams[fw.selectedDiagramId])  {
-						if (fw.diagrams[fw.selectedDiagramId].clickedElement != undefined) {
-							fw.diagrams[fw.selectedDiagramId].clickedElement._update();
-							$.clippy = fw.diagrams[fw.selectedDiagramId].clickedElement.getDescription();
+				if (e.keyCode == 46) { // Del
+				    if (($(".editablefield input").length == 0) && (fw.diagrams[fw.selectedDiagramId] != undefined))  {
+						if (fw.diagrams[fw.selectedDiagramId]) {
+							//fw.diagrams[fw.selectedDiagramId].clickedElement._update();
+							//$.clippy = fw.diagrams[fw.selectedDiagramId].clickedElement.getDescription();
 							// Have to think about conectors
-							$("#" + fw.diagrams[fw.selectedDiagramId].clickedElement.euid + "_Border").remove();
+							fw.diagrams[fw.selectedDiagramId].removeSelectedElements();
+							//$("#" + fw.diagrams[fw.selectedDiagramId].clickedElement.euid + "_Border").remove();
 						}
 					}
+				} else if (e.keyCode == 27) { // Esc
+				  var e = jQuery.Event("blur");
+				  e.apply = false;            // Do not apply changes
+ 				  $(".editablefield input").trigger(e);
+				} else if (e.keyCode == 13) { // Enter
+ 				  $(".editablefield input").trigger('blur');
 				} else if (e.ctrlKey) {
 					switch (e.charCode) {
 					case 97:// Handle Ctl-A
@@ -747,16 +754,6 @@ Version:
 				if (e.keyCode == 17) {
 					$.log("CTL Up: " + e.keyCode);
 					fw.CtrlDown = false;
-				}
-
-				if (e.keyCode == 27) {
-				  var e = jQuery.Event("blur");
-				  e.apply = false;
- 				  $(".editablefield input").trigger(e);
-				}
-
-				if (e.keyCode == 13) {
- 				  $(".editablefield input").trigger('blur');
 				}
 			}
 			);
