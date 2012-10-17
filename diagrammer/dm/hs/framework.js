@@ -630,22 +630,13 @@ Version:
 		initializeKeyHandler: function(Loader) {
 //@ifdef EDITOR
 			var fw = this;
-			$(window).bind( 'keypress', function(e) {
-				var mon = [99,118,120,121,122,115];
-				/* 
-               for (p in mon) {
-                   if (mon[p] == e.charCode)
-                     alert("KeyKode: which = " + e.which  + " keyCode=" + e.keyCode);
-               }
-				 */
-				if (e.keyCode == 46) { // Del
+			$(window).keydown(function(e) {
+				if (e.ctrlKey && e.keyCode == 17) {
+					fw.CtrlDown = true;
+				} else if (e.keyCode == 46) { // Del
 				    if (($(".editablefield input").length == 0) && (fw.diagrams[fw.selectedDiagramId] != undefined))  {
 						if (fw.diagrams[fw.selectedDiagramId]) {
-							//fw.diagrams[fw.selectedDiagramId].clickedElement._update();
-							//$.clippy = fw.diagrams[fw.selectedDiagramId].clickedElement.getDescription();
-							// Have to think about conectors
 							fw.diagrams[fw.selectedDiagramId].removeSelectedElements();
-							//$("#" + fw.diagrams[fw.selectedDiagramId].clickedElement.euid + "_Border").remove();
 						}
 					}
 				} else if (e.keyCode == 27) { // Esc
@@ -655,34 +646,30 @@ Version:
 				} else if (e.keyCode == 13) { // Enter
  				  $(".editablefield input").trigger('blur');
 				} else if (e.ctrlKey) {
-					switch (e.charCode) {
-					case 97:// Handle Ctl-A
-						$.log("Ctl-A");
-
+					switch (e.keyCode) {
+					case 65:// Handle Ctl-A
 						if (fw.diagrams[fw.selectedDiagramId]) {
 							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", true);
 						}
 						e.preventDefault();
 						break;                       
 
-					case 99: // Handle Ctl-C
+					case 67: // Handle Ctl-C
 						// 1. Get focus manager
 						// 2. if element ? => copy it on clipboard
 						//                          stop propagate
-						$.log("Ctl-C");
 						if (fw.diagrams[fw.selectedDiagramId])  {
 							$.clippy = fw.diagrams[fw.selectedDiagramId].getDescription("selected", true);
 						} else {
 							$.clippy = undefined;
 						}
 						break;
-					case 120:
+					case 88:
 						// Handle Ctl-X
 						// 1. Get focus manager
 						// 2. if element ? => copy it on clipboard
 						//                          stop propagate
 						// 3. Remove element
-						$.log("Ctl-X");
 						if (fw.diagrams[fw.selectedDiagramId])  {
 							if (fw.diagrams[fw.selectedDiagramId].clickedElement != undefined) {
 								fw.diagrams[fw.selectedDiagramId].clickedElement._update();
@@ -695,12 +682,10 @@ Version:
 							$.clippy = undefined;
 						}
 						break;
-					case 118:// Handle Ctl-V
+					case 86:// Handle Ctl-V
 						// 1. Get focus manager
 						// 2. if diagram ? => try copy element from clipboard
 						//                          stop propagate if success
-						$.log("Ctl-V");
-
 						if (($.clippy)  && (fw.diagrams[fw.selectedDiagramId])) {
 							var obj = $.parseJSON($.clippy),
 							es = obj["elements"],
@@ -716,25 +701,23 @@ Version:
 							$.clippy = undefined;
 						}
 						break;
-					case 122:// Handle Ctl-Z
+					case 90:// Handle Ctl-Z
 						// 1. Get focus manager
 						// 2. if diagram => get operation sequence manager
 						//                       -> goBack()
-						$.log("Ctl-Z");
 						if (fw.diagrams[fw.selectedDiagramId])  {
 							fw.diagrams[fw.selectedDiagramId].revertOperation();
 						}
 						break;
-					case 121:// Handle Ctl-Y
+					case 89:// Handle Ctl-Y
 						// 1. Get focus manager
 						// 2. if diagram => get operation sequence manager
 						//                       -> goForward()
-						$.log("Ctl-Y");
 						if (fw.diagrams[fw.selectedDiagramId])  {
 							fw.diagrams[fw.selectedDiagramId].repeatOperation();
 						}
 						break;
-					case 120:// Handle Ctl-S
+					case 83:// Handle Ctl-S
 						// 1. Get focus manager
 						// 2. if diagram =>  Store the current diagram
 						//                       -> goBack()
@@ -743,16 +726,10 @@ Version:
 						break;
 					}
 				}
-			} ).keydown(function(e) {
-				if (e.ctrlKey && e.keyCode == 17) {
-					//$.log("CTL Down: " + e.keyCode);
-					fw.CtrlDown = true;
-				}
 			}
 			)
 			.keyup(function(e) {
 				if (e.keyCode == 17) {
-					$.log("CTL Up: " + e.keyCode);
 					fw.CtrlDown = false;
 				}
 			}
