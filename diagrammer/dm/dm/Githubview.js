@@ -123,7 +123,7 @@ Version:
             },
 		    'save': function(path, data, description) {
 			var content = data;
-			alert("SAVE:" + data);
+			/*alert("SAVE:" + data);
 			//if (typeof(content) === "string") {
 content = {
 "content": content,
@@ -134,7 +134,7 @@ content = {
 			    if (err) { alert("ERR:" + err);} else 
 			    alert("SHA:" + res.sha);
 			}); 
-			
+			*/
   /*            $.ajax({"url":"https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs?access_token=" + token,
 		      "type":"post",
 		      "data":{"content" : data,

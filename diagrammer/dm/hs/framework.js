@@ -113,9 +113,12 @@ Version:
 					// TODO: Add dialog "Would you like to store diagram ?"
 					if (self.diagrams && self.diagrams[ahref]) {
 //@ifdef EDITOR
+						if (self.diagrams[ahref].isModified()) {
+						  alert("SAVE:");
 					  	  var diagram = self.diagrams[ahref];
 					      var data = diagram.getDescription();
                           self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
+						}
 //@endif
 						delete self.diagrams[ahref];
 					}
@@ -527,8 +530,8 @@ Version:
 			return id;
 		},
 		getActiveView: function() {
-			if (this.views["cp"] && this.views["cp"].view) {
-			  return this.views["cp"].view;
+			if (this.views["pe"] && this.views["pe"].view) {
+			  return this.views["pe"].view;
 			}
 			return null;
 		},
@@ -744,6 +747,16 @@ Version:
 				if (e.keyCode == 17) {
 					$.log("CTL Up: " + e.keyCode);
 					fw.CtrlDown = false;
+				}
+
+				if (e.keyCode == 27) {
+				  var e = jQuery.Event("blur");
+				  e.apply = false;
+ 				  $(".editablefield input").trigger(e);
+				}
+
+				if (e.keyCode == 13) {
+ 				  $(".editablefield input").trigger('blur');
 				}
 			}
 			);

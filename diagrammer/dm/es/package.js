@@ -14,6 +14,8 @@ dm.base.diagram("es.package", dm.es.element, {
        var p = $("#" + this.euid + "_Border").position();
        this.options.pageX = p.left;
        this.options.pageY = p.top;
+       this.options.left = p.left;
+       this.options.top = p.top;
        this.options.width = $("#" + this.euid + "_Border").width();
        this.options.height = $("#" + this.euid + "_Border").height();
 
@@ -41,43 +43,43 @@ dm.base.diagram("es.package", dm.es.element, {
       this.element = $("#"  + this.euid);
     },
     '_init': function() {
-      $('#' + this.euid  + '_Border')
-         .css('width', this.options.width);
-
-      $('#' + this.euid  + '_Border .us-package-body')
-         .css('width', this.options.width);
-
-      if (this.options['height_b'])
-        $('#' + this.euid  + '_Border .us-package-body').
-          css('height', this.options['height_b']);
-          
-      if (this.options.color) {
-          $("#" + this.euid + " .us-package-tab").css("background-color", this.options.color);
-            $("#" + this.euid + " .us-package-body").css("background-color", this.options.color);
-      }
-
-      if (this.options["z-index"])
-          this.element.css("z-index", this.options["z-index"]);
+	  this._setOptions(this.options);
     },
-    '_setOption': function( key, value ) {
+    '_setOption2': function( key, value ) {
         this.options[ key ] = value;
-        if (key == "color") {
+
+        if (key == "width") {
+		  $('#' + this.euid  + '_Border').css('width', this.options.width);
+          $('#' + this.euid  + '_Border .us-package-body').css('width', value);
+		  return true;
+        } else if (key == "height_b") {
+          $('#' + this.euid  + '_Border .us-package-body').css('height', value);
+		  return true;
+        }  else if (key == "height") {
+          $('#' + this.euid  + '_Border').css('height', value);
+		  return true;
+        } else if (key == "color") {
             $("#" + this.euid + " .us-package-tab").css("background-color", value);
             $("#" + this.euid + " .us-package-body").css("background-color", value);
+			return true;
         } else if (key == "borderwidth") {
             $("#" + this.euid + " .us-package-tab").css("border-width", value);
             $("#" + this.euid + " .us-package-body").css("border-width", value);
+			return true;
         } else if (key == "font-family") {
           $("#" + this.euid).css(key, value);
+		  return true;
         } else if (key == "selected") {
           if (value)
            $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
           else
            $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
+          return true;
         } if (key == "z-index") {
           $("#" + this.euid + '_Border ').css(key, value);
+		  return true;
         }
-        return this;
+        return false;
     }
 });
 //@aspect

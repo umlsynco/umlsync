@@ -58,7 +58,7 @@ Version:
             <fieldset><div id="selectable-list" style="scroll:auto;height:40px;"><ul id="diagram-menu"></ul></div>\
 			<div id="selectale-views"><input style="margin-top:10px;" type="radio" name=view value="Github" checked=true>GitHub&nbsp\
 			<input style="margin-top:10px;" type="radio" name=view value="Github">GitHub Gist&nbsp\
-			<input type="radio" name=view value="cp" disabled>Eclipse</div>\
+			<input type="radio" name=view value="pe" disabled>Eclipse</div>\
             <p><label class="left" for="name">Name:</label><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
             </p></fieldset></form>';
             $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');

@@ -100,11 +100,6 @@ Version:
 
 					if ('cfile' == node.data.addClass)
 						dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
-
-					// Urgly hack for diagram selection menu
-					//var val = $("#vp_main_menu input").val();
-					//val.substr(val.lastIndexOf('/'))
-					//$("#vp_main_menu input").val(node.parent.getAbsolutePath() + '/' + val.substr(val.lastIndexOf('/')));
 				}
 			}
 		},
@@ -452,25 +447,15 @@ Version:
 		}, // onLazyRead
 		onActivate: function(node) {
 			if (!node.data.isFolder) {
-				self.activePath = node.getAbsolutePath();
 				if ($("#tab-" + node.data.key).length == 0) {
 					if ('diagramclass' == node.data.addClass)
 						dm.dm.fw.loadDiagram(self.euid, node);
 
 					if ('cfile' == node.data.addClass)
 						dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
-
-					// Urgly hack for diagram selection menu
-					//var val = $("#vp_main_menu input").val();
-					//val.substr(val.lastIndexOf('/'))
-					//$("#vp_main_menu input").val(node.parent.getAbsolutePath() + '/' + val.substr(val.lastIndexOf('/')));
 				}
 			} else {
-				// Ugly hack for diagram selection menu
-				var val = $("#vp_main_menu input").val();
-				val.substr(val.lastIndexOf('/'))
-				dm.dm.fw.views[uid].active = node.getAbsolutePath();
-				$("#vp_main_menu input").val(node.getAbsolutePath() + val.substr(val.lastIndexOf('/')));
+			    self.activePath = node.getAbsolutePath();
 			}
 		}, // onActivate
         onCreate: function(node, span){

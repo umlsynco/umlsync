@@ -52,7 +52,7 @@ $.fn.editable = function(options){
 		}else
 			$this.one(opts.submitBy,function(){opts.toNonEditable($(this),true)})
 				 .children()
-				 	.one(opts.submitBy,function(){opts.toNonEditable($(this).parent(),true)});
+				 	.one(opts.submitBy,function(e){opts.toNonEditable($(this).parent(),(e.apply != undefined) ? e.apply: true)});
 		// Cancel Event
 		if(opts.cancel)
 			$('<button/>').appendTo($this)

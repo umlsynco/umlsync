@@ -36,6 +36,8 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
        this.options['pageX'] = p.left;
        this.options['pageY'] = p.top;
+       this.options['left'] = p.left;
+       this.options['top'] = p.top;
        this.options['width'] = $("#" + this.euid + "_Border").width();
        this.options['height'] = $("#" + this.euid + "_Border").height();
 
@@ -92,15 +94,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
       this.element = $("#"  + this.euid);
     },
     '_init': function() {
-    if (this.options['height'])
-    $('#' + this.euid  + '_Border')
-         .css('width', this.options['width']).css('height', this.options['height']);
-    if (this.options.height_o)
-      $('#' + this.euid  + '_Border .us-class-operations').css('height', this.options['height_o']);
-
-    if (this.options['height_a'])
-        $('#' + this.euid  + '_Border .us-class-attributes').css('height', this.options['height_a']);
- 
+		this._setOptions(this.options);
  //@ifdef EDITOR
       if (this['parrent'].options['editable']) {
       
@@ -121,6 +115,17 @@ dm.base.diagram("es.class", dm['es']['element'], {
       }
 //@endif
     },
+	_setOption2:function(key, value) {
+	  if (key == "height_o") {
+        $('#' + this.euid  + '_Border .us-class-operations').css('height', this.options['height_o']);
+		return true;
+	  } else if (key == 'height_a') {
+         $('#' + this.euid  + '_Border .us-class-attributes').css('height', this.options['height_a']);
+		 return true;
+	  }
+	  return false;
+	},
+	
 //@ifdef EDITOR
     'getName': function() {
       this.options['name'] = "" + $("#" + this.euid + " .us-class-name" ).html();

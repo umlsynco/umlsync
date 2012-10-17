@@ -227,17 +227,14 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     _setOptions: function( options ) {
         var self = this;
-        $.each( options, function( key, value ) {
-            self._setOption( key, value );
-        });
-
-        return this;
+		for (var r in options) {
+		   self._setOption( r, options[r] );
+		}
     },
     //@proexp
     _setOption: function( key, value ) {
         this.options[ key ] = value;
         // TODO: REDIRECT ON inherited function !!!
-        return this;
     },
     /*
     //@proexp
@@ -304,7 +301,6 @@ dm['ctx'] = dm.ms.ctx;
                 </div></div>');
         this.canvas = window.document.getElementById('SingleCanvas');
 //@endif
-
                 this.max_zindex = 100;
 
                 // Diagram canvas drop element
@@ -418,11 +414,11 @@ dm['ctx'] = dm.ms.ctx;
                     e.preventDefault();
                     $.log("DBL CLICK");         
                     e.stopPropagation();
-
                 })
                 .click(function(evt) {
                     $.log("clicked");
                     // it could be undefined !!!
+					$("#tabs #us-editable").hide();
                     diag._mouseClick(diag.selectedconntector);
                     /*            
            // Hide elements selectors on click
@@ -853,15 +849,25 @@ dm['ctx'] = dm.ms.ctx;
     },
 //@endif
     //@proexp    
-    onDragStart: function(el, ui) {
+    onElementDragStart: function(el, ui) {
+		this.operation_info = new Array();
+	    el._update();
+		this.operation_info[el.euid] = $.extend({}, el.options);
+
+		// Add one more option, therefore get the list of options first !!!
         el.onDragStart(ui, true);
+
 
         if (this.multipleSelection)
             for (var i in this.elements) {
-                if (this.elements[i] != el
-    && this.elements[i].option("selected")
-    && this.elements[i].option("dragStart") == undefined) {
-                    this.elements[i].onDragStart(ui);
+			    var ee = this.elements[i];
+                if ( ee != el
+					&& ee.option("selected")
+					&& ee.option("dragStart") == undefined) {
+					ee._update();
+					this.operation_info[ee.euid] = $.extend({}, ee.options);
+					// clone options first !!! Important !!!
+                    ee.onDragStart(ui);
                 }
             }
 
@@ -873,7 +879,7 @@ dm['ctx'] = dm.ms.ctx;
     },
 
     //@proexp
-    onDragMove: function(el, ui) {
+    onElementDragMove: function(el, ui) {
         for (var i in this.elements)
             if (this.elements[i].option("dragStart") != undefined
                     && this.elements[i] != el)
@@ -883,12 +889,24 @@ dm['ctx'] = dm.ms.ctx;
                 this.connectors[i].onDragMove(ui);
     },
     //@proexp
-    onDragStop: function(el, ui) {
+    onElementDragStop: function(el, ui) {
         el.onDragStop();
-        for (var i in this.elements)
-            if (this.elements[i].option("dragStart") != undefined
-                    && this.elements[i] != el)
-                this.elements[i].onDragStop(ui);
+		this.operation_info2 = new Array();
+		el._update();
+		this.operation_info2[el.euid] = $.extend({}, el.options);
+
+        for (var i in this.elements) {
+		    var ee = this.elements[i];
+            if (ee.option("dragStart") != undefined
+				&& ee.option("selected")
+                && ee != el) {
+                ee.onDragStop(ui);
+				ee._update();
+				this.operation_info2[ee.euid] = $.extend({}, ee.options);
+			}
+		}
+
+		this.reportOperation("mcommon", el.euid, this.operation_info, this.operation_info2);
 
         for (var i in this.connectors)
             if (this.connectors[i].option("dragStart"))
@@ -1097,9 +1115,20 @@ dm['ctx'] = dm.ms.ctx;
         if (op) {
             this.reverted_operations.push(op);
             if (op[0] == "move") {
-                $("#" + op[1] + "_Border").css("left", op[2].left).css("top", op[2].top);
-            }
+                //$("#" + op[1] + "_Border").css("left", op[2].left).css("top", op[2].top);
+				$.log("_setOptions:" + op[1] + "  VAL: " + op[2]);
+				this.elements[op[1]]._setOptions(op[2]);
+            } else if (op[0] == "resize") {
+				this.elements[op[1]]._setOptions(op[2]);
+            } else if (op[0] == "common") {
+				this.elements[op[1]]._setOptions(op[2]);
+			} else if (op[0] == "mcommon") { // Multiple selection
+			    for (var el in op[2]) {
+				  this.elements[el]._setOptions(op[2][el]);
+				}
+			}
         }
+		this.draw();
     },
     //@proexp
     repeatOperation: function() {
@@ -1110,7 +1139,11 @@ dm['ctx'] = dm.ms.ctx;
                 $("#" + op[1] + "_Border").css("left", op[3].left).css("top", op[3].top);
             }
         }
-    }
+		this.draw();
+    },
+	isModified: function() {
+	  return (this.operations.length > 0);
+	}
 //@endif
     });
     
@@ -1210,30 +1243,40 @@ dm['ctx'] = dm.ms.ctx;
 			'scroll': true,
 			'handles': this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u',
 			'alsoResize': '#' + this.euid + '_Border .us-element-resizable-area', 
-                'stop': function() {
-                  if (self.onResizeComplete) {
-                    self.onResizeComplete();
-                  }
-                  self.parrent.draw();
-                },
-                'resize': function(event, ui) {
-				  var dh = ui.size.height - $(this).css("height");
-				  $(this).css("height", ui.size.height);
-				  $('#' + self.euid + '_Border .us-element-resizable-area').width($('#' + self.euid + "_Border").width()); // work-around for synchronization of resizeAlso area
+            'start': function() {
+			  self._update();
+			  self.operation_start = $.extend({}, self.options);
+			  $("#tabs #us-editable").hide();
+            },
+			'stop': function() {
+			  self._update();
+			  self.parrent.reportOperation("common", self.euid, self.operation_start, $.extend({}, self.options));
+			  self.operation_start = undefined;
 
-                  if (self.onResizeComplete) {
-                    self.onResizeComplete();
-                  }
-                  self.parrent.draw();
-				  event.stopPropagation();
-                }
+              if (self.onResizeComplete) {
+                self.onResizeComplete();
+              }
+              self.parrent.draw();
+            },
+            'resize': function(event, ui) {
+			  var dh = ui.size.height - $(this).css("height");
+			  $(this).css("height", ui.size.height);
+			  $('#' + self.euid + '_Border .us-element-resizable-area').width($('#' + self.euid + "_Border").width()); // work-around for synchronization of resizeAlso area
+
+              if (self.onResizeComplete) {
+                self.onResizeComplete();
+              }
+              self.parrent.draw();
+			  event.stopPropagation();
+            }
             })
 			.draggable({
               'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
 			  'scroll': true,
               'start': function(event, ui) {
                 self.operation_start = {left: ui.position.left, top: ui.position.top};
-                parrentClass['onDragStart'](self, ui);
+                parrentClass['onElementDragStart'](self, ui);
+				$("#tabs #us-editable").hide();
               },
               'drag': function(event, ui) {
                 if (parrentClass != undefined) {
@@ -1242,7 +1285,7 @@ dm['ctx'] = dm.ms.ctx;
                 if (self.$moveit != undefined) {
                     $("#" + self.$moveit).css("left", 200);
                 }
-                parrentClass['onDragMove'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
+                parrentClass['onElementDragMove'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
               },
               'stop': function(event, ui) {
                 if (ui.position.top < 0) {
@@ -1254,7 +1297,7 @@ dm['ctx'] = dm.ms.ctx;
                     $(this).css("left", 0);
                     ui.position.left = 0;
                 }
-                parrentClass.onDragStop(self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
+                parrentClass['onElementDragStop'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
 
                 if (self.options['droppable']) {
                     if (self.parrent != undefined) {
@@ -1264,7 +1307,8 @@ dm['ctx'] = dm.ms.ctx;
                 if (self.onDropComplete) {
                     self.onDropComplete();
                 }
-                self.parrent.reportOperation("move", self.euid, self.operation_start, {left: ui.position.left, top: ui.position.top});
+				//self.operationStop();
+                //self.parrent.reportOperation("move", self.euid, self.operation_start, {left: ui.position.left, top: ui.position.top});
             },
             'scope': self.options['droppable'],
             'axis': axis111
@@ -1293,6 +1337,7 @@ dm['ctx'] = dm.ms.ctx;
       }) // draggable completed*/
             // CSS  hack for chnaging view of resizable element "ui-resizable-*-u"
             .bind('contextmenu', function(e) {
+			   $("#tabs #us-editable").hide();
                 e.preventDefault();
                 // Check that context menu manager already loaded
 				var poz = $("#" + self.euid).position();
@@ -1380,7 +1425,14 @@ dm['ctx'] = dm.ms.ctx;
         //@proexp
         _setOption: function( key, value ) {
             this.options[ key ] = value;
-            if (key == "color") {
+            
+			if (this._setOption2 != undefined && this._setOption2(key, value)) {
+			  // redefine the base options in inherited class
+			} else if (key == "left") {
+                $("#" + this.euid + "_Border").css(key, value);
+            } else if (key == "top") {
+                $("#" + this.euid + "_Border").css(key, value);
+            } else if (key == "color") {
                 $("#" + this.euid).css("background-color", value);
             } else if (key == "borderwidth") {
                 $("#" + this.euid).css("border-width", value);
@@ -1408,6 +1460,7 @@ dm['ctx'] = dm.ms.ctx;
 //@ifdef EDITOR
         //@proexp
         onDragStart: function(ui, isbase) {
+		     $.log("DS: " + this.euid);
             if (this.options.dragStart != undefined)
                 return;
 
@@ -1416,20 +1469,20 @@ dm['ctx'] = dm.ms.ctx;
 
             this.options.dragStart = true;
 
-            if (isbase == undefined) {
+//            if (isbase == undefined) {
                 var p = $("#" + this.euid + "_Border").position(),
 				scrollLeft = $("#" + this.parrent.euid).scrollLeft(),
 				scrollTop = $("#" + this.parrent.euid).scrollTop();
 
                 this.start_operation = {left:p.left + scrollLeft, top:p.top + scrollTop};
-            }
+//            }
         },
         //@proexp
         onDragMove: function(ui) {
-            if (this.options.dragStart == undefined)
+            if (this.options.dragStart === undefined)
                 return;
-            if (!this.start_operation)
-                alert("THERE IS NO this.start_operation for: " + this.euid + this.options.dragStart);
+            if (this.start_operation === undefined)
+                alert("THERE IS NO this.start_operation for: " + this.euid + "  " + this.options.dragStart);
             $("#" + this.euid + "_Border")
 			.css({'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top});
 
@@ -1467,7 +1520,7 @@ dm.base.diagram("cs.connector", {
         },
         //@proexp
         addLable: function(text, x, y) {
-            this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>")
+            this.lables.push($("<div class='editablefield' style=\"position:absolute;z-index:99999;\">" + text + "</div>")
             .appendTo("#" + this.parrent.euid)
             .css("left", x)
             .css("top", y)
