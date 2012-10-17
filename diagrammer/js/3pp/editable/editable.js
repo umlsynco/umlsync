@@ -22,6 +22,9 @@ $.fn.editable = function(options){
 		editBy: 'click',
 		options: null
 	}
+	
+	$(this).attr("tabindex", 1);
+	
 	if(options=='disable')
 		return this.unbind(this.data('editable.options').editBy,this.data('editable.options').toEditable);
 	if(options=='enable')
