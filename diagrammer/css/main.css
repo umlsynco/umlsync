@@ -185,8 +185,19 @@ a {
   text-align: center;
 }
 
+.us-class-template {
+	min-width:80px;
+	background-color:white;
+	position:absolute;
+	min-height:15px;
+	top:-10px;
+	right:-40px;
+	z-index:1100;
+}
+
 .us-class-header {
-  height: 20px;
+  min-height: 20px;
+  height:auto;
   width: 100%;
 }
 

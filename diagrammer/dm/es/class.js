@@ -18,16 +18,21 @@ dm.base.diagram("es.class", dm['es']['element'], {
       auxmap["Primitive"] = "primitive";
       auxmap["ORM"] = "ORM";
       auxmap["ORMComponent"] = "ORMComponent";
+      auxmap["Template"] = " ";
       auxmap[undefined] = "";
 
-      return auxmap[aux];      
+      return auxmap[aux] || aux;
     },
 //@ifdef EDITOR
     'addMethod': function(desc) {
+	   if (this.options['aux'] == "Enumeration")
+	     return;
        $('<li><a class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable();
        $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh");
     },
     'addField': function(desc) {
+	   if (this.options['aux'] == "Interface")
+	     return;
        $('<li><a class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable();
        $("#" + this.euid + ".us-class-attributes .us-sortable").sortable("refresh");
     },
@@ -46,7 +51,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
        this.options['height_o'] = $("#" + this.euid + "_Border .us-class-operations").height();
 
        this.options['name'] = "" + $("#" + this.euid + " .us-class-name" ).html();
-       this.options['aux'] = $("#" + this.euid + " .us-class-header .us-class-aux" ).html();
+//       this.options['aux'] = $("#" + this.euid + " .us-class-header .us-class-aux" ).html();
        this.options['operations'] = new Array();
        this.options['attributes'] = new Array();
        var self = this;
@@ -61,12 +66,16 @@ dm.base.diagram("es.class", dm['es']['element'], {
     },
 //@endif
     '_create': function() {
-       
+	   var templ = "",
+	       aux = "";
        if (this.options['aux'] && (this.options['aux'] != "")) {
-           this.aux = "&lt&lt " + this['_getAux'](this.options['aux']) + " &gt&gt";
-       } else {
-        this.aux = "";
+	       var aux2 = this._getAux(this.options['aux']);
+		   if (aux2 != undefined && aux2 != "" && aux2 != " ") {
+             aux = "&lt&lt " + aux2 + " &gt&gt";
+		   }
+		   templ = (this.options['aux'] != 'Template') ? "" : "<div class='editablefield us-class-template'>" + (this.options['template'] || "T")+"</div>";
        }
+
        var operations = "",
            attributes = "";
 
@@ -80,10 +89,10 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       // HTML for class structure creation
       this.innerHtmlClassInfo = '\
-        <div id="' + this.euid + '" class="us-class grElement">\
+        <div id="' + this.euid + '" class="us-class grElement">'+ templ+'\
         <div class="us-class-header">\
         <a class="editablefield us-class-name">' + this.options['name'] + '</a><br>\
-        <a class="editablefield us-class-aux">'+ this.aux +'</a>\
+        <a class="us-class-aux">'+ aux +'</a>\
         </div>\
         <div class="us-class-attributes"><ul class="us-sortable">' +  attributes + '</ul></div>\
         <div class="us-class-operations us-element-resizable-area"><ul class="us-sortable">' +  operations + '</ul></div>\

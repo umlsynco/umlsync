@@ -9,6 +9,7 @@
 	},
 	{"type": "class",
 	 "title": "Interface",
+	 "aux": "Interface",
 	 "nameTemplate": "Interface",
 	 "menu": "us-class-menu",
 	 "ctx_menu": "class",
@@ -16,12 +17,14 @@
 	},
 	{"type": "class",
 	 "title": "Enumeration",
+	 "aux": "Enumeration",
 	 "menu": "us-class-menu",
 	 "ctx_menu": "class",
 	 "icon": "/dm/icons/us/es/class/ClassEnumeration.png"
 	},
 	{"type": "class",
 	 "title": "Template",
+	 "aux": "Template",
 	 "menu": "us-class-menu",
 	 "ctx_menu": "class",
 	 "icon": "/dm/icons/us/es/class/ClassTemplate.png"
