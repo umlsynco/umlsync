@@ -16,11 +16,11 @@ dm.base.diagram("es.objinstance", dm.es.element, {
     '_create': function() {
       // HTML for class structure creation
       this.innerHtml = '<div id="' + this.euid + '" class="us-element-resizable-area">\
+						<div class="us-instance-line"></div>\
                         <div id="' + this.euid + '_NEXT" class="us-instance grElement" style="height:40px;">\
                         <div><a class="editablefield Name">:' + this.options.name+ '</a></div></div></div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
-      this.parrent.Connector("lifeline", {'fromId': this.euid, 'toId': this.euid});
     },
     '_init': function () {
       if (this.options.height)
@@ -35,10 +35,13 @@ dm.base.diagram("es.objinstance", dm.es.element, {
       var element = $("#" + this.euid + "_Border"),
           e_left = element.position().left + element.width() / 2;
 
-      for (i in this.options.dropped) {
-        var e = $("#" + this.options.dropped[i] + "_Border"),
-            w = e.width()/2;
-        e.css("left", e_left - w);
+      for (var i in this._dropped) {
+        var e = $("#" + this._dropped[i] + "_Border"),
+            w = $("#" + this._dropped[i]).width()/2,
+			bw = e.css('border');
+
+		e.css("left", e_left - w - bw);
+		$.log("DCOMPL: " + this._dropped[i] + "  " + w + "  BW: " + bw)
       }
       this.parrent.draw();
     },
@@ -46,8 +49,8 @@ dm.base.diagram("es.objinstance", dm.es.element, {
       var element = $("#" + this.euid + "_Border"),
           e_left = element.position().left + element.width() / 2;
 
-      for (i in this.options.dropped) {
-        var e = $("#" + this.options.dropped[i] + "_Border"),
+      for (i in this._dropped) {
+        var e = $("#" + this._dropped[i] + "_Border"),
             w = e.width()/2;
         e.css("left", e_left - w);
       }
@@ -58,8 +61,8 @@ dm.base.diagram("es.objinstance", dm.es.element, {
           wd2 = element.width() / 2,
           x_top = element.position().top + element.height();
 
-      for (i in this.options.dropped) {
-        var e = $("#" + this.options.dropped[i] + "_Border"),
+      for (i in this._dropped) {
+        var e = $("#" + this._dropped[i] + "_Border"),
             p = e.position(),
             h = e.height(),
             w = e.width()/2;
@@ -75,7 +78,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
             e.css("height", h+10);
           }
 
-          return this.options.dropped[i];
+          return this._dropped[i];
         }
       }
       return undefined;
@@ -142,6 +145,7 @@ dm.base.diagram("es.llport", dm.es.element, {
         'height': '40px',
         'droppable': true,
         'resizable_h': 'n-u,s-u',
+	    "menu":"us-objinstance-menu", // urgly hack for menu support
         'axis': 'y'
     },
     '_create': function() {

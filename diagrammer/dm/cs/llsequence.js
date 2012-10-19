@@ -160,15 +160,15 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
     'onStartTransform': function(x,y) {
         $.log("onStartTransform: " + y);
         this.drag_info  = y;
-        this.parrent.onDragStart(this, {left:0, top:0}, true);
+        this.parrent.onElementDragStart(this, {left:0, top:0}, true);
     },
     'onTransform': function(x,y) {
         $.log("onTransform: " + (y - this.drag_info));
-        this.parrent.onDragMove(this, {left:0, top:y - this.drag_info}, true);
+        this.parrent.onElementDragMove(this, {left:0, top:y - this.drag_info}, true);
     },
     'onStopTransform': function(x,y) {
         $.log("onStopTransform: " + (y - this.drag_info));
-        this.parrent.onDragStop(this, {left:0, top:y - this.drag_info}, true);
+        this.parrent.onElementDragStop(this, {left:0, top:y - this.drag_info}, true);
     }
     });
 //@aspect

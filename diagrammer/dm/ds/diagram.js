@@ -989,14 +989,8 @@ dm['ctx'] = dm.ms.ctx;
             for (var c in this.connectors) {        
                 if (this.connectors[c].isPointOnLine(x,y)) {
                     if (this.connectors[c] != this.selectedconntector) {
-    this.selectedconntector = this.connectors[c];
-    this.draw();
-
-//@ifdef EDITOR
-    if (this.selectedconntector._showMenu != undefined) {
-        this.selectedconntector._showMenu(x,y, true);
-    }
-//@endif
+						this.selectedconntector = this.connectors[c];
+						this.draw();
                     }
                     return true;
                 }

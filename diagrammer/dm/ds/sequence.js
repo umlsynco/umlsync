@@ -16,7 +16,7 @@ Version:
 //@aspect
 (function( $, dm, undefined ) {
 dm.base.diagram("ds.sequence", dm.ds.base, {
-    'onDragStart': function(el, ui, isConnector) {
+    'onElementDragStart': function(el, ui, isConnector) {
      if (isConnector) {
          $.log("onDragStart");
          // If from has only one connector
@@ -50,9 +50,10 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
      }
      else {
          var skip_objects = false;
-         if (el.option("type") == "llport") {
+         if (el.options["type"] == "llport") {
              ui.left = 0;
              skip_objects = true;
+			 
          } else {
              ui.top = 0;
          }
@@ -60,10 +61,10 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
         el.onDragStart(ui, true);
 
         if (this.multipleSelection)
-          for (i in this.elements) {
+          for (var i in this.elements) {
             if (this.elements[i] != el
               && this.elements[i].option("selected")
-              && (!skip_objects || this.elements[i].option("type") == "llport")
+              && (!skip_objects || this.elements[i].options["type"] == "llport")
               && this.elements[i].option("dragStart") == undefined) {
                   this.elements[i].onDragStart(ui);
             }
@@ -75,7 +76,7 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
             this.connectors[i].onDragStart(ui);
         
         if (skip_objects)
-        for (i in this.connectors) {
+        for (var i in this.connectors) {
           var f = this.elements[this.connectors[i].from].option("dragStart"),
             t = this.elements[this.connectors[i].toId].option("dragStart"); 
           if (f && !t) {
@@ -101,9 +102,9 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
         }
         }
     },
-    'onDragMove': function(el, ui, isConnector) {
+    'onElementDragMove': function(el, ui, isConnector) {
         if (!isConnector)
-         if (el.option("type") == "llport") {
+         if (el.options["type"] == "llport") {
 //             $.log("LEFT IS 0 != " + ui.left);
              ui.left = 0;
          } else {
@@ -119,7 +120,7 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
           && ((!isConnector) || (this.connectors[i] != el)))
           this.connectors[i].onDragMove(ui);
     },
-    'onDragStop': function(el, ui, isConnector) {
+    'onElementDragStop': function(el, ui, isConnector) {
       if (!isConnector)
          if (el.option("type") == "llport") {
              ui.left = 0;

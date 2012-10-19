@@ -110,13 +110,6 @@ dm.base.diagram("cs.lifeline", dm.cs.connector, {
         return newpoints;
        }
     },
-    '_showMenu': function(x,y, flag, c) {
-       if (flag) {
-         this.parrent.menuIcon.Show(this.from, x, y);
-       } else {
-        // this.parrent.menuIcon.Hide(this.from, x, y);
-       }
-    },
     'isPointOnLine': function() {
         return false;
     }

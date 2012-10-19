@@ -296,6 +296,15 @@ a {
   text-align: center;
 }
 
+.us-instance-line {
+  position:absolute;
+  top:0px;
+  width:50%;
+  height:100%;
+  border: 0px;
+  border-right: 1px dashed black;
+}
+
 .us-port {
   position: relative;
   width: 100%;

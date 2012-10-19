@@ -7,6 +7,12 @@
 	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
 	},
+	{"type": "llport",
+	 "title": "Life Line Port",
+	 "menu":"us-objinstance-menu",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
+	},
 	{"type": "image",
 	 "image_path":"images/actor3.svg",
 	 "width":"40",
