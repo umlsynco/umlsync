@@ -88,6 +88,8 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 		 var con = connector;
 		 
 		 var dropped_euid = this._getDropHelper(posUi, con.from == self.euid);
+         var extra_points = {position:{left:posUi.position.left,top:posUi.position.top}};
+		 $.log("DROP helper: " + dropped_euid);
 		 if (dropped_euid) {
 		   if (con.from == self.euid) {
 			con.from = dropped_euid;
@@ -97,6 +99,13 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 		    con.toId = dropped_euid;
 		    con.options.toId = dropped_euid;
 		   }
+
+		   // Keep the connector location
+		   if (con._updateEPoints) {
+		     con._updateEPoints(extra_points);
+		   }
+
+		   // redraw connector
 		   self.parrent.draw();
 		 }
 		 else 
@@ -116,6 +125,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 				    con.toId = element.euid;
 				    con.options.toId = element.euid;
 				  }
+				  if (con._updateEPoints) con._updateEPoints(extra_points);
 				  self.parrent.draw();
 		     });
 	},
@@ -304,6 +314,11 @@ dm.base.diagram("es.llport", dm.es.element, {
               $("#" + this.euid + "_Border").height(pui.top - pos.top);
             else if (pos.top > pui.top)
               $("#" + this.euid + "_Border").css("top", pui.top).height(pos.top - pui.top + h);		
+
+  		   // Keep the connector location
+		   if (connector._updateEPoints)
+		     connector._updateEPoints(posUi);
+
 	}
 });
 

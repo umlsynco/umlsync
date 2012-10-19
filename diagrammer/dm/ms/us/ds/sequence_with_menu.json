@@ -75,7 +75,7 @@
 						{"connector":"llsequence1",
 						 "icon":"dm/icons/us/cs/sequence.png"
 						},
-						{"connector":"llsequence2",
+						{"connector":"llreturn",
 						 "icon":"dm/icons/us/cs/return.png"
 						},
 						{"connector":"llsequence3",

@@ -1,29 +1,59 @@
 /*
-Class: generalization
+Class: return connector for life line diagram
 
-Generalization connector creates a connection beween two elements of diagram
+Return connector creates a connection beween two ports of object instance on life line diagram
 
 Author:
   Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
 
 Copyright:
-  Copyright (c) 2011 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
+  Copyright (c) 2012 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
 
 URL:
   umlsync.org/about
 
 Version:
-  2.0.0 (2012-07-12)
+  2.0.0 (2012-Oct-19)
 */
 //@aspect
 (function($, dm, undefined) {
 
-dm.base.diagram("cs.llsequence", dm.cs.connector, {
+dm.base.diagram("cs.llreturn", dm.cs.connector, {
+   dashedLine: function(p1,p2, c) {
+        var x2 = p2[0],
+        x1 = p1[0],
+        y2 = p2[1],
+        y1 = p1[1];
+
+        var x = 10, // dash length
+        dashf = 5,
+        dashe = 3,
+        dx = x2 -x1,
+        dy = y2 -y1,
+        gip = Math.sqrt(dx*dx + dy*dy);
+
+        if (gip<x) // Nothing to draw
+            return;
+
+        var sina = dy/gip,
+        cosa = dx/gip,
+        fx = dashf * cosa,
+        fy = dashf * sina,
+        ex = dashe * cosa,
+        ey = dashe * sina;
+
+        for (var i=0; i<(gip/(dashf + dashe)); ++i) {
+            c.moveTo(x1, y1);
+
+            c.lineTo(x1+fx, y1+fy);
+            x1+= (ex + fx);
+            y1+= (ey + fy);
+        }
+    },
     'draw': function(c, points, color) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
-
             var ep = points.length-1;
             var x2 = points[ep][0],
             x1 = points[ep-1][0],
@@ -53,16 +83,12 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
             c.beginPath();
             c.fillStyle = color;
             c.strokeStyle = color;
-            c.moveTo(points[0][0], points[0][1]);
-            for (i=1; i<ep; ++i) {
-              c.lineTo(points[i][0], points[i][1]);
-            }
-            c.moveTo(x1, y1);
-            c.lineTo(x3, y3);
+            this.dashedLine(points[0], points[1],c);
+//            c.lineTo(x3, y3);
             c.lineTo(x4, y4);
-            c.lineTo(x2, y2);
+            c.moveTo(x2, y2);
             c.lineTo(x5, y5);
-            c.lineTo(x3, y3);
+//            c.lineTo(x3, y3);
             /*if ((this.epoints != undefined) && (this.epoints.length >0)) {
               for (i=0; i<this.epoints.length;++i)
               c.arc(this.epoints[i][0], this.epoints[i][1], 3, 0, Math.PI * 2, true);
@@ -126,12 +152,9 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
      }
     },
     '_updateEPoints': function(ui) {
-	  if (this.epoints && this.epoints.legth > 0)
-        this.epoints = [[ui.position.left, ui.position.top]];
-	  else 
-	    this.epoints = [[ui.position.left, ui.position.top+5]]; // LLPort should be created on the same ui position threfore we have to shift extra point. But it is required for a first time only !!!
+      this.epoints = [[ui.position.left, ui.position.top]];
       this.cleanOnNextTransform = true;
-      this.eppos = 0; // extra point position. Uses for temporary points which should be removed on next transform.
+      this.eppos = 0;
       this.parrent.draw();
     },
     'getAutocomplete': function() {
@@ -158,6 +181,7 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
         this.parrent.onElementDragStart(this, {left:0, top:0}, true);
     },
     'onTransform': function(x,y) {
+        $.log("onTransform: " + (y - this.drag_info));
         this.parrent.onElementDragMove(this, {left:0, top:y - this.drag_info}, true);
     },
     'onStopTransform': function(x,y) {
