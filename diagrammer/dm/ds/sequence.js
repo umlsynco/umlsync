@@ -1,144 +1,152 @@
-/*
-Class: Extension for sequence diagrams specific.
 
-Author:
-  Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
-
-Copyright:
-  Copyright (c) 2012 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
-
-URL:
-  umlsync.org/about
-
-Version:
-  2.0.0 (2012-07-12)
-*/
-//@aspect
 (function( $, dm, undefined ) {
 dm.base.diagram("ds.sequence", dm.ds.base, {
-    'onElementDragStart': function(el, ui, isConnector) {
+    onElementDragStart: function(el, ui, isConnector) {
      if (isConnector) {
-         $.log("onDragStart");
-         // If from has only one connector
-         var single = true;
-         for (i in this.connectors)
-           if ((this.connectors[i] != el) &&
-             ((this.connectors[i].from == el.from)
-               || (this.connectors[i].toId == el.from))) {
-                   single = false;
-               $.log("FOUND: " + this.connectors[i].euid);
-               break; // element has one more connector. Could not be moved.
-               }
+		 $.log("onDragStart");
+		 // If from has only one connector
+		 var single = true;
+		 for (i in this.connectors)
+		   if ((this.connectors[i] != el) &&
+		     ((this.connectors[i].from == el.from)
+		       || (this.connectors[i].toId == el.from))) {
+				   single = false;
+			   $.log("FOUND: " + this.connectors[i].euid);
+		       break; // element has one more connector. Could not be moved.
+		       }
 
-         if (single) {
-             $.log("also: " + el.from);
-           this.elements[el.from].onDragStart(ui);
-         }
-           
-         // if to element has only one connector
+		 if (single) {
+			 $.log("also: " + el.from);
+		   this.elements[el.from].onDragStart(ui);
+		 } else
+		   if (this.elements[el.from].drop_parent)
+			   el.from = this.elements[el.from].drop_parent;
+		   
+		 // if to element has only one connector
          single = true;
-         for (i in this.connectors)
-           if ((this.connectors[i] != el) &&
-             ((this.connectors[i].from == el.toId)
-               || (this.connectors[i].toId == el.toId))) {
-                   single = false;
-               break; // element has one more connector. Could not be moved.
-               }
-         if (single)
-           this.elements[el.toId].onDragStart(ui);
-         $.log("onDragStart end");
-     }
-     else {
-         var skip_objects = false;
-         if (el.options["type"] == "llport") {
-             ui.left = 0;
-             skip_objects = true;
-			 
-         } else {
-             ui.top = 0;
-         }
+		 for (i in this.connectors)
+		   if ((this.connectors[i] != el) &&
+		     ((this.connectors[i].from == el.toId)
+		       || (this.connectors[i].toId == el.toId))) {
+				   single = false;
+		       break; // element has one more connector. Could not be moved.
+		       }
+		 if (single)
+		   this.elements[el.toId].onDragStart(ui);
+         else
+		   if (this.elements[el.toId].drop_parent)
+			   el.toId = this.elements[el.toId].drop_parent;
+	 }
+	 else {
+		 var skip_objects = false;
+		 if (el.option("type") == "llport") {
+			 ui.left = 0;
+			 skip_objects = true;
+		 } else {
+			 ui.top = 0;
+		 }
 
-        el.onDragStart(ui, true);
+		el.onDragStart(ui, true);
 
-        if (this.multipleSelection)
-          for (var i in this.elements) {
-            if (this.elements[i] != el
-              && this.elements[i].option("selected")
-              && (!skip_objects || this.elements[i].options["type"] == "llport")
-              && this.elements[i].option("dragStart") == undefined) {
-                  this.elements[i].onDragStart(ui);
-            }
-          }
+		if (this.multipleSelection)
+		  for (i in this.elements) {
+			if (this.elements[i] != el
+			  && this.elements[i].option("selected")
+			  && (!skip_objects || this.elements[i].option("type") == "llport")
+			  && this.elements[i].option("dragStart") == undefined) {
+				  this.elements[i].onDragStart(ui);
+			}
+		  }
 
-        for (i in this.connectors) 
-          if (this.elements[this.connectors[i].from].option("dragStart")
-            || this.elements[this.connectors[i].toId].option("dragStart"))
+	    for (i in this.connectors) 
+	      if (this.elements[this.connectors[i].from].option("dragStart")
+	        || this.elements[this.connectors[i].toId].option("dragStart"))
             this.connectors[i].onDragStart(ui);
-        
-        if (skip_objects)
-        for (var i in this.connectors) {
-          var f = this.elements[this.connectors[i].from].option("dragStart"),
-            t = this.elements[this.connectors[i].toId].option("dragStart"); 
-          if (f && !t) {
-              var dp = true; // drag possible
-              for (j in this.connectors)
-                if (!this.connectors[j].option("dragStart")
-                  && (this.connectors[j].from == this.connectors[i].toId
-                      || this.connectors[j].from == this.connectors[i].toId))
-                      dp = false; // some of the connectors goes to another element                      
-              if (dp)
-                this.elements[this.connectors[i].toId].onDragStart(ui);
-          }
-          else if (!f && t) {
-              var dp = true; // drag possible
-              for (j in this.connectors)
-                if (!this.connectors[j].option("dragStart")
-                  && (this.connectors[j].from == this.connectors[i].from
-                      || this.connectors[j].from == this.connectors[i].from))
-                      dp = false; // some of the connectors goes to another element
-              if (dp)
-                this.elements[this.connectors[i].from].onDragStart(ui);
-          }
+		
+		if (skip_objects)
+		for (i in this.connectors) {
+	      var f = this.elements[this.connectors[i].from].option("dragStart"),
+	        t = this.elements[this.connectors[i].toId].option("dragStart"); 
+		  if (f && !t) {
+			  var dp = true; // drag possible
+			  for (j in this.connectors)
+				if (!this.connectors[j].option("dragStart")
+				  && (this.connectors[j].from == this.connectors[i].toId
+				      || this.connectors[j].from == this.connectors[i].toId))
+				      dp = false; // some of the connectors goes to another element				      
+			  if (dp)
+			    this.elements[this.connectors[i].toId].onDragStart(ui);
+		  }
+		  else if (!f && t) {
+			  var dp = true; // drag possible
+			  for (j in this.connectors)
+				if (!this.connectors[j].option("dragStart")
+				  && (this.connectors[j].from == this.connectors[i].from
+				      || this.connectors[j].from == this.connectors[i].from))
+				      dp = false; // some of the connectors goes to another element
+			  if (dp)
+			    this.elements[this.connectors[i].from].onDragStart(ui);
+		  }
+		}
         }
-        }
-    },
-    'onElementDragMove': function(el, ui, isConnector) {
-        if (!isConnector)
-         if (el.options["type"] == "llport") {
-//             $.log("LEFT IS 0 != " + ui.left);
-             ui.left = 0;
-         } else {
-//             $.log("TOP IS 0 !=" + ui.top);
-             ui.top = 0;
-         }
-      for (i in this.elements)
-        if (this.elements[i].option("dragStart") != undefined
-          && (isConnector || this.elements[i] != el))
-          this.elements[i].onDragMove(ui);
-      for (i in this.connectors)
+	},
+	onElementDragMove: function(el, ui, isConnector) {
+		if (!isConnector)
+		 if (el.option("type") == "llport") {
+//			 $.log("LEFT IS 0 != " + ui.left);
+			 ui.left = 0;
+		 } else {
+//			 $.log("TOP IS 0 !=" + ui.top);
+			 ui.top = 0;
+		 }
+	  for (i in this.elements)
+	    if (this.elements[i].option("dragStart") != undefined
+	      && (isConnector || this.elements[i] != el))
+		  this.elements[i].onDragMove(ui);
+	  for (i in this.connectors)
         if (this.connectors[i].option("dragStart")
           && ((!isConnector) || (this.connectors[i] != el)))
-          this.connectors[i].onDragMove(ui);
+		  this.connectors[i].onDragMove(ui);
     },
-    'onElementDragStop': function(el, ui, isConnector) {
-      if (!isConnector)
-         if (el.option("type") == "llport") {
-             ui.left = 0;
-         } else {
-             ui.top = 0;
-         }
-      if (!isConnector)
+	onElementDragStop: function(el, ui, isConnector) {
+	  if (!isConnector)
+		 if (el.option("type") == "llport") {
+			 ui.left = 0;
+		 } else {
+			 ui.top = 0;
+		 }
+	  if (!isConnector)
           el.onDragStop();
 
-      for (i in this.elements)
-        if (this.elements[i].option("dragStart") != undefined
-          && this.elements[i] != el)
-          this.elements[i].onDragStop(ui);
-
-      for (i in this.connectors)
+	  for (i in this.connectors)
         if (this.connectors[i].option("dragStart"))
-          this.connectors[i].onDragStop(ui);
-    }
+		  this.connectors[i].onDragStop(ui);
+
+	  for (i in this.elements)
+	    if (this.elements[i].option("dragStart") != undefined
+	      && this.elements[i] != el)
+		  this.elements[i].onDragStop(ui);
+
+
+      if (isConnector) {
+		  var upos = {position: {left:el.points[0][0], top: el.points[0][1]}},
+		  l = el.points.length -1,
+		  upos2 = {position: {left:el.points[l][0], top: el.points[l][1]}};
+		  if ((this.elements[el.from].dropHelper) && (this.elements[el.from].options.type != 'llport'))
+		    this.elements[el.from].dropHelper(upos, el);
+		  if ((this.elements[el.toId].dropHelper) && (this.elements[el.toId].options.type != 'llport'))
+		    this.elements[el.toId].dropHelper(upos2, el);
+	  }
+	  
+	  var diag = this;
+	  // Perform function on diagram load completion
+	  this.options.loader.OnLoadComplete(function() {
+		  for (i in diag.elements) {
+			if (diag.elements[i].sortDropedElements)
+			  diag.elements[i].sortDropedElements();
+		  }
+	  });
+	  
+	},
 });
-//@aspect
-})(jQuery, dm);
+}) ( jQuery, dm );

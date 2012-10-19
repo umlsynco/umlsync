@@ -711,11 +711,15 @@ dm['ctx'] = dm.ms.ctx;
     removeElement: function(euid) {
         var el = this.elements;
         for (var k in el) {
-            if (el[k].euid == euid) {
+		    if (el[k]._dropped) {
+			  for (var gg in el[k]._dropped) {
+			    if (el[k]._dropped[gg] == euid)
+				   el[k]._dropped.splice(gg, 1); // remove element from dropped
+			  }
+			} else if (el[k].euid == euid) {
                 delete el[k];
                 el.splice(k, 1);
                 $('#' +  euid + '_Border').remove(); // Think about removal !!!!
-                break;
             }
         }
     },
