@@ -8,7 +8,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	    acceptdrop: "package",
 		top_min: 40,
 		height: 400,
-        resizable_h: 'e-u,s-u,w-u,sw-u,se-u',
+        resizable_h: 'e-u,e-ul,s-u,w-u,w-ul,sw-u,se-u',
 		axis: 'x'
 	},
 	_create: function() {
@@ -242,7 +242,7 @@ dm.base.diagram("es.llport", dm.es.element, {
 		width: '15px',
 		height: '40px',
 	    droppable: true,
-        resizable_h: 'n-u,s-u',
+        resizable_h: 'n-ul,s-ul',
 		axis: 'y'
 	},
 	_create: function() {

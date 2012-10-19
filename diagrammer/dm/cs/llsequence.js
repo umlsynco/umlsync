@@ -63,10 +63,10 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
             c.lineTo(x2, y2);
             c.lineTo(x5, y5);
             c.lineTo(x3, y3);
-            if ((this.epoints != undefined) && (this.epoints.length >0)) {
+            /*if ((this.epoints != undefined) && (this.epoints.length >0)) {
               for (i=0; i<this.epoints.length;++i)
               c.arc(this.epoints[i][0], this.epoints[i][1], 3, 0, Math.PI * 2, true);
-            }
+            }*/
             c.stroke();
             c.closePath();            
     },
@@ -79,8 +79,8 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
        var p21 = $('#' + toId + "_Border").position(),
        w11 = $('#' + fromId + "_Border").width() + 26,
        w21 = $('#' + toId + "_Border").width() + 26,
-       scrollTop = $("#" + this.parrent.euid).scrollTop(),
-       scrollLeft = $("#" + this.parrent.euid).scrollLeft();
+       scrollTop = 0;//$("#" + this.parrent.euid).scrollTop(),
+       scrollLeft = 0;//$("#" + this.parrent.euid).scrollLeft();
     
      if (toId == "ConnectionHelper") {
        var y1 = (p11.top + 40 > p21.top) ? p11.top + 40 : p21.top;
