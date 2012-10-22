@@ -13,7 +13,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	},
 	_create: function() {
 	  // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="us-element-resizable-area">\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-element-resizable-area" style="width:100%;">\
                         <div class="us-instance-line"></div>\
 	                    <div id="' + this.euid + '_NEXT" class="us-instance grElement" style="height:40px;">\
 	                    <div><a class="editablefield Name">:' + this.options.name+ '</a></div></div></div>';
@@ -23,7 +23,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	_init: function () {
       if (this.options.height)
 	    $('#' + this.euid)
-	     .css('width', this.options.width).css('height', this.options.height);
+	     .css('width', '100%').css('height', this.options.height);
 
      if (this.options.top_min)
 	    $('#' + this.euid + "_Border")
@@ -34,9 +34,10 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 		  e_left = element.position().left + element.width() / 2;
 
 	  for (i in this._dropped) {
+	    var level = this.parrent.elements[this._dropped[i]].options.level;
 	    var e = $("#" + this._dropped[i] + "_Border"),
-		    w = e.width()/2;
-		e.css("left", e_left - w);
+		    w = e.width()/2 ;
+		e.css("left", e_left - w + level *w);
 	  }
 	  this.parrent.draw();
 	},
@@ -143,7 +144,8 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	  var _sort = new Array();
       for (var s in this._dropped) {
 	    // Prevent adding end of live of object adding to sort
-	  	if (this.parrent.elements[this._dropped[s]].options.type == "lldel")
+	  	if ((this.parrent.elements[this._dropped[s]].options.type == "lldel")
+		|| (this.parrent.elements[this._dropped[s]].options.type == "llport" && this.parrent.elements[this._dropped[s]].options.level > 0))
 		  continue;
 
 		var e2 = $("#" + this._dropped[s] + "_Border"),
@@ -267,7 +269,8 @@ dm.base.diagram("es.llport", dm.es.element, {
 		height: '40px',
 	    droppable: true,
         resizable_h: 'n-ul,s-ul',
-		axis: 'y'
+		axis: 'y',
+		level: 0
 	},
 	_create: function() {
 	  // HTML for class structure creation
@@ -300,7 +303,7 @@ dm.base.diagram("es.llport", dm.es.element, {
 		  else
 		   $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
 		} else if (key == "z-index") {
-		  $("#" + this.euid + '_Border ').css(key, "10000000" + value);
+		  $("#" + this.euid + '_Border ').css(key, value);
 		}
 
         return this;
@@ -320,6 +323,12 @@ dm.base.diagram("es.llport", dm.es.element, {
 		return null;
 	},
 	dropHelper: function(posUi, connector) {
+	    if (connector.options.type == "llselfcall" && connector.options.toId == this.euid) {
+		  var fel = $("#" + this.parrent.elements[connector.from].euid + "_Border");
+		  $("#" + this.parrent.elements[connector.toId].euid + "_Border").css("left", fel.position().left + fel.width()/2);
+		  this.parrent.elements[connector.toId].options.level = this.parrent.elements[connector.from].options.level + 1;
+		}
+
 		$.log("DROP HELPER LLPORT:" );
         var pos = $("#" + this.euid + "_Border").position(),
             h = $("#" + this.euid + "_Border").height(),

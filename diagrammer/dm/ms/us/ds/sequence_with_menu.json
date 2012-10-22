@@ -8,7 +8,7 @@
 	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
 	},
 	{"type": "llport",
-	 "title": "Life Line Port",
+	 "title": "Port",
 	 "menu":"us-objinstance-menu",
 	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
@@ -34,7 +34,6 @@
 	  },
       {"connector":"llselfcall",
 	   "title":"Self Call",
-	   "oneway":"true",
 	   "icon": "./dm/icons/us/cs/composition.png"
 	  },
       {"connector":"generalization",
@@ -80,15 +79,6 @@
 						},
 						{"connector":"llreturn",
 						 "icon":"dm/icons/us/cs/return.png"
-						},
-						{"connector":"llsequence3",
-						 "icon":"dm/icons/us/cs/retsequence.png"
-						},
-						{"connector":"llsequence4",
-						 "icon":"dm/icons/us/cs/createobject.png"
-						},
-						{"connector":"llsequence5",
-						 "icon":"dm/icons/us/cs/killobject.png"
 						}
 					  ]
 				},
@@ -97,10 +87,7 @@
 						{"connector":"llsequence",
 						 "icon":"dm/icons/us/cs/sequence.png"
 						},
-						{"connector":"Self Call",
-						 "icon":"dm/icons/us/cs/self-call.png"
-						},
-						{"connector":"Self Call",
+						{"connector":"llselfcall",
 						 "icon":"dm/icons/us/cs/self-call.png"
 						}
 					  ]
