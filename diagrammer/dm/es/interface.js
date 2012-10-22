@@ -37,6 +37,11 @@ dm.base.diagram("es.interface", dm.es.element, {
          .css('width', this.options.width)
          .css('height', this.options.height);
 
+	 if (this.options["background-color"]) {
+	   $('#' + this.euid + " #Circle")
+         .css('background-color', this.options["background-color"]);
+	  }
+
       // TODO: replace on keep ratio option of resize
       var self = '#' + this.euid;
       $('#' + this.euid + "_Border").bind( "resize", function(event, ui) {

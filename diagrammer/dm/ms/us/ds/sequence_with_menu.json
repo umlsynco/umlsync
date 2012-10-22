@@ -13,10 +13,25 @@
 	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
 	},
+	{"type": "interface",
+	 "title": "Lost/Found Message",
+	 "width":"20",
+	 "height":"20",
+	 "background-color":"black",
+	 "nameTemplate": "Message",
+	 "menu":"us-objinstance-menu",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/common/message.png"
+	},
 	{"type": "lldel",
 	 "title": "Del object",
 	 "ctx_menu":"sequence",
-	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
+	 "icon": "./dm/icons/us/es/common/del.png"
+	},
+	{"type": "llalt",
+	 "title": "Alt",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/common/del.png"
 	},
 	{"type": "image",
 	 "image_path":"images/actor3.svg",
@@ -96,6 +111,12 @@
 				 "cs":[
 						{"connector":"llsequence",
 						 "icon":"dm/icons/us/cs/killobject.png"}
+					  ]
+				},
+				{"el":"Lost/Found Message",
+				 "cs":[
+						{"connector":"llsequence",
+						 "icon":"dm/icons/us/cs/lostmessage.png"}
 					  ]
 				}
 			 ]

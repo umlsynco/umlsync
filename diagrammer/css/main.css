@@ -301,12 +301,22 @@ a {
 
 .us-package-tab {
   padding: 0px;
-  border: 1px;
   position: relative;
   width: 15%;
   height: 20px;
   border: 1px solid black;
 }
+
+.us-alt-tab {
+  padding: 0px;
+  position: absolute;
+  width: 15%;
+  min-width:100px;
+  height: 20px;
+  border: 1px solid black;
+  text-align:center;
+}
+
 
 .us-package-body {
   padding: 0px;
