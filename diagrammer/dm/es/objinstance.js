@@ -218,7 +218,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 				  }
 				  this.parrent.removeElement(_sort[n].name);
 			  }
-			  $("#" + _sort[m].name + "_Border").css("top", top).css("height", bottom - top);
+			  $("#" + _sort[m].name + "_Border").css("top", top).css("height", bottom - top).children("DIV.us-port").css("height", "100%");
 		  }
 	  }
 
