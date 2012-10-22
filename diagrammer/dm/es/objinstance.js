@@ -80,7 +80,18 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	  }
 	  return undefined;
 	},
-	dropHelper: function(posUi, connector) {
+	dropHelper: function(posUi, connector, dndOptions) {
+	    $.log("OBJINST DH");
+		if (connector.isCreator && connector.toId == this.euid) {
+	      $.log("OBJINST RET CREATOR");
+		  return;
+		}
+		
+	    if (dndOptions != undefined && (dndOptions.isElFound == undefined || !dndOptions.isElFound)) {
+		  $('#'+ this.euid + "_Border").css({left:posUi.position.left,top:posUi.position.top});
+		 return;
+		}
+
 	     var p11 = $('#'+ this.euid + "_Border").position();
 	   	 var w = $('#'+ this.euid + "_Border").width();
 	     var par = this.parrent;
@@ -109,7 +120,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 		   self.parrent.draw();
 		 }
 		 else 
-	       par.Element("llport",
+	       par.Element((dndOptions && dndOptions.expected) ? dndOptions.expected : "llport",
 	         {left: p11.left + w/2 - 5, top:  posUi.position.top, "menu":this.options["menu"]},
         		function(element) {
 		          var ui = {};
@@ -125,13 +136,16 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 				    con.toId = element.euid;
 				    con.options.toId = element.euid;
 				  }
-				  if (con._updateEPoints) con._updateEPoints(extra_points);
 				  self.parrent.draw();
 		     });
 	},
 	sortDropedElements: function() {
 	  var _sort = new Array();
       for (var s in this._dropped) {
+	    // Prevent adding end of live of object adding to sort
+	  	if (this.parrent.elements[this._dropped[s]].options.type == "lldel")
+		  continue;
+
 		var e2 = $("#" + this._dropped[s] + "_Border"),
             p2 = e2.position(),
             h2 = e2.height();
@@ -314,11 +328,76 @@ dm.base.diagram("es.llport", dm.es.element, {
               $("#" + this.euid + "_Border").height(pui.top - pos.top);
             else if (pos.top > pui.top)
               $("#" + this.euid + "_Border").css("top", pui.top).height(pos.top - pui.top + h);		
+	}
+});
 
-  		   // Keep the connector location
-		   if (connector._updateEPoints)
-		     connector._updateEPoints(posUi);
+dm.base.diagram("es.lldel", dm.es.element, {
+	options: {
+		nameTemplate: "LLdel",
+		width: '15px',
+		height: '40px',
+	    droppable: true,
+		axis: 'y'
+	},
+	_create: function() {
+	  // HTML for class structure creation
+      this.innerHtml = '<img id="' + this.euid + '" class="us-element-resizable-area" src="images/lldel.png">\
+						</img>';
+	  $("#" + this.parrent.euid).append(this.innerHtml);
+	  this.element = $("#"  + this.euid);
+	},
+	_init: function() {
+      $('#' + this.euid  + '_Border')
+	     .css('width', this.options.width)
+		 .css('height', this.options.height)
+		 .css('left', this.options.left)
+		 .css('top', this.options.top);
+	  if (this.options["z-index"])
+	    this._setOption("z-index", this.options["z-index"]);
+	},
+    _setOption: function( key, value ) {
+        this.options[ key ] = value;
+        if (key == "color") {
+			$("#" + this.euid).css("background-color", value);
+		} else if (key == "borderwidth") {
+		  $("#" + this.euid).css("border-width", value);
+		} else if (key == "font-family") {
+		  $.log("ff: " + value);
+		  $("#" + this.euid).css(key, value);
+		} else if (key == "selected") {
+		  if (value)
+		   $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
+		  else
+		   $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
+		} else if (key == "z-index") {
+		  $("#" + this.euid + '_Border ').css(key, "10000000" + value);
+		}
 
+        return this;
+    },
+    getAutocomplete: function() {
+	  $.log("LLPORT AUTOCOMPLETE:");
+	  if (this.parrent) {
+		var els = this.parrent.elements;
+		for (i in els) {
+			for (j in els[i]._dropped) {
+				if ((els[i]._dropped[j] == this.euid)
+				  && (els[i].getAutocomplete))
+				  return els[i].getAutocomplete();
+			}
+		}
+	  }
+		return null;
+	},
+	dropHelper: function(posUi, connector) {
+		$.log("DROP HELPER DEL OBJ:" );
+        var pos = $("#" + this.euid + "_Border").position(),
+            h = $("#" + this.euid + "_Border").height(),
+            pui = posUi.position;
+            if (pos.top + h < pui.top)
+              $("#" + this.euid + "_Border").height(pui.top - pos.top);
+            else if (pos.top > pui.top)
+              $("#" + this.euid + "_Border").css("top", pui.top).height(pos.top - pui.top + h);		
 	}
 });
 

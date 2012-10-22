@@ -871,7 +871,7 @@ dm['ctx'] = dm.ms.ctx;
 		this.operation_info[el.euid] = $.extend({}, el.options);
 
 		// Add one more option, therefore get the list of options first !!!
-        el.onDragStart(ui, true);
+        el.onDragStart(ui);
 
 
         if (this.multipleSelection)
@@ -1471,13 +1471,17 @@ dm['ctx'] = dm.ms.ctx;
         },
 //@ifdef EDITOR
         //@proexp
-        onDragStart: function(ui, isbase) {
+        onDragStart: function(ui, skipDropped) {
 		     $.log("DS: " + this.euid);
             if (this.options.dragStart != undefined)
                 return;
 
-            for (var i in this._dropped)
+			if (skipDropped) {
+			  // Do nothing with dropped elements
+			} else {
+              for (var i in this._dropped)
                 this.parrent.elements[this._dropped[i]].onDragStart(ui);
+			}
 
             this.options.dragStart = true;
 

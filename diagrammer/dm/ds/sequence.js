@@ -24,16 +24,27 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
 		   
 		 // if to element has only one connector
          single = true;
-		 for (i in this.connectors)
+		 
+		 // if connector toId is objinstance then it is single = true !!!!!!
+		 if (this.elements[el.toId].options.type == "objinstance") {
+		    // moove objinstance !!!
+			el.isCreator = true;
+		 } else {
+		   for (i in this.connectors)
 		   if ((this.connectors[i] != el) &&
 		     ((this.connectors[i].from == el.toId)
 		       || (this.connectors[i].toId == el.toId))) {
 				   single = false;
 		       break; // element has one more connector. Could not be moved.
 		       }
-		 if (single)
-		   this.elements[el.toId].onDragStart(ui);
-         else
+			   
+          }
+		 if (single) {
+		   if (el.isCreator)
+		     this.elements[el.toId].onDragStart(ui, true); // true means skipDropped
+		   else 
+		     this.elements[el.toId].onDragStart(ui);
+         } else
 		   if (this.elements[el.toId].drop_parent)
 			   el.toId = this.elements[el.toId].drop_parent;
 	 }
@@ -46,7 +57,7 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
 			 ui.top = 0;
 		 }
 
-		el.onDragStart(ui, true);
+		el.onDragStart(ui);
 
 		if (this.multipleSelection)
 		  for (i in this.elements) {
@@ -132,10 +143,12 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
 		  var upos = {position: {left:el.points[0][0], top: el.points[0][1]}},
 		  l = el.points.length -1,
 		  upos2 = {position: {left:el.points[l][0], top: el.points[l][1]}};
-		  if ((this.elements[el.from].dropHelper) && (this.elements[el.from].options.type != 'llport'))
+		  if ((this.elements[el.from].dropHelper) && (this.elements[el.from].options.type != 'llport')) {
 		    this.elements[el.from].dropHelper(upos, el);
-		  if ((this.elements[el.toId].dropHelper) && (this.elements[el.toId].options.type != 'llport'))
+		  }
+		  if ((this.elements[el.toId].dropHelper) && (this.elements[el.toId].options.type != 'llport' && this.elements[el.toId].options.type != 'lldel')) {
 		    this.elements[el.toId].dropHelper(upos2, el);
+   		  }
 	  }
 	  
 	  var diag = this;

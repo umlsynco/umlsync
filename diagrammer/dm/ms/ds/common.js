@@ -233,14 +233,15 @@ Version:
                     element.pageY = ui.position.top;
                     var fromElement = iconMenuBuilder.refEl;
                     var thisid = this.id;
-                    var handleConnector = function(toElement) {
+					var expected_type = element.type;
+                    var handleConnector = function(toElement, isElFound) {
                          iconMenuBuilder.diagram.Connector(thisid,
                              {'fromId': fromElement.euid, 'toId': toElement.euid},
                              function(connector) {
                                if (fromElement.dropHelper)
-                                 fromElement.dropHelper(ui, connector);
+                                 fromElement.dropHelper(ui, connector, {isElFound:true});
                                if (toElement.dropHelper)
-                                 toElement.dropHelper(ui, connector);
+                                 toElement.dropHelper(ui, connector, {isElFound:isElFound, expected:expected_type});
                                if (connector._updateEPoints)
                                  connector._updateEPoints(ui);
                          }); // Connector
@@ -248,7 +249,7 @@ Version:
                     // Create an element or get element which was drop on
                     var el = iconMenuBuilder.diagram._dropConnector(ui);
                     if (el != undefined) {
-                      handleConnector(el);
+                      handleConnector(el, true);
                     }
                     else {
                        iconMenuBuilder.diagram.Element(element.type, element, handleConnector);

@@ -13,6 +13,11 @@
 	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
 	},
+	{"type": "lldel",
+	 "title": "Del object",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
+	},
 	{"type": "image",
 	 "image_path":"images/actor3.svg",
 	 "width":"40",
@@ -24,6 +29,7 @@
     "connectors": [
       {"connector":"llsequence",
 	   "title":"Life Line Sequence",
+	   "createObject": true,
 	   "icon": "./dm/icons/us/cs/dependency.png"
 	  },
       {"connector":"llselfcall",
@@ -72,9 +78,6 @@
 						{"connector":"llsequence",
 						 "icon":"dm/icons/us/cs/createobject.png"
 						},
-						{"connector":"llsequence1",
-						 "icon":"dm/icons/us/cs/sequence.png"
-						},
 						{"connector":"llreturn",
 						 "icon":"dm/icons/us/cs/return.png"
 						},
@@ -91,8 +94,8 @@
 				},
 				{"el":"Port",
 				 "cs":[
-						{"connector":"association",
-						 "icon":"dm/icons/us/cs/association.png"
+						{"connector":"llsequence",
+						 "icon":"dm/icons/us/cs/sequence.png"
 						},
 						{"connector":"Self Call",
 						 "icon":"dm/icons/us/cs/self-call.png"
@@ -102,10 +105,10 @@
 						}
 					  ]
 				},
-				{"el":"Note",
+				{"el":"Del object",
 				 "cs":[
-						{"connector":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						{"connector":"llsequence",
+						 "icon":"dm/icons/us/cs/killobject.png"}
 					  ]
 				}
 			 ]
