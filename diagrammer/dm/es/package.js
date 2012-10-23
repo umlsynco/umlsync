@@ -8,7 +8,8 @@ dm.base.diagram("es.package", dm.es.element, {
         'nameTemplate': "Package",
         'droppable': true,
         'acceptdrop': "package",
-        'height_b': "60px"
+        'height': "102px",
+        'height_b': "80px"
     },
     '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
@@ -69,12 +70,6 @@ dm.base.diagram("es.package", dm.es.element, {
         } else if (key == "font-family") {
           $("#" + this.euid).css(key, value);
 		  return true;
-        } else if (key == "selected") {
-          if (value)
-           $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
-          else
-           $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
-          return true;
         } if (key == "z-index") {
           $("#" + this.euid + '_Border ').css(key, value);
 		  return true;

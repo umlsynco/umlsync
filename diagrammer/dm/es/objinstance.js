@@ -288,15 +288,18 @@ dm.base.diagram("es.llport", dm.es.element, {
 	  if (this.options["z-index"])
 	    this._setOption("z-index", this.options["z-index"]);
 	},
-    _setOption: function( key, value ) {
+    _setOption3: function( key, value ) {
         this.options[ key ] = value;
         if (key == "color") {
 			$("#" + this.euid).css("background-color", value);
+			return true;
 		} else if (key == "borderwidth") {
 		  $("#" + this.euid).css("border-width", value);
+			return true;
 		} else if (key == "font-family") {
 		  $.log("ff: " + value);
 		  $("#" + this.euid).css(key, value);
+		  return true;
 		} else if (key == "selected") {
 		  if (value)
 		   $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});

@@ -31,7 +31,27 @@
 	{"type": "llalt",
 	 "title": "Alt",
 	 "ctx_menu":"sequence",
-	 "icon": "./dm/icons/us/es/common/del.png"
+	 "icon": "./dm/icons/us/es/common/alt.png"
+	},
+	{"type": "llalt",
+	 "title": "Loop",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/common/loop.png"
+	},
+	{"type": "llalt",
+	 "title": "Break",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/common/break.png"
+	},
+	{"type": "llalt",
+	 "title": "Parallel",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/common/par.png"
+	},
+	{"type": "llalt",
+	 "title": "Strict",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/common/strict.png"
 	},
 	{"type": "image",
 	 "image_path":"images/actor3.svg",

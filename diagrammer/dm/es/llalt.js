@@ -7,7 +7,9 @@ dm.base.diagram("es.llalt", dm.es.element, {
     'options': {
         'nameTemplate': "Alt",
         'height_b': "100%",
-		'width':'300px'
+		'width':'300px',
+		'single': true, // no connection possible
+		'cancel':'.us-package-body'
     },
     '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
@@ -33,10 +35,10 @@ dm.base.diagram("es.llalt", dm.es.element, {
       // HTML for class structure creation
       var aux = (this.options.aux != undefined) ? "<a>&lt&lt" + this.options.aux + "&gt&gt</a><br><b>" : "";
       this.innerHtml = '<div id="' + this.euid + '" class="us-package">\
-                                <div class="us-alt-tab"><b>Alt</b><img src="images/cornerb.png" style="position:absolute;bottom:-1px;right:-1px;"></div>\
             <div class="us-package-body us-element-resizable-area"><div style="width:100%;height:50%;border-bottom:1px dashed black;">[<a class="editablefield">if</a>]</div>'
             + aux + 
             '[<a class="editablefield">else</a>]</div>\
+            <div class="us-alt-tab"><b>Alt</b><img src="images/cornerb.png" style="position:absolute;bottom:-1px;right:-1px;"></div>\
                                 </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
@@ -68,13 +70,7 @@ dm.base.diagram("es.llalt", dm.es.element, {
         } else if (key == "font-family") {
           $("#" + this.euid).css(key, value);
 		  return true;
-        } else if (key == "selected") {
-          if (value)
-           $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
-          else
-           $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
-          return true;
-        } if (key == "z-index") {
+        } else if (key == "z-index") {
           $("#" + this.euid + '_Border ').css(key, value);
 		  return true;
         }

@@ -418,8 +418,8 @@ dm['ctx'] = dm.ms.ctx;
                 .click(function(evt) {
                     $.log("clicked");
                     // it could be undefined !!!
-					$("#tabs #us-editable").hide();
-                    diag._mouseClick(diag.selectedconntector);
+					//$("#tabs #us-editable").hide();
+					diag._setWidgetsOption("selected", false);
                     /*            
            // Hide elements selectors on click
            //$(".ui-resizable-handle").css({'visibility':'hidden'});
@@ -606,6 +606,10 @@ dm['ctx'] = dm.ms.ctx;
                 this.elements[i]._setOption( key, value );
             for (var i in this.connectors)
                 this.connectors[i]._setOption( key, value );
+
+			this.selectedElement = undefined;
+			this.selectedConnector = undefined;
+
         } if (key == "z-index") { // Z-index supported by elements only (not applicable for connectors)
             var newmax = this.max_zindex,
             min_z = undefined,
@@ -779,6 +783,9 @@ dm['ctx'] = dm.ms.ctx;
 		scrollLeft = $("#" + this.euid).scrollLeft(),
 		scrollTop = $("#" + this.euid).scrollTop();
         for (var i in this.elements) {
+			if (this.elements[i].options.single)
+			  continue;
+			
             var e = $("#" + this.elements[i].euid + "_Border");
             var p = e.position(),
             w = e.width(),
@@ -1104,8 +1111,10 @@ dm['ctx'] = dm.ms.ctx;
             }
 
             this.selectedElement = refElement;
-            if (refElement == undefined)
+            if (refElement == undefined) {
+			    this.selectedElement = refElement;
                 return;
+			}
 
             // Hide selected elements and hightlight selected only
             this.selectedElement._setOption("selected", true);
@@ -1396,7 +1405,7 @@ dm['ctx'] = dm.ms.ctx;
                 //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
             })
             .mouseleave(function (){
-			    if (!self.options.selected) {
+			    if (!self.options.selected && self.highlighted) {
                     $('#' + this.id +'_Border').css({'border':'0px solid #97F7A1'}).animate({left:'+=3px', top:'+=3px'},0);
 					self.highlighted = false;
 				}
@@ -1453,7 +1462,7 @@ dm['ctx'] = dm.ms.ctx;
                 $("#" + this.euid).css(key, value);
             } else if (key == "selected") {
                 if (value) {
-				    
+				    $.log("SELECT !!!");
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
 					if (!this.highlighted) {
 					  $('#' + this.euid +'_Border').css({'border':'3px solid #97F7A1'}).animate({left:'-=3px', top:'-=3px'},0);
@@ -1462,7 +1471,9 @@ dm['ctx'] = dm.ms.ctx;
 				}
                 else {
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
-                    $('#' + this.euid +'_Border').css({'border':'0px solid #97F7A1'}).animate({left:'+=3px', top:'+=3px'},0);
+					if (this.highlighted) {
+                      $('#' + this.euid +'_Border').css({'border':'0px solid #97F7A1'}).animate({left:'+=3px', top:'+=3px'},0);
+					}
 					this.highlighted = false;
 				}
             } else if (key == "z-index") {
