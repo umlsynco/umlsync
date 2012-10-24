@@ -70,6 +70,9 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
             c.stroke();
             c.closePath();            
     },
+	_init: function() {
+	  this.cleanOnNextTransform = true;
+	},
     '_getConnectionPoints': function(fromId, toId, epoints) {
        var p1 = $('#'+ fromId).position();
        

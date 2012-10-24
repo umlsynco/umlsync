@@ -608,7 +608,7 @@ Version:
 				$("#" + self.options.tabs).tabs("add", tabname, json.name);
 				
 				json['fullname'] = absPath;
-				dm.dm.loader.Diagram(json.type, "base", json, tabname
+				dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;
 					obj.options['viewid'] = viewid;

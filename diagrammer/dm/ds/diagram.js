@@ -149,7 +149,7 @@ dm['ctx'] = dm.ms.ctx;
                 if (proto.options[i] != undefined) {
                     if ((proto.options[i] != this.options[i]) || (i == 'type')) {
     item += comma + '"' + i + '":"' + this.options[i] + '"';
-    comma = ',';
+    comma = ',\n';
                     }
                 } else {
                     var obj = this.options[i];
@@ -169,11 +169,11 @@ dm['ctx'] = dm.ms.ctx;
             c = ',';
         }
     }
-    item += ']';
+    item += ']\n';
                     } else {
     if (typeof(obj) != 'object') {
         item += comma + '"' + i + '":"' + obj + '"';
-        comma = ',';
+        comma = ',\n';
     }
                     }
                 }
@@ -913,7 +913,7 @@ dm['ctx'] = dm.ms.ctx;
     },
     //@proexp
     onElementDragStop: function(el, ui) {
-        el.onDragStop();
+        el.onDragStop(ui);
 		this.operation_info2 = new Array();
 		el._update();
 		this.operation_info2[el.euid] = $.extend({}, el.options);
@@ -1572,7 +1572,7 @@ dm.base.diagram("cs.connector", {
             c;
             for (var i in this.epoints) {
                 item +=  comma + '{';
-                comma = ',';
+                comma = ',\n';
                 c='';
                 for (var j in this.epoints[i]) {
                     item +=  c + '"' + j + '":"' + this.epoints[i][j] + '"';
@@ -1589,7 +1589,7 @@ dm.base.diagram("cs.connector", {
                 for (var i in this.lables) {
                     var p = this.lables[i].position();
                     item +=  comma + '{"name":"' + this.lables[i].html() + '","x":"' + p.left + '","y":"' + p.top + '"}';
-                    comma = ',';
+                    comma = ',\n';
                 }
                 item +=  ']';
             }
@@ -1933,8 +1933,11 @@ dm.base.diagram("cs.connector", {
         },
         //@proexp
         onDragStop: function(ui) {
+		    if (ui == undefined) {
+			  return;
+			}
             this.onDragMove(ui);
-            this.options['dragStart'] = undefined;
+            delete this.options['dragStart'];
             this.epoints_drag = undefined;
             this.lables_drag = undefined;
         }
