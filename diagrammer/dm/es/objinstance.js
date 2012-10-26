@@ -347,7 +347,7 @@ dm.base.diagram("es.lldel", dm.es.element, {
 	options: {
 		nameTemplate: "LLdel",
 		width: '15px',
-		height: '40px',
+		height: '15px',
 	    droppable: true,
 		axis: 'y'
 	},
@@ -367,26 +367,6 @@ dm.base.diagram("es.lldel", dm.es.element, {
 	  if (this.options["z-index"])
 	    this._setOption("z-index", this.options["z-index"]);
 	},
-    _setOption: function( key, value ) {
-        this.options[ key ] = value;
-        if (key == "color") {
-			$("#" + this.euid).css("background-color", value);
-		} else if (key == "borderwidth") {
-		  $("#" + this.euid).css("border-width", value);
-		} else if (key == "font-family") {
-		  $.log("ff: " + value);
-		  $("#" + this.euid).css(key, value);
-		} else if (key == "selected") {
-		  if (value)
-		   $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
-		  else
-		   $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
-		} else if (key == "z-index") {
-		  $("#" + this.euid + '_Border ').css(key, "10000000" + value);
-		}
-
-        return this;
-    },
     getAutocomplete: function() {
 	  $.log("LLPORT AUTOCOMPLETE:");
 	  if (this.parrent) {

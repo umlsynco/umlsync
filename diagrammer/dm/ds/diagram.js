@@ -1547,6 +1547,7 @@ dm.base.diagram("cs.connector", {
         },
         //@proexp
         addLable: function(text, x, y) {
+		    var self = this;
             this.lables.push($("<div class='editablefield' style=\"position:absolute;z-index:99999;\">" + text + "</div>")
             .appendTo("#" + this.parrent.euid)
             .css("left", x)
@@ -1554,6 +1555,14 @@ dm.base.diagram("cs.connector", {
 //@ifdef EDITOR
             .draggable()
             .editable()
+			.mouseenter(function() {self.options.selected = true;
+			                        self.parrent.draw();
+									for (var i in self.lables) 
+									  $(self.lables[i]).addClass("us-connector-hover")})
+			.mouseleave(function (){self.options.selected = false;
+			                        self.parrent.draw();
+									for (var i in self.lables) 
+									  $(self.lables[i]).removeClass("us-connector-hover")})
 //@endif
             );
         },

@@ -7,9 +7,10 @@ dm.base.diagram("es.llalt", dm.es.element, {
     'options': {
         'nameTemplate': "Alt",
         'height_b': "100%",
+		'borderwidth': "2",
 		'width':'300px',
 		'single': true, // no connection possible
-		'cancel':'.us-package-body'
+		'cancel':'.us-alt-body'
     },
     '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
@@ -21,8 +22,8 @@ dm.base.diagram("es.llalt", dm.es.element, {
        this.options.height = $("#" + this.euid + "_Border").height();
 
        // Height of packet body. Width is the same for all part of element
-       this.options.height_b = $("#" + this.euid + "_Border .us-package-body").height();
-       this.options.name = $("#" + this.euid + " .us-package-body .editablefield" ).html();
+       this.options.height_b = $("#" + this.euid + "_Border .us-alt-body").height();
+       this.options.name = $("#" + this.euid + " .us-alt-body .editablefield" ).html();
        
        if (this._dropped) {
          this.options.dropped = new Array();
@@ -31,14 +32,18 @@ dm.base.diagram("es.llalt", dm.es.element, {
          }
        }
     },
+	getAlt: function() {
+	  if (this.options.title == "Loop")
+	    return 'Loop(<a class="editablefield">' + 10 + '</a>)';
+	  return this.options.title;
+	},
     '_create': function() {
       // HTML for class structure creation
       var aux = (this.options.aux != undefined) ? "<a>&lt&lt" + this.options.aux + "&gt&gt</a><br><b>" : "";
       this.innerHtml = '<div id="' + this.euid + '" class="us-package">\
-            <div class="us-package-body us-element-resizable-area"><div style="width:100%;height:50%;border-bottom:1px dashed black;">[<a class="editablefield">if</a>]</div>'
-            + aux + 
+            <div class="us-alt-body us-element-resizable-area"><div style="width:100%;height:50%;border-bottom:1px dashed black;">[<a class="editablefield">if</a>]</div>'+
             '[<a class="editablefield">else</a>]</div>\
-            <div class="us-alt-tab"><b>Alt</b><img src="images/cornerb.png" style="position:absolute;bottom:-1px;right:-1px;"></div>\
+            <div class="us-alt-tab"><b>'+this.getAlt()+'</b><img src="images/cornerb.png" style="position:absolute;bottom:-1px;right:-1px;"></div>\
                                 </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
@@ -51,21 +56,20 @@ dm.base.diagram("es.llalt", dm.es.element, {
 
         if (key == "width") {
 		  $('#' + this.euid  + '_Border').css('width', this.options.width);
-          $('#' + this.euid  + '_Border .us-package-body').css('width', value);
+          $('#' + this.euid  + '_Border .us-alt-body').css('width', parseInt(value) - this.options.borderwidth*2);
 		  return true;
         } else if (key == "height_b") {
-          $('#' + this.euid  + '_Border .us-package-body').css('height', value);
+          $('#' + this.euid  + '_Border .us-alt-body').css('height', value).css('height', "-=" + this.options.borderwidth*2);
 		  return true;
         }  else if (key == "height") {
           $('#' + this.euid  + '_Border').css('height', value);
 		  return true;
         } else if (key == "color") {
-            $("#" + this.euid + " .us-package-tab").css("background-color", value);
-            $("#" + this.euid + " .us-package-body").css("background-color", value);
+            $("#" + this.euid + " .us-alt-tab").css("background-color", value);
 			return true;
         } else if (key == "borderwidth") {
             $("#" + this.euid + " .us-package-tab").css("border-width", value);
-            $("#" + this.euid + " .us-package-body").css("border-width", value);
+            $("#" + this.euid + " .us-alt-body").css("border-width", value);
 			return true;
         } else if (key == "font-family") {
           $("#" + this.euid).css(key, value);

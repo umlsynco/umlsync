@@ -796,6 +796,10 @@ a {
   background-color: #87CEEB;
 }
 
+.us-connector-hover {
+  border: 3px dashed #97F7A1;
+}
+
 span.diagramclass  span.dynatree-icon {
   background-position: 0 0;
   background-image: url("../images/diagram_obj.gif");
