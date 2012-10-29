@@ -10,157 +10,6 @@ a {
   text-decoration: none;
 }
 
-.ui-resizable-s-l {
-  position: absolute;
-  width: 10%;
-  height: 2px;
-  background-color: #97F7A1;
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
-  left: 45%;
-  cursor: s-resize;
-}
-
-.ui-resizable-s-u {
-  position: absolute;
-  width: 10%;
-  height: 2px;
-  background-color: #97F7A1;
-  border-bottom: 2px solid black;
-  #border-top: 2px solid black;
-  bottom: -4px;
-  left: 45%;
-  cursor: s-resize;
-}
-
-.ui-resizable-e-u {
-  position: absolute;
-  width: 2px;
-  height: 10%;
-  background-color: #97F7A1;
-  border-right: 2px solid black;
-  top: 45%;
-  right: -4px;
-  cursor: e-resize;
-}
-
-.ui-resizable-n-u {
-  position: absolute;
-  width: 10%;
-  height: 2px;
-  background-color: #97F7A1;
-  border-top: 2px solid black;
-  top: -4px;
-  left: 45%;
-  cursor: n-resize;
-}
-
-.ui-resizable-w-u {
-  position: absolute;
-  width: 2px;
-  height: 10%;
-  border-left: 2px solid black;
-  top: 45%;
-  left: -4px;
-  cursor: w-resize;
-}
-
-.ui-resizable-nw-u {
-  position: absolute;
-  width: 5%;
-  min-width: 5px;
-  height: 5%;
-  min-height: 5px;
-  border-left: 2px solid black;
-  border-top: 2px solid black;
-  top: -4px;
-  left: -4px;
-  cursor: nw-resize;
-}
-
-.ui-resizable-ne-u {
-  position: absolute;
-  width: 5%;
-  min-width: 5px;
-  min-height: 5px;
-  height: 5%;
-  border-right: 2px solid black;
-  border-top: 2px solid black;
-  top: -4px;
-  right: -4px;
-  cursor: ne-resize;
-}
-
-.ui-resizable-se-u {
-  position: absolute;
-  width: 5%;
-  height: 5%;
-  min-width: 5px;
-  min-height: 5px;
-  border-bottom: 2px solid black;
-  border-right: 2px solid black;
-  bottom: -4px;
-  right: -4px;
-  cursor: se-resize;
-}
-
-.ui-resizable-sw-u {
-  position: absolute;
-  width: 5%;
-  height: 5%;
-  min-width: 5px;
-  min-height: 5px;
-  border-left: 2px solid black;
-  border-bottom: 2px solid black;
-  bottom: -4px;
-  left: -4px;
-  cursor: sw-resize;
-}
-
-.ui-resizable-e-ul {
-  position: absolute;
-  width: 2px;
-  height: 10%;
-  background-color: #97F7A1;
-  border-right: 2px solid black;
-  top: 2px;
-  right: -4px;
-  cursor: e-resize;
-}
-
-.ui-resizable-w-ul {
-  position: absolute;
-  width: 2px;
-  height: 10%;
-  border-left: 2px solid black;
-  top: 2px;
-  left: -4px;
-  cursor: w-resize;
-}
-
-
-.ui-resizable-s-ul {
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background-color: #97F7A1;
-  border-bottom: 2px solid black;
-  bottom: -4px;
-  left: 0;
-  cursor: s-resize;
-}
-
-.ui-resizable-n-ul {
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background-color: #97F7A1;
-  border-top: 2px solid black;
-  top: -4px;
-  left: 0;
-  cursor: n-resize;
-}
-
 .us-element-ref {
   position: absolute;
   width: 10px;
@@ -949,6 +798,160 @@ span.cfolder span.dynatree-icon {
 .ui-scrollable-tabs .ui-tabs-nav-arrows li a {
     display: block;
 }
+
+
+.ui-resizable-s-l {
+  position: absolute;
+  width: 10%;
+  height: 2px;
+  background-color: #97F7A1;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  left: 45%;
+  bottom: 2px;
+  cursor: s-resize;
+}
+
+.ui-resizable-s-u {
+  position: absolute;
+  width: 10%;
+  height: 2px;
+  background-color: #97F7A1;
+  border-bottom: 2px solid black;
+  #border-top: 2px solid black;
+  bottom: -4px;
+  left: 45%;
+  cursor: s-resize;
+}
+
+.ui-resizable-e-u {
+  position: absolute;
+  width: 2px;
+  height: 10%;
+  background-color: #97F7A1;
+  border-right: 2px solid black;
+  top: 45%;
+  right: -4px;
+  cursor: e-resize;
+}
+
+.ui-resizable-n-u {
+  position: absolute;
+  width: 10%;
+  height: 2px;
+  background-color: #97F7A1;
+  border-top: 2px solid black;
+  top: -4px;
+  left: 45%;
+  cursor: n-resize;
+}
+
+.ui-resizable-w-u {
+  position: absolute;
+  width: 2px;
+  height: 10%;
+  border-left: 2px solid black;
+  top: 45%;
+  left: -4px;
+  cursor: w-resize;
+}
+
+.ui-resizable-nw-u {
+  position: absolute;
+  width: 5%;
+  min-width: 5px;
+  height: 5%;
+  min-height: 5px;
+  border-left: 2px solid black;
+  border-top: 2px solid black;
+  top: -4px;
+  left: -4px;
+  cursor: nw-resize;
+}
+
+.ui-resizable-ne-u {
+  position: absolute;
+  width: 5%;
+  min-width: 5px;
+  min-height: 5px;
+  height: 5%;
+  border-right: 2px solid black;
+  border-top: 2px solid black;
+  top: -4px;
+  right: -4px;
+  cursor: ne-resize;
+}
+
+.ui-resizable-se-u {
+  position: absolute;
+  width: 5%;
+  height: 5%;
+  min-width: 5px;
+  min-height: 5px;
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
+  bottom: -4px;
+  right: -4px;
+  cursor: se-resize;
+}
+
+.ui-resizable-sw-u {
+  position: absolute;
+  width: 5%;
+  height: 5%;
+  min-width: 5px;
+  min-height: 5px;
+  border-left: 2px solid black;
+  border-bottom: 2px solid black;
+  bottom: -4px;
+  left: -4px;
+  cursor: sw-resize;
+}
+
+.ui-resizable-e-ul {
+  position: absolute;
+  width: 2px;
+  height: 10%;
+  background-color: #97F7A1;
+  border-right: 2px solid black;
+  top: 2px;
+  right: -4px;
+  cursor: e-resize;
+}
+
+.ui-resizable-w-ul {
+  position: absolute;
+  width: 2px;
+  height: 10%;
+  border-left: 2px solid black;
+  top: 2px;
+  left: -4px;
+  cursor: w-resize;
+}
+
+
+.ui-resizable-s-ul {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #97F7A1;
+  border-bottom: 2px solid black;
+  bottom: -4px;
+  left: 0;
+  cursor: s-resize;
+}
+
+.ui-resizable-n-ul {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #97F7A1;
+  border-top: 2px solid black;
+  top: -4px;
+  left: 0;
+  cursor: n-resize;
+}
+
 
 
 
