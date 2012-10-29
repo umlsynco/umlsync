@@ -47,8 +47,6 @@ dm.base.diagram("es.package", dm.es.element, {
 	  this._setOptions(this.options);
     },
     '_setOption2': function( key, value ) {
-        this.options[ key ] = value;
-
         if (key == "width") {
 		  $('#' + this.euid  + '_Border').css('width', this.options.width);
           $('#' + this.euid  + '_Border .us-package-body').css('width', value);

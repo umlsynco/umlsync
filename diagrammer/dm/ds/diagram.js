@@ -1398,7 +1398,7 @@ dm['ctx'] = dm.ms.ctx;
 				}
 //@ifdef EDITOR
                 // Show the  menu if element was selected
-               if (self.parrent.menuIcon) {
+               if (self.parrent.menuIcon && self.options.selected) {
                     self.parrent.menuIcon['Show'](this.id, self);
                 }
 //@endif

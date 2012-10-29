@@ -256,10 +256,10 @@ Version:
                     }
                 }
             }})
-            .mouseenter(function() {
-                $("#" + diagram.euid + " .elmenu-" + menu_id).stop().animate({opacity:"1"});
+            .parent().mouseenter(function() {
+                $(this).stop().animate({opacity:"1"});
             })
-            .mouseleave(function() {$("#" + diagram.euid + " .elmenu-" + menu_id).animate({opacity:"0"});});
+            .mouseleave(function() {$(this).stop().animate({opacity:"0"});});
             this.menus[menu_id].loaded = true;
         }
         this['Enable'] = function(id, menu, el) {
