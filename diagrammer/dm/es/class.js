@@ -27,14 +27,24 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'addMethod': function(desc) {
 	   if (this.options['aux'] == "Enumeration")
 	     return;
-       $('<li><a class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable();
-       $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh");
+       var hg = $('<li><a class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable().height();
+       var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
+	       h2 = $("#" + this.euid + " .us-class-operations").height();
+	   if (h1 > h2 ) {
+		 $("#" + this.euid + "_Border").height("+="+ hg);
+	     $("#" + this.euid + " .us-class-operations").height("+=" + hg);
+	   }
     },
     'addField': function(desc) {
 	   if (this.options['aux'] == "Interface")
 	     return;
-       $('<li><a class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable();
-       $("#" + this.euid + ".us-class-attributes .us-sortable").sortable("refresh");
+       var hg = $('<li><a class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
+       var h1 = $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh").height(),
+	       h2 = $("#" + this.euid + " .us-class-attributes").height();
+	   if (h1 > h2) {
+		 $("#" + this.euid + "_Border").height("+="+ hg);
+	     $("#" + this.euid + " .us-class-attributes").height("+=" + hg);
+	   }
     },
     '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
