@@ -34,6 +34,11 @@
 	 "icon": "./dm/icons/us/es/common/alt.png"
 	},
 	{"type": "llalt",
+	 "title": "Option",
+	 "ctx_menu":"sequence",
+	 "icon": "./dm/icons/us/es/common/opt.png"
+	},
+	{"type": "llalt",
 	 "title": "Loop",
 	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/common/loop.png"
