@@ -647,14 +647,14 @@ Version:
  				  $(".editablefield input").trigger('blur');
 				} else if (e.ctrlKey) {
 					switch (e.keyCode) {
-					case 65:// Handle Ctl-A
+					case 65:// Handle Ctrl-A
 						if (fw.diagrams[fw.selectedDiagramId]) {
 							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", true);
 						}
 						e.preventDefault();
 						break;                       
 
-					case 67: // Handle Ctl-C
+					case 67: // Handle Ctrl-C
 						// 1. Get focus manager
 						// 2. if element ? => copy it on clipboard
 						//                          stop propagate
@@ -665,7 +665,7 @@ Version:
 						}
 						break;
 					case 88:
-						// Handle Ctl-X
+						// Handle Ctrl-X
 						// 1. Get focus manager
 						// 2. if element ? => copy it on clipboard
 						//                          stop propagate
@@ -682,11 +682,14 @@ Version:
 							$.clippy = undefined;
 						}
 						break;
-					case 86:// Handle Ctl-V
+					case 86:// Handle Ctrl-V
 						// 1. Get focus manager
 						// 2. if diagram ? => try copy element from clipboard
 						//                          stop propagate if success
 						if (($.clippy)  && (fw.diagrams[fw.selectedDiagramId])) {
+						    // Make selected only inserter items
+							fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", false);
+							fw.diagrams[fw.selectedDiagramId].multipleSelection = true;
 							var obj = $.parseJSON($.clippy),
 							es = obj["elements"],
 							cs = obj["connectors"];
@@ -701,7 +704,7 @@ Version:
 							$.clippy = undefined;
 						}
 						break;
-					case 90:// Handle Ctl-Z
+					case 90:// Handle Ctrl-Z
 						// 1. Get focus manager
 						// 2. if diagram => get operation sequence manager
 						//                       -> goBack()
@@ -709,7 +712,7 @@ Version:
 							fw.diagrams[fw.selectedDiagramId].revertOperation();
 						}
 						break;
-					case 89:// Handle Ctl-Y
+					case 89:// Handle Ctrl-Y
 						// 1. Get focus manager
 						// 2. if diagram => get operation sequence manager
 						//                       -> goForward()
@@ -717,7 +720,7 @@ Version:
 							fw.diagrams[fw.selectedDiagramId].repeatOperation();
 						}
 						break;
-					case 83:// Handle Ctl-S
+					case 83:// Handle Ctrl-S
 						// 1. Get focus manager
 						// 2. if diagram =>  Store the current diagram
 						//                       -> goBack()
