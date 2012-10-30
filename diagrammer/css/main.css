@@ -78,12 +78,14 @@ a {
   text-align: center;
 }
 
-.us-class-template {
+.us-class div.us-class-template {
 	min-width:80px;
 	background-color:white;
 	position:absolute;
+    border: 1px dashed black;
 	min-height:15px;
 	top:-10px;
+	left:50%;
 	right:-40px;
 	z-index:1100;
 }
