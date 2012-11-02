@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3c.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- http://noteslog.com/chili/ - Copyright 2010 / Andrea Ercolino -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+<title>TESTING CHILI 3.0 - Bad PHP is OK</title>
+
+<script type="text/javascript" src="../jquery.js"></script>
+<script type="text/javascript" src="../jquery.chili.js"></script>
+
+
+<script type="text/javascript" src="../jquery.chili.recipes.js"></script> <!-- Chili settings for a static setup -->
+
+
+<script id="setup" type="text/javascript">
+$.chili.options.automatic.active = false;
+$.chili.options.decoration.lineNumbers = true;
+$( function() {
+	$( '#highlight' )
+	.one( 'click', function() {
+		var time1 = new Date();
+		var $chili = $( '#jq' ).chili();
+		var time2 = new Date();
+		var delta = time2 - time1;
+		var spans = $chili.find( 'span' ).length;
+		var rate = Math.round( spans / delta * 100 ) / 100;
+		$( '#highlight' ).html( 
+			'highlight done in ' + delta + ' milliseconds'
+			+ ' with ' + spans + ' spans'
+			+ ' at a rate of ' + rate * 1000 + ' span/sec'
+		);
+	} )
+	.show()
+	;
+} );
+</script>
+
+<script type="text/javascript" src="examples.js"></script>
+<link type="text/css" rel="stylesheet" href="examples.css" />
+
+</head>
+<body>
+
+<h2 id="title"></h2>
+
+<h3 id="highlight" style="color:red; display:none;">
+<a href="#">highlight</a> now
+</h3>
+
+<p>
+This page has the following setup.
+</p>
+<div id="show_setup"></div>
+
+
+<hr/>
+
+
+<div class="section">
+<h3>Bad PHP is OK</h3>
+<p><a href="http://noteslog.com/chili/" target="_blank">Chili</a> highlights bad PHP</p>
+<pre><code class="chili-lang-php" id='jq'>
+&lt;p class=&quot;ex&lt;?php echo $ex ? &#39;&quot;&#39; : &#39;ample&quot;&#39; ?&gt;&gt;Hi!&lt;/p&gt;
+</code></pre>
+</div>
+
+</body>
+</html>

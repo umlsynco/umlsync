@@ -288,19 +288,19 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     _create: function () {
 	//<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
-//@ifdef VIEWER
-//        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
-//                <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
-//                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
-//                <div class="us-canvas-bg" style="width:100%;height:100%;">\
-//                </div></div>');
-//        this.canvas = window.document.getElementById(this.euid +'_Canvas');
-//@else
+	 if (this.options.multicanvas != undefined) {
+        this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
+                <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+                <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
+                <div class="us-canvas-bg" style="width:100%;height:100%;">\
+                </div></div>');
+        this.canvas = window.document.getElementById(this.euid +'_Canvas');
+	} else {
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
                 <div class="us-canvas-bg" style="width:100%;height:100%;">\
                 </div></div>');
         this.canvas = window.document.getElementById('SingleCanvas');
-//@endif
+	}
                 this.max_zindex = 100;
 
                 // Diagram canvas drop element

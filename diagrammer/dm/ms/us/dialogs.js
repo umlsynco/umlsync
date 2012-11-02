@@ -148,7 +148,6 @@ Version:
 
             $( "#repo-selection-dialog" ).dialog({
                 'autoOpen': true,
-
                 'minWidth': 350,
                 'modal': true,
                 'buttons': {
@@ -164,7 +163,7 @@ Version:
             }
             },
 
-            close: function() {
+            'close': function() {
 
             }
             });

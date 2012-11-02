@@ -19,12 +19,15 @@ Version:
 
 
     dm.base.GithubView = function(url, token) {
-        function treeView(data, textStatus, jqXHR) {
+		var converter = new Showdown.converter();
+
+        function treeView(data, textStatus, jqXHR, readmeLoader) {
               //the variable 'data' will have the JSON object
               // In your example, the following will work:
                 if (data['data']) {
                   var ret = [];
                   var json = data['data'];
+				  var LoadReadMe = null;
                   for (j in json["tree"]) {
                     ret[j] = {};
                     if (json["tree"][j]["type"] == "blob") {
@@ -38,46 +41,41 @@ Version:
                         ret[j]["title"] = json["tree"][j]["path"];
                         ret[j]["sha"] = json["tree"][j]["sha"];
                     }
+					if (json["tree"][j]["path"].indexOf("README") == 0) {
+						LoadReadMe = json["tree"][j]["sha"];
+					}
                   }
+				  if (LoadReadMe) {
+					readmeLoader(LoadReadMe);
+				  }
                   return ret;
                 }
               return data;
         };
 
-    function _request(method, path, data, cb, raw) {
-	function getURL() {
-	    var url = path;
-	    return url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
-	}
-	var xhr = new XMLHttpRequest();
-	
-	if (!raw) {xhr.dataType = "json"}
 
-	xhr.open(method, getURL());
-	xhr.onreadystatechange = function () {
-	    if (this.readyState == 4) {
-		if (this.status >= 200 && this.status < 300 || this.status === 304) {
-		    cb(null, raw ? this.responseText : this.responseText ? JSON.parse(this.responseText) : true);
-		} else {
-		    cb({request: this, error: this.status});
-		}
-	    }
-	}
+		function decodeMDContent(data, textStatus, jqXHR) {
 
-	xhr.setRequestHeader('Accept','application/vnd.github.raw');
-	xhr.setRequestHeader('Content-Type','application/json');
-/*	if (
-	(options.auth == 'oauth' && options.token) ||
-	(options.auth == 'basic' && options.username && options.password)
-	) {*/
-	    xhr.setRequestHeader('Authorization', 'token'+token);
-//	    options.auth == 'oauth'
-//	    ? 'token '+ options.token
-	    //: 'Basic ' + Base64.encode(options.username + ':' + options.password)
-//	    );
-	//}
-	data ? xhr.send(JSON.stringify(data)) : xhr.send();
-    }         
+          for (d in data) {
+            if (d == 'data') {
+               var splitted = data[d].content.split('\n');
+               var decoded = "";
+               for (s in splitted) {
+                 decoded += $.base64.decode(splitted[s]);
+               }
+               //<div class="bubble tree-browser-wrapper"></div>';
+               var innerHtml = '<div class="announce instapaper_body md" data-path="/" id="readme"><span class="name">\
+      <span class="mini-icon mini-icon-readme"></span> README.md</span>\
+      <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
+      '+converter.makeHtml(decoded)+'\
+      </article></div>';
+               
+				$("#tabs ul.us-frames li.us-frame").hide();
+				$("#tabs ul.us-frames").append('<li class="us-frame" style="overflow:scroll;">'+ innerHtml +'<li>');
+            }
+          }
+        };
+
         function decodeContent(data, textStatus, jqXHR, callback) {
           for (d in data) {
             if (d == 'data') {
@@ -92,30 +90,58 @@ Version:
           }
         };
 
+		function decodeContent2(data, textStatus, jqXHR, callback) {
+          for (d in data) {
+            if (d == 'data') {
+               var splitted = data[d].content.split('\n');
+               var decoded = "";
+               for (s in splitted) {
+                 decoded += $.base64.decode(splitted[s]);
+               }
+
+			   if (callback) callback(decoded);
+            }
+          }
+        };
+
         var pUrl = url;
         var self = {
 		    euid: "Github",
             // Check if loging required
             init: function() {
 			  $.ajax({
-				url: 'https://api.github.com/user/repos',
+				url: 'https://api.github.com/legacy/repos/search/:diagrams',
                   dataType: 'jsonp',
                   success: function(mdata) {
                        var data = mdata.data;
-					
-					  data = [{name:"umlsync",
-					           full_name:"umlsynco/diagrams",
-							   url: "https://api.github.com/repos/umlsynco/diagrams",
-							   private: false}];
-					
-					if (dm.dm.dialogs)
-                    dm.dm.dialogs['SelectRepoDialog'](data, function(repo) {
-				      var IGhView = new dm.base.GithubView(repo, "{{ access_token }}");
-				      dm.dm.fw.addView2('Github', IGhView);
-				    });
-  			  }
+	
+				      //var IGhView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams", "{{ access_token }}");
+					  if (data["repositories"])
+			           dm.dm.fw.addRepositories(self.euid, data["repositories"]);
+					   
+					   dm.dm.fw.addSearchResults(self.euid, data["repositories"]);
+
+					  //dm.dm.fw.addView2("umlsynco/umlsync", IGhView);
+  			    }
 			  });
             },
+			Search: function(name) {
+			  $.ajax({
+				url: 'https://api.github.com/legacy/repos/search/:' + name,
+                  dataType: 'jsonp',
+                  success: function(mdata) {
+                       var data = mdata.data;
+	
+				      //var IGhView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams", "{{ access_token }}");
+					  if (data["repositories"])
+			           dm.dm.fw.addRepositories(self.euid, data["repositories"]);
+					   
+					   dm.dm.fw.addSearchResults(self.euid, data["repositories"]);
+
+					  //dm.dm.fw.addView2("umlsynco/umlsync", IGhView);
+  			    }
+			  });
+			},
             info: function(callback) {
                 // TODO: define github view capabilities
                 //       right now only view available
@@ -150,10 +176,32 @@ content = {
 			   alert("FAILED to create blob 1");},
 		      });*/
 		    },
-			'loadDiagram': function(node, callback) {
+			'loadDiagram': function(node, repo, callback) {
 			  if (node && node.data && node.data.sha) {
 		        $.ajax({
-		          url: 'https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs/'+node.data.sha,
+		          url: 'https://api.github.com/repos/'+repo+'/git/blobs/'+node.data.sha,
+                  accepts: 'application/vnd.github-blob.raw',
+			      dataType: 'jsonp',
+                  success: function(x, y, z) {decodeContent(x,y,z,callback.success);},
+			      error:callback.error
+		        });
+			  }
+			},
+			'loadCode': function(node, repo, callback) {
+			  if (node && node.data && node.data.sha) {
+		        $.ajax({
+		          url: 'https://api.github.com/repos/'+repo+'/git/blobs/'+node.data.sha,
+                  accepts: 'application/vnd.github-blob.raw',
+			      dataType: 'jsonp',
+                  success: function(x, y, z) {decodeContent2(x,y,z,callback.success);},
+			      error:callback.error
+		        });
+			  }
+			},
+			'loadMarkdown': function(node, repo, callback) {
+			  if (node && node.data && node.data.sha) {
+		        $.ajax({
+		          url: 'https://api.github.com/repos/'+repo+'/git/blobs/'+node.data.sha,
                   accepts: 'application/vnd.github-blob.raw',
 			      dataType: 'jsonp',
                   success: function(x, y, z) {decodeContent(x,y,z,callback.success);},
@@ -206,12 +254,23 @@ content = {
 					}
 				}
 			],
-            tree: {
+            tree: function(repo) {
+			  var pUrl = "https://api.github.com/repos/"  + repo;
+			  function extractReadMe(LoadReadMe) {
+				  $.ajax({url: 'https://api.github.com/repos/'+repo+'/git/blobs/' + LoadReadMe,
+						success: decodeMDContent,
+						dataType:"jsonp"});
+			  }
+			  function postProcessTreeView(data, textStatus, jqXHR) {
+			    return treeView(data, textStatus, jqXHR, extractReadMe);				
+			  }
+
+			  return {
                 persist: true,
                 initAjax: {
                     url: pUrl + '/git/trees/master',
                     dataType:"jsonp",
-                    postProcess: treeView
+                    postProcess: postProcessTreeView
                 },
                 onCreate: function(node, span){
                    $(span).bind('contextmenu', function(e) {
@@ -223,14 +282,24 @@ content = {
                 onLazyRead: function(node){
                     if (node.data.isFolder)
                         node.appendAjax({url: pUrl + "/git/trees/" + node.data.sha,
-                               postProcess: treeView,
+                               postProcess: postProcessTreeView,
                                dataType:"jsonp"});
                 },
                 onActivate: function(node) {
-                    if ((!node.data.isFolder)
-                        && (node.data.title.indexOf(".json") != -1))
-						dm.dm.fw.loadDiagram(self.euid, node);
-                },
+                    if (!node.data.isFolder) {
+					    var tt = node.data.title.split(".");
+						var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+						    
+                        if (ext == "JSON" || ext == "UMLSYNC") {
+						  dm.dm.fw.loadDiagram(self.euid, repo, node);
+						} else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
+						  extractReadMe(node.data.sha);
+						} else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) > 0){
+						  dm.dm.fw.loadCode(self.euid, repo, node);
+						}
+				    }
+                }
+			  }
             },
         };
 		return self;
