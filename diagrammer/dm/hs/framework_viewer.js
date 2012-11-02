@@ -45,7 +45,7 @@ Version:
 			// Think about field set 
 			$("#" + this.options.content).append('\
 					<div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;background-color:gray;">\
-					<div class="ui-corner-all ui-state-default" style="background-color:gray;"><img src="images/search.png" style="margin-left:10px;"><input id="us-search" width="100%" height=30px value="Search"></div>\
+					<div class="ui-corner-all ui-state-default" style="background-color:white;"><img src="images/search.png" style="margin-left:10px;"><a id="us-search" style="width:100%;height:30px;color:gray;">Search</a></div>\
 					<div id="accordion" style="background-color:gray;">\
 					<h3><a href="#">Repositories</a></h3>\
 					<div id="us-repos"></div>\
@@ -135,7 +135,7 @@ $acc.children("div").addClass('ui-accordion-content ui-helper-reset ui-widget-co
 
 jQuery(document).ready(function(){
 $("#us-search").editable({onSubmit:function() {
-	self.views['Github'].view.Search($(this).val());
+	self.views['Github'].view.Search($(this).html());
 //dm.dm.fw.addSearchResults('Github', null);
 }});
 
@@ -386,7 +386,7 @@ $("#us-search").editable({onSubmit:function() {
 			            innerHtml += '<div class="result">\
   <h2 class="title">\
     <a href="/'+data[r]['owner']+'/'+data[r]['name']+'">'+data[r]['owner']+'/ '+data[r]['name']+'</a>\
-      <span class="language">(Java)</span>\
+      <span class="language">' + (data[r]['language'] ? '('+data[r]['language']+')': '') +'</span>\
   </h2>\
   <div class="description">\
     '+data[r]['description']+'\
@@ -395,7 +395,7 @@ $("#us-search").editable({onSubmit:function() {
     '+data[r]['size']+' Kb <span>|</span>\
     '+data[r]['forks']+' forks <span>|</span>\
     '+data[r]['watchers']+' stars <span>|</span>\
-    last activity '+data[r]['pushed']+' months ago\
+    last activity '+data[r]['pushed']+'\
   </div>\
 </div>';
 }
@@ -591,9 +591,9 @@ $("#us-search").editable({onSubmit:function() {
   <div id="code_search_results">\
   <table width="100%">\
     <tbody><tr><td width="60%" valign="top">\
-        <div class="header">\
-          <div class="title">Repositories (7032)</div>\
-          <div class="info">(0.07 seconds)</div>\
+        <div class="header ui-state-active">\
+          <div class="title">Repositories ('+data.length+')</div>\
+          <div class="info" style="color:white;">(0.07 seconds)</div>\
         </div>\
 '+innerHtml+'          <div class="more"><a href="https://github.com/search?langOverride=&amp;q=dia&amp;repo=&amp;start_value=1&amp;type=Repositories&amp;utf8=%E2%9C%93" class="more_link">more »</a></div>\
    </td><td width="40%" valign="top">\
@@ -800,9 +800,9 @@ $("#us-search").editable({onSubmit:function() {
 			self.views[viewId].view.save(path, data, description);
 		},
         //@proexp
-		'loadDiagram': function(viewid, repo, path) {
+		'loadDiagram': function(viewid, repo, path, parent) {
 			var self = this,
-			absPath = path.getAbsolutePath();
+			absPath = (path.getAbsolutePath) ? path.getAbsolutePath(): path.data.sha;
 			if (self.diagrams) {
 				for (var r in self.diagrams) {
 				  var d = self.diagrams[r];
@@ -824,16 +824,19 @@ $("#us-search").editable({onSubmit:function() {
 			if (self.views[viewid])
 			self.views[viewid].view.loadDiagram(path, repo, {
 			  'success': function(json) {
-				var tabname = self.options.tabRight + "-" + self.counter;
-				self.counter++;
+			    var tabname = parent;
+			    if (parent == undefined) {
+				  tabname = self.options.tabRight + "-" + self.counter;
+				  self.counter++;
 				
-				$("#" + self.options.tabs + " ul.us-frames li.us-frame").hide();
-				$("#" + self.options.tabs + " ul.us-frames").append('<li class="us-frame" id="'+tabname+'_p"><div id="'+ tabname +'"></div><li>');
-				tabname = "#" + tabname; 
-				//$("#" + self.options.tabs).tabs("add", tabname, json.name);
+				  $("#" + self.options.tabs + " ul.us-frames li.us-frame").hide();
+				  $("#" + self.options.tabs + " ul.us-frames").append('<li class="us-frame" id="'+tabname+'_p"><div id="'+ tabname +'"></div><li>');
+				  tabname = "#" + tabname; 
+				  //$("#" + self.options.tabs).tabs("add", tabname, json.name);
 				
-				json['fullname'] = absPath;
-				json['multicanvas'] = true;				
+				  json['fullname'] = absPath;
+				}
+				json['multicanvas'] = true;
 				dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;

@@ -72,7 +72,19 @@ Version:
                
 				$("#tabs ul.us-frames li.us-frame").hide();
 				$("#tabs ul.us-frames").append('<li class="us-frame" style="overflow:scroll;">'+ innerHtml +'<li>');
-            }
+				
+				
+				var count = 0;
+				$("article.markdown-body .pack-diagram").each(function() {
+				  var repo = $(this).attr("repo"),
+				      sum = $(this).attr("sha");
+				     $(this).width("1200px").height("600px").css("overflow", "none");
+					 //$(this).id = "asd-" + count;
+					 //count++;
+//					 alert("ID:" + $(this).attr("id"));
+				     dm.dm.fw.loadDiagram(self.euid,  repo, {data:{sha:sum}}, "#" +  $(this).attr("id"));
+				});
+             }
           }
         };
 
