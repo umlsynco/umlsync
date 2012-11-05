@@ -23,6 +23,7 @@ Version:
 	//@export:dm.hs.framework:plain
 	dm.hs.framework = function(options) {
         var activeNode;
+	    var converter = new Showdown.converter();
 		function getInstance(options) {
 			dm.dm = dm.dm || {};
 			if (!dm.dm['fw']) { 
@@ -39,6 +40,7 @@ Version:
 			this.counter = 0;
 			this.loader = dm.dm.loader;
 			this.diagrams = this.diagrams || {};
+			this.markdown = this.markdown || {};
 
 			this.initializeToolBox(dm.dm.loader);
 
@@ -847,6 +849,63 @@ $("#us-search").editable({onSubmit:function() {
 			  },
 			  'error': function() {alert("FAILED to load:" + path);}});
 		},
+		'loadMarkdown': function(viewid, repo, path) {
+			var self = this,
+			absPath = repo + "/" + path.data.sha;
+			if (self.markdown) {
+				for (var r in self.markdown) {
+				  var d = self.markdown[r];
+				  if ((d.viewid == viewid)
+				    && (d.repo == repo)
+				    && (d.fullname == absPath)) {
+					$('.us-frame').slideUp();
+					$(r+'_p.us-frame').slideDown(); // _p means parrent & unique id 
+					return;
+				  }
+				}
+			}
+
+		    if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
+			  alert("View: " + viewid + " was not initialize.");
+			  return;
+			}
+
+			if (self.views[viewid])
+  			 self.views[viewid].view.loadMarkdown(path, repo, {
+			  'success': function(json) {
+				var tabname = self.options.tabRight + "-" + self.counter;
+				self.counter++;
+				
+				$("#" + self.options.tabs + " ul.us-frames li.us-frame").hide();
+				$("#" + self.options.tabs + " ul.us-frames").append('<li class="us-frame" id="'+tabname+'_p" style="overflow:scroll;"><div id="'+ tabname +'" style="margin-left:30px;"></div><li>');
+				tabname = "#" + tabname; 
+				//$("#" + self.options.tabs).tabs("add", tabname, json.name);
+				
+
+               var innerHtml = '<div class="announce instapaper_body md" data-path="/" id="readme"><span class="name">\
+                 <span class="mini-icon mini-icon-readme"></span> README.md</span>\
+                 <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
+                 '+converter.makeHtml(json)+'\
+                 </article></div>';
+
+  			   $(tabname).append(innerHtml);
+			   self.markdown[tabname] = self.markdown[tabname] || {repo: repo, fullname : absPath, viewid:viewid};
+				
+                var count = 0;
+				$(tabname + " article.markdown-body .pack-diagram").each(function() {
+				  var repo = $(this).attr("repo"),
+				      sum = $(this).attr("sha");
+				     $(this).width("1200px").height("600px").css("overflow", "none");
+					 //$(this).id = "asd-" + count;
+					 //count++;
+//					 alert("ID:" + $(this).attr("id"));
+				     dm.dm.fw.loadDiagram(viewid,  repo, {data:{sha:sum}}, "#" +  $(this).attr("id"));
+				});
+				
+				self.updateFrameWork(true);
+			  },
+			  'error': function() {alert("FAILED to load:" + path);}});
+		},   
         //@proexp
 		'loadCode': function(viewid, repo, path) {
 			var self = this,

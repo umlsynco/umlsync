@@ -19,7 +19,6 @@ Version:
 
 
     dm.base.GithubView = function(url, token) {
-		var converter = new Showdown.converter();
 
         function treeView(data, textStatus, jqXHR, readmeLoader) {
               //the variable 'data' will have the JSON object
@@ -54,7 +53,7 @@ Version:
         };
 
 
-		function decodeMDContent(data, textStatus, jqXHR) {
+		function decodeMDContent(data, textStatus, jqXHR, callback) {
 
           for (d in data) {
             if (d == 'data') {
@@ -63,28 +62,13 @@ Version:
                for (s in splitted) {
                  decoded += $.base64.decode(splitted[s]);
                }
-               //<div class="bubble tree-browser-wrapper"></div>';
-               var innerHtml = '<div class="announce instapaper_body md" data-path="/" id="readme"><span class="name">\
-      <span class="mini-icon mini-icon-readme"></span> README.md</span>\
-      <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
-      '+converter.makeHtml(decoded)+'\
-      </article></div>';
-               
-				$("#tabs ul.us-frames li.us-frame").hide();
-				$("#tabs ul.us-frames").append('<li class="us-frame" style="overflow:scroll;">'+ innerHtml +'<li>');
-				
-				
-				var count = 0;
-				$("article.markdown-body .pack-diagram").each(function() {
-				  var repo = $(this).attr("repo"),
-				      sum = $(this).attr("sha");
-				     $(this).width("1200px").height("600px").css("overflow", "none");
-					 //$(this).id = "asd-" + count;
-					 //count++;
-//					 alert("ID:" + $(this).attr("id"));
-				     dm.dm.fw.loadDiagram(self.euid,  repo, {data:{sha:sum}}, "#" +  $(this).attr("id"));
-				});
-             }
+			   
+			   if (callback) {
+			     callback(decoded);
+			   }
+			   
+			   return;
+			}
           }
         };
 
@@ -216,7 +200,7 @@ content = {
 		          url: 'https://api.github.com/repos/'+repo+'/git/blobs/'+node.data.sha,
                   accepts: 'application/vnd.github-blob.raw',
 			      dataType: 'jsonp',
-                  success: function(x, y, z) {decodeContent(x,y,z,callback.success);},
+                  success: function(x, y, z) {decodeMDContent(x,y,z,callback.success);},
 			      error:callback.error
 		        });
 			  }
@@ -269,9 +253,7 @@ content = {
             tree: function(repo) {
 			  var pUrl = "https://api.github.com/repos/"  + repo;
 			  function extractReadMe(LoadReadMe) {
-				  $.ajax({url: 'https://api.github.com/repos/'+repo+'/git/blobs/' + LoadReadMe,
-						success: decodeMDContent,
-						dataType:"jsonp"});
+				  dm.dm.fw.loadMarkdown(self.euid, repo, {data:{sha:LoadReadMe}});
 			  }
 			  function postProcessTreeView(data, textStatus, jqXHR) {
 			    return treeView(data, textStatus, jqXHR, extractReadMe);				
@@ -305,7 +287,7 @@ content = {
                         if (ext == "JSON" || ext == "UMLSYNC") {
 						  dm.dm.fw.loadDiagram(self.euid, repo, node);
 						} else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-						  extractReadMe(node.data.sha);
+						  dm.dm.fw.loadMarkdown(self.euid, repo, node);
 						} else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) > 0){
 						  dm.dm.fw.loadCode(self.euid, repo, node);
 						}
