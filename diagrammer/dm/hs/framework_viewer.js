@@ -47,7 +47,10 @@ Version:
 			// Think about field set 
 			$("#" + this.options.content).append('\
 					<div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;background-color:gray;">\
-					<div class="ui-corner-all ui-state-default" style="background-color:white;"><img src="images/search.png" style="margin-left:10px;"><a id="us-search" style="width:100%;height:30px;color:gray;">Search</a></div>\
+					<div class="ui-corner-all ui-state-default" style="background-color:white;">\
+					  <img src="images/search.png" style="margin-left:10px;"/>\
+					  <a id="us-search" href="#" style="width:100%;height:30px;color:gray;">Search</a>\
+					</div>\
 					<div id="accordion" style="background-color:gray;">\
 					<h3><a href="#">Repositories</a></h3>\
 					<div id="us-repos">\
@@ -69,7 +72,6 @@ Version:
 					<div id="'+ this.options.content +'-left-right-resize" style="width:6px;left:200px;height:100%;position:absolute;padding:0;margin:0;border:0px solid gray;background-color:gray;cursor: col-resize;"></div>\
 					<div id="'+ this.options.content +'-right" style="width:100px;left:206px;height:100%;position:absolute;padding:0;margin:0;">\
 					<div id="tabs"><ul class="us-frames" style="display:inline;list-style-type: none;"></ul></div>\
-					</div>\
 					</div>');
 			// #9 #10 # 55 are based on margin and padding of element
 			// they should be replaced on valid values
@@ -144,11 +146,16 @@ $acc.addClass('ui-accordion ui-widget ui-helper-reset ui-accordion-icons');
 $acc.children("h3").addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top').append('<span class="ui-icon ui-icon-triangle-1-s"></span>');
 $acc.children("div").addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');
 
-jQuery(document).ready(function(){
-$("#us-search").editable({onSubmit:function() {
-	self.views['Github'].view.Search($(this).html());
-//dm.dm.fw.addSearchResults('Github', null);
-}});
+//jQuery(document).ready(function(){
+$("#us-search").editable({onSubmit:function(data) {
+    if (data["current"] == data["previous"])
+	  return;
+	self.views['Github'].view.Search(data["current"]);
+	return true;
+}})
+   .click(function(e){e.stopPropagation();}) // Pevent handling by parent DIV
+   .parent()
+   .click(function(){$("#us-search").trigger('click');}); // Make element editable on click
 
 
   $("#us-repos").children("h3").click(function() {
@@ -198,7 +205,7 @@ $bcc.children("div").addClass('ui-accordion-content ui-helper-reset ui-widget-co
 	  $(this).removeClass('ui-state-hover');
 	}  
   ).next().hide();
-});
+//}); document ready
 ////////////////////////// init accordion-like solution
 
 
@@ -996,11 +1003,11 @@ $(id + " #us-repo-drop").click(function() { var par = $(this).parent().parent();
 						}
 					}
 				} else if (e.keyCode == 27) { // Esc
-				  var e = jQuery.Event("blur");
-				  e.apply = false;            // Do not apply changes
+				  //var e = jQuery.Event("blur");
+				  //e.apply = false;            // Do not apply changes
  				  $(".editablefield input").trigger(e);
 				} else if (e.keyCode == 13) { // Enter
- 				  $(".editablefield input").trigger('blur');
+ 				  //$(".editablefield input").trigger('blur');
 				} else if (e.ctrlKey) {
 					switch (e.keyCode) {
 					case 65:// Handle Ctrl-A

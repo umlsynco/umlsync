@@ -150,14 +150,7 @@ Version:
                   dataType: 'jsonp',
                   success: function(mdata) {
                        var data = mdata.data;
-	
-				      //var IGhView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams", "{{ access_token }}");
-					  if (data["repositories"])
-			           dm.dm.fw.addRepositories(self.euid, data["repositories"]);
-					   
 					   dm.dm.fw.addSearchResults(self.euid, data["repositories"]);
-
-					  //dm.dm.fw.addView2("umlsynco/umlsync", IGhView);
   			    }
 			  });
 			},

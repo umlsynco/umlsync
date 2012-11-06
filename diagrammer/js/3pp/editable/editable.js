@@ -22,8 +22,8 @@ $.fn.editable = function(options){
 		editBy: 'click',
 		options: null
 	}
-	
-	$(this).attr("tabindex", 1);
+
+	this.attr("tabindex", 1);
 	
 	if(options=='disable')
 		return this.unbind(this.data('editable.options').editBy,this.data('editable.options').toEditable);
@@ -45,7 +45,7 @@ $.fn.editable = function(options){
 		// Configure events,styles for changed content
 		$this.data('editable.previous',$this.data('editable.current'))
 			 .children()
-				 .focus()
+				 .trigger('focus')
 				 .addClass(opts.editClass);
 		// Submit Event
 		if(opts.submit){
@@ -53,9 +53,14 @@ $.fn.editable = function(options){
 						.html(opts.submit)
 						.one('mouseup',function(){opts.toNonEditable($(this).parent(),true)});
 		}else
-			$this.one(opts.submitBy,function(){opts.toNonEditable($(this),true)})
+			$this.one(opts.submitBy,function(e){
+			opts.toNonEditable($(this),true)
+			  $(this).children().unbind( opts.submitBy );
+			})
 				 .children()
-				 	.one(opts.submitBy,function(e){opts.toNonEditable($(this).parent(),(e.apply != undefined) ? e.apply: true)});
+				 	.one(opts.submitBy,function(e){
+                        $(this).parent().unbind( opts.submitBy );
+					    opts.toNonEditable($(this).parent(),(e.apply != undefined) ? e.apply: true)});
 		// Cancel Event
 		if(opts.cancel)
 			$('<button/>').appendTo($this)
@@ -118,7 +123,7 @@ $.editableFactory = {
 		getValue: function($this,options){
 		    var val = $this.children().val();
 			if (val == "") {
-			   val = "&nbsp";
+			   val = "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
 			}
 			return val;
 		}
