@@ -205,6 +205,12 @@ $bcc.children("div").addClass('ui-accordion-content ui-helper-reset ui-widget-co
 	  $(this).removeClass('ui-state-hover');
 	}  
   ).next().hide();
+  
+// Activate LAST SEARCH !!!
+$("#us-prev-search").click(function() {
+  $('.us-frame').slideUp();
+  $(self.LastSearchId+'_p.us-frame').slideDown(); // _p means parent & unique id 
+}).css("margin-left", '300px');
 //}); document ready
 ////////////////////////// init accordion-like solution
 
@@ -406,7 +412,8 @@ $bcc.children("div").addClass('ui-accordion-content ui-helper-reset ui-widget-co
             var IView = dm.dm.fw.views[viewid].view;
 			
 			$("#tabs ul.us-frames li.us-frame").hide();
-			$("#tabs ul.us-frames").append('<li class="us-frame" style="overflow:scroll;" id="'+id+'"><li>');
+			$("#tabs ul.us-frames")
+			  .append('<li class="us-frame" id="'+id+'_p" style="overflow:scroll;"><div id="'+ id +'" style="margin-left:30px;"></div><li>');
 			id = "#" + id;
 			
 			var innerHtml = "";
@@ -643,7 +650,10 @@ $(id + " #us-repo-add").click(function() {
 $(id + " #us-repo-drop").click(function() { var par = $(this).parent().parent(); 
 											par.slideUp('slow').remove();
 										  });
-
+					
+          if (this.LastSearchId)
+            $(this.LastSearchId).hide().remove();
+          this.LastSearchId = id;
 		},
 		acvivateRepository: function(viewid, name) {
 		    $.log("Activate: " + name);
