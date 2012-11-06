@@ -112,8 +112,31 @@ Version:
                        var data = mdata.data;
 	
 				      //var IGhView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams", "{{ access_token }}");
-					  if (data["repositories"])
-			           dm.dm.fw.addRepositories(self.euid, data["repositories"]);
+					 // if (data["repositories"])
+			         //  dm.dm.fw.addRepositories(self.euid, 'search',data["repositories"]);
+					   
+					 var userRepo = [
+      {
+        "type": "repo",
+        "created_at": "2012-06-19T08:24:46-07:00",
+        "watchers": 1,
+        "username": "umlsynco",
+        "owner": "umlsynco",
+        "pushed_at": "2012-11-02T13:49:57-07:00",
+        "forks": 0,
+        "description": "Repository for diagram managment.",
+        "fork": false,
+        "size": 388,
+        "language": null,
+        "pushed": "2012-11-02T13:49:57-07:00",
+        "name": "diagrams",
+        "private": false,
+        "created": "2012-06-19T08:24:46-07:00",
+        "followers": 1
+      }
+    ];
+	
+	dm.dm.fw.addRepositories(self.euid, 'user', userRepo);
 					   
 					   dm.dm.fw.addSearchResults(self.euid, data["repositories"]);
 

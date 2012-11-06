@@ -50,7 +50,16 @@ Version:
 					<div class="ui-corner-all ui-state-default" style="background-color:white;"><img src="images/search.png" style="margin-left:10px;"><a id="us-search" style="width:100%;height:30px;color:gray;">Search</a></div>\
 					<div id="accordion" style="background-color:gray;">\
 					<h3><a href="#">Repositories</a></h3>\
-					<div id="us-repos"></div>\
+					<div id="us-repos">\
+					    <h3><a href="#" id="us-active-repo">Your repositories</a></h3>\
+					    <div id="us-repos-user"></div>\
+                        <h3><a href="#" id="us-active-repo">Follow repositories</a></h3>\
+						<div id="us-repos-follow"></div>\
+						<h3><a href="#" id="us-active-repo">Gist</a></h3>\
+						<div id="us-repos-gist"></div>\
+						<h3><a href="#" id="us-active-repo">Search repositories</a></h3>\
+						<div id="us-repos-search"></div>\
+					</div>\
 					<h3><a href="#" id="us-active-repo">umlsynco/diagrams</a></h3>\
 					<div id="treetabs"><ul class="us-list" style="display:inline;list-style-type: none;"></ul></div>\
 					<h3><a href="#" id="us-loaded">Recently loaded</a></h3>\
@@ -140,6 +149,16 @@ $("#us-search").editable({onSubmit:function() {
 	self.views['Github'].view.Search($(this).html());
 //dm.dm.fw.addSearchResults('Github', null);
 }});
+
+
+  $("#us-repos").children("h3").click(function() {
+    $(this).next().slideToggle();
+  });
+  var $bcc = $("#us-repos");
+//$bcc.addClass('ui-accordion ui-widget ui-helper-reset ui-accordion-icons');
+$bcc.css("padding", 0);// make it fit to size
+$bcc.children("h3").addClass('ui-accordion-header ui-helper-reset ui-state-default').append('<span class="ui-icon ui-icon-triangle-1-s"></span>');
+$bcc.children("div").addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-accordion-content-active');
 
   $acc.children("h3").click(function() {
 	  if ($(this).hasClass('ui-state-default')) {
@@ -387,8 +406,11 @@ $("#us-search").editable({onSubmit:function() {
 			for (var r in data) {
 			            innerHtml += '<div class="result">\
   <h2 class="title">\
-    <a href="/'+data[r]['owner']+'/'+data[r]['name']+'">'+data[r]['owner']+'/ '+data[r]['name']+'</a>\
+    <a href="'+data[r]['owner']+'/'+data[r]['name']+'">'+data[r]['owner']+'/ '+data[r]['name']+'</a>\
       <span class="language">' + (data[r]['language'] ? '('+data[r]['language']+')': '') +'</span>\
+	  <img id="us-repo-add" src="images/add-repo3.png" title="Add">\
+	  <img id="us-repo-drop" src="images/drop-repo.png" title="Drop">\
+	  <img id="us-repo-view" src="images/view-repo.png" title="View">\
   </h2>\
   <div class="description">\
     '+data[r]['description']+'\
@@ -604,8 +626,20 @@ $("#us-search").editable({onSubmit:function() {
   <br>\
   </div>\
 </div>');
+
+$(id + " #us-repo-add").click(function() { 
+   var par = $(this).parent().children('A');
+   dm.dm.fw.addRepositories('Github', 'search', [{full_name:par.attr('href')}]);
+   $(this).parent().parent().slideUp('slow').delay(1400).remove()
+   
+});
+$(id + " #us-repo-drop").click(function() { var par = $(this).parent().parent(); 
+											par.slideUp('slow').remove();
+										  });
+
 		},
 		acvivateRepository: function(viewid, name) {
+		    $.log("Activate: " + name);
 			var id = this.options.tabLeft+ this.left_counter;
 			this.left_counter++;
             var IView = dm.dm.fw.views[viewid].view;
@@ -620,15 +654,16 @@ $("#us-search").editable({onSubmit:function() {
 			
             $(id + " #tree").dynatree(IView.tree(name));
 		},
-		addRepositories: function(viewid, data) {
+		addRepositories: function(viewid, type, data) {
 		  for (var r in data) {
 			if (data[r]['full_name'] == undefined && data[r]['owner'] != undefined) {
 			   data[r]['full_name'] = data[r]['owner'] + "/" + data[r]['name'];
 			}
 		  }
-
-		  $("#us-repos").listmenu({
-	           selector: "us-selector",
+		self.selector = self.selector || 0;
+		self.selector++;
+		  $("#us-repos-" + type).listmenu({
+	           selector: "us-selector-" + self.selector,
 	           selectable: true,
 			   path:"./",
 	           data:data,
