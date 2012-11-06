@@ -138,7 +138,7 @@ Version:
 	
 	dm.dm.fw.addRepositories(self.euid, 'user', userRepo);
 					   
-					   dm.dm.fw.addSearchResults(self.euid, data["repositories"]);
+					   dm.dm.fw.addSearchResults(self.euid, 'diagrams',data["repositories"]);
 
 					  //dm.dm.fw.addView2("umlsynco/umlsync", IGhView);
   			    }
@@ -150,7 +150,7 @@ Version:
                   dataType: 'jsonp',
                   success: function(mdata) {
                        var data = mdata.data;
-					   dm.dm.fw.addSearchResults(self.euid, data["repositories"]);
+					   dm.dm.fw.addSearchResults(self.euid, name, data["repositories"]);
   			    }
 			  });
 			},

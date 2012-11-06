@@ -156,7 +156,7 @@ $("#us-search").editable({onSubmit:function(data) {
    .click(function(e){e.stopPropagation();}) // Pevent handling by parent DIV
    .parent()
    .click(function(){$("#us-search").trigger('click');}); // Make element editable on click
-
+   
 
   $("#us-repos").children("h3").click(function() {
     $(this).next().slideToggle();
@@ -406,7 +406,7 @@ $("#us-prev-search").click(function() {
 		},
 		removeRepository: function(viewid, data) { // Remove repo from the list. Applicable for "Repo search" items only
 		},
-		addSearchResults: function(viewid, data) {
+		addSearchResults: function(viewid, word, data) {
 			var id = this.options.tabLeft+ this.left_counter;
 			this.left_counter++;
             var IView = dm.dm.fw.views[viewid].view;
@@ -440,11 +440,11 @@ $("#us-prev-search").click(function() {
 			
 		  $(id).append('<div class="container">\
 		  <div id="code_search">\
-  <form method="get" id="search_form" class="search_repos" action="/search" accept-charset="UTF-8">\
+  <form method="get" id="search_form" action="#" class="search_repos" accept-charset="UTF-8">\
     <dl class="form">\
       <dt><label for="type_value">Advanced Search</label></dt>\
       <dd>\
-          <input type="text" style="width: 34.5em;" value="dia" name="q" class="text">\
+          <input type="text" style="width: 34.5em;" value="'+word+'" name="q" class="text">\
           <input type="hidden" value="" name="repo" id="repo_value">\
         <input type="hidden" value="" name="langOverride" id="lang_value">\
         <button type="submit" class="classy">Search</button>\
@@ -651,7 +651,18 @@ $(id + " #us-repo-drop").click(function() { var par = $(this).parent().parent();
 											par.slideUp('slow').remove();
 										  });
 					
-          if (this.LastSearchId)
+
+// PREVENT SUBMIT CALL VIA HTML GET METHOD
+$(id + " #search_form").submit(function(e) {e.preventDefault();return false;});
+
+// HANDLE SUBMIT CALL VIA AJAX
+$(id + " #search_form .classy")
+.submit(function(e) {e.preventDefault();return false;})
+.click(function() {
+    dm.dm.fw.views['Github'].view.Search($(".text").val());
+});
+
+		if (this.LastSearchId)
             $(this.LastSearchId).hide().remove();
           this.LastSearchId = id;
 		},
