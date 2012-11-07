@@ -67,7 +67,7 @@
   
   
   <script>
-  //$.log = function() {};
+  $.log = function() {};
 
   $(document).ready(function() {
     var Loader = new dm.base.loader("./");
@@ -146,10 +146,9 @@
 		fw.addView2('Github', IGithubView);
     IGithubView.init();
       
-		$("li").live("mouseenter", function() {
-		    
-			$(this).attr( {"title": this.id});
-		});
+//		$("li").live("mouseenter", function() {
+//			$(this).attr( {"title": this.id});
+//		});
   });
   
 </script>

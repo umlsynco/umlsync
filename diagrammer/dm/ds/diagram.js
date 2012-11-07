@@ -531,6 +531,24 @@ dm['ctx'] = dm.ms.ctx;
                 this.operations = new Array(); // Array of pushed operations to diagram
                 this.reverted_operations = new Array(); // Array of reverted operations of diagram
 
+				if (this.options.force) {
+				  dm.dm.loader.OnLoadComplete(function(self) {
+				    var x =0, y =0;
+				    for (var r in self.elements) {
+					  var z = parseInt(self.elements[r].options.pageY) + parseInt(self.elements[r].options.height);
+					  y = (z>y)? z : y;
+					  z = parseInt(self.elements[r].options.pageX) + parseInt(self.elements[r].options.width);
+					  x = (z>x)? z : x;
+					}
+					x+=40;
+					y+=40;
+					$(self.parrent).css('height', y).css('width', x).css('margin', '0 auto')
+					.children('.us-diagram').css('background-image', 'none').css('overflow', 'hidden');
+					self.canvas.width = x;
+					self.canvas.height = y; 
+				  }, this);
+				}
+
     },
 //@ifdef EDITOR
     //@proexp

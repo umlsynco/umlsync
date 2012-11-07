@@ -54,16 +54,18 @@ Version:
 					<div id="accordion" style="background-color:gray;">\
 					<h3><a href="#">Repositories</a></h3>\
 					<div id="us-repos">\
-					    <h3><a href="#" id="us-active-repo">Your repositories</a></h3>\
+					    <h3><a href="#" id="us-repo-title">Your repositories</a></h3>\
 					    <div id="us-repos-user"></div>\
-                        <h3><a href="#" id="us-active-repo">Follow repositories</a></h3>\
+                        <h3><a href="#" id="us-repo-title">Follow repositories</a></h3>\
 						<div id="us-repos-follow"></div>\
-						<h3><a href="#" id="us-active-repo">Gist</a></h3>\
+						<h3><a href="#" id="us-repo-title">Gist</a></h3>\
 						<div id="us-repos-gist"></div>\
-						<h3><a href="#" id="us-active-repo">Search repositories</a></h3>\
+						<h3><a href="#" id="us-repo-title">Search repositories</a></h3>\
 						<div id="us-repos-search"></div>\
+					    <h3><a href="#" id="us-repo-title">Eclipse</a></h3>\
+					    <div id="us-repos-localhost"></div>\
 					</div>\
-					<h3><a href="#" id="us-active-repo">umlsynco/diagrams</a></h3>\
+					<h3><a href="#" id="us-active-repo">Active Repository</a></h3>\
 					<div id="treetabs"><ul class="us-list" style="display:inline;list-style-type: none;"></ul></div>\
 					<h3><a href="#" id="us-loaded">Recently loaded</a></h3>\
 					<div id="loadedlist"><ul class="us-list" style="display:inline;list-style-type: none;"></ul></div>\
@@ -211,6 +213,11 @@ $("#us-prev-search").click(function() {
   $('.us-frame').slideUp();
   $(self.LastSearchId+'_p.us-frame').slideDown(); // _p means parent & unique id 
 }).css("margin-left", '300px');
+
+$("#us-print").click(function() {
+  self.registerViewManager("http://localhost:8000/vm/", "jsonp");
+});
+
 //}); document ready
 ////////////////////////// init accordion-like solution
 
@@ -301,31 +308,13 @@ $("#us-prev-search").click(function() {
 				$.ajax({ 'url': viewmanager + "getviews",
 					'dataType': json_type,
 					'success':    function(json) {
-					var innerHtml = "",
-					selectHtml = "";
-					for (i in json) {
-						innerHtml += "<li><a href='#'>" + json[i]['title']+ "</a></li>";
-						selectHtml += "<option>" + json[i]['title'] + "</option>";
-						$('#vp_main_menu select').append($("<option></option>")
-								.attr("value",json[i]['id'])
-								.text(json[i]['title']));
-					}
-
-					if ($('#header-menu #Views ul').length == 0) {
-						$('#header-menu').append("<li id='Views'><a href='#'>Views</a><ul>" + innerHtml+"</ul></li>").jqsimplemenu();
-					}
-					else {
-						$('#header-menu #Views ul').append(innerHtml);
-						$('#header-menu').jqsimplemenu();
-					}
-
 					// Complete menu update first.
 					// And open the default views than.
 					for (i in json) {
 						if (json[i]['isdefault']) {
 							var IView = new dm.base.LocalhostView(self.options.viewmanager + json[i]['id']);
 							IView.euid = json[i]['id'];
-							self.addView2(json[i]['title'], IView);
+							self.addView2(json[i]['id'], IView);
 						}
 					}
 				}
@@ -666,7 +655,7 @@ $(id + " #search_form .classy")
             $(this.LastSearchId).hide().remove();
           this.LastSearchId = id;
 		},
-		acvivateRepository: function(viewid, name) {
+		activateRepository: function(viewid, name) {
 		    $.log("Activate: " + name);
 			var id = this.options.tabLeft+ this.left_counter;
 			this.left_counter++;
@@ -707,7 +696,7 @@ $(id + " #search_form .classy")
 					}
 				 });
 				 if (!found) {
-				   dm.dm.fw.acvivateRepository(viewid, item['full_name']);
+				   dm.dm.fw.activateRepository(viewid, item['full_name']);
 				 }
 	           }
             });
@@ -890,7 +879,9 @@ $(id + " #search_form .classy")
 			self.views[viewid].view.loadDiagram(path, repo, {
 			  'success': function(json) {
 			    var tabname = parent;
+				var force = true;
 			    if (parent == undefined) {
+				  force = false;
 				  tabname = self.options.tabRight + "-" + self.counter;
 				  self.counter++;
 				
@@ -902,6 +893,7 @@ $(id + " #search_form .classy")
 				  json['fullname'] = absPath;
 				}
 				json['multicanvas'] = true;
+				json['force'] = force;
 				dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname
 						, function(obj) {
 					self.diagrams[tabname] = obj;
