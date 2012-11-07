@@ -36,7 +36,7 @@ a {
   height: 100%;
   overflow: scroll;
   position: relative;
-  background-color: seashell;
+  background-color: white;
   background-image: url('../images/bground_sq.png');
 }
 

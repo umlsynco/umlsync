@@ -315,6 +315,7 @@ $("#us-print").click(function() {
 							var IView = new dm.base.LocalhostView(self.options.viewmanager + json[i]['id']);
 							IView.euid = json[i]['id'];
 							self.addView2(json[i]['id'], IView);
+							dm.dm.fw.addRepositories(IView.euid, 'localhost', [{full_name:json[i]['title']}]);
 						}
 					}
 				}
@@ -665,7 +666,7 @@ $(id + " #search_form .classy")
 			$("#treetabs ul.us-list").append("<li class='us-tree' aux='"+name+"'><div id='"+id+"'></div></li>");
 			id = "#" + id;
 			//$("#treetabs").tabs("add", id, name);
-			var $treetabs = $("#treetabs");
+			//var $treetabs = $("#treetabs");
 
 			$(id).append("<div id='tree'></div>");
 			
@@ -906,7 +907,7 @@ $(id + " #search_form .classy")
 		},
 		'loadMarkdown': function(viewid, repo, path) {
 			var self = this,
-			absPath = repo + "/" + path.data.sha;
+			absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path));
 			if (self.markdown) {
 				for (var r in self.markdown) {
 				  var d = self.markdown[r];
@@ -949,12 +950,14 @@ $(id + " #search_form .classy")
                 var count = 0;
 				$(tabname + " article.markdown-body .pack-diagram").each(function() {
 				  var repo = $(this).attr("repo"),
-				      sum = $(this).attr("sha");
-				     $(this).width("1200px").height("600px").css("overflow", "none");
-					 //$(this).id = "asd-" + count;
-					 //count++;
+				      sum = $(this).attr("sha"),
+					  path = $(this).attr("path");
+
+					  $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
+					  //$(this).id = "asd-" + count;
+					  //count++;
 //					 alert("ID:" + $(this).attr("id"));
-				     dm.dm.fw.loadDiagram(viewid,  repo, {data:{sha:sum}}, "#" +  $(this).attr("id"));
+				     dm.dm.fw.loadDiagram(viewid,  repo, {data:{sha:sum, path:path}}, "#" +  $(this).attr("id"));
 				});
 				
 				self.updateFrameWork(true);

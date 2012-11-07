@@ -12818,7 +12818,7 @@ a {
     text-decoration: none;
 }
 a:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 a.action {
     color: #DD0000;
@@ -20473,7 +20473,7 @@ ul.repolist ul.repo-stats li:last-child a {
   <script src="dm/ms/ds/common.js"></script>
   <script src="./dm/ds/sequence.js"></script>
   <script src="./dm/dm/loader.js"></script>
-  <script src="./dm/dm/LocalhostView.js"></script>
+  <script src="./dm/dm/LocalhostViewer.js"></script>
   <script src="./dm/dm/Githubviewer.js"></script>
   <script src="./dm/dm/LocalFilesView.js"></script>
   <script src="./dm/dm/SelfAnalysisView.js"></script>
@@ -20490,7 +20490,7 @@ ul.repolist ul.repo-stats li:last-child a {
   
   
   <script>
-  $.log = function() {};
+  //$.log = function() {};
   $(document).ready(function() {
 /*
 $.chili.options.dynamic.origin = "../recipes/";
@@ -20556,6 +20556,9 @@ $.chili.options.decoration.lineNumbers = true;
     <ul id="header-menu" class="header-menu-left">
 	  <li><img id="us-prev-search" src="images/prev-search.png" title="Previous Search Results"/></li>
 	  <li><img id="us-print" src="images/print.png" title="Print Page" style="margin-left:15px;"/></li>
+	  <li><img id="us-localhost" src="images/eclipse.png" title="Connect to Eclipse Plugin" style="margin-left:15px;"/></li>
+	  <li><img id="us-backward" src="images/backward_button.png" title="Back" style="margin-left:15px;"/></li>
+	  <li><img id="us-forward" src="images/forward_button.png" title="Forward" style="margin-left:5px;"/></li>
 	</ul>
   </div>
   <div>
