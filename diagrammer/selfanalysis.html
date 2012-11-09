@@ -15,6 +15,7 @@
   <script src="js/ui.selectmenu.js"></script>
   <script type="text/javascript" src="js/3pp/simple-color-picker/jquery.simple-color-picker.js"></script>
   <script type="text/javascript" src="js/jqsimplemenu.js"></script>
+  <script type="text/javascript" src="js/jquery.combomenu.js"></script>
   <link rel="stylesheet" href="css/simple_menu.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/jqsimplemenu.css" type="text/css" media="screen" />
   <link rel='stylesheet' type='text/css' href='js/3pp/skin/ui.dynatree.css'>
@@ -54,6 +55,7 @@
   <script src="./dm/cs/composition.js"></script>
   <script src="./dm/cs/transition.js"></script>
   <script src="./dm/hs/framework.js"></script>
+<script src="./dm/ms/us/dialogs.js"></script>
   
   <script>
   //$.log = function() {};
@@ -62,133 +64,46 @@
     var Loader = new dm.base.loader("./");
     var fw = new dm.hs.framework(Loader);
 
+    var IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
+	IFilesView.euid = 'SelfView';
+	fw.addView2('SelfView', IFilesView);
+
     // Initialize header menu on the left
-    $('#header-menu').jqsimplemenu();
-    
-/*
-  // CSRF support for AJAX. Uses for server-side security.
-  $(document).ajaxSend(function(event, xhr, settings) {
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    function sameOrigin(url) {
-        // url could be relative or scheme relative or absolute
-        var host = document.location.host; // host + port
-        var protocol = document.location.protocol;
-        var sr_origin = '//' + host;
-        var origin = protocol + sr_origin;
-        // Allow absolute or scheme relative URLs to same origin
-        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-            // or any other URL that isn't scheme relative or absolute i.e relative.
-            !(/^(\/\/|http:|https:).* /.test(url));
-    }
-    function safeMethod(method) {
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-    }
-  });  
-*/
-
-    var menu = new dm.ms.vp(fw);
-
-    // List of default loaded diagrams
-    //fw.loadDiagram("./test/Project1/ERDiagram.json");
-    //fw.loadDiagram("./test/Project1/PackageDiagram.json");
-	  var IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
-	  fw.addView2('SelfView', IFilesView);
-
-    $("#dialog-form").dialog({
-      autoOpen: false,
-      height: 250,
-      width: 350,
-      modal: true,
-      buttons: {
-        "Create a new project": function() {
-          var ch = $("#" + viewId + " #tree").dynatree("getTree").getRoot().getChildren();
-          for (i in ch) {
-            if (ch[i].data.title == "Projects") {
-              ch[i].addChild({title: $("#name").val(), isFolder:true, tooltip: $("#description").val()});
-              break;
-            }
-          }
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-        }
-      },
-      close: function() {
-        //allFields.val( "" ).removeClass( "ui-state-error" );
-      }
-    });       
-    $("#newproject")
-      .click(function() {
-        $( "#dialog-form" ).dialog( "open" );
-      });
-
-    $("#header-menu #vp_main_menu_ref").click(function(){
-      $( "#vp_main_menu" ).dialog( "open" );
-    });
-
-    $("#localconnection" )
-      .click(function() {
-        fw.registerViewManager("http://localhost:8000/vm/", "jsonp");
-    });
-  });
-  
+    $('#header-menu').combomenu({menu:{
+		'Project': {
+		  'Change repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
+		  'Change branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
+		  'New diagram': {handler:function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}},
+		  'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
+		},
+		'Actions': {
+		  'Post for review':{handler: function() {	  }}
+		},
+		'Edit':{
+		  'Un-do':{handler: function(){		  }},
+		  'Re-do':{handler: function(){		  }},
+		  'Cut':{handler: function(){		  }},
+		  'Copy':{handler: function(){		  }},
+		  'Past':{handler: function(){		  }},
+		  'Delete':{handler: function(){		  }},
+		  'Select All':{handler: function(){		  }}
+		},
+		'Views':{
+		  'Google code':{handler: function(){		  }},
+		  'Sourceforege':{handler: function(){		  }},
+		  'Github':{handler: function(){		  }},
+		  'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
+		}
+	},
+	prefix: "file-menu"});
+	});
 </script>
 </head>
 <body>
-<div id="dialog-form" title="Create new project">
-  <p class="validateTips">All form fields are required.</p>
-  <form>
-    <fieldset>
-      <label for="name">Name</label>
-      <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
-      <label for="description">Description</label>
-      <input type="textarea" name="description" id="description" value="" class="text ui-widget-content ui-corner-all" />
-    </fieldset>
-  </form>
-</div>
-
 <div id="body">
   <div class="nav" id="header">
   <div>
     <ul id="header-menu" class="menu_left">
-      <li><a href="#">Project</a>
-        <ul>
-          <li><a id="newproject" href="#">New project</a></li>
-          <li><a id="vp_main_menu_ref" rel="#vp_main_menu2" href="#">New diagram</a></li>
-          <li><a href="#vp_main_menu2_ref">Open code project</a></li>
-        </ul>
-      </li>
-      <li><a href="http://umlsync.org/about">Actions</a></li>
-      <ul>
-        <li><a href="#">Post for review </a></li>
-        <li><a href="#">Do something</a></li>
-      </ul>
-      <li><a href="http://umlsync.org">Edit</a></li>
-      <li id='Views'><a href="#">Views</a>
-        <ul>
-          <li><a href="#">SandBox</a></li>
-		      <li><a id="localconnection" href="#">Local views ...</a></li>
-		    </ul>
-      </li>
     </ul>
   </div>
   <div>

@@ -33,6 +33,14 @@ Version:
 				    item.click(menuBuilder.currentElement, self.x, self.y);
 				  //e.preventDefault();
                   menuBuilder['HideAll']();
+			   },
+	           onMouseEnter: function(item, evt) {
+  			      if (item.mouseenter)
+				    item.mouseenter(menuBuilder.currentElement, evt);
+			   },
+	           onMouseLeave: function(item, evt) {
+  			      if (item.mouseleave)
+				    item.mouseleave(menuBuilder.currentElement, evt);
 			   }
 		});
 		

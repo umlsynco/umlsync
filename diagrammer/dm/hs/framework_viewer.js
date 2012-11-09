@@ -701,6 +701,11 @@ $(id + " #search_form .classy")
 				 }
 	           }
             });
+		
+		   if (data.length == 1 && viewid == 'pe') {
+		     dm.dm.fw.activateRepository(viewid, data[0]['full_name']);
+			 $('#us-active-repo').trigger('click');
+		   }
 		},
 		//@proexp
 		'addView2': function(name, IView) {
@@ -907,7 +912,8 @@ $(id + " #search_form .classy")
 		},
 		'loadMarkdown': function(viewid, repo, path) {
 			var self = this,
-			absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path));
+			absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path)),
+			absPath2 = (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.path || path.data.sha));
 			if (self.markdown) {
 				for (var r in self.markdown) {
 				  var d = self.markdown[r];
@@ -939,7 +945,7 @@ $(id + " #search_form .classy")
 				
 
                var innerHtml = '<div class="announce instapaper_body md" data-path="/" id="readme"><span class="name">\
-                 <span class="mini-icon mini-icon-readme"></span> README.md</span>\
+                 <span class="mini-icon mini-icon-readme"></span> '+absPath2+'</span>\
                  <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
                  '+converter.makeHtml(json)+'\
                  </article></div>';

@@ -6,6 +6,18 @@ body {
   height: 100%;
 }
 
+.pack-diagram{
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 11px;
+  color: #666666; 
+  line-height: 1em;
+}
+
+a.editablefield  {
+  text-decoration: none;
+  color: Black; 
+}
+
 a {
   text-decoration: none;
 }

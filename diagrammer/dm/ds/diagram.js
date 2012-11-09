@@ -51,6 +51,7 @@ dm['ctx'] = dm.ms.ctx;
     dm.base.diagram = function( name, base, prototype ) {
         var ns = name.split( "." ),
         fullName = ns[0] + "-" + ns[1],
+		fullPath = "dm."+name;
         namespace = ns[ 0 ],
         name = ns[ 1 ];
 
@@ -79,7 +80,8 @@ dm['ctx'] = dm.ms.ctx;
             'namespace': namespace,
             diagramName: name,
             diagramEventPrefix: dm[ namespace ][ name ].prototype.diagramEventPrefix || name,
-            'diagramBaseClass': fullName
+            'diagramBaseClass': fullPath,
+			inherited: base.prototype.diagramBaseClass
         }, prototype );
     };
     //@print
@@ -97,6 +99,7 @@ dm['ctx'] = dm.ms.ctx;
         'editable': true,
         'nameTemplate': 'base'
     },
+	diagramBaseClass: 'dm.base.DiagramElement',
     _createDiagram: function( options, parent) {
         // extend the basic options
         this.options = $.extend(true, {}, this.options, options);
@@ -288,6 +291,7 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     _create: function () {
 	//<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
+	this.options.multicanvas = true;
 	 if (this.options.multicanvas != undefined) {
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
                 <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
@@ -312,7 +316,7 @@ dm['ctx'] = dm.ms.ctx;
 
 				$("#" + this.euid + ".us-diagram").scroll(function() {iDiagram.draw();});
 //@ifdef EDITOR
-				/*
+				
                 $("#" + this.euid + "_Canvas").droppable({
                     drop: function( event, ui ) {
 					  $.log("DIAGRAM.jS DROPPABLE !!!");
@@ -336,8 +340,8 @@ dm['ctx'] = dm.ms.ctx;
                           }
 						}
 
-						if (iDiagram.options['type'] == "sequence" && source.data.element != undefined) {
-                          var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById(source.data.element, {'viewid':source.data.viewid}));
+						if (iDiagram.options['type'] == "sequence") {
+                          var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Object Instance"), {'viewid':source.data.viewid});
 						  element.pageX = 200;
                           element.pageY = 200;
                           element.name = key;
@@ -347,7 +351,6 @@ dm['ctx'] = dm.ms.ctx;
 
                         if (iDiagram.options['type'] == "component") {
                           var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
-
                           element.pageX = 200;
                           element.pageY = 200;
                           element.name = key;
@@ -357,6 +360,7 @@ dm['ctx'] = dm.ms.ctx;
                         }
     if (iDiagram.menuIcon != undefined) {
         var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':source.data.viewid});
+
         if (element != undefined) {
             element.pageX = 200;
             element.pageY = 200;
@@ -375,6 +379,7 @@ dm['ctx'] = dm.ms.ctx;
     iDiagram._dropSubDiagram(source.getAbsolutePath(), event, ui);
                     } else if (source.data.isFs) {
     if (iDiagram.options['type'] == "component") {
+	alert("LOAD4");
         var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Component"), {'viewid':source.data.viewid});
         if (element != undefined) {
             var x = element.pageX,
@@ -388,6 +393,7 @@ dm['ctx'] = dm.ms.ctx;
         }
     }
     var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Package"), {'viewid':source.data.viewid});
+	alert("LOAD5");
     if (element != undefined) {
         var x = element.pageX,
         y = element.pageY;
@@ -400,7 +406,7 @@ dm['ctx'] = dm.ms.ctx;
 
                     }
                 }
-                });*/
+                });
 
 //@endif
                 /** Canvas extra functionality handling:
@@ -515,11 +521,12 @@ dm['ctx'] = dm.ms.ctx;
                     for (var i in diag.elements) {
     var d = diag.elements[i].options['dropped'];
     if (d) {
-        diag.elements[i]._dropped = new Array();
+        diag.elements[i]._dropped = {};
         for (var ii in d) {
             for (var iii in diag.elements) {
                 if (diag.elements[iii].options['id'] == d[ii]) {
-                    diag.elements[i]._dropped.push(diag.elements[iii].euid);
+				    var idd = diag.elements[iii].euid;
+                    diag.elements[i]._dropped[idd] = idd;
                     break; // from the neares for
                 }
             } // iii
@@ -723,9 +730,7 @@ dm['ctx'] = dm.ms.ctx;
 			    var euid = el[k].euid;
                 this.removeConnector(el[k].euid, undefined);
 				this.removeConnector(undefined, el[k].euid);
-                delete el[k];
-                el.splice(k, 1);
-                $('#' +  euid + '_Border').remove();
+                this.removeElement(el[k].euid);
             }
         }
     },
@@ -733,15 +738,20 @@ dm['ctx'] = dm.ms.ctx;
     removeElement: function(euid) {
         var el = this.elements;
         for (var k in el) {
-		    if (el[k]._dropped) {
+		    if (el[k]._dropped != undefined) {
 			  for (var gg in el[k]._dropped) {
-			    if (el[k]._dropped[gg] == euid)
-				   el[k]._dropped.splice(gg, 1); // remove element from dropped
+			    if (el[k]._dropped[gg] == euid || gg == euid) {
+				   delete el[k]._dropped[gg]; // remove element from dropped
+				}
 			  }
-			} else if (el[k].euid == euid) {
+			}
+        }
+        for (var k in el) {
+		  if (el[k].euid == euid) {
                 delete el[k];
                 el.splice(k, 1);
                 $('#' +  euid + '_Border').remove(); // Think about removal !!!!
+				break;
             }
         }
     },
@@ -855,35 +865,32 @@ dm['ctx'] = dm.ms.ctx;
     },
     //@proexp
     _dropElement: function(element, ui) {
+	    var eeuid = element.euid;
         for (var i in this.elements) {
             if (this.elements[i].options['acceptdrop']
-                    && (this.elements[i].euid != element.euid)) {
+                    && (this.elements[i].euid != eeuid)) {
                 var e = $("#" + this.elements[i].euid + "_Border");
                 var p = e.position(),
                 w = e.width(),
                 h = e.height();
 
                 if ((ui.position.left > p.left)
-    && (ui.position.left < p.left + w)
-    && (ui.position.top > p.top)
-    && (ui.position.top < p.top + h)) {
-                    this.elements[i]._dropped = this.elements[i]._dropped || new Array();
-                    var notfound = true;
-                    for (var j in this.elements[i]._dropped) {
-    if (this.elements[i]._dropped[j] == element.euid) {
-        notfound = false;
-        break;
-    }
-                    }
-                    if (notfound)
-    this.elements[i]._dropped.push(element.euid);
+                  && (ui.position.left < p.left + w)
+                  && (ui.position.top > p.top)
+                  && (ui.position.top < p.top + h)) {
+                    this.elements[i]._dropped = this.elements[i]._dropped || {};
+                    if (this.elements[i]._dropped[eeuid] == undefined) { // prevent double insertion of element
+					  $.log("DRRRRRRRRRRRRROP: " + eeuid + "   INTO: " +this.elements[i].euid);
+                      this.elements[i]._dropped[eeuid] = eeuid;
+					}
                 } else {
-                    for (var j in this.elements[i]._dropped) {
-    if (this.elements[i]._dropped[j] == element.euid) {
-        this.elements[i]._dropped.splice(j,1);
-        break;
-    }
-                    }
+				    if (this.elements[i]._dropped != undefined && this.elements[i]._dropped[eeuid] != undefined) { // prevent double insertion of element
+                      delete this.elements[i]._dropped[eeuid];// clean previous drop value of element
+					  if (this.elements[i]._dropped[eeuid] != undefined) {
+					     alert("NOT REMOVED !!!");
+					  }
+					  //this.elements[i]._dropped.splice(eeuid, 1);
+					}
                 }
             }
         }
@@ -908,6 +915,7 @@ dm['ctx'] = dm.ms.ctx;
 					ee._update();
 					this.operation_info[ee.euid] = $.extend({}, ee.options);
 					// clone options first !!! Important !!!
+					$.log("DSM: " + ee.euid);
                     ee.onDragStart(ui);
                 }
             }
@@ -939,7 +947,6 @@ dm['ctx'] = dm.ms.ctx;
         for (var i in this.elements) {
 		    var ee = this.elements[i];
             if (ee.option("dragStart") != undefined
-				&& ee.option("selected")
                 && ee != el) {
                 ee.onDragStop(ui);
 				ee._update();
@@ -1234,7 +1241,10 @@ dm['ctx'] = dm.ms.ctx;
             if (this._dropped) {
                 this.options['dropped'] = new Array();
                 for (var i in this._dropped) {
-                    this.options['dropped'].push(this.parrent.elements[this._dropped[i]].options['id']);
+				    if (this.parrent.elements[i]) {
+                      this.options['dropped'].push(this.parrent.elements[i].options['id']);
+					}
+					else alert("NOTE FOUND: " + i);
                 }
             }
         },
@@ -1338,11 +1348,12 @@ dm['ctx'] = dm.ms.ctx;
                 }
                 parrentClass['onElementDragStop'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
 
-                if (self.options['droppable']) {
+/*                if (self.options['droppable']) {
                     if (self.parrent != undefined) {
                       self.parrent._dropElement(self, ui); 
                     }
                 }
+				*/
                 if (self.onDropComplete) {
                     self.onDropComplete();
                 }
@@ -1508,8 +1519,11 @@ dm['ctx'] = dm.ms.ctx;
 			if (skipDropped) {
 			  // Do nothing with dropped elements
 			} else {
-              for (var i in this._dropped)
-                this.parrent.elements[this._dropped[i]].onDragStart(ui);
+              for (var i in this._dropped) {
+			    $.log("DSP:" + i);
+				if (this.parrent.elements[i])
+                  this.parrent.elements[i].onDragStart(ui);
+			  }
 			}
 
             this.options.dragStart = true;
@@ -1537,6 +1551,7 @@ dm['ctx'] = dm.ms.ctx;
             if (ui) {
                 this.onDragMove(ui);
                 if (this.options['droppable']) {
+
                     if (this.parrent != undefined) {
                       this.parrent._dropElement(this, {position: {'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top}}); 
                     }
@@ -1545,8 +1560,8 @@ dm['ctx'] = dm.ms.ctx;
             }
 
             $.log("DSTOP: " + this.euid);
-            this.options.dragStart = undefined;
-            this.start_operation = undefined;
+                delete this.options.dragStart;
+                delete this.start_operation;            
         }
 //@endif
         });
@@ -1566,7 +1581,7 @@ dm.base.diagram("cs.connector", {
         //@proexp
         addLable: function(text, x, y) {
 		    var self = this;
-            this.lables.push($("<div class='editablefield' style=\"position:absolute;z-index:99999;\">" + text + "</div>")
+            this.lables.push($("<div class='editablefield' style=\"position:absolute;z-index:99999;background-color:white;\">" + text + "</div>")
             .appendTo("#" + this.parrent.euid)
             .css("left", x)
             .css("top", y)
@@ -1587,6 +1602,9 @@ dm.base.diagram("cs.connector", {
 //@ifdef EDITOR
         //@proexp
         getDescription: function() {
+			this.options['fromId'] = this.from;
+			this.options['toId'] = this.toId;
+
             var item = '{',
             fromId = this.parrent.elements[this.options['fromId']].options['id'],
             toId = this.parrent.elements[this.options['toId']].options['id'];

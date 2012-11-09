@@ -34,12 +34,14 @@ dm.ms.ctx['default'] = function(menuBuilder) {
                 }
             },
 			{
-				title: 'View specific >>',
+				title: 'View specificed >>',
 			  mouseenter: function(element, event) {  // element is the jquery obj clicked on when context menu launched
+			    $.log("ELEMENT: " + element);
+				$.log("ELEMENT: " + element.euid);
 			    if (element && element.options) {
 				  var viewid = element.options.viewid || element.parrent.options.viewid;
 				  var p = $(event.currentTarget).offset();
-				  dm.dm.fw.ShowElementContextMenu(element.options.description, viewid, element, {clientX:p.left + $(event.currentTarget).width(), clientY:p.top});
+				  dm.dm.fw.ShowElementContextMenu(element.options.title, viewid, element, {clientX:p.left + $(event.currentTarget).width(), clientY:p.top});
 				}
               }
 			}

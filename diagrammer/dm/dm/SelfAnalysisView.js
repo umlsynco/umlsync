@@ -19,57 +19,8 @@ Version:
 	dm.base.SelfAnalysisView = function(urlArg) {
 	  this.urlArg = urlArg;
     };
-	dm.base.SelfAnalysisView.prototype = 
-		    {
-			'euid': 'SelfView',
-			'init': function() {
-			  return (window.dm != undefined); 
-			},
-			'info': function(callback) {
-				if (callback)
-					callback(null);
-			},
-			'remove': function(path, callback) {
-				if (callback)
-					callback.call();
-			},
-		    'save': function(path, data, description) {
-              alert(data);
-		    },
-			'newfolder':function(path,name,callback) {
-				if (callback) callback({'isFolder':true,'isLazy':true,'title':name, 'addClass':"package"});
-			},
-			'ctx_menu': {
-			   "Reload": function(node) {
-			      node.reloadChildren();
-			   },
-			   "Open": function(node) {
-			     alert("OPEN CLICKED !!!");
-			   },
-			   "Save": function(node) {
-			   },
-			   "New folder": function(node) {
-			     this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
-			   },
-			   "Remove": function(node) {
-			     this.remove(node.getAbsolutePath(), function() {node.remove();});
-			   }
-			},
-			"element_menu": {
-			  "Package,Subsystem": {
-			    "Internal packages": function(element) {
-				  alert("Not implemented!!!");
-			    },
-			    "Dependency": function(element) {
-				  alert("Not implemented!!!");
-			    },
-			    "Usage": function(element) {
-				  alert("Not implemented!!!");
-			    }
-			  },
-			  "Class,Interface,Object Instance": {
-			    "Update": function(element) {
-				    var name = element.getName(),
+	
+	function getInstanceByPath(name) {
                     ns = name.split(".");
 					var inst = dm;
 					
@@ -93,17 +44,118 @@ Version:
                     if (inst.prototype != undefined) {
                       inst = inst.prototype;
                     }
+					return inst;
+	}
+	dm.base.SelfAnalysisView.prototype = 
+		    {
+			'euid': 'SelfView',
+			'init': function() {
+			  return (window.dm != undefined); 
+			},
+			'info': function(callback) {
+				if (callback)
+					callback(null);
+			},
+			'remove': function(path, callback) {
+				if (callback)
+					callback.call();
+			},
+		    'save': function(path, data, description) {
+              alert(data);
+		    },
+			'newfolder':function(path,name,callback) {
+				if (callback) callback({'isFolder':true,'isLazy':true,'title':name, 'addClass':"package"});
+			},
+			'ctx_menu': [
+			   {
+			    title:"Reload",
+			    click: function(node) {
+			      node.reloadChildren();
+			    }
+			   },
+			   {
+			    title:"Open",
+			    click: function(node) {
+			     alert("OPEN CLICKED !!!");
+			    }
+			   },
+			   {
+			    title:"Save",
+			    click : function(node) {
+			    }
+			   },
+			   {
+			    title:"New folder",
+				click: function(node) {
+			     this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
+			    }
+				},
+				{
+			      title:"Remove",
+				  click : function(node) {
+			        this.remove(node.getAbsolutePath(), function() {node.remove();});
+			      }
+				}
+			],
+			"element_menu": {
+			  /*"Package,Subsystem": {
+			    "Internal packages": function(element) {
+				  alert("Not implemented!!!");
+			    },
+			    "Dependency": function(element) {
+				  alert("Not implemented!!!");
+			    },
+			    "Usage": function(element) {
+				  alert("Not implemented!!!");
+			    }
+			  },*/
+			  "Class,Interface,Object Instance": [
+			  {
+			    title: "Update",
+				click: function(element) {
+				    var inst = getInstanceByPath(element.getName());
 
                     for (g in inst) {
                        if ($.isFunction(inst[g])) {
 					    $.log("ADD: " + g);
-                        element.addMethod(g);
+                        element.addMethod('(+) ' + g + '()');
                        }
                     }
-			    },
-			    "Hide inherited": function(element) {
 			    }
-			  }
+			   },
+			   {
+			    title:"Get Base",
+				click: function(element) {
+				  var iDiagram = element.parrent;
+				  var inst = getInstanceByPath(element.getName());
+
+				  if (inst.inherited) {
+				    var el = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':'SelfView'});
+						  el.pageX = 200;
+                          el.pageY = 200;
+                          el.name = inst.inherited;
+                    var ename = iDiagram.Element(el.type, el);
+				  }
+			    }
+			   },
+			   {
+			    title:"Show redefined",
+				click: function(element) {
+                    var inst = getInstanceByPath(element.getName());
+					if (inst.inherited == undefined) {
+					  return;
+					}
+					base = getInstanceByPath(inst.inherited);
+
+                    for (g in inst) {
+                       if ($.isFunction(inst[g]) && inst[g] != base[g]) {
+					    $.log("ADD: " + g);
+                        element.addMethod('(+) ' + g + '()');
+                       }
+                    }
+			    }
+			   },
+			  ]
 			},
 			'tree': {
 				persist: true,
@@ -170,7 +222,7 @@ Version:
 						     return "dm";
 						   }	   
 						}
-                        node.data.viewid = this.euid;
+                        node.data.viewid = 'SelfView';
 						node.data.description = GetPath(node);
 						return true;
 					},

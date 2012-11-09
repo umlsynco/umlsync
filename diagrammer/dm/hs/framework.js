@@ -367,10 +367,10 @@ Version:
 			  if (IView['element_menu']) {
 			    self.views[IView.euid]['element_menu'] = {};
 				var counter = 0;
-			    for (r in IView['element_menu']) {
+			    for (var r in IView['element_menu']) {
 				  var rs = r.split(","), // Multiple elements support "Package,Subsystem"
 				      nm = IView.euid + "-" + counter;
-				  for (h in rs) {
+				  for (var h in rs) {
 				    self.views[IView.euid]['element_menu'][rs[h]] = nm;
 				  }
 				  initCtxMenu(nm, IView['element_menu'][r]);
@@ -483,15 +483,17 @@ Version:
 		     $("#view-"+name +".context-menu").css("left", event.clientX).css("top", event.clientY).show();
 		   }
 		},
-		'ShowElementContextMenu': function(description, viewid, data, event) {
+		'ShowElementContextMenu': function( desc , viewid, data, event) {
 		   activeNode = data;
 		   var self = dm.dm.fw;
+		   desc = data.options.title;
+		   $.log("ShowElementContextMenu: " + desc + "   VID: " + viewid + "  DATA: " + data.options + "  TYPE: " + data.options.title + " DESC:" + data.options.description);
 		   if (self.views && self.views[viewid]
 		     && self.views[viewid]['element_menu']
-			 && self.views[viewid]['element_menu'][description]) {
+			 && self.views[viewid]['element_menu'][desc]) {
 			 // Enable the context menu for element
 			 var uniqueName = "#view-";
-		     uniqueName += self.views[viewid]['element_menu'][description];// Id of the menu
+		     uniqueName += self.views[viewid]['element_menu'][desc];// Id of the menu
 			 $.log("SHOW: " + uniqueName);
 			 var $elem = $(uniqueName +".context-menu");
 			 if (data == undefined) {

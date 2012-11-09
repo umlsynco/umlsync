@@ -67,7 +67,7 @@
   
   
   <script>
-  $.log = function() {};
+  //$.log = function() {};
 
   $(document).ready(function() {
     var Loader = new dm.base.loader("./");
@@ -141,10 +141,16 @@
     }
   });  
 */
-    var IGithubView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams/");
-  	    IGithubView.euid = "Github";
-		fw.addView2('Github', IGithubView);
-    IGithubView.init();
+
+    dm.dm = dm.dm || {};
+	dm.dm.IGithubView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams/");
+  	    dm.dm.IGithubView.euid = "Github";
+		fw.addView2('Github', dm.dm.IGithubView);
+    dm.dm.IGithubView.init();
+	
+    dm.dm.IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
+	dm.dm.IFilesView.euid = 'SelfView';
+	fw.addView2('SelfView', dm.dm.IFilesView);
       
 //		$("li").live("mouseenter", function() {
 //			$(this).attr( {"title": this.id});

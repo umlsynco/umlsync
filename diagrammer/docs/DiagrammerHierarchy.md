@@ -33,4 +33,8 @@ For example the following code should overwrite defaultField and baseMethod() (i
 </pre>
 
  
-PLEASE NOTE : element JSON description is based on options therefore they should be clearly named and CSS compatible (which modify CSS options of element).   
+<b>PLEASE NOTE :</b> element JSON description is based on options therefore they should be clearly named and CSS compatible (which modify CSS options of element).
+
+
+Each element of this hierarchy has `this.euid` field which is unique for session and do not have any relation to element name.
+   

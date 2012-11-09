@@ -130,11 +130,17 @@
                 //add class .drop-down to all of the menus having drop-down items
                 var menu = $(this);
 
-                $('> li', menu).hover(function () {
+                $('> li', menu).hover(function (evt) {
                   $(this).addClass('hover');
+				  if (options.onMouseEnter) {
+				    options.onMouseEnter(data[this.id], evt);
+				  }
                 },
-				function (e) {
+				function (evt) {
                   $("> li", $(this).parent()).removeClass('hover');
+				  if (options.onMouseLeave) {
+				    options.onMouseLeave(data[this.id], evt);
+				  }
                 });
 				
 				var $selector = (options.selector) ? $('> .'+options.selector, menu) : $('> li', menu);
@@ -148,6 +154,9 @@
 				     callback(e.data[this.id]);
 				  }
 				});
+				
+
+				
             });
         }
     });

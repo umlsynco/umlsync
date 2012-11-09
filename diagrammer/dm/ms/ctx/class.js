@@ -30,14 +30,14 @@
         },
         {
 		   title: 'View specific >>',
-		   /* Handle as reference on external menu instead of this stuff (((
+		   //Handle as reference on external menu instead of this stuff (((
            mouseenter: function(element, event) {  // element is the jquery obj clicked on when context menu launched
                             if (element && element.options) {
                                   var viewid = element.options.viewid || element.parrent.options.viewid;
                                   var p = $(event.currentTarget).offset();
-                                  dm.dm.fw.ShowElementContextMenu(element.options.description, viewid, element, {clientX:p.left + $(event.currentTarget).width(), clientY:p.top});
+                                  dm.dm.fw.ShowElementContextMenu( element.options.title , viewid, element, {clientX:p.left + $(event.currentTarget).width(), clientY:p.top});
                                 }
-            }*/
+            }
         }
         ]);
     };
