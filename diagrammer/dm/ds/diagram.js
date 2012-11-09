@@ -1422,7 +1422,7 @@ dm['ctx'] = dm.ms.ctx;
             .mouseenter(function (){
 			    if (!self.options.selected && !self.highlighted) {
 				  self.highlighted = true;
-                  $('#' + this.id +'_Border').css({'border':'3px solid #97F7A1'}).animate({left:'-=3px', top:'-=3px'},0);
+                  $('#' + this.id +'_Border').css({'border':'3px solid #97F7A1'}).css({left:'-=3px', top:'-=3px'},0);
                   $('#' + this.id +'_REF').css({'visibility':'visible'});
 				}
 //@ifdef EDITOR
@@ -1435,7 +1435,7 @@ dm['ctx'] = dm.ms.ctx;
             })
             .mouseleave(function (){
 			    if (!self.options.selected && self.highlighted) {
-                    $('#' + this.id +'_Border').css({'border':'0px solid #97F7A1'}).animate({left:'+=3px', top:'+=3px'},0);
+                    $('#' + this.id +'_Border').css({'border':'0px solid #97F7A1'}).css({left:'+=3px', top:'+=3px'},0);
 					self.highlighted = false;
 				}
 
@@ -1494,14 +1494,14 @@ dm['ctx'] = dm.ms.ctx;
 				    $.log("SELECT !!!");
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
 					if (!this.highlighted) {
-					  $('#' + this.euid +'_Border').css({'border':'3px solid #97F7A1'}).animate({left:'-=3px', top:'-=3px'},0);
+					  $('#' + this.euid +'_Border').css({'border':'3px solid #97F7A1'}).css({left:'-=3px', top:'-=3px'},0);
 					  this.highlighted = true;
 					}
 				}
                 else {
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
 					if (this.highlighted) {
-                      $('#' + this.euid +'_Border').css({'border':'0px solid #97F7A1'}).animate({left:'+=3px', top:'+=3px'},0);
+                      $('#' + this.euid +'_Border').css({'border':'0px solid #97F7A1'}).css({left:'+=3px', top:'+=3px'},0);
 					}
 					this.highlighted = false;
 				}

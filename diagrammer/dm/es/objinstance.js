@@ -33,9 +33,9 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	  var element = $("#" + this.euid + "_Border"),
 		  e_left = element.position().left + element.width() / 2;
 
-	  for (i in this._dropped) {
-	    var level = this.parrent.elements[this._dropped[i]].options.level;
-	    var e = $("#" + this._dropped[i] + "_Border"),
+	  for (var i in this._dropped) {
+	    var level = this.parrent.elements[i].options.level;
+	    var e = $("#" + i + "_Border"),
 		    w = e.width()/2 ;
 		e.css("left", e_left - w + level *w);
 	  }
@@ -45,8 +45,8 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	  var element = $("#" + this.euid + "_Border"),
 		  e_left = element.position().left + element.width() / 2;
 
-	  for (i in this._dropped) {
-	    var e = $("#" + this._dropped[i] + "_Border"),
+	  for (var i in this._dropped) {
+	    var e = $("#" + i + "_Border"),
 		    w = e.width()/2;
 		e.css("left", e_left - w);
 	  }
@@ -57,12 +57,12 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	      wd2 = element.width() / 2,
 		  x_top = element.position().top + element.height();
 
-	  for (i in this._dropped) {
-	    var e = $("#" + this._dropped[i] + "_Border"),
+	  for (var i in this._dropped) {
+	    var e = $("#" + i + "_Border"),
 		    p = e.position(),
 			h = e.height(),
 			w = e.width()/2;
-			$.log("DROPPPPPPPED: " + this._dropped[i]);
+			$.log("DROPPPPPPPED: " + i);
 		$.log("CHECK: " + ui.position.top + " < " + p.top + "<" + (p.top+h));
    		if (true
    		//(ui.position.left > p.left - wd2 + w) // Check all parrent element width
@@ -76,7 +76,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 		  if (ui.position.top > p.top + h) {
 		    e.css("height", h+10);
 		  }
-		  return this._dropped[i];
+		  return i;
         }
 	  }
 	  return undefined;
@@ -144,15 +144,15 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 	  var _sort = new Array();
       for (var s in this._dropped) {
 	    // Prevent adding end of live of object adding to sort
-	  	if ((this.parrent.elements[this._dropped[s]].options.type == "lldel")
-		|| (this.parrent.elements[this._dropped[s]].options.type == "llport" && this.parrent.elements[this._dropped[s]].options.level > 0))
+	  	if ((this.parrent.elements[s].options.type == "lldel")
+		|| (this.parrent.elements[s].options.type == "llport" && this.parrent.elements[s].options.level > 0))
 		  continue;
 
-		var e2 = $("#" + this._dropped[s] + "_Border"),
+		var e2 = $("#" + s + "_Border"),
             p2 = e2.position(),
             h2 = e2.height();
             $.log("sort: " + this._dropped[s]);
-            _sort.push({name:this._dropped[s], top:p2.top, height:h2});
+            _sort.push({name:s, top:p2.top, height:h2});
       }
 
      var _seq = new Array();
@@ -315,9 +315,9 @@ dm.base.diagram("es.llport", dm.es.element, {
 	  $.log("LLPORT AUTOCOMPLETE:");
 	  if (this.parrent) {
 		var els = this.parrent.elements;
-		for (i in els) {
-			for (j in els[i]._dropped) {
-				if ((els[i]._dropped[j] == this.euid)
+		for (var i in els) {
+			for (var j in els[i]._dropped) {
+				if ((j == this.euid)
 				  && (els[i].getAutocomplete))
 				  return els[i].getAutocomplete();
 			}
@@ -371,9 +371,9 @@ dm.base.diagram("es.lldel", dm.es.element, {
 	  $.log("LLPORT AUTOCOMPLETE:");
 	  if (this.parrent) {
 		var els = this.parrent.elements;
-		for (i in els) {
-			for (j in els[i]._dropped) {
-				if ((els[i]._dropped[j] == this.euid)
+		for (var i in els) {
+			for (var j in els[i]._dropped) {
+				if ((j == this.euid)
 				  && (els[i].getAutocomplete))
 				  return els[i].getAutocomplete();
 			}
