@@ -746,6 +746,10 @@ dm['ctx'] = dm.ms.ctx;
 			  }
 			}
         }
+
+		// Hide icon menu to prevent icon menu usage after element removal
+		this.menuIcon['Disable'](euid);
+
         for (var k in el) {
 		  if (el[k].euid == euid) {
                 delete el[k];
