@@ -24,6 +24,7 @@
 	},
 	{"type": "note",
 	 "title": "Note",
+	 "menu": "us-note-menu",
 	 "icon": "./dm/icons/us/es/common/Note.png"
 	}
     ],
@@ -70,6 +71,16 @@
 	  }
     ],
     "menus": [
+	  {"id":"us-note-menu",
+	   "items": [
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+					  ]
+				}
+			 ]
+	  },
 	  {"id":"us-component-menu",
 	   "items": [
 				{"el":"Component",

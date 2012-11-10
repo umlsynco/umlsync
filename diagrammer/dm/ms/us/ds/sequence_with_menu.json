@@ -64,7 +64,13 @@
 	 "title": "Actor",
 	 "menu":"us-objinstance-menu",
 	 "icon": "./dm/icons/us/es/sequence/Actor.png"
+	},
+	{"type": "note",
+	 "title": "Note",
+	 "menu": "us-note-menu",
+	 "icon": "/dm/icons/us/es/common/Note.png"
 	}
+
     ],
     "connectors": [
       {"connector":"llsequence",
@@ -142,6 +148,16 @@
 				 "cs":[
 						{"connector":"llsequence",
 						 "icon":"dm/icons/us/cs/lostmessage.png"}
+					  ]
+				}
+			 ]
+	  },
+	  {"id":"us-note-menu",
+	   "items": [
+				{"el":"Note",
+				 "cs":[
+						{"connector":"anchor",
+						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}
 			 ]

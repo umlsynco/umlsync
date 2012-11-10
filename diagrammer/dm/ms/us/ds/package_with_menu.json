@@ -83,12 +83,6 @@
 	  },
 	  {"id":"us-note-menu",
 	   "items": [
-				{"el":"Package",
-				 "cs":[
-						{"connector":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-					  ]
-				},
 				{"el":"Note",
 				 "cs":[
 						{"connector":"anchor",
