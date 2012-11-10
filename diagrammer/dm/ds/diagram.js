@@ -1422,7 +1422,9 @@ dm['ctx'] = dm.ms.ctx;
             .mouseenter(function (){
 			    if (!self.options.selected && !self.highlighted) {
 				  self.highlighted = true;
-                  $('#' + this.id +'_Border').css({'border':'3px solid #97F7A1'}).css({left:'-=3px', top:'-=3px'},0);
+                  var $bw = $('#' + this.id +'_Border').css({'border-width':'3px'});
+				  var bw = $bw.css('border-left-width');
+				  $bw.css({left:'-=' + bw, top:'-='+bw});
                   $('#' + this.id +'_REF').css({'visibility':'visible'});
 				}
 //@ifdef EDITOR
@@ -1435,7 +1437,9 @@ dm['ctx'] = dm.ms.ctx;
             })
             .mouseleave(function (){
 			    if (!self.options.selected && self.highlighted) {
-                    $('#' + this.id +'_Border').css({'border':'0px solid #97F7A1'}).css({left:'+=3px', top:'+=3px'},0);
+                    var $bw = $('#' + this.id +'_Border');
+					var bw = $bw.css('border-left-width');
+				    $bw.css({'border-width':'0px'}).css({left:'+=' + bw, top:'+='+bw});
 					self.highlighted = false;
 				}
 
@@ -1491,17 +1495,20 @@ dm['ctx'] = dm.ms.ctx;
                 $("#" + this.euid).css(key, value);
             } else if (key == "selected") {
                 if (value) {
-				    $.log("SELECT !!!");
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
 					if (!this.highlighted) {
-					  $('#' + this.euid +'_Border').css({'border':'3px solid #97F7A1'}).css({left:'-=3px', top:'-=3px'},0);
+                      var $bw = $('#' + this.euid +'_Border').css({'border-width':'3px'});
+				      var bw = $bw.css('border-left-width');
+				      $bw.css({left:'-=' + bw, top:'-='+bw});
 					  this.highlighted = true;
 					}
 				}
                 else {
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
 					if (this.highlighted) {
-                      $('#' + this.euid +'_Border').css({'border':'0px solid #97F7A1'}).css({left:'+=3px', top:'+=3px'},0);
+                      var $bw = $('#' + this.euid +'_Border');
+					  var bw = $bw.css('border-left-width');
+				      $bw.css({'border-width':'0px'}).css({left:'+=' + bw, top:'+='+bw});
 					}
 					this.highlighted = false;
 				}
@@ -1549,7 +1556,7 @@ dm['ctx'] = dm.ms.ctx;
         //@proexp
         onDragStop: function(ui) {
             if (ui) {
-                this.onDragMove(ui);
+                //this.onDragMove(ui);
                 if (this.options['droppable']) {
 
                     if (this.parrent != undefined) {
