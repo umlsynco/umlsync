@@ -413,7 +413,9 @@ Version:
                  var menus = [];
                  var fw = dm.dm.fw;
                  var diagram = fw.activeDiagram();
-				 
+                 if (diagram) {
+				   diagram.setDropHelper();
+				 }
                  var loadElement = diagramMenuBuilder.getElementById(item.title);
 
                  if (loadElement != undefined) {
@@ -431,74 +433,17 @@ Version:
 			   path:"./",
 	           data:connectors,
 	           onSelect: function(item) {
-	             alert("selected connector");
+	             var selConn = item["connector"];
+				 var fw = dm.dm.fw;
+                 var diagram = fw.activeDiagram();
+
+				 if (diagram) {
+				   diagram.setDropHelper(selConn);
+				 }
 	           }
             });
-              
-/*			  $("#" + euid + " .elementSelector")
-                   .hover(function() {$(this).addClass('hover');}, function() {$(this).removeClass('hover');})  
-                   .click(function(){
-                      
-                   });
-
-                   $("#" + euid + " .connectorSelector")
-                   .hover(function() {$(this).addClass('hover');}, function() {$(this).removeClass('hover');})
-                   .click(function(e){
-                      $(this).addClass('selected');
-                      var selConn = this.id;
-                      e.stopPropagation();
-                // TODO:  diagram.EnableConnectionHelper
-                /*
-      $("#" + diagram.id + " .us-element-border").draggable(
-          {appendTo: "#" + diagram.id,
-                    helper:function(event) {
-                        return $("<div id='ConnectionHelper_Border' style='border:solid black;border-width:1px;'> <div id='ConnectionHelper' style='border:solid yellow;border-width:1px;'> [ x ]</div></div>");
-                           },
-                    start: function(event) {
-                       // alert(this.euid);
-                       var sel = this.euid;
-                       sel = sel.substr(0, sel.length -7);
-                       dm.dm.loader.Connector(selConn, {selected: sel, temporary: "ConnectionHelper"},
-             {}, diagram);
-                           },
-                    drag: function(event) {
-                       diagram.draw();
-                    },
-                    stop: function(event) {
-                       var offset = $("#" + diagram.id).position();
-                      var name = diagram.checkdrop((event.pageX - offset.left), (event.pageY -offset.top));
-
-                      // Remove the temporary connector
-                      var sel = this.euid;
-                      sel = sel.substr(0, sel.length -7);
-                      diagram.removeConnector(sel, "ConnectionHelper", selConn);
-
-                      if (name != undefined)
-                         dm.dm.loader.Connector(selConn, {selected: sel, temporary: name}, {}, diagram);                      
-                      // Remove selection from menu item
-                      $('.connectorSelector').removeClass('selected');
-               // Enable DND for elements again
-               $("#" + diagram.id + " .us-element-border").draggable( { helper : 'original', start:function(){},  stop:function(){}, drag:function(){
-
-
-
-               diagram.draw();
-       }} );
-
-                      // Create an element or get element which was drop on
-                      //
-
-                      // Create connection with the created element ??/
-                      // How to create connection if element should be lazy loaded, but the connector already loaded ???
-                    }
-          });*/
-                // TODO: enable drag helper for connectors
-                //dm.dm.loader.Connector(this.euid, self.options, {}, self.diagram);
-//                    });
-            
-			
-			}); // CreateDiagramMenu
-            } // if !ActivateDiagramMenu
+          }); // CreateDiagramMenu
+         } // if !ActivateDiagramMenu
 		});
     }
 //@aspect

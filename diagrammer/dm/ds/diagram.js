@@ -693,14 +693,26 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     checkdrop: function(x,y) {
         for (var d in this.elements) {
-            var p = $("#" + this.elements[d].id + "_Border").position();
+            var p = $("#" + this.elements[d].euid + "_Border").position();
 
             if ((x > p.left) && (x < p.left + 140) && (y > p.top) && (y < p.top + 140))  {
-                return this.elements[d].id;
+                return this.elements[d].euid;
             }
         }
         return undefined;
     },
+	setDropHelper: function(dh) {
+	  if (dh == undefined) {
+	    delete this.dropHelper;
+		$("#" + this.euid + " .us-element-border").draggable("option", "helper", 'original');
+		return;
+	  }
+	  this.dropHelper = dh;
+      $("#" + this.euid + " .us-element-border").draggable("option", "helper", function(event) {
+        return $("<div id='ConnectionHelper_Border' style='border:solid black;border-width:1px;'>\
+                 <div id='ConnectionHelper' style='border:solid yellow;border-width:1px;'> [ x ]</div></div>");
+      });
+	},
 //@ifdef EDITOR
     /**
      * \class Function.
@@ -1328,6 +1340,13 @@ dm['ctx'] = dm.ms.ctx;
 			  'scroll': true,
               'start': function(event, ui) {
                 self.operation_start = {left: ui.position.left, top: ui.position.top};
+
+			    if (parrentClass.dropHelper != undefined) {
+				  var sel = self.euid;
+                  parrentClass.Connector(parrentClass.dropHelper, {fromId: sel, toId: "ConnectionHelper"});
+				  return;
+				}
+
                 parrentClass['onElementDragStart'](self, ui);
 				$("#tabs #us-editable").hide();
               },
@@ -1335,12 +1354,37 @@ dm['ctx'] = dm.ms.ctx;
                 if (parrentClass != undefined) {
                     parrentClass.draw();
                 }
+				
+				if (parrentClass.dropHelper) {
+				  return;
+				}
                 if (self.$moveit != undefined) {
                     $("#" + self.$moveit).css("left", 200);
                 }
                 parrentClass['onElementDragMove'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
               },
               'stop': function(event, ui) {
+			    if (parrentClass.dropHelper) {
+                   var offset = $("#" + parrentClass.euid).position();
+                   var name = parrentClass.checkdrop(ui.position.left, ui.position.top);
+
+				   var selConn = parrentClass.dropHelper;
+                   // Remove the temporary connector
+                   var sel = self.euid;
+                   //sel = sel.substr(0, sel.length -7);
+                   parrentClass.removeConnector(sel, "ConnectionHelper", selConn);
+
+                   if (name != undefined)
+                       parrentClass.Connector(selConn, {fromId: sel, toId: name});
+                   // Remove selection from menu item
+                   $('.connector-selector').removeClass('selected');
+
+				   parrentClass.setDropHelper();
+
+                   parrentClass.draw();
+				   return;
+				}
+
                 if (ui.position.top < 0) {
                     $(this).css("top", 3);
                     ui.position.top = 3;
