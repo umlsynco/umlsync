@@ -17,6 +17,11 @@
 	 "menu":"us-component-menu",
 	 "icon": "./dm/icons/us/es/component/Port.png"
 	},
+	{"type": "empty",
+	 "title": "Empty",
+	 "menu":"us-component-menu",
+	 "icon": "./dm/icons/us/es/component/Port.png"
+	},
 	{"type": "instance",
 	 "title": "Instance Specification",
 	 "menu":"us-component-menu",
@@ -103,7 +108,11 @@
 				 "cs":[
 						{"connector":"realization",
 						 "icon":"dm/icons/us/cs/interface.png"
-						},
+						}
+					  ]
+				},
+				{"el":"Empty",
+				 "cs":[
                         {"connector":"arc",
 						 "icon":"dm/icons/us/cs/interface_required.png"
 						}
