@@ -102,7 +102,7 @@
 				},
 				{"el":"Interface",
 				 "cs":[
-						{"connector":"realization",
+						{"connector":"association",
 						 "icon":"dm/icons/us/cs/interface.png"
 						}
 					  ]

@@ -9,7 +9,8 @@ dm.base.diagram("es.component", dm.es.element, {
       'nameTemplate': "Component",
       'aux': "component",
       'droppable': true,
-      'acceptdrop': "component"
+      'acceptdrop': "component",
+	  'height': "100px"
     },
     '_update': function() {
         this.options.name = "" + $("#" + this.euid + " .Name" ).html();
