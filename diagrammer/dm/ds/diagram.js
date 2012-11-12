@@ -1538,6 +1538,8 @@ dm['ctx'] = dm.ms.ctx;
                 $("#" + this.euid).css("background-color", value);
             } else if (key == "borderwidth") {
                 $("#" + this.euid).css("border-width", value);
+            } else if (key == "width") {
+                $("#" + this.euid + "_Border").css("width", value);
             } else if (key == "font-family") {
                 $.log("ff: " + value);
                 $("#" + this.euid).css(key, value);
