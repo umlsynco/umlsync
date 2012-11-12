@@ -11,7 +11,7 @@
 	 "title": "Port",
 	 "menu":"us-objinstance-menu",
 	 "ctx_menu":"sequence",
-	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
+	 "hidden": true
 	},
 	{"type": "interface",
 	 "title": "Lost/Found Message",
@@ -26,6 +26,7 @@
 	{"type": "lldel",
 	 "title": "Del object",
 	 "ctx_menu":"sequence",
+	 "hidden": true,
 	 "icon": "./dm/icons/us/es/common/del.png"
 	},
 	{"type": "llalt",

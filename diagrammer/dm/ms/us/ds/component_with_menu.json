@@ -20,7 +20,7 @@
 	{"type": "empty",
 	 "title": "Empty",
 	 "menu":"us-component-menu",
-	 "icon": "./dm/icons/us/es/component/Port.png"
+	 "hidden": true
 	},
 	{"type": "instance",
 	 "title": "Instance Specification",
@@ -39,7 +39,7 @@
 	   "icon": "./dm/icons/us/cs/dependency.png"
 	  },
       {"connector":"arc",
-	   "title":"Arc",
+	   "title":"Interface Observer",
 	   "icon": "./dm/icons/us/cs/interface_required.png"
 	  },
       {"connector":"realization",
@@ -68,10 +68,6 @@
 	  },
       {"connector":"nested",
 	   "title":"Containment",
-	   "icon": "./dm/icons/us/cs/nested.png"
-	  },
-      {"connector":"iobserver",
-	   "title":"Interface Observer",
 	   "icon": "./dm/icons/us/cs/nested.png"
 	  }
     ],
