@@ -701,6 +701,7 @@ Version:
 								es[j].pageY = parseInt(es[j].pageY) + 10;
 								fw.diagrams[fw.selectedDiagramId].Element(es[j].type, es[j]);
 							}
+							
 							//for (j in cs)
 							//fw.diagrams[fw.selectedDiagramId].Connector(cs[j].type, cs[j]);
 							$.clippy = undefined;

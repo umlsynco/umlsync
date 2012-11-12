@@ -33,9 +33,9 @@
 	   "title":"Dependency",
 	   "icon": "./dm/icons/us/cs/dependency.png"
 	  },
-      {"connector":"generalization",
-	   "title":"Generalization",
-	   "icon": "./dm/icons/us/cs/generalization.png"
+      {"connector":"arc",
+	   "title":"Arc",
+	   "icon": "./dm/icons/us/cs/interface_required.png"
 	  },
       {"connector":"realization",
 	   "title":"Realization",
@@ -103,6 +103,9 @@
 				 "cs":[
 						{"connector":"realization",
 						 "icon":"dm/icons/us/cs/interface.png"
+						},
+                        {"connector":"arc",
+						 "icon":"dm/icons/us/cs/interface_required.png"
 						}
 					  ]
 				},
