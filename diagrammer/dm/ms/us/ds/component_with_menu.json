@@ -24,6 +24,7 @@
 	},
 	{"type": "instance",
 	 "title": "Instance Specification",
+	 "ctx_menu": "instance",
 	 "menu":"us-component-menu",
 	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
 	},
@@ -93,9 +94,6 @@
 						 "icon":"dm/icons/us/cs/aggregation.png"
 						},
 						{"connector":"composition",
-						 "icon":"dm/icons/us/cs/composition.png"
-						},
-						{"connector":"iobserver",
 						 "icon":"dm/icons/us/cs/composition.png"
 						}
 					  ]

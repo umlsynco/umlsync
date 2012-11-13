@@ -148,6 +148,24 @@ a {
  overflow: hidden;
 }
 
+
+.us-instance-spec{
+ border: 0px;
+ padding 5px;
+ margin: 0 auto;
+ overflow: hidden;
+ cursor: pointer;
+ text-align: left;
+}
+
+.us-instance-spec ul {
+ border: 0px;
+ width: 100%;
+ list-style: none outside none;
+ 
+}
+
+
 .us-class-operations {
  border: 0px;
  width: 100%;
