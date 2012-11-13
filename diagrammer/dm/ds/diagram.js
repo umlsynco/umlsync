@@ -1947,7 +1947,9 @@ dm.base.diagram("cs.connector", {
             if (p2 == null) {
                 return;
             }
-
+///////////////////////////////////////////    PERFORMANCE IMPROVMENT REQUIRED  !!!!!!!!! ///////////////////////////////////
+///////////////////////////////////////////    Do not recalculate coordinates for all elements !!!!!!!!! ////////////////////
+///////////////////////////////////////////    It is necessary for draggable and resizable elements only !!!!!!!!! //////////
             var p11 = $('#'+ fromId + "_Border").position();
             var p21 = $('#' + toId + "_Border").position();
             var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),

@@ -17,7 +17,10 @@ dm.base.diagram("es.interface", dm.es.element, {
        this.options.width = $("#" + this.euid + "_Border").width();
        this.options.height = $("#" + this.euid + "_Border").height();
 
-       this.options.name = $("#" + this.euid + " #lable" ).html();
+       this.options.name = $("#" + this.euid + " #label" ).html();
+	   p = $("#" + this.euid + " #label" ).position();
+	   this.options.labelX = p.left;
+	   this.options.labelY = p.top;
        
     },
     '_create': function() {
@@ -53,9 +56,8 @@ dm.base.diagram("es.interface", dm.es.element, {
          $(self + " .us-interface").width(m).height(m);
 
       });
-       $.log("INIT INTERFACE : " + this.options.name);
       if (this.options.name) {
-          $("<div id='lable' style=\"position:absolute;top:100%;z-index:99999;\">" + this.options.name + "</div>").appendTo("#" + this.euid).draggable().editable()
+          $("<div id='label' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.labelY+"px;left:"+this.options.labelX+"px;\">" + this.options.name + "</div>").appendTo("#" + this.euid).draggable().editable()
       }
     }
 });
