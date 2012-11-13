@@ -1321,6 +1321,7 @@ dm['ctx'] = dm.ms.ctx;
               if (self.onResizeComplete) {
                 self.onResizeComplete();
               }
+			  $('#' + self.euid + '_Border .us-element-resizable-area').css('width', 'auto');
               self.parrent.draw();
             },
             'resize': function(event, ui) {
@@ -1540,8 +1541,9 @@ dm['ctx'] = dm.ms.ctx;
                 $("#" + this.euid).css("border-width", value);
             } else if (key == "width") {
                 $("#" + this.euid + "_Border").css("width", value);
+            } else if (key == "height") {
+                $("#" + this.euid + "_Border").css("height", value);
             } else if (key == "font-family") {
-                $.log("ff: " + value);
                 $("#" + this.euid).css(key, value);
             } else if (key == "selected") {
                 if (value) {

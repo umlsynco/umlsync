@@ -36,7 +36,7 @@ dm.base.diagram("es.package", dm.es.element, {
       var aux = (this.options.aux != undefined) ? "<a>&lt&lt" + this.options.aux + "&gt&gt</a><br><b>" : "";
       this.innerHtml = '<div id="' + this.euid + '" class="us-package">\
                                 <div class="us-package-tab grElement"></div>\
-            <div class="us-package-body us-element-resizable-area grElement">'
+            <div class="us-package-body grElement">'
             + aux + 
             '<a class="editablefield">'+ this.options.name + '</a></div>\
                                 </div>';
@@ -47,17 +47,7 @@ dm.base.diagram("es.package", dm.es.element, {
 	  this._setOptions(this.options);
     },
     '_setOption2': function( key, value ) {
-        if (key == "width") {
-		  $('#' + this.euid  + '_Border').css('width', this.options.width);
-          $('#' + this.euid  + '_Border .us-package-body').css('width', value);
-		  return true;
-        } else if (key == "height_b") {
-          $('#' + this.euid  + '_Border .us-package-body').css('height', value);
-		  return true;
-        }  else if (key == "height") {
-          $('#' + this.euid  + '_Border').css('height', value);
-		  return true;
-        } else if (key == "color") {
+		if (key == "color") {
             $("#" + this.euid + " .us-package-tab").css("background-color", value);
             $("#" + this.euid + " .us-package-body").css("background-color", value);
 			return true;

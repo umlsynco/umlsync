@@ -190,8 +190,12 @@ a {
 
 .us-package-body {
   padding: 0px;
-  border: 1px;
-  position: relative;
+  position: absolute;
+  top: 15px;
+  left:0px;
+  right:0px;
+  bottom: 0px;
+  margin: 0 auto;
   border: 1px solid black;
   text-decoration: none;
   text-align: center;
