@@ -47,6 +47,92 @@ dm['ctx'] = dm.ms.ctx;
 //@aspect
 (function( $, dm, undefined ) {
 
+    dm.base.opman = function(diagram) {
+		this.diagram = diagram;
+		this.queue = new Array();
+        this.revertedQueue = new Array();
+		this.started = false;
+	}
+	
+	dm.base.opman.prototype = {
+		startTransaction: function() {
+			if (this.started) {
+			  alert("Operation transaction already started !!!");
+			  return;
+			}
+			this.started = true;
+			this.working = {};
+		},
+		stopTransaction: function() {
+			if (!this.started) {
+			  alert("TRANSACTION WAS NOT STARTED !!!");
+			  return;
+			}
+			this.queue.push({step:this.working});
+            this.revertedQueue.splice(0, this.revertedQueue.length); // Revert queue
+			
+			delete this.working; // Clean the current working copy !!!
+			this.started = false;
+		},
+		/*
+		 * type : drag, resize, remove, add
+		 * euid : element unique id
+		 * options: element options which changed
+		 */
+		reportStart: function(type, euid, options) {
+			this.working[euid] = this.working[euid] || {};
+			this.working[euid][type] = this.working[euid][type] || {};
+			this.working[euid][type]["start"] = $.extend({}, this.working[euid][type]["start"], options);
+		},
+		reportStop: function(type, euid, options) {
+			this.working[euid] = this.working[euid] || {};
+			this.working[euid][type] = this.working[euid][type] || {};
+			this.working[euid][type]["stop"] = $.extend({}, this.working[euid][type]["stop"], options);
+		},
+		reportShort: function(type, euid, before, after) {
+			this.working[euid] = this.working[euid] || {};
+			this.working[euid][type] = this.working[euid][type] || {};
+			this.working[euid][type]["stop"] = this.working[euid][type]["stop"] || options;
+			this.working[euid][type]["start"] = this.working[euid][type]["start"] || options; // Prevent options overwrite
+		},
+		revertOperation: function() {
+		  if (this.queue.length == 0) {
+		    return; // nothing to revert !!!
+		  }
+
+          var op = this.queue.pop();
+		  op = op.step;
+          if (op) {
+            this.revertedQueue.push(op);
+			for (var i in op) { // elements
+			    var e = this.diagram.elements[i]; // it could be element or connector
+				if (e == undefined) e = this.diagram.connectors[i];
+				for (var j in op[i]) { // types of operation
+					if (j == "option") {
+						e._setOptions(op[i][j]["start"]); // revert to original state
+					}
+				}				
+			}
+            this.diagram.draw();
+		  }
+        },
+        repeatOperation: function() {
+          var op = this.revertedQueue.pop();
+          if (op) {
+            this.queue.push(op);
+			for (var i in op) { // elements
+			    var e = this.diagram.elements[i]
+				for (var j in op[i]) { // types of operation
+					if (j == "option") {
+						e._setOptions(op[i][j]["stop"]); // revert to original state
+					}
+				}				
+			}
+          }
+		  this.draw();
+        },
+	};
+
     //@export:dm.base.diagram:plain
     dm.base.diagram = function( name, base, prototype ) {
         var ns = name.split( "." ),
@@ -291,7 +377,7 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     _create: function () {
 	//<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
-	this.options.multicanvas = true;
+	  //this.options.multicanvas = true; ~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USES for DROP SOME NODES FROM DYNATREE
 	 if (this.options.multicanvas != undefined) {
         this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
                 <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
@@ -535,8 +621,7 @@ dm['ctx'] = dm.ms.ctx;
                     } // i
                 });
 
-                this.operations = new Array(); // Array of pushed operations to diagram
-                this.reverted_operations = new Array(); // Array of reverted operations of diagram
+				this.opman = new dm.base.opman(this);
 
 				if (this.options.force) {
 				  dm.dm.loader.OnLoadComplete(function(self) {
@@ -782,12 +867,12 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
      removeConnector: function (fromId, toId, type) {
 
-        if (this.connectors.length > 0) {
+        if (Object.keys(this.connectors).length > 0) {
             for (var c in this.connectors) {
                 if (((this.connectors[c]['from']  == fromId) || (fromId == undefined))
     && ((this.connectors[c]['toId'] == toId) || (toId == undefined))) {
-                    for (var i in this.connectors[c].lables) {
-                        this.connectors[c].lables[i].remove();
+                    for (var i in this.connectors[c].labels) {
+                        this.connectors[c].labels[i].remove();
                     }
                     delete this.connectors[c];
                     this.connectors.slice(c,1);
@@ -813,7 +898,7 @@ dm['ctx'] = dm.ms.ctx;
 
         dm['dm']['loader']['Connector'](type, options, this, function(connector) {
             if (connector != undefined) {
-                self.connectors.push(connector);
+                self.connectors[connector.euid] = connector;
                 self.draw();
                 if (callback)
                     callback(connector);
@@ -914,9 +999,7 @@ dm['ctx'] = dm.ms.ctx;
 //@endif
     //@proexp    
     onElementDragStart: function(el, ui) {
-		this.operation_info = new Array();
-	    el._update();
-		this.operation_info[el.euid] = $.extend({}, el.options);
+        this.opman.startTransaction();
 
 		// Add one more option, therefore get the list of options first !!!
         el.onDragStart(ui);
@@ -928,10 +1011,6 @@ dm['ctx'] = dm.ms.ctx;
                 if ( ee != el
 					&& ee.option("selected")
 					&& ee.option("dragStart") == undefined) {
-					ee._update();
-					this.operation_info[ee.euid] = $.extend({}, ee.options);
-					// clone options first !!! Important !!!
-					$.log("DSM: " + ee.euid);
                     ee.onDragStart(ui);
                 }
             }
@@ -956,25 +1035,19 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     onElementDragStop: function(el, ui) {
         el.onDragStop(ui);
-		this.operation_info2 = new Array();
-		el._update();
-		this.operation_info2[el.euid] = $.extend({}, el.options);
-
         for (var i in this.elements) {
 		    var ee = this.elements[i];
             if (ee.option("dragStart") != undefined
                 && ee != el) {
                 ee.onDragStop(ui);
-				ee._update();
-				this.operation_info2[ee.euid] = $.extend({}, ee.options);
 			}
 		}
-
-		this.reportOperation("mcommon", el.euid, this.operation_info, this.operation_info2);
 
         for (var i in this.connectors)
             if (this.connectors[i].option("dragStart"))
                 this.connectors[i].onDragStop(ui);
+		
+		this.opman.stopTransaction();
     },
     /**
      * \class Function.
@@ -990,7 +1063,7 @@ dm['ctx'] = dm.ms.ctx;
         ctx.fillStyle = "#EEEEEE";//"rgba(140,140,140,1)";
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-	 if (this.connectors.length > 0) {
+	 if (Object.keys(this.connectors).length > 0) {
 //            ctx.strokeRect(0, 0, 1000, 500);
 
 
@@ -1030,7 +1103,7 @@ dm['ctx'] = dm.ms.ctx;
      */
     //@proexp
      isPointOnLine: function(x,y) {
-        if (this.connectors.length > 0) {
+        if (Object.keys(this.connectors).length > 0) {
 //@ifdef EDITOR
             if (this.transformStarted == true) {
                 this.selectedconntector.TransformTo(x,y);
@@ -1164,45 +1237,8 @@ dm['ctx'] = dm.ms.ctx;
 //@endif
     },
 //@ifdef EDITOR
-    //@proexp
-    reportOperation: function(operation, euid, before, after) {
-        this.operations.push([operation, euid, before, after]);
-        this.reverted_operations.splice(0, this.reverted_operations.length);
-    },
-    //@proexp
-    revertOperation: function() {
-        var op = this.operations.pop();
-        if (op) {
-            this.reverted_operations.push(op);
-            if (op[0] == "move") {
-                //$("#" + op[1] + "_Border").css("left", op[2].left).css("top", op[2].top);
-				$.log("_setOptions:" + op[1] + "  VAL: " + op[2]);
-				this.elements[op[1]]._setOptions(op[2]);
-            } else if (op[0] == "resize") {
-				this.elements[op[1]]._setOptions(op[2]);
-            } else if (op[0] == "common") {
-				this.elements[op[1]]._setOptions(op[2]);
-			} else if (op[0] == "mcommon") { // Multiple selection
-			    for (var el in op[2]) {
-				  this.elements[el]._setOptions(op[2][el]);
-				}
-			}
-        }
-		this.draw();
-    },
-    //@proexp
-    repeatOperation: function() {
-        var op = this.reverted_operations.pop();
-        if (op) {
-            this.operations.push(op);
-            if (op[0] == "move") {
-                $("#" + op[1] + "_Border").css("left", op[3].left).css("top", op[3].top);
-            }
-        }
-		this.draw();
-    },
 	isModified: function() {
-	  return (this.operations.length > 0);
+	  return true;
 	}
 //@endif
     });
@@ -1219,8 +1255,8 @@ dm['ctx'] = dm.ms.ctx;
             'nameTemplate': 'Element',
             'width': 140,
             'height': 200,
-            'pageY': 140,
-            'pageX': 200,
+            'left': 140,
+            'top': 200,
             'selected': false,
             'area': "none",
 			'ctx_menu':"default"
@@ -1571,9 +1607,11 @@ dm['ctx'] = dm.ms.ctx;
 //@ifdef EDITOR
         //@proexp
         onDragStart: function(ui, skipDropped) {
-		     $.log("DS: " + this.euid);
+  	        
             if (this.options.dragStart != undefined)
                 return;
+
+			this.parrent.opman.reportStart("option", this.euid, {left:this.options.left, top:this.options.top});
 
 			if (skipDropped) {
 			  // Do nothing with dropped elements
@@ -1591,8 +1629,11 @@ dm['ctx'] = dm.ms.ctx;
                 var p = $("#" + this.euid + "_Border").position(),
 				scrollLeft = $("#" + this.parrent.euid).scrollLeft(),
 				scrollTop = $("#" + this.parrent.euid).scrollTop();
+                
+				this.options.left = p.left + scrollLeft;
+			    this.options.top = p.top + scrollTop;
 
-                this.start_operation = {left:p.left + scrollLeft, top:p.top + scrollTop};
+                this.start_operation = {left:this.options.left, top: this.options.top};
 //            }
         },
         //@proexp
@@ -1604,19 +1645,27 @@ dm['ctx'] = dm.ms.ctx;
             $("#" + this.euid + "_Border")
 			.css({'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top});
 
+			this.options.left = this.start_operation.left + ui.left;
+			this.options.top = this.start_operation.top + ui.top;
+
+
         },
         //@proexp
         onDragStop: function(ui) {
             if (ui) {
-                //this.onDragMove(ui);
+                //this.onDragMove(ui); // TODO: This operation lead to jump of element on drag stop
                 if (this.options['droppable']) {
-
                     if (this.parrent != undefined) {
                       this.parrent._dropElement(this, {position: {'left':this.start_operation.left + ui.left, 'top':this.start_operation.top + ui.top}}); 
                     }
                 }
-
+				
             }
+
+  		    this.options.left = this.start_operation.left + ui.left;
+			this.options.top = this.start_operation.top + ui.top;
+
+            this.parrent.opman.reportStop("option", this.euid, {left:this.options.left, top:this.options.top});
 
             $.log("DSTOP: " + this.euid);
                 delete this.options.dragStart;
@@ -1640,7 +1689,7 @@ dm.base.diagram("cs.connector", {
         //@proexp
         addLable: function(text, x, y) {
 		    var self = this;
-            this.lables.push($("<div class='editablefield' style=\"position:absolute;z-index:99999;background-color:white;\">" + text + "</div>")
+            this.labels.push($("<div class='editablefield' style=\"position:absolute;z-index:99999;background-color:white;\">" + text + "</div>")
             .appendTo("#" + this.parrent.euid)
             .css("left", x)
             .css("top", y)
@@ -1649,12 +1698,12 @@ dm.base.diagram("cs.connector", {
             .editable()
 			.mouseenter(function() {self.options.selected = true;
 			                        self.parrent.draw();
-									for (var i in self.lables) 
-									  $(self.lables[i]).addClass("us-connector-hover")})
+									for (var i in self.labels) 
+									  $(self.labels[i]).addClass("us-connector-hover")})
 			.mouseleave(function (){self.options.selected = false;
 			                        self.parrent.draw();
-									for (var i in self.lables) 
-									  $(self.lables[i]).removeClass("us-connector-hover")})
+									for (var i in self.labels) 
+									  $(self.labels[i]).removeClass("us-connector-hover")})
 //@endif
             );
         },
@@ -1686,13 +1735,13 @@ dm.base.diagram("cs.connector", {
             }
             item +=  ']';
 
-            if (this.lables) {
-                item += ',"lables":[';
+            if (this.labels) {
+                item += ',"labels":[';
                 comma = "";
                 c = "";
-                for (var i in this.lables) {
-                    var p = this.lables[i].position();
-                    item +=  comma + '{"name":"' + this.lables[i].html() + '","x":"' + p.left + '","y":"' + p.top + '"}';
+                for (var i in this.labels) {
+                    var p = this.labels[i].position();
+                    item +=  comma + '{"name":"' + this.labels[i].html() + '","x":"' + p.left + '","y":"' + p.top + '"}';
                     comma = ',\n';
                 }
                 item +=  ']';
@@ -1701,6 +1750,20 @@ dm.base.diagram("cs.connector", {
             return item; 
         },
 //@endif
+        _setOption: function( key, value ) {
+		  if (key == "epoints") {
+			for (var i in value) {
+                this.epoints[i][0] = value[i][0];
+                this.epoints[i][1] = value[i][1];
+            }
+		  } else if (key == "labels") {
+            for (var i in value) {
+                this.labels[i].css({left:value[i][0], top: value[i][1]});
+            }		    
+		  } else {
+            this.options[ key ] = value;
+		  }
+        },
         //@proexp
         _create: function () {
             //@proexp
@@ -1733,9 +1796,9 @@ dm.base.diagram("cs.connector", {
                 this['from'] = this.options['fromId'];
                 this['toId'] = this.options['toId'];
             }
-            this.lables = new Array();
-            for (var i in this.options['lables']) {
-                var l = this.options['lables'][i];
+            this.labels = new Array();
+            for (var i in this.options['labels']) {
+                var l = this.options['labels'][i];
                 this.addLable(l.name, parseInt(l.x), parseInt(l.y));
             }
         },
@@ -2012,16 +2075,19 @@ dm.base.diagram("cs.connector", {
                 }
                 this.options.dragStart = true;
             }
-            if (this.lables && this.lables.length > 0) {
-                this.lables_drag = [];
+            if (this.labels && this.labels.length > 0) {
+                this.labels_drag = [];
                 // clone this.epoints
-                for (var i in this.lables) {
-                    var p = this.lables[i].position();
-                    this.lables_drag[i] = {};
-                    this.lables_drag[i][0] = p.left;
-                    this.lables_drag[i][1] = p.top;
+                for (var i in this.labels) {
+                    var p = this.labels[i].position();
+                    this.labels_drag[i] = {};
+                    this.labels_drag[i][0] = p.left;
+                    this.labels_drag[i][1] = p.top;
                 }
             }
+
+			this.parrent.opman.reportStart("option", this.euid, {'epoints': this.epoints_drag, 'labels':this.labels_drag});
+			
         },
         //@proexp
         onDragMove: function(ui) {
@@ -2032,9 +2098,9 @@ dm.base.diagram("cs.connector", {
                 this.epoints[i][1] = this.epoints_drag[i][1] + ui.top;
             }
 
-            for (var i in this.lables_drag) {
-                this.lables[i].css({left:this.lables_drag[i][0] + ui.left,
-                    top: this.lables_drag[i][1] + ui.top});
+            for (var i in this.labels_drag) {
+                this.labels[i].css({left:this.labels_drag[i][0] + ui.left,
+                    top: this.labels_drag[i][1] + ui.top});
             }
         },
         //@proexp
@@ -2042,10 +2108,12 @@ dm.base.diagram("cs.connector", {
 		    if (ui == undefined) {
 			  return;
 			}
-            this.onDragMove(ui);
+
+			this.parrent.opman.reportStop("option", this.euid, {'epoints': this.epoints.slice(0), 'labels':this.labels.slice(0)});
+
             delete this.options['dragStart'];
-            this.epoints_drag = undefined;
-            this.lables_drag = undefined;
+            delete this.epoints_drag;
+            delete this.labels_drag;
         }
 //@endif
         });

@@ -237,8 +237,8 @@ Version:
                   if ((element != undefined) && ((lcon == undefined) || (!lcon['oneway']))) {
                     // Remove the temporary connector
                     iconMenuBuilder.diagram.removeConnector(iconMenuBuilder.currentElement, "ConnectionHelper", this.id);
-                    element.pageX = ui.position.left;
-                    element.pageY = ui.position.top;
+                    element.left = ui.position.left;
+                    element.top = ui.position.top;
                     var fromElement = iconMenuBuilder.refEl;
                     var thisid = this.id;
 					var expected_type = element.type;

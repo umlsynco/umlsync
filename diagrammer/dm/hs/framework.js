@@ -712,7 +712,7 @@ Version:
 						// 2. if diagram => get operation sequence manager
 						//                       -> goBack()
 						if (fw.diagrams[fw.selectedDiagramId])  {
-							fw.diagrams[fw.selectedDiagramId].revertOperation();
+							fw.diagrams[fw.selectedDiagramId].opman.revertOperation();
 						}
 						break;
 					case 89:// Handle Ctrl-Y
@@ -720,7 +720,7 @@ Version:
 						// 2. if diagram => get operation sequence manager
 						//                       -> goForward()
 						if (fw.diagrams[fw.selectedDiagramId])  {
-							fw.diagrams[fw.selectedDiagramId].repeatOperation();
+							fw.diagrams[fw.selectedDiagramId].opman.repeatOperation();
 						}
 						break;
 					case 83:// Handle Ctrl-S
