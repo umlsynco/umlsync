@@ -73,7 +73,9 @@ dm['ctx'] = dm.ms.ctx;
 			
 			if (Object.keys(this.working).length > 0) {
 			  this.queue.push(this.working);
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
               this.revertedQueue.splice(0, this.revertedQueue.length); // Revert queue
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
 			}
 			
 			delete this.working; // Clean the current working copy !!!
@@ -106,6 +108,9 @@ dm['ctx'] = dm.ms.ctx;
 			if (!this.started) {
 			  this.queue.push(this.working); // Add to the queue
 			  delete this.working; // Clean the current working copy !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
+			  this.revertedQueue.splice(0, this.revertedQueue.length); // JOIN IN A SEPARATE PROCEDURE !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
 			}
 		},
 		revertOperation: function() {
@@ -120,7 +125,9 @@ dm['ctx'] = dm.ms.ctx;
 			    var e = this.diagram.elements[i]; // it could be element or connector
 				if (e == undefined) e = this.diagram.connectors[i];
 				for (var j in op[i]) { // types of operation
-					if (j == "option") {
+				    if (j == "remove") {
+					  this.diagram.restoreItem(i);
+					} else if (j == "option") {
 						e._setOptions(op[i][j]["start"]); // revert to original state
 					}
 				}				
@@ -595,6 +602,9 @@ dm['ctx'] = dm.ms.ctx;
                 // create an empty lists for connectors and elements
                 this.connectors = [];
                 this.elements = [];
+				
+				this.removedConnectors = [];
+                this.removedElements = [];
 
                 // For all elements in JSON description try to create an element
                 for (var i in this.options['elements']) {
@@ -855,6 +865,7 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     removeSelectedElements: function() {
         var el = this.elements;
+		this.opman.startTransaction();
         for (var k in el) {
             if (el[k].options.selected) {
 			    var euid = el[k].euid;
@@ -863,6 +874,7 @@ dm['ctx'] = dm.ms.ctx;
                 this.removeElement(el[k].euid);
             }
         }
+		this.opman.stopTransaction();
     },
     //@proexp
     removeElement: function(euid) {
@@ -870,8 +882,9 @@ dm['ctx'] = dm.ms.ctx;
         for (var k in el) {
 		    if (el[k]._dropped != undefined) {
 			  for (var gg in el[k]._dropped) {
-			    if (el[k]._dropped[gg] == euid || gg == euid) {
+			    if (gg == euid || el[k]._dropped[gg] == euid) {
 				   delete el[k]._dropped[gg]; // remove element from dropped
+				   //break; // element could be dropped into one element only
 				}
 			  }
 			}
@@ -880,14 +893,12 @@ dm['ctx'] = dm.ms.ctx;
 		// Hide icon menu to prevent icon menu usage after element removal
 		this.menuIcon['Disable'](euid);
 
-        for (var k in el) {
-		  if (el[k].euid == euid) {
-                delete el[k];
-                el.splice(k, 1);
-                $('#' +  euid + '_Border').remove(); // Think about removal !!!!
-				break;
-            }
-        }
+        this.opman.reportShort("remove", euid);
+
+		this.removedElements[euid] = el[euid];
+        delete el[euid];
+
+        $('#' +  euid + '_Border').hide(); //remove(); // Think about removal !!!!
     },
 //@ifdef EDITOR
     /**
@@ -898,23 +909,38 @@ dm['ctx'] = dm.ms.ctx;
      * if both Ids are undefined than remove all connectors
      */
     //@proexp
-     removeConnector: function (fromId, toId, type) {
+    removeConnector: function (fromId, toId, type) {
 
         if (Object.keys(this.connectors).length > 0) {
             for (var c in this.connectors) {
                 if (((this.connectors[c]['from']  == fromId) || (fromId == undefined))
-    && ((this.connectors[c]['toId'] == toId) || (toId == undefined))) {
+                  && ((this.connectors[c]['toId'] == toId) || (toId == undefined))) {
                     for (var i in this.connectors[c].labels) {
-                        this.connectors[c].labels[i].remove();
+                        this.connectors[c].labels[i].hide();
                     }
+					this.removedConnectors[c] = this.connectors[c];
+					this.opman.reportShort("remove", c);
                     delete this.connectors[c];
-                    this.connectors.slice(c,1);
                 }
             }
             this.draw();
         }
 
     },
+	restoreItem: function(euid) {
+	  if (this.removedConnectors[euid]) {
+	    this.connectors[euid] = this.removedConnectors[euid];
+		delete this.removedConnectors[euid];
+		for (var l in this.connectors[euid].labels) {
+		  this.connectors[euid].labels[l].show();
+		}
+	  }
+	  if (this.removedElements[euid]) {
+	    this.elements[euid] = this.removedElements[euid];
+		$("#" + euid + "_Border").show();
+		delete this.removedElements[euid];
+	  }
+	},
 //@endif
 
     /**
