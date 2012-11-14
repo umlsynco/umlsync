@@ -56,6 +56,7 @@ dm['ctx'] = dm.ms.ctx;
 	
 	dm.base.opman.prototype = {
 		startTransaction: function() {
+		//$.log("startTransaction !!!!!!!!!!!!!!");
 			if (this.started) {
 			  alert("Operation transaction already started !!!");
 			  return;
@@ -64,12 +65,16 @@ dm['ctx'] = dm.ms.ctx;
 			this.working = {};
 		},
 		stopTransaction: function() {
+		//$.log("stopTransaction !!!!!!!!!!!!!!");
 			if (!this.started) {
 			  alert("TRANSACTION WAS NOT STARTED !!!");
 			  return;
 			}
-			this.queue.push({step:this.working});
-            this.revertedQueue.splice(0, this.revertedQueue.length); // Revert queue
+			
+			if (Object.keys(this.working).length > 0) {
+			  this.queue.push(this.working);
+              this.revertedQueue.splice(0, this.revertedQueue.length); // Revert queue
+			}
 			
 			delete this.working; // Clean the current working copy !!!
 			this.started = false;
@@ -90,10 +95,18 @@ dm['ctx'] = dm.ms.ctx;
 			this.working[euid][type]["stop"] = $.extend({}, this.working[euid][type]["stop"], options);
 		},
 		reportShort: function(type, euid, before, after) {
+		  //  $.log("reportShort: " + euid);
+		    this.working = this.working || {};
 			this.working[euid] = this.working[euid] || {};
 			this.working[euid][type] = this.working[euid][type] || {};
-			this.working[euid][type]["stop"] = this.working[euid][type]["stop"] || options;
-			this.working[euid][type]["start"] = this.working[euid][type]["start"] || options; // Prevent options overwrite
+			this.working[euid][type]["stop"] = this.working[euid][type]["stop"] || after;
+			this.working[euid][type]["start"] = this.working[euid][type]["start"] || before; // Prevent options overwrite
+            
+			// Push the result if it is not transaction
+			if (!this.started) {
+			  this.queue.push(this.working); // Add to the queue
+			  delete this.working; // Clean the current working copy !!!
+			}
 		},
 		revertOperation: function() {
 		  if (this.queue.length == 0) {
@@ -101,7 +114,6 @@ dm['ctx'] = dm.ms.ctx;
 		  }
 
           var op = this.queue.pop();
-		  op = op.step;
           if (op) {
             this.revertedQueue.push(op);
 			for (var i in op) { // elements
@@ -129,7 +141,7 @@ dm['ctx'] = dm.ms.ctx;
 				}				
 			}
           }
-		  this.draw();
+		  this.diagram.draw();
         },
 	};
 
@@ -760,12 +772,33 @@ dm['ctx'] = dm.ms.ctx;
                 }
             this.max_zindex = newmax + 1;
         } else {
+		    var isSel = ("selected" != key);
+		    isSel && this.opman.startTransaction();
             for (var i in this.elements)
-                if (this.elements[i].option("selected"))
+                if (this.elements[i].option("selected")) {
+				    var opb = {},
+					    opa = {};
+					opb[key] = this.elements[i].options[key];
+					opa[key] = value;
+				    isSel && this.opman.reportShort("option",
+					                       this.elements[i].euid,
+										   opb,
+										   opa);
+					$.log("SET KEY : " + key +"  VALUE : " + value);
                     this.elements[i]._setOption( key, value );
+				}
             for (var i in this.connectors)
-                if (this.connectors[i].option("selected"))
-                    this.connectors[i]._setOption( key, value );
+                if (this.connectors[i].option("selected")) {
+				    opb[key] = this.connectors[i].options[key];
+					opa[key] = value;
+                    if (this.connectors[i]._setOption( key, value )) { // FALSE if option not supported
+				      isSel && this.opman.reportShort("option",
+					                         this.elements[i].euid,
+						  				     opb,
+										     opa);
+					};
+			    }
+            isSel && this.opman.stopTransaction();
         }
 
         this.draw(); // work-around to re-draw connectors after options update
@@ -1345,14 +1378,17 @@ dm['ctx'] = dm.ms.ctx;
 			'handles': this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u',
 			'alsoResize': '#' + this.euid + '_Border .us-element-resizable-area', 
             'start': function() {
-			  self._update();
-			  self.operation_start = $.extend({}, self.options);
+			  
+			  self.operation_start = {top:self.options.top, left:self.options.left, width:self.options.width, height:self.options.height};
 			  $("#tabs #us-editable").hide();
             },
 			'stop': function() {
 			  self._update();
-			  self.parrent.reportOperation("common", self.euid, self.operation_start, $.extend({}, self.options));
-			  self.operation_start = undefined;
+			  self.parrent.opman.reportShort("option",
+			                                 self.euid,
+											 self.operation_start,
+											 {top:self.options.top, left:self.options.left, width:self.options.width, height:self.options.height});
+			  delete self.operation_start;
 
               if (self.onResizeComplete) {
                 self.onResizeComplete();
@@ -1572,15 +1608,15 @@ dm['ctx'] = dm.ms.ctx;
             } else if (key == "top") {
                 $("#" + this.euid + "_Border").css(key, value);
             } else if (key == "color") {
-                $("#" + this.euid).css("background-color", value);
+                $("#" + this.euid).css("background-color", value || "");
             } else if (key == "borderwidth") {
-                $("#" + this.euid).css("border-width", value);
+                $("#" + this.euid).css("border-width", value || "");
             } else if (key == "width") {
                 $("#" + this.euid + "_Border").css("width", value);
             } else if (key == "height") {
                 $("#" + this.euid + "_Border").css("height", value);
             } else if (key == "font-family") {
-                $("#" + this.euid).css(key, value);
+                $("#" + this.euid).css(key, value || "");
             } else if (key == "selected") {
                 if (value) {
                     $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'visible'});
@@ -1601,7 +1637,7 @@ dm['ctx'] = dm.ms.ctx;
 					this.highlighted = false;
 				}
             } else if (key == "z-index") {
-                $("#" + this.euid + '_Border ').css(key, value);
+                $("#" + this.euid + '_Border ').css(key, value|| "");
             }
         },
 //@ifdef EDITOR
@@ -1751,6 +1787,11 @@ dm.base.diagram("cs.connector", {
         },
 //@endif
         _setOption: function( key, value ) {
+          if (value == undefined) {
+		    delete this.options[ key ];
+			return;
+	      }
+
 		  if (key == "epoints") {
 			for (var i in value) {
                 this.epoints[i][0] = value[i][0];
