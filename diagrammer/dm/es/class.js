@@ -24,28 +24,54 @@ dm.base.diagram("es.class", dm['es']['element'], {
       return auxmap[aux] || aux;
     },
 //@ifdef EDITOR
-    'addMethod': function(desc) {
+    'addOperation': function(opt) {
 	   if (this.options['aux'] == "Enumeration")
 	     return;
-       var hg = $('<li><a id="operation" class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable().height();
+       var hg = $('<li><a id="operation" class="editablefield operation" >' + opt.text + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable().height();
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-operations").height();
 	   if (h1 > h2 ) {
 		 $("#" + this.euid + "_Border").height("+="+ hg);
 	     $("#" + this.euid + " .us-class-operations").height("+=" + hg);
 	   }
+	   this.parrent.opman.reportShort("+operation", this.euid, {idx:$("#" + this.euid + " .operation").length-1});
     },
-    'addField': function(desc) {
+	'rmOperation': function(opt) {
+       $("#"+this.euid+" .us-class-operaions ul li:eq(" + start.idx + ")").remove();
+	},
+	'moveOperation': function(start, stop) {
+	  var s1 = $("#"+this.euid+" .us-class-operaions ul li:eq(" + stop.idx + ")");
+	  var s2 = $("#"+this.euid+" .us-class-operaions ul li:eq(" + start.idx + ")");
+	  if (stop.idx < start.idx) {
+	    s1.insertAfter(s2);
+	  } else {
+	    s1.insertBefore(s2);
+	  }
+	},
+    'addAttribute': function(opt) {
 	   if (this.options['aux'] == "Interface")
 	     return;
-       var hg = $('<li><a id="attributes" class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
+       var hg = $('<li><a id="attributes" class="editablefield attribute" >' + opt.text + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
        var h1 = $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-attributes").height();
 	   if (h1 > h2) {
 		 $("#" + this.euid + "_Border").height("+="+ hg);
 	     $("#" + this.euid + " .us-class-attributes").height("+=" + hg);
 	   }
+	   this.parrent.opman.reportShort("+attribute", this.euid, {idx:$("#" + this.euid + " .attribute").length-1});
     },
+    'rmAttribute': function(opt) {
+	  $("#"+this.euid+" .us-class-attributes ul li:eq(" + opt.idx + ")").remove();
+	},
+	'moveAttribute': function(start, stop) {
+	  var s1 = $("#"+this.euid+" .us-class-attributes ul li:eq(" + stop.idx + ")");
+	  var s2 = $("#"+this.euid+" .us-class-attributes ul li:eq(" + start.idx + ")");
+	  if (stop.idx < start.idx) {
+	    s1.insertAfter(s2);
+	  } else {
+	    s1.insertBefore(s2);
+	  }
+	},
     '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
 
@@ -114,6 +140,8 @@ dm.base.diagram("es.class", dm['es']['element'], {
     },
     '_init': function() {
 		this._setOptions(this.options);
+		this.attributes = new Array();
+		this.operations = new Array();
  //@ifdef EDITOR
       if (this['parrent'].options['editable']) {
       
@@ -140,18 +168,20 @@ dm.base.diagram("es.class", dm['es']['element'], {
 				      index = ui.item.index();
 
 				  if (index != start_pos) {
-					self.parrent.opman.reportShort("%attributes", self.euid, {idx: start_pos}, {idx:index});
+					self.parrent.opman.reportShort("%attribute", self.euid, {idx: start_pos}, {idx:index});
 				  }
 			}
 		};
 		
          $("#" + this.euid + " .us-class-operations .us-sortable")
 		.sortable(this.sortableHandler)
-		.disableSelection();
+		.disableSelection()
+		.each(function($item) {self.operations.push($item);});
 
 		$("#" + this.euid + " .us-class-attributes .us-sortable")
 		.sortable(this.sortableHandler)
-		.disableSelection();
+		.disableSelection()
+        .each(function($item) {self.attributes.push($item);});
       }
 //@endif
     },

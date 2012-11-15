@@ -17,15 +17,15 @@
         {
 			title: 'Add method',
             click: function(element){ 
-            if (element.addMethod != undefined) 
-                element.addMethod("private newmethod(int, int, void*)");
+            if (element.addOperation != undefined) 
+                element.addOperation({text:"private newmethod(int, int, void*)"});
             }
         },
         {
 			title: 'Add field',
             click: function(element){ 
-            if (element.addField != undefined) 
-                element.addField("private int newfield");
+            if (element.addAttribute != undefined) 
+                element.addAttribute({text:"private int newfield"});
             }
         },
         {

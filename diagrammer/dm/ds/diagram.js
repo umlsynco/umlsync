@@ -139,6 +139,10 @@ dm['ctx'] = dm.ms.ctx;
 		    return; // nothing to revert !!!
 		  }
 
+  		  function _getMethodName(prefix, string) {
+			return prefix + string.charAt(0).toUpperCase() + string.slice(1);
+		  }
+
           this.processing = true;
 
           var item = this.queue.pop();
@@ -169,27 +173,34 @@ dm['ctx'] = dm.ms.ctx;
 						e._setOptions(start); // revert to original state
 					}
 					else if (j[0] == '+') {  // ADD
-					  var f = j.substr(1, j.length -1);
-					  e[f].splice(start.idx, 1);
+					  var f = j.substr(1, j.length -1),
+					      u = _getMethodName("rm", f);   // rm is oposite for add
+					  if (e[u]) {
+					    e[u](start);
+					  } else { // No method for item processing
+					    f+='s';
+					    var item = e[f].splice(start.idx, 1);
+					  }
 					}
 					else if (j[0] == '-') {  // REMOVE
-					  var f = j.substr(1, j.length -1);
-					  e[f].splice(start.idx, 0, start.value);
+					  var f = j.substr(1, j.length -1),
+					      u = _getMethodName("rm", f);   // rm is oposite for add
+					  if (e[u]) {
+					    e[u](start);
+					  } else {
+					    e[f+'s'].splice(start.idx, 0, start.value);
+					  }
 					}
 					else if (j[0] == '#') {  // DRAGGABLE
-					  var f = j.substr(1, j.length -1);
+					  var f = j.substr(1, j.length -1) + 's';
 					  e[f][start.idx] = start.value;
 					}
 					else if (j[0] == '%') {  // SORTABLE
-					  var f = j.substr(1, j.length -1);
+                      var f = j.substr(1, j.length -1),
+					      u = _getMethodName("move", f);   // up/down item
 					  var stop = op[i][j]["stop"];
-					  
-					  var s1 = $("#"+i+" .us-class-" + f + " ul li:eq(" + stop.idx + ")");
-					  var s2 = $("#"+i+" .us-class-" + f + " ul li:eq(" + start.idx + ")");
-					  if (stop.idx < start.idx) {
-					    s1.insertAfter(s2);
-					  } else {
-					    s1.insertBefore(s2);
+					  if (e[u]) {
+					    e[u](start, stop);
 					  }
 					}
 					else if (j[0] == '~') {  // EDITABLE
@@ -1866,14 +1877,21 @@ dm.base.diagram("cs.connector", {
             'ctx_menu': 'connector'
         },
         //@proexp
-        addLable: function(text, x, y) {
+        addLabel: function(opt) {
 		    var self = this;
-            this.labels.push($("<div class='editablefield' style=\"position:absolute;z-index:99999;background-color:white;\">" + text + "</div>")
+            
+			var $item = $("<div class='editablefield' style=\"position:absolute;z-index:99999;background-color:white;\">" + opt.text + "</div>")
             .appendTo("#" + this.parrent.euid)
-            .css("left", x)
-            .css("top", y)
+            .css("left", opt.left)
+            .css("top", opt.top)
 //@ifdef EDITOR
-            .draggable()
+            .draggable({
+			  start: function() {
+			    // keep up to date position
+			  },
+			  stop: function() {
+			  }
+			})
             .editable()
 			.mouseenter(function() {self.options.selected = true;
 			                        self.parrent.draw();
@@ -1882,10 +1900,25 @@ dm.base.diagram("cs.connector", {
 			.mouseleave(function (){self.options.selected = false;
 			                        self.parrent.draw();
 									for (var i in self.labels) 
-									  $(self.labels[i]).removeClass("us-connector-hover")})
+									  $(self.labels[i]).removeClass("us-connector-hover")});
 //@endif
-            );
+            if (opt.idx) {
+			  // add label to the special place in array
+			  this.labels.splice(opt.idx, 0, $item);
+			} else {
+			  this.labels.push($item);
+			}
+			this.parrent.opman.reportShort("+label", this.euid, {idx:this.labels.length-1, left:opt.left, top:top});
         },
+		rmLabel: function(opt) {
+		  var l = this.labels[opt.idx];
+		  this.parrent.opman.reportShort("-label", this.euid, {idx:opt.idx, left:l.css("left"), top:l.css("top")});
+		  (this.labels.splice(opt.idx, 1))[0].remove();
+		  
+		},
+		moveLabel: function(opt) {
+          this.labels[opt.idx].css({left:opt.left, top:opt.top});
+		},
 //@ifdef EDITOR
         //@proexp
         getDescription: function() {
@@ -2121,7 +2154,7 @@ dm.base.diagram("cs.connector", {
                                              // in array for the first element
               this.eppos = 0;
 			  this.epoints[this.eppos] = [];
-			  this.report = "+epoints";
+			  this.report = "+epoint";
             } else {
 			  // means that it is not move on existing point
   			  //            it is not first point of replaced first point
@@ -2138,9 +2171,9 @@ dm.base.diagram("cs.connector", {
 					  break;
                     }
                 }
-				this.report = "+epoints";
+				this.report = "+epoint";
 			  } else {
-			    this.report = "#epoints";
+			    this.report = "#epoint";
                 this.epoints[this.eppos] = [];
               }
 			}
@@ -2180,7 +2213,7 @@ dm.base.diagram("cs.connector", {
             if (this.eppos < this.epoints.length - 1) {
                 if (isEqualPoint(this.epoints[this.eppos], this.epoints[this.eppos + 1])) {
 				    $.log("REPORT             1 ");
-					this.parrent.opman.reportShort("-epoints", this.euid, {idx: this.eppos +1, value:this.epoints[this.eppos+1]});
+					this.parrent.opman.reportShort("-epoint", this.euid, {idx: this.eppos +1, value:this.epoints[this.eppos+1]});
                     this.epoints.splice(this.eppos +1, 1);
                 }
             }
@@ -2189,7 +2222,7 @@ dm.base.diagram("cs.connector", {
                 if (isEqualPoint(this.epoints[this.eppos], this.epoints[this.eppos -1])) {
 					this.eppos--;
 					$.log("REPORT             2 ");
-                    this.parrent.opman.reportShort("-epoints", this.euid, {idx: this.eppos, value:this.epoints[this.eppos]});
+                    this.parrent.opman.reportShort("-epoint", this.euid, {idx: this.eppos, value:this.epoints[this.eppos]});
                     this.epoints.splice(this.eppos, 1);
 					
                 }
@@ -2198,7 +2231,7 @@ dm.base.diagram("cs.connector", {
             if (this.canRemovePoint(this.points[this.eppos], this.points[this.eppos+2], this.points[this.eppos+1])){
                 if (this.epoints.length > 1) {
 				    $.log("REPORT             3:  " + this.eppos + "   COUNT: " + this.epoints.length);
-				    this.parrent.opman.reportShort("-epoints", this.euid, {idx: this.eppos, value:this.epoints[this.eppos]});
+				    this.parrent.opman.reportShort("-epoint", this.euid, {idx: this.eppos, value:this.epoints[this.eppos]});
                     this.epoints.splice(this.eppos, 1);
 					$.log("REPORT AFTER       3:  " + this.eppos + "   COUNT: " + this.epoints.length);
 					

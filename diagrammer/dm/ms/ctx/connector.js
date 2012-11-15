@@ -1,6 +1,5 @@
 /**
-  *   Class: context menu for all connectors :)
-  *          How to use heritance of context menus ?
+  *   Class: context menu for all connectors
   * 
   */
 //@aspect
@@ -11,21 +10,21 @@ dm.ms.ctx['connector'] = function(menuBuilder) {
   return new dm.ms.ctx['common'](menuBuilder, {id: "connector", uid:"connectorEUI"}, [
            {
 				title: 'Add "Text"',
-                click: function(element, x, y) {
-                  if (element.addLable) {
-                    element.addLable("Text", x, y);
+                click: function(connector, x, y) {
+                  if (connector.addLabel) {
+                    connector.addLabel({text:"Text", left:x, top:y});
                   }                  
                 }
             },
             {
 				title: 'Remove',
-                click: function(element) {  // element is the jquery obj clicked on when context menu launched
-                  element.parrent.removeConnector(element.from, element.toId, element.options.type);
+                click: function(connector) {  // connector is the jquery obj clicked on when context menu launched
+                  connector.parrent.removeConnector(connector.from, connector.toId, connector.options.type);
                 }
             },
             {
 				title: 'Edit',
-                click: function(element) {  // element is the jquery obj clicked on when context menu launched
+                click: function(connector) {  // connector is the jquery obj clicked on when context menu launched
                 }
             }
         ]);
