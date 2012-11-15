@@ -43,10 +43,10 @@ dm.base.diagram("es.llalt", dm.es.element, {
 	},
 	getCond: function() {
 	  if (this.options.title == "Alt")
-	    return '<div id="us-dashed" style="width:100%;height:50%;border-bottom:1px dashed black;">[<a class="editablefield">if</a>]</div>[<a class="editablefield">else</a>]';
+	    return '<div id="us-dashed" style="width:100%;height:50%;border-bottom:1px dashed black;">[<a id="ifcond" class="editablefield">if</a>]</div>[<a id="elsecond" class="editablefield">else</a>]';
 
 	  if (this.options.title == "Option" || this.options.title == "Loop" || this.options.title == "Break")
-        return '[<a class="editablefield">condition</a>]';
+        return '[<a id="cond" class="editablefield">condition</a>]';
 
   	 if (this.options.title == "Parallel" || this.options.title == "Strict")
         return '<div id="us-dashed" style="width:100%;height:30%;border-bottom:1px dashed black;"></div><div id="us-dashed" style="width:100%;height:30%;border-bottom:1px dashed black;"></div>';

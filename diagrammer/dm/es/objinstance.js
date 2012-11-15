@@ -16,7 +16,7 @@ dm.base.diagram("es.objinstance", dm.es.element, {
       this.innerHtml = '<div id="' + this.euid + '" class="us-element-resizable-area" style="width:100%;">\
                         <div class="us-instance-line"></div>\
 	                    <div id="' + this.euid + '_NEXT" class="us-instance grElement" style="height:40px;">\
-	                    <div><a class="editablefield Name">:' + this.options.name+ '</a></div></div></div>';
+	                    <div><a id="name" class="editablefield Name">:' + this.options.name+ '</a></div></div></div>';
 	  $("#" + this.parrent.euid).append(this.innerHtml);
 	  this.element = $("#"  + this.euid);
 	},

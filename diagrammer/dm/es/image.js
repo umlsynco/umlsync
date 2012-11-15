@@ -6,7 +6,7 @@
 
 dm.base.diagram("es.image", dm.es.element, {
     'options': {
-        'nameIemplate': "Image",
+        'nameTemplate': "Image",
         'image_path': "no_image_path",
         'width': 20,
         'height': 20

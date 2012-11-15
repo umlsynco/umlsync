@@ -27,7 +27,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'addMethod': function(desc) {
 	   if (this.options['aux'] == "Enumeration")
 	     return;
-       var hg = $('<li><a class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable().height();
+       var hg = $('<li><a id="operation" class="editablefield operation" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable().height();
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-operations").height();
 	   if (h1 > h2 ) {
@@ -38,7 +38,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'addField': function(desc) {
 	   if (this.options['aux'] == "Interface")
 	     return;
-       var hg = $('<li><a class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
+       var hg = $('<li><a id="attributes" class="editablefield attribute" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
        var h1 = $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-attributes").height();
 	   if (h1 > h2) {
@@ -90,19 +90,19 @@ dm.base.diagram("es.class", dm['es']['element'], {
            attributes = "";
 
         for (var i in this.options['operations']) {
-           operations += '<li><a class="editablefield operation">' + this.options['operations'][i] + '</a></li>';
+           operations += '<li><a id="operations" class="editablefield operation">' + this.options['operations'][i] + '</a></li>';
         }
     
         for (var i in this.options['attributes']) {
-           attributes += '<li><a class="editablefield attribute">' + this.options['attributes'][i] +'</a></li>';
+           attributes += '<li><a id="attributes" class="editablefield attribute">' + this.options['attributes'][i] +'</a></li>';
         }
 
       // HTML for class structure creation
       this.innerHtmlClassInfo = '\
         <div id="' + this.euid + '" class="us-class grElement">'+ templ+'\
         <div class="us-class-header">\
-        <a class="editablefield us-class-name">' + this.options['name'] + '</a><br>\
-        <a class="us-class-aux">'+ aux +'</a>\
+        <a id="name" class="editablefield us-class-name">' + this.options['name'] + '</a><br>\
+        <a id="aux" class="us-class-aux">'+ aux +'</a>\
         </div>\
         <div class="us-class-attributes"><ul class="us-sortable">' +  attributes + '</ul></div>\
         <div class="us-class-operations us-element-resizable-area"><ul class="us-sortable">' +  operations + '</ul></div>\
@@ -129,8 +129,29 @@ dm.base.diagram("es.class", dm['es']['element'], {
 											   
 		 });
 */         
-         $("#" + this.euid + " .us-class-operations .us-sortable").sortable().disableSelection();
-         $("#" + this.euid + " .us-class-attributes .us-sortable").sortable().disableSelection();
+
+        this.sortableHandler = {
+		  start: function(event, ui) {
+		           var start_pos = ui.item.index();
+                   ui.item.data('start_pos', start_pos);
+		         },
+		  stop: function(event, ui) {
+			      var start_pos = ui.item.data('start_pos'),
+				      index = ui.item.index();
+
+				  if (index != start_pos) {
+					self.parrent.opman.reportShort("%attributes", self.euid, {idx: start_pos}, {idx:index});
+				  }
+			}
+		};
+		
+         $("#" + this.euid + " .us-class-operations .us-sortable")
+		.sortable(this.sortableHandler)
+		.disableSelection();
+
+		$("#" + this.euid + " .us-class-attributes .us-sortable")
+		.sortable(this.sortableHandler)
+		.disableSelection();
       }
 //@endif
     },

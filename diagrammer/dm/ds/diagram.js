@@ -114,7 +114,7 @@ dm['ctx'] = dm.ms.ctx;
 		reportShort: function(type, euid, before, after) {
 		    if (this.processing)
 			  return;
-		  //  $.log("reportShort: " + euid);
+		    $.log("reportShort: " + euid + " OP " + type);
 		    this.working_stack = this.working_stack || new Array();
 		    this.working = this.working || {};
 			this.working[euid] = this.working[euid] || {};
@@ -164,17 +164,42 @@ dm['ctx'] = dm.ms.ctx;
 					  } else {
 					    this.diagram.removeConnector(e.from, e.toId, e.type);
 					  }
-					} else if (j == "option") {
+					}
+					else if (j == "option") {// CSS
 						e._setOptions(start); // revert to original state
-					} else if (j[0] == '+') {
+					}
+					else if (j[0] == '+') {  // ADD
 					  var f = j.substr(1, j.length -1);
 					  e[f].splice(start.idx, 1);
-					} else if (j[0] == '-') {
+					}
+					else if (j[0] == '-') {  // REMOVE
 					  var f = j.substr(1, j.length -1);
 					  e[f].splice(start.idx, 0, start.value);
-					} else if (j[0] == '#') {
+					}
+					else if (j[0] == '#') {  // DRAGGABLE
 					  var f = j.substr(1, j.length -1);
 					  e[f][start.idx] = start.value;
+					}
+					else if (j[0] == '%') {  // SORTABLE
+					  var f = j.substr(1, j.length -1);
+					  var stop = op[i][j]["stop"];
+					  
+					  var s1 = $("#"+i+" .us-class-" + f + " ul li:eq(" + stop.idx + ")");
+					  var s2 = $("#"+i+" .us-class-" + f + " ul li:eq(" + start.idx + ")");
+					  if (stop.idx < start.idx) {
+					    s1.insertAfter(s2);
+					  } else {
+					    s1.insertBefore(s2);
+					  }
+					}
+					else if (j[0] == '~') {  // EDITABLE
+					  var f = j.substr(1, j.length -1);
+					  if (start.idx) {
+					    e[f][start.idx] = start.value;
+					  } else {
+					    $("#" + i + " #" + f).html(start);
+						e.options[f] = start;
+					  }
 					}
 				}
 			}
@@ -212,6 +237,14 @@ dm['ctx'] = dm.ms.ctx;
 					} else if (j[0] == '#') {
 					  var f = j.substr(1, j.length -1);
 					  e[f][stop.idx] = stop.value;
+					} else if (j[0] == '~') {
+					  var f = j.substr(1, j.length -1);
+					  if (stop.idx) {
+					    e[f][stop.idx] = stop.value;
+					  } else {
+					    $("#" + i + " #" + f).html(stop);
+						e.options[f] = stop;
+					  }
 					}
 				}
 			}
@@ -1633,7 +1666,14 @@ dm['ctx'] = dm.ms.ctx;
             // enable editable fields
             // if this diagram is editable
             if (this.parrent.options['editable']) {
-                $("#" + this.euid + " .editablefield").editable();
+                $("#" + this.euid + " .editablefield").editable({onSubmit:function(data) {
+				    if (data["current"] == data["previous"])
+					  return;
+					var id = $(this).attr("id");
+				    self.options[id] = data["current"];
+					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+					return true;
+				}});
             }
 //@endif
             // You need to select element to start DND

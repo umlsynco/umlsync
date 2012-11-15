@@ -13,7 +13,7 @@ dm.base.diagram("es.instance", dm.es.element, {
       }
       // HTML for class structure creation
       this.innerHtml = '<div id="' + this.euid + '" class="us-instance us-element-resizable-area grElement">\
-                        <div style="padding:10px;border-bottom:1px solid black;"><a class="editablefield">&nbsp&nbsp&nbsp&nbsp</a><b>:</b><a class="editablefield" style="border-bottom:1px solid black;">' + this.options.name + '</a></div>'
+                        <div style="padding:10px;border-bottom:1px solid black;"><a class="editablefield">&nbsp&nbsp&nbsp&nbsp</a><b>:</b><a id="name" class="editablefield" style="border-bottom:1px solid black;">' + this.options.name + '</a></div>'
 						+ '<div class="us-instance-spec us-element-resizable-area"><ul class="us-sortable">'
 						spec +'</ul></div></div>';
       $("#" + this.parrent.euid).append(this.innerHtml);

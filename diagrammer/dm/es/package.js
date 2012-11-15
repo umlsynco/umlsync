@@ -8,8 +8,7 @@ dm.base.diagram("es.package", dm.es.element, {
         'nameTemplate': "Package",
         'droppable': true,
         'acceptdrop': "package",
-        'height': "102px",
-        'height_b': "80px"
+        'height': "102px"
     },
     '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
@@ -38,7 +37,7 @@ dm.base.diagram("es.package", dm.es.element, {
                                 <div class="us-package-tab grElement"></div>\
             <div class="us-package-body grElement">'
             + aux + 
-            '<a class="editablefield">'+ this.options.name + '</a></div>\
+            '<a id="name" class="editablefield">'+ this.options.name + '</a></div>\
                                 </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);

@@ -17,10 +17,10 @@ dm.base.diagram("es.interface", dm.es.element, {
        this.options.width = $("#" + this.euid + "_Border").width();
        this.options.height = $("#" + this.euid + "_Border").height();
 
-       this.options.name = $("#" + this.euid + " #label" ).html();
-	   p = $("#" + this.euid + " #label" ).position();
-	   this.options.labelX = p.left;
-	   this.options.labelY = p.top;
+       this.options.name = $("#" + this.euid + " #name" ).html();
+	   p = $("#" + this.euid + " #name" ).position();
+	   this.options.nameX = p.left;
+	   this.options.nameY = p.top;
        
     },
     '_create': function() {
@@ -57,7 +57,7 @@ dm.base.diagram("es.interface", dm.es.element, {
 
       });
       if (this.options.name) {
-          $("<div id='label' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.labelY+"px;left:"+this.options.labelX+"px;\">" + this.options.name + "</div>").appendTo("#" + this.euid).draggable().editable()
+          $("<div id='name' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.nameY+"px;left:"+this.options.nameX+"px;\">" + this.options.name + "</div>").appendTo("#" + this.euid).draggable().editable()
       }
     }
 });
