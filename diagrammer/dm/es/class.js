@@ -37,7 +37,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   this.parrent.opman.reportShort("+operation", this.euid, {idx:$("#" + this.euid + " .operation").length-1});
     },
 	'rmOperation': function(opt) {
-       $("#"+this.euid+" .us-class-operaions ul li:eq(" + start.idx + ")").remove();
+       $("#"+this.euid+" .us-class-operations ul li:eq(" + opt.idx + ")").remove();
 	},
 	'moveOperation': function(start, stop) {
 	  var s1 = $("#"+this.euid+" .us-class-operations ul li:eq(" + stop.idx + ")");
@@ -201,7 +201,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
       return this.options['name'];
     },
     'getAux': function() {
-      return $("#" + this.euid + " .us-class-header .us-class-aux" ).html();
+      return $("#" + this.euid + " .us-class-header .us-class-aux").html();
     },
 //@endif
     'ec': 0

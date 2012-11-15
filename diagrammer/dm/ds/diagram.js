@@ -192,8 +192,15 @@ dm['ctx'] = dm.ms.ctx;
 					  }
 					}
 					else if (j[0] == '#') {  // DRAGGABLE
-					  var f = j.substr(1, j.length -1) + 's';
-					  e[f][start.idx] = start.value;
+					  var f = j.substr(1, j.length -1),
+ 					      u = _getMethodName("move", f);
+
+					  if (e[u]) {
+					    e[u](start);
+					  } else {
+					  
+  					    e[f+'s'][start.idx] = start.value;
+					  }
 					}
 					else if (j[0] == '%') {  // SORTABLE
                       var f = j.substr(1, j.length -1),
@@ -1886,10 +1893,20 @@ dm.base.diagram("cs.connector", {
             .css("top", opt.top)
 //@ifdef EDITOR
             .draggable({
-			  start: function() {
-			    // keep up to date position
+			  start: function(event, ui) {
+			    $(this).data('startPosition', ui.helper.position());
 			  },
-			  stop: function() {
+			  stop: function(event, ui) {
+			    var idx;
+				var pos = $(this).data("startPosition");
+				var p = ui.helper.position();
+				for (var t in self.labels) {
+				  if ($item == self.labels[t]) {
+					idx = t;
+					break;
+				  }
+				}
+				self.parrent.opman.reportShort("#label", self.euid, {idx:idx, left:pos.left, top:pos.top}, {idx:idx, left:p.left, top:p.top});
 			  }
 			})
             .editable()
