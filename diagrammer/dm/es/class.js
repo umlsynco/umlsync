@@ -40,8 +40,8 @@ dm.base.diagram("es.class", dm['es']['element'], {
        $("#"+this.euid+" .us-class-operaions ul li:eq(" + start.idx + ")").remove();
 	},
 	'moveOperation': function(start, stop) {
-	  var s1 = $("#"+this.euid+" .us-class-operaions ul li:eq(" + stop.idx + ")");
-	  var s2 = $("#"+this.euid+" .us-class-operaions ul li:eq(" + start.idx + ")");
+	  var s1 = $("#"+this.euid+" .us-class-operations ul li:eq(" + stop.idx + ")");
+	  var s2 = $("#"+this.euid+" .us-class-operations ul li:eq(" + start.idx + ")");
 	  if (stop.idx < start.idx) {
 	    s1.insertAfter(s2);
 	  } else {
@@ -51,7 +51,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'addAttribute': function(opt) {
 	   if (this.options['aux'] == "Interface")
 	     return;
-       var hg = $('<li><a id="attributes" class="editablefield attribute" >' + opt.text + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
+       var hg = $('<li><a id="attribute" class="editablefield attribute" >' + opt.text + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
        var h1 = $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-attributes").height();
 	   if (h1 > h2) {
@@ -166,9 +166,8 @@ dm.base.diagram("es.class", dm['es']['element'], {
 		  stop: function(event, ui) {
 			      var start_pos = ui.item.data('start_pos'),
 				      index = ui.item.index();
-
 				  if (index != start_pos) {
-					self.parrent.opman.reportShort("%attribute", self.euid, {idx: start_pos}, {idx:index});
+					self.parrent.opman.reportShort("%"+ui.item.children('A').attr("id"), self.euid, {idx: start_pos}, {idx:index});
 				  }
 			}
 		};
