@@ -52,6 +52,7 @@ dm['ctx'] = dm.ms.ctx;
 		this.queue = new Array();
         this.revertedQueue = new Array();
 		this.started = false;
+		this.processing = false;
 	}
 	
 	dm.base.opman.prototype = {
@@ -73,9 +74,9 @@ dm['ctx'] = dm.ms.ctx;
 			
 			if (Object.keys(this.working).length > 0) {
 			  this.queue.push(this.working);
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
               this.revertedQueue.splice(0, this.revertedQueue.length); // Revert queue
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
 			}
 			
 			delete this.working; // Clean the current working copy !!!
@@ -87,16 +88,22 @@ dm['ctx'] = dm.ms.ctx;
 		 * options: element options which changed
 		 */
 		reportStart: function(type, euid, options) {
+		    if (this.processing)
+			  return;
 			this.working[euid] = this.working[euid] || {};
 			this.working[euid][type] = this.working[euid][type] || {};
 			this.working[euid][type]["start"] = $.extend({}, this.working[euid][type]["start"], options);
 		},
 		reportStop: function(type, euid, options) {
+		    if (this.processing)
+			  return;
 			this.working[euid] = this.working[euid] || {};
 			this.working[euid][type] = this.working[euid][type] || {};
 			this.working[euid][type]["stop"] = $.extend({}, this.working[euid][type]["stop"], options);
 		},
 		reportShort: function(type, euid, before, after) {
+		    if (this.processing)
+			  return;
 		  //  $.log("reportShort: " + euid);
 		    this.working = this.working || {};
 			this.working[euid] = this.working[euid] || {};
@@ -108,15 +115,17 @@ dm['ctx'] = dm.ms.ctx;
 			if (!this.started) {
 			  this.queue.push(this.working); // Add to the queue
 			  delete this.working; // Clean the current working copy !!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
 			  this.revertedQueue.splice(0, this.revertedQueue.length); // JOIN IN A SEPARATE PROCEDURE !!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
 			}
 		},
 		revertOperation: function() {
 		  if (this.queue.length == 0) {
 		    return; // nothing to revert !!!
 		  }
+
+          this.processing = true;
 
           var op = this.queue.pop();
           if (op) {
@@ -127,27 +136,47 @@ dm['ctx'] = dm.ms.ctx;
 				for (var j in op[i]) { // types of operation
 				    if (j == "remove") {
 					  this.diagram.restoreItem(i);
+					} else if (j == "add") {
+					  if (op[i][j]["start"]) {
+					    this.diagram.removeElement(i);
+					  } else {
+					    this.diagram.removeConnector(e.from, e.toId, e.type);
+					  }
 					} else if (j == "option") {
 						e._setOptions(op[i][j]["start"]); // revert to original state
+					} else if (j[0] == '+') {
+					  var f = j.substr(1, j.length -1);
+					  e[f].splice(op[i][j]["start"].idx, 1);
 					}
-				}				
+				}
 			}
             this.diagram.draw();
 		  }
+          this.processing = false;
         },
         repeatOperation: function() {
+          this.processing = true;
           var op = this.revertedQueue.pop();
           if (op) {
             this.queue.push(op);
 			for (var i in op) { // elements
-			    var e = this.diagram.elements[i]
+			    var e = this.diagram.elements[i];
+				if (e == undefined) e = this.diagram.connectors[i];
 				for (var j in op[i]) { // types of operation
-					if (j == "option") {
-						e._setOptions(op[i][j]["stop"]); // revert to original state
+					if (j == "remove") {
+					  this.diagram.removeElement(i);
+					} else if (j == "add") {
+					  this.diagram.restoreItem(i);
+					}else if (j == "option") {
+					  e._setOptions(op[i][j]["stop"]); // revert to original state
+					} else if (j[0] == '+') {
+					  var f = j.substr(1, j.length -1);
+					  e.epoints.splice(op[i][j]["stop"].idx, 0, op[i][j]["stop"].value);
 					}
-				}				
+				}
 			}
           }
+          this.processing = false;
 		  this.diagram.draw();
         },
 	};
@@ -710,6 +739,7 @@ dm['ctx'] = dm.ms.ctx;
             if (obj != undefined)
                 self.elements[obj.euid] = obj;
 
+			self.opman.reportShort("add", obj.euid, true);
             if (callback)
                 callback(obj);
         });
@@ -919,7 +949,9 @@ dm['ctx'] = dm.ms.ctx;
                         this.connectors[c].labels[i].hide();
                     }
 					this.removedConnectors[c] = this.connectors[c];
-					this.opman.reportShort("remove", c);
+					if (this.removedConnectors[c].options.toId != 'ConnectionHelper') {
+					  this.opman.reportShort("remove", c);
+					}
                     delete this.connectors[c];
                 }
             }
@@ -958,6 +990,11 @@ dm['ctx'] = dm.ms.ctx;
         dm['dm']['loader']['Connector'](type, options, this, function(connector) {
             if (connector != undefined) {
                 self.connectors[connector.euid] = connector;
+				if (connector.options.toId != 'ConnectionHelper') {
+				  $.log("REPORT: " + connector.options.toId + "   FROM : " + connector.options.fromId);
+                  self.opman.reportShort("add", connector.euid, false);
+				}
+				
                 self.draw();
                 if (callback)
                     callback(connector);
@@ -1972,42 +2009,63 @@ dm.base.diagram("cs.connector", {
         },
         //@proexp        
         startTransform: function(x1,y1) {
+		
+		    var opman = this.parrent.opman;
+		    opman.startTransaction();
+
+			// Clena extra point position
             this.eppos = undefined;
+
+			// Some scrolling stuff, do not take in account
    		    var x =  x1 + $("#" + this.parrent.euid).scrollLeft(),
 		        y = y1 + $("#" + this.parrent.euid).scrollTop();
+
+			// cleanOnNextTransform allow us to move vertical and horizontal
+			//                      lines between elements.
+			//                      It is single extra point which should be removed on next DND
             if ((this.cleanOnNextTransform) && (this.epoints.length == 1)) {
                 this.cleanOnNextTransform = false;
                 this.epoints.splice(0, 1);
             }
 
+			// Check if mouse is near to some extra point ?
             for (var c=0; c<this.epoints.length; ++c) {
                 if ((this.epoints[c][0] - 12 < x) && (this.epoints[c][0] + 12 > x)
-    && (this.epoints[c][1] - 12 < y) && (this.epoints[c][1] + 12> y)) {
+                  && (this.epoints[c][1] - 12 < y) && (this.epoints[c][1] + 12> y)) {
                     this.eppos = c;
                     break;
                 }
             }
 
-            // Don't need to identify position
-            // in array for the first element
-            if (this.epoints.length == 0) {
-                this.eppos = 0;
-            }
+            if (this.epoints.length == 0) {  // Don't need to identify position
+                                             // in array for the first element
+              this.eppos = 0;
+			  this.epoints[this.eppos] = [];
+			  this.report = "+epoints";
+            } else {
+			  // means that it is not move on existing point
+  			  //            it is not first point of replaced first point
+              if (this.eppos == undefined) {
 
-            if (this.eppos == undefined) {
-                $.log("FROM : " + this['from']);
+			    // Get the list of connection points
                 this.points = this['_getConnectionPoints'](this['from'], this['toId'], this.epoints);
                 newPoint = [];
                 newPoint[0] = x1; newPoint[1] = y1;
                 for (var i=0;i<this.points.length-1;++i) {
-                    if (this.canRemovePoint(this.points[i], this.points[i+1], newPoint)) {
-    this.eppos = i;
-    this.epoints.splice(i, 0, newPoint);
+                    if (this.canRemovePoint(this.points[i], this.points[i+1], newPoint)) { // Is Point on Line ?  Stuipid double check on mouseMove !!!
+                      this.eppos = i;
+                      this.epoints.splice(i, 0, newPoint);
+					  break;
                     }
                 }
-            } else {
+				this.report = "+epoints";
+			  } else {
+			    this.report = "#epoints";
                 this.epoints[this.eppos] = [];
-            }
+              }
+			}
+
+            opman.reportStart(this.report, this.euid, {idx: this.eppos, value: [x,y]});
 
             this.epoints[this.eppos][0] = x;
             this.epoints[this.eppos][1] = y;
@@ -2024,12 +2082,19 @@ dm.base.diagram("cs.connector", {
    		    var x = x1 + $("#" + this.parrent.euid).scrollLeft(),
   		        y = y1 + $("#" + this.parrent.euid).scrollTop();
 
+            this.parrent.opman.reportStop(this.report, this.euid, {idx: this.eppos, value:[x,y]});
+			this.parrent.opman.stopTransaction();
+
+			delete this.report; // remove the value
+
 			this.epoints[this.eppos][0] = x;
             this.epoints[this.eppos][1] = y;
 
             var isEqualPoint = function(p1, p2) {
-                if ((p1[0] - 12 < p2[0]) && (p1[0] + 12 > p2[0])
-    && (p1[1] - 12 < p2[1]) && (p1[1] + 12 > p2[1])) {
+                if ( (p1[0] - 12 < p2[0])
+				  && (p1[0] + 12 > p2[0])
+                  && (p1[1] - 12 < p2[1])
+				  && (p1[1] + 12 > p2[1])) {
                     return true;
                 }
                 return false;
