@@ -52,14 +52,15 @@ dm['ctx'] = dm.ms.ctx;
 		this.queue = new Array();
         this.revertedQueue = new Array();
 		this.started = false;
+		this.count = 0;
 		this.processing = false;
 	}
 	
 	dm.base.opman.prototype = {
 		startTransaction: function() {
-		//$.log("startTransaction !!!!!!!!!!!!!!");
+		//$.log("startTransaction !!!!!!!!!!!!!!" + this.count);
+		    this.count++;
 			if (this.started) {
-			  alert("Operation transaction already started !!!");
 			  return;
 			}
 			this.started = true;
@@ -68,7 +69,13 @@ dm['ctx'] = dm.ms.ctx;
 		stopTransaction: function() {
 		//$.log("stopTransaction !!!!!!!!!!!!!!");
 			if (!this.started) {
-			  alert("TRANSACTION WAS NOT STARTED !!!");
+			  alert("Transaction was not started");
+			  return;
+			}
+
+			this.count--;
+
+			if (this.count > 0) {
 			  return;
 			}
 			
@@ -2083,9 +2090,6 @@ dm.base.diagram("cs.connector", {
   		        y = y1 + $("#" + this.parrent.euid).scrollTop();
 
             this.parrent.opman.reportStop(this.report, this.euid, {idx: this.eppos, value:[x,y]});
-			this.parrent.opman.stopTransaction();
-
-			delete this.report; // remove the value
 
 			this.epoints[this.eppos][0] = x;
             this.epoints[this.eppos][1] = y;
@@ -2123,6 +2127,10 @@ dm.base.diagram("cs.connector", {
 
             if ($.isFunction(this.onStopTransform))
                 this.onStopTransform(x,y);
+
+			this.parrent.opman.stopTransaction();
+			delete this.report; // remove the value
+
         },
         //@proexp
         TransformTo: function(x1,y1) {

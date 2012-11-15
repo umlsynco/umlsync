@@ -2,6 +2,9 @@
 (function( $, dm, undefined ) {
 dm.base.diagram("ds.sequence", dm.ds.base, {
     onElementDragStart: function(el, ui, isConnector) {
+
+     this.opman.startTransaction();
+
      if (isConnector) {
 		 $.log("onDragStart");
 		 // If from has only one connector
@@ -127,7 +130,7 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
 			 ui.top = 0;
 		 }
 	  if (!isConnector)
-          el.onDragStop();
+          el.onDragStop(ui);
 
 	  for (i in this.connectors)
         if (this.connectors[i].option("dragStart"))
@@ -159,7 +162,8 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
 			  diag.elements[i].sortDropedElements();
 		  }
 	  });
-	  
+
+      this.opman.stopTransaction();
 	},
 });
 }) ( jQuery, dm );
