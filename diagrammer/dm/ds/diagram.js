@@ -65,6 +65,7 @@ dm['ctx'] = dm.ms.ctx;
 			}
 			this.started = true;
 			this.working = {};
+			this.working_stack = new Array();
 		},
 		stopTransaction: function() {
 		//$.log("stopTransaction !!!!!!!!!!!!!!");
@@ -80,13 +81,14 @@ dm['ctx'] = dm.ms.ctx;
 			}
 			
 			if (Object.keys(this.working).length > 0) {
-			  this.queue.push(this.working);
+			  this.queue.push({step: this.working, stack: this.working_stack}); // Add to the queue
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
               this.revertedQueue.splice(0, this.revertedQueue.length); // Revert queue
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
 			}
 			
 			delete this.working; // Clean the current working copy !!!
+			delete this.working_stack; // Clean stack too
 			this.started = false;
 		},
 		/*
@@ -100,6 +102,7 @@ dm['ctx'] = dm.ms.ctx;
 			this.working[euid] = this.working[euid] || {};
 			this.working[euid][type] = this.working[euid][type] || {};
 			this.working[euid][type]["start"] = $.extend({}, this.working[euid][type]["start"], options);
+			this.working_stack.push({id: euid, type: type});
 		},
 		reportStop: function(type, euid, options) {
 		    if (this.processing)
@@ -112,16 +115,20 @@ dm['ctx'] = dm.ms.ctx;
 		    if (this.processing)
 			  return;
 		  //  $.log("reportShort: " + euid);
+		    this.working_stack = this.working_stack || new Array();
 		    this.working = this.working || {};
 			this.working[euid] = this.working[euid] || {};
 			this.working[euid][type] = this.working[euid][type] || {};
 			this.working[euid][type]["stop"] = this.working[euid][type]["stop"] || after;
 			this.working[euid][type]["start"] = this.working[euid][type]["start"] || before; // Prevent options overwrite
-            
+
+			this.working_stack.push({id: euid, type: type});
+
 			// Push the result if it is not transaction
 			if (!this.started) {
-			  this.queue.push(this.working); // Add to the queue
+			  this.queue.push({step: this.working, stack: this.working_stack}); // Add to the queue
 			  delete this.working; // Clean the current working copy !!!
+			  delete this.working_stack;
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
 			  this.revertedQueue.splice(0, this.revertedQueue.length); // JOIN IN A SEPARATE PROCEDURE !!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
@@ -134,26 +141,40 @@ dm['ctx'] = dm.ms.ctx;
 
           this.processing = true;
 
-          var op = this.queue.pop();
-          if (op) {
-            this.revertedQueue.push(op);
-			for (var i in op) { // elements
+          var item = this.queue.pop();
+          if (item) {
+            this.revertedQueue.push(item);
+
+			var op = item.step;
+
+			for (var o=item.stack.length-1; o>=0; --o) { // elements
+			    var i = item.stack[o].id; // euid
+
 			    var e = this.diagram.elements[i]; // it could be element or connector
 				if (e == undefined) e = this.diagram.connectors[i];
-				for (var j in op[i]) { // types of operation
+
+				var j = item.stack[o].type;
+				{ // types of operation
+				    var start = op[i][j]["start"];
 				    if (j == "remove") {
 					  this.diagram.restoreItem(i);
 					} else if (j == "add") {
-					  if (op[i][j]["start"]) {
+					  if (start) {
 					    this.diagram.removeElement(i);
 					  } else {
 					    this.diagram.removeConnector(e.from, e.toId, e.type);
 					  }
 					} else if (j == "option") {
-						e._setOptions(op[i][j]["start"]); // revert to original state
+						e._setOptions(start); // revert to original state
 					} else if (j[0] == '+') {
 					  var f = j.substr(1, j.length -1);
-					  e[f].splice(op[i][j]["start"].idx, 1);
+					  e[f].splice(start.idx, 1);
+					} else if (j[0] == '-') {
+					  var f = j.substr(1, j.length -1);
+					  e[f].splice(start.idx, 0, start.value);
+					} else if (j[0] == '#') {
+					  var f = j.substr(1, j.length -1);
+					  e[f][start.idx] = start.value;
 					}
 				}
 			}
@@ -163,22 +184,34 @@ dm['ctx'] = dm.ms.ctx;
         },
         repeatOperation: function() {
           this.processing = true;
-          var op = this.revertedQueue.pop();
-          if (op) {
-            this.queue.push(op);
-			for (var i in op) { // elements
+          var item = this.revertedQueue.pop();
+          if (item) {
+            this.queue.push(item);
+			var op = item.step;
+			for (var o=item.stack.length-1; o>=0; --o) { // elements
+			    var i = item.stack[o].id; // euid
+
 			    var e = this.diagram.elements[i];
 				if (e == undefined) e = this.diagram.connectors[i];
-				for (var j in op[i]) { // types of operation
+
+				var j = item.stack[o].type;
+				var stop = op[i][j]["stop"];
+				{ // types of operation
 					if (j == "remove") {
 					  this.diagram.removeElement(i);
 					} else if (j == "add") {
 					  this.diagram.restoreItem(i);
 					}else if (j == "option") {
-					  e._setOptions(op[i][j]["stop"]); // revert to original state
+					  e._setOptions(stop); // revert to original state
 					} else if (j[0] == '+') {
 					  var f = j.substr(1, j.length -1);
-					  e.epoints.splice(op[i][j]["stop"].idx, 0, op[i][j]["stop"].value);
+					  e[f].splice(stop.idx, 0, stop.value);
+					} else if (j[0] == '-') {
+					  var f = j.substr(1, j.length -1);
+					  e[f].splice(op[i][j]["start"].idx, 1);  // use "start" for "-" options only !!!
+					} else if (j[0] == '#') {
+					  var f = j.substr(1, j.length -1);
+					  e[f][stop.idx] = stop.value;
 					}
 				}
 			}
@@ -2106,21 +2139,32 @@ dm.base.diagram("cs.connector", {
 
             if (this.eppos < this.epoints.length - 1) {
                 if (isEqualPoint(this.epoints[this.eppos], this.epoints[this.eppos + 1])) {
+				    $.log("REPORT             1 ");
+					this.parrent.opman.reportShort("-epoints", this.euid, {idx: this.eppos +1, value:this.epoints[this.eppos+1]});
                     this.epoints.splice(this.eppos +1, 1);
                 }
             }
 
             if (this.eppos > 0) {
                 if (isEqualPoint(this.epoints[this.eppos], this.epoints[this.eppos -1])) {
-                    this.eppos--;
+					this.eppos--;
+					$.log("REPORT             2 ");
+                    this.parrent.opman.reportShort("-epoints", this.euid, {idx: this.eppos, value:this.epoints[this.eppos]});
                     this.epoints.splice(this.eppos, 1);
+					
                 }
             }
 
             if (this.canRemovePoint(this.points[this.eppos], this.points[this.eppos+2], this.points[this.eppos+1])){
                 if (this.epoints.length > 1) {
+				    $.log("REPORT             3:  " + this.eppos + "   COUNT: " + this.epoints.length);
+				    this.parrent.opman.reportShort("-epoints", this.euid, {idx: this.eppos, value:this.epoints[this.eppos]});
                     this.epoints.splice(this.eppos, 1);
-                } else { this.cleanOnNextTransform = true; }
+					$.log("REPORT AFTER       3:  " + this.eppos + "   COUNT: " + this.epoints.length);
+					
+                } else {
+				  this.cleanOnNextTransform = true;
+			    }
             }
 
             this.eppos = undefined;
