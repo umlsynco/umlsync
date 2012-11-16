@@ -172,6 +172,18 @@ dm['ctx'] = dm.ms.ctx;
 					else if (j == "option") {// CSS
 						e._setOptions(start); // revert to original state
 					}
+					else if (j == "drop") {// CSS
+					    if (e) {
+						  if (start) {
+						    var prev = this.diagram.elements[start];
+							prev._dropped[i] = i;
+						  }
+						  if (op[i][j]["stop"]) {
+						    var next = this.diagram.elements[op[i][j]["stop"]]
+							delete next._dropped[i];
+						  }
+						}
+					}
 					else if (j[0] == '+') {  // ADD
 					  var f = j.substr(1, j.length -1),
 					      u = _getMethodName("rm", f);   // rm is oposite for add
@@ -1154,6 +1166,7 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     _dropElement: function(element, ui) {
 	    var eeuid = element.euid;
+		var prev, next;
         for (var i in this.elements) {
             if (this.elements[i].options['acceptdrop']
                     && (this.elements[i].euid != eeuid)) {
@@ -1170,6 +1183,7 @@ dm['ctx'] = dm.ms.ctx;
                     if (this.elements[i]._dropped[eeuid] == undefined) { // prevent double insertion of element
 					  $.log("DRRRRRRRRRRRRROP: " + eeuid + "   INTO: " +this.elements[i].euid);
                       this.elements[i]._dropped[eeuid] = eeuid;
+					  next = i;
 					}
                 } else {
 				    if (this.elements[i]._dropped != undefined && this.elements[i]._dropped[eeuid] != undefined) { // prevent double insertion of element
@@ -1177,11 +1191,15 @@ dm['ctx'] = dm.ms.ctx;
 					  if (this.elements[i]._dropped[eeuid] != undefined) {
 					     alert("NOT REMOVED !!!");
 					  }
+					  prev = i;
 					  //this.elements[i]._dropped.splice(eeuid, 1);
 					}
                 }
             }
         }
+		if (prev != next) { // both undefined
+		  this.opman.reportShort("drop", eeuid, prev, next);
+		}
     },
 //@endif
     //@proexp    
