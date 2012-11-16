@@ -1775,10 +1775,13 @@ dm['ctx'] = dm.ms.ctx;
             } else if (key == "width") {
                 $("#" + this.euid + "_Border").css("width", value);
             } else if (key == "height") {
-			    var v = parseInt(value) - parseInt(old_val);
-				var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
                 $("#" + this.euid + "_Border").css("height", value);
-				$("#" + this.euid + "_Border .us-element-resizable-area").css("height", inc);
+				if (old_val && value != old_val) {
+				  var v = parseInt(value) - parseInt(old_val);
+				  var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
+				  if (v != 0)
+				    $("#" + this.euid + "_Border .us-element-resizable-area").css("height", inc);
+				}
             } else if (key == "font-family") {
                 $("#" + this.euid).css(key, value || "");
             } else if (key == "selected") {

@@ -29,12 +29,26 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	     return;
        var hg = $('<li><a id="operation" class="editablefield operation" >' + opt.text + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable().height();
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
-	       h2 = $("#" + this.euid + " .us-class-operations").height();
+	       h2 = $("#" + this.euid + " .us-class-operations").height(),
+		   h3, h4;
 	   if (h1 > h2 ) {
+	     h3 = $("#" + this.euid + "_Border").height();
 		 $("#" + this.euid + "_Border").height("+="+ hg);
 	     $("#" + this.euid + " .us-class-operations").height("+=" + hg);
+		 h4 = $("#" + this.euid + "_Border").height();
+		 this.options.height = h4;
+		 this.options.height_o += hg;
 	   }
+	   
+	   this.parrent.opman.startTransaction();
 	   this.parrent.opman.reportShort("+operation", this.euid, {idx:$("#" + this.euid + " .operation").length-1});
+	   if (h1 > h2 ) {
+         this.parrent.opman.reportShort("option",
+		                                this.euid,
+		 							    {height: h3},
+										{height: h4});
+       }
+       this.parrent.opman.stopTransaction();
     },
 	'rmOperation': function(opt) {
        $("#"+this.euid+" .us-class-operations ul li:eq(" + opt.idx + ")").remove();
@@ -53,12 +67,29 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	     return;
        var hg = $('<li><a id="attribute" class="editablefield attribute" >' + opt.text + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
        var h1 = $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh").height(),
-	       h2 = $("#" + this.euid + " .us-class-attributes").height();
+	       h2 = $("#" + this.euid + " .us-class-attributes").height(),
+		   h3, h4;
+
 	   if (h1 > h2) {
+	     h3 = $("#" + this.euid + "_Border .us-class-attributes").height();
+
 		 $("#" + this.euid + "_Border").height("+="+ hg);
 	     $("#" + this.euid + " .us-class-attributes").height("+=" + hg);
+
+		 h4 = $("#" + this.euid + "_Border .us-class-attributes").height();
+		 this.options.height_a = h4;
+		 this.options.height += $("#" + this.euid + "_Border").height();;
 	   }
+
+	   this.parrent.opman.startTransaction();
 	   this.parrent.opman.reportShort("+attribute", this.euid, {idx:$("#" + this.euid + " .attribute").length-1});
+	   if (h1 > h2 ) {
+         this.parrent.opman.reportShort("option",
+		                                this.euid,
+		 							    {height_a: h3},
+										{height_a: h4});
+       }
+       this.parrent.opman.stopTransaction();
     },
     'rmAttribute': function(opt) {
 	  $("#"+this.euid+" .us-class-attributes ul li:eq(" + opt.idx + ")").remove();
