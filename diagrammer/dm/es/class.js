@@ -27,7 +27,20 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'addOperation': function(opt) {
 	   if (this.options['aux'] == "Enumeration")
 	     return;
-       var hg = $('<li><a id="operation" class="editablefield operation" >' + opt.text + '</a></li>').appendTo("#" + this.euid + " .us-class-operations .us-sortable").find("a").editable().height();
+	   var self = this;
+       var hg = $('<li><a id="operation'+this.opN+'" class="editablefield operation" >' + opt.text + '</a></li>')
+	            .appendTo("#" + this.euid + " .us-class-operations .us-sortable")
+				.children("a")
+				.editable({onSubmit:function(data) {
+				    if (data["current"] == data["previous"])
+					  return;
+					var id = $(this).attr("id");
+				    self.options[id] = data["current"];
+					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+					return true;
+	             }})
+				.height();
+	   ++this.opN;
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-operations").height(),
 		   h3, h4;
@@ -65,7 +78,21 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'addAttribute': function(opt) {
 	   if (this.options['aux'] == "Interface")
 	     return;
-       var hg = $('<li><a id="attribute" class="editablefield attribute" >' + opt.text + '</a></li>').appendTo("#" + this.euid + " .us-class-attributes .us-sortable").find("a").editable().height();
+	   var self = this;
+       var hg = $('<li><a id="attribute'+this.atrN+'" class="editablefield attribute" >' + opt.text + '</a></li>')
+	   .appendTo("#" + this.euid + " .us-class-attributes .us-sortable")
+	   .children("a")
+	   .editable({onSubmit:function(data) {
+				    if (data["current"] == data["previous"])
+					  return;
+					var id = $(this).attr("id");
+				    self.options[id] = data["current"];
+					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+					return true;
+	             }})
+	   .height();
+	   this.atrN++;
+
        var h1 = $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-attributes").height(),
 		   h3, h4;
@@ -135,6 +162,9 @@ dm.base.diagram("es.class", dm['es']['element'], {
     '_create': function() {
 	   var templ = "",
 	       aux = "";
+	   this.atrN = 0;
+	   this.opN = 0;
+
        if (this.options['aux'] && (this.options['aux'] != "")) {
 	       var aux2 = this._getAux(this.options['aux']);
 		   if (aux2 != undefined && aux2 != "" && aux2 != " ") {
@@ -147,11 +177,13 @@ dm.base.diagram("es.class", dm['es']['element'], {
            attributes = "";
 
         for (var i in this.options['operations']) {
-           operations += '<li><a id="operations" class="editablefield operation">' + this.options['operations'][i] + '</a></li>';
+           operations += '<li><a id="operation'+this.atrN+'" class="editablefield operation">' + this.options['operations'][i] + '</a></li>';
+		   this.atrN++;
         }
     
         for (var i in this.options['attributes']) {
-           attributes += '<li><a id="attributes" class="editablefield attribute">' + this.options['attributes'][i] +'</a></li>';
+           attributes += '<li><a id="attribute'+this.opN+'" class="editablefield attribute">' + this.options['attributes'][i] +'</a></li>';
+		   this.opN++;
         }
 
       // HTML for class structure creation
@@ -173,6 +205,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 		this._setOptions(this.options);
 		this.attributes = new Array();
 		this.operations = new Array();
+
  //@ifdef EDITOR
       if (this['parrent'].options['editable']) {
       
@@ -219,12 +252,30 @@ dm.base.diagram("es.class", dm['es']['element'], {
          $("#" + this.euid + " .us-class-operations .us-sortable")
 		.sortable(this.sortableHandler)
 		.disableSelection()
-		.each(function($item) {self.operations.push($item);});
+		.each(function($item) {self.operations.push($item);})
+		.children('A')
+		.editable({onSubmit:function(data) {
+				    if (data["current"] == data["previous"])
+					  return;
+					var id = $(this).attr("id");
+				    self.options[id] = data["current"];
+					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+					return true;
+	             }});
 
 		$("#" + this.euid + " .us-class-attributes .us-sortable")
 		.sortable(this.sortableHandler)
 		.disableSelection()
-        .each(function($item) {self.attributes.push($item);});
+        .each(function($item) {self.attributes.push($item);})
+		.children('A')
+		.editable({onSubmit:function(data) {
+				    if (data["current"] == data["previous"])
+					  return;
+					var id = $(this).attr("id");
+				    self.options[id] = data["current"];
+					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+					return true;
+	             }});
       }
 //@endif
     },
