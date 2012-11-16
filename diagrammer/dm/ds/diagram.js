@@ -1547,7 +1547,7 @@ dm['ctx'] = dm.ms.ctx;
               if (self.onResizeComplete) {
                 self.onResizeComplete();
               }
-			  $('#' + self.euid + '_Border .us-element-resizable-area').css('width', 'auto');
+			  $('#' + self.euid + '_Border .us-element-resizable-area').css('width', '');
               self.parrent.draw();
             },
             'resize': function(event, ui) {

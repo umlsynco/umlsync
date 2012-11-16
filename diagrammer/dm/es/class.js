@@ -191,6 +191,9 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	  } else if (key == 'height_a') {
          $('#' + this.euid  + '_Border .us-class-attributes').css('height', this.options['height_a']);
 		 return true;
+	  } else if (key == 'height') {
+	     var diff = parseInt(value) - parseInt(this.options['height_a']) - $('#' + this.euid + ' .us-class-header').height();
+         $('#' + this.euid  + '_Border .us-class-operations').css('height', diff);
 	  }
 	  return false;
 	},

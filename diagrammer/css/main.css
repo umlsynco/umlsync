@@ -280,7 +280,12 @@ a {
 }
 
 .us-component {
-  position: relative;
+  position: absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  margin: 0 auto;
   text-align: center;
   border: 1px solid black;
 }
@@ -434,15 +439,6 @@ a {
    border-top: 1px solid black;
    border-bottom: 1px solid black;
    background-color: white;
-}
-
-.us-component {
-  position: relative;
-  text-align: center;
-  ##width: 100%;
-  ##height: 100%;
-  border: 1px solid black;
-  background-color: #87CEEB;
 }
 
 .us-venn {

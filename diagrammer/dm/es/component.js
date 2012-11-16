@@ -22,7 +22,7 @@ dm.base.diagram("es.component", dm.es.element, {
     },
     '_create': function() {
       // HTML for class structure creation
-      this.innerHtml = '<div id="' + this.euid + '" class="us-component us-element-resizable-area grElement">\
+      this.innerHtml = '<div id="' + this.euid + '" class="us-component grElement">\
                         <img src="./images/component.png" style="position:absolute;top:3px;right:17px"></img>\
                         <a id="stereotype" class="editablefield" style="text-align:left;position:relative;top:30%">&laquo;interface&raquo;</a><br>\
                         <a id="name" class="editablefield Name" style="text-align:left;position:relative;top:30%">' + this.options.name + '</a>\
@@ -32,11 +32,7 @@ dm.base.diagram("es.component", dm.es.element, {
     },
     '_init': function() {
       this.options.dropped = null;
-      $('#' + this.euid  + '_Border')
-         .css('width', this.options.width);
-
-      $('#' + this.euid  + '_Border .us-component')
-         .css('width', this.options.width).css('height', this.options.height);
+      this._setOptions(this.options);
     }
 });
 //@aspect
