@@ -216,7 +216,7 @@ dm['ctx'] = dm.ms.ctx;
 					    e[f][start.idx] = start.value;
 					  } else {
 					    $("#" + i + " #" + f).html(start);
-						e.options[f] = start;
+						if (e) e.options[f] = start; // for connector's labels the "e" variable could be undefined !!!
 					  }
 					}
 				}
@@ -1885,9 +1885,12 @@ dm.base.diagram("cs.connector", {
         },
         //@proexp
         addLabel: function(opt) {
-		    var self = this;
+		    var self = this,
+			    lid = this.euid + "_l" + this.label_count;  // uniqie label name to simplify revert editable
+
+			++this.label_count
             
-			var $item = $("<div class='editablefield' style=\"position:absolute;z-index:99999;background-color:white;\">" + opt.text + "</div>")
+			var $item = $("<div id='"+lid+"' class='editablefield' style=\"position:absolute;z-index:99999;background-color:white;\">" + opt.text + "</div>")
             .appendTo("#" + this.parrent.euid)
             .css("left", opt.left)
             .css("top", opt.top)
@@ -1909,7 +1912,16 @@ dm.base.diagram("cs.connector", {
 				self.parrent.opman.reportShort("#label", self.euid, {idx:idx, left:pos.left, top:pos.top}, {idx:idx, left:p.left, top:p.top});
 			  }
 			})
-            .editable()
+            .editable({
+			    onSubmit : function(data) {
+				    if (data["current"] == data["previous"])
+					  return;
+					var id = $(this).attr("id");
+				    //self.options[id] = data["current"];
+					self.parrent.opman.reportShort("~"+id, self.parrent.euid, data["previous"], data["current"]);
+					return true;
+			    }
+			})
 			.mouseenter(function() {self.options.selected = true;
 			                        self.parrent.draw();
 									for (var i in self.labels) 
@@ -2002,6 +2014,7 @@ dm.base.diagram("cs.connector", {
         _create: function () {
             //@proexp
             this.epoints = [];
+			this.label_count = 0;
             this.cleanOnNextTransform = false;
             if (this.options['stored']) {
                 for (var i in this.parrent.elements) {
