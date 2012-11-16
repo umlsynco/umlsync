@@ -1532,7 +1532,7 @@ dm['ctx'] = dm.ms.ctx;
 			'handles': this.options['resizable_h'] || 'n-u,e-u,s-u,w-u,nw-u,sw-u,ne-u,se-u',
 			'alsoResize': '#' + this.euid + '_Border .us-element-resizable-area', 
             'start': function() {
-			  
+			  self._update();
 			  self.operation_start = {top:self.options.top, left:self.options.left, width:self.options.width, height:self.options.height};
 			  $("#tabs #us-editable").hide();
             },
@@ -1760,7 +1760,7 @@ dm['ctx'] = dm.ms.ctx;
         },
         //@proexp
         _setOption: function( key, value ) {
-            this.options[ key ] = value;
+		    var old_val  = this.options[ key ];
             
 			if (this._setOption2 != undefined && this._setOption2(key, value)) {
 			  // redefine the base options in inherited class
@@ -1775,7 +1775,10 @@ dm['ctx'] = dm.ms.ctx;
             } else if (key == "width") {
                 $("#" + this.euid + "_Border").css("width", value);
             } else if (key == "height") {
+			    var v = parseInt(value) - parseInt(old_val);
+				var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
                 $("#" + this.euid + "_Border").css("height", value);
+				$("#" + this.euid + "_Border .us-element-resizable-area").css("height", inc);
             } else if (key == "font-family") {
                 $("#" + this.euid).css(key, value || "");
             } else if (key == "selected") {
@@ -1800,6 +1803,7 @@ dm['ctx'] = dm.ms.ctx;
             } else if (key == "z-index") {
                 $("#" + this.euid + '_Border ').css(key, value|| "");
             }
+			this.options[ key ] = value;
         },
 //@ifdef EDITOR
         //@proexp

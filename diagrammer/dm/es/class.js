@@ -148,10 +148,23 @@ dm.base.diagram("es.class", dm['es']['element'], {
          var border = "#"+this.euid + "_Border";
          var self = this;
          // stop-function is a fix for attributes area which became not resizizable with black points after internal resize usage
-         $("#"+this.euid + " .us-class-attributes").resizable({'handles': 's-l',
-		                                                   'alsoResize': border,
-		                                                   'stop': function(event, ui) {
-                                                                $("#"+self.euid + " .us-class-attributes").css({'width':"100%"}); } });
+         $("#"+this.euid + " .us-class-attributes")
+		 .resizable({'handles': 's-l',
+		             'alsoResize': border,
+                     'start': function() {
+					    self._update();
+                        self.operation_start = {height_a:self.options.height_a};
+			            $("#tabs #us-editable input").hide();  // TODO: send blur to editable ? 
+                     },
+                     'stop': function(event, ui) {
+			           self._update();
+			           self.parrent.opman.reportShort("option",
+			                                 self.euid,
+											 self.operation_start,
+											 {height_a:self.options.height_a});
+                       $("#"+self.euid + " .us-class-attributes").css({'width':""});
+			         }
+					}); // resizable
 /*         $("#"+this.euid + " .us-class-operations").resizable({'handles': 's-l', 'alsoResize': border,
 														   'resize': function(event, ui) { if ($(border).width() < ui.size.width) $(this).width($(border).width());}
 											   
@@ -186,15 +199,22 @@ dm.base.diagram("es.class", dm['es']['element'], {
     },
 	_setOption2:function(key, value) {
 	  if (key == "height_o") {
-        $('#' + this.euid  + '_Border .us-class-operations').css('height', this.options['height_o']);
+        $('#' + this.euid  + '_Border .us-class-operations').css('height', value);
 		return true;
 	  } else if (key == 'height_a') {
-         $('#' + this.euid  + '_Border .us-class-attributes').css('height', this.options['height_a']);
+	     var oval = this.options[key];
+         $('#' + this.euid  + '_Border .us-class-attributes').css('height', value);
+
+		 var v = parseInt(value) - parseInt(oval);
+		 var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
+
+         $('#' + this.euid  + '_Border').css('height', inc);
 		 return true;
-	  } else if (key == 'height') {
+	  }/* else if (key.indexOf('height') == 0) {
 	     var diff = parseInt(value) - parseInt(this.options['height_a']) - $('#' + this.euid + ' .us-class-header').height();
-         $('#' + this.euid  + '_Border .us-class-operations').css('height', diff);
-	  }
+		 if (diff > 0)
+           $('#' + this.euid  + '_Border .us-class-operations').css('height', diff);
+	  }*/
 	  return false;
 	},
 	
