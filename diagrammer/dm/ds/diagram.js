@@ -210,8 +210,11 @@ dm['ctx'] = dm.ms.ctx;
 					  if (e[u]) {
 					    e[u](start);
 					  } else {
-					  
-  					    e[f+'s'][start.idx] = start.value;
+					    if (start.idx) {
+  					      e[f+'s'][start.idx] = start.value;
+						} else {
+						  $("#" + i + " " + j).css({left:start.left, top:start.top});
+						}
 					  }
 					}
 					else if (j[0] == '%') {  // SORTABLE

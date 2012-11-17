@@ -57,7 +57,27 @@ dm.base.diagram("es.interface", dm.es.element, {
 
       });
       if (this.options.name) {
-          $("<div id='name' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.nameY+"px;left:"+this.options.nameX+"px;\">" + this.options.name + "</div>").appendTo("#" + this.euid).draggable().editable()
+	      var self = this;
+          $("<div id='name' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.nameY+"px;left:"+this.options.nameX+"px;\">" + this.options.name + "</div>")
+		  .appendTo("#" + this.euid)
+		  .draggable({
+			  start: function(event, ui) {
+			    $(this).data('startPosition', ui.helper.position());
+			  },
+			  stop: function(event, ui) {
+				var pos = $(this).data("startPosition");
+				var p = ui.helper.position();
+				self.parrent.opman.reportShort("#name", self.euid, {left:pos.left, top:pos.top}, {left:p.left, top:p.top});
+			  }
+			})
+		  .editable({onSubmit:function(data) {
+				    if (data["current"] == data["previous"])
+					  return;
+					var id = $(this).attr("id");
+				    self.options[id] = data["current"];
+					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+					return true;
+			}})
       }
     }
 });
