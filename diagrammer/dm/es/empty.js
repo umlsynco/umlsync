@@ -17,10 +17,10 @@ dm.base.diagram("es.empty", dm.es.element, {
        this.options.width = $("#" + this.euid + "_Border").width();
        this.options.height = $("#" + this.euid + "_Border").height();
 
-       this.options.name = $("#" + this.euid + " #label" ).html();
-	   p = $("#" + this.euid + " #label" ).position();
-	   this.options.labelX = p.left;
-	   this.options.labelY = p.top;
+       this.options.name = $("#" + this.euid + " #name" ).html();
+	   p = $("#" + this.euid + " #name" ).position();
+	   this.options.nameX = p.left;
+	   this.options.nameY = p.top;
        
     },
     '_create': function() {
@@ -43,10 +43,26 @@ dm.base.diagram("es.empty", dm.es.element, {
       });
 
       if (this.options.name) {
-          $("<div id='label' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.labelY+"px;left:"+this.options.labelX+"px;\">" + this.options.name + "</div>")
+          $("<div id='name' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.nameY+"px;left:"+this.options.nameX+"px;\">" + this.options.name + "</div>")
 		  .appendTo("#" + this.euid)
-		  .draggable()
-		  .editable()
+		  .draggable({
+			  start: function(event, ui) {
+			    $(this).data('startPosition', ui.helper.position());
+			  },
+			  stop: function(event, ui) {
+				var pos = $(this).data("startPosition");
+				var p = ui.helper.position();
+				self.parrent.opman.reportShort("#name", self.euid, {left:pos.left, top:pos.top}, {left:p.left, top:p.top});
+			  }
+			})
+		  .editable({onSubmit:function(data) {
+				    if (data["current"] == data["previous"])
+					  return;
+					var id = $(this).attr("id");
+				    self.options[id] = data["current"];
+					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+					return true;
+			}});
       }
     }
 });

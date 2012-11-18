@@ -172,6 +172,10 @@ dm['ctx'] = dm.ms.ctx;
 					else if (j == "option") {// CSS
 						e._setOptions(start); // revert to original state
 					}
+					else if (j == "recon") {// CSS
+						e.from = start.fromId;
+						e.toId = start.toId;
+					}
 					else if (j == "drop") {// CSS
 					    if (e) {
 						  if (start) {

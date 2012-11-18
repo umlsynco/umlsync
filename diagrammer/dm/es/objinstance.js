@@ -211,12 +211,28 @@ dm.base.diagram("es.objinstance", dm.es.element, {
 				  if (bottom < _sort[n].top + _sort[n].height) {
 					  bottom = _sort[n].top + _sort[n].height;
 				  }
-				  for (f in this.parrent.connectors) {
-				    if (this.parrent.connectors[f].from == _sort[n].name)
-				      this.parrent.connectors[f].from = _sort[m].name;
+				  for (var f in this.parrent.connectors) {
+				    var from = this.parrent.connectors[f].from,
+					to = this.parrent.connectors[f].toId,
+					tc = false, fc = false;
 
-      			    if (this.parrent.connectors[f].toId == _sort[n].name)
+				    if (from == _sort[n].name) {
+					  fc = true;
+				      this.parrent.connectors[f].from = _sort[m].name;
+					}
+
+      			    if (to == _sort[n].name) {
+					  tc = true;
 				      this.parrent.connectors[f].toId = _sort[m].name;
+					}
+
+					if (tc) {
+					  this.parrent.opman.reportShort("recon", f, {fromId:from, toId:to},{fromId:from, toId:_sort[m].name});
+					} 
+					
+					if (fc) {
+					  this.parrent.opman.reportShort("recon", f, {fromId:from, toId:to},{fromId:_sort[m].name, toId:to});
+					}
 				  }
 				  this.parrent.removeElement(_sort[n].name);
 			  }

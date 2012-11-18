@@ -161,9 +161,8 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
 			if (diag.elements[i].sortDropedElements)
 			  diag.elements[i].sortDropedElements();
 		  }
+		  diag.opman.stopTransaction();
 	  });
-
-      this.opman.stopTransaction();
 	},
 });
 }) ( jQuery, dm );
