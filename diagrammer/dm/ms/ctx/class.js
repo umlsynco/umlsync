@@ -9,8 +9,11 @@
         {
 			title: 'Remove',
             click: function(element) {  // element is the jquery obj clicked on when context menu launched
+			  // Remove all connectors from this element
               menuBuilder.diagram.removeConnector(element.euid, undefined,undefined);
+			  // Remove all connectors to this element
               menuBuilder.diagram.removeConnector(undefined, element.euid, undefined);
+			  // Remove element
               menuBuilder.diagram.removeElement(element.euid);
             }
         },

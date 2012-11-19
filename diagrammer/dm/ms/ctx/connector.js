@@ -19,7 +19,7 @@ dm.ms.ctx['connector'] = function(menuBuilder) {
             {
 				title: 'Remove',
                 click: function(connector) {  // connector is the jquery obj clicked on when context menu launched
-                  connector.parrent.removeConnector(connector.from, connector.toId, connector.options.type);
+                  connector.parrent.removeConnectorById(connector.euid);
                 }
             },
             {

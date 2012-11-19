@@ -94,14 +94,12 @@ dm['ctx'] = dm.ms.ctx;
 				for (var sub in step) {
 				  // Check if some added element was reverted
 				  if (step[sub]["add"]) {
-				    var e = this.diagram.removedElements[sub]; // it could be element or connector
-				    if (e == undefined) e = this.diagram.removedConnectors[sub];
 				    var start = step[sub]["add"]["start"];
   				    if (start) {
 					    this.diagram.removeElement(sub); // FINAL REMOVE, NOT RESTORABLE 
 					} else {
 					    // FINAL REMOVE, NOT RESTORABLE 
-					    if (e) this.diagram.removeConnector(e.from, e.toId, e.type);
+					    if (start != undefined) this.diagram.removeConnectorById(sub);
 					}
 				  }
 				}
@@ -114,14 +112,13 @@ dm['ctx'] = dm.ms.ctx;
 				for (var sub in step) {
 				  // Check if some added element was reverted
 				  if (step[sub]["remove"]) {
-				    var e = this.diagram.removedElements[sub]; // it could be element or connector
-				    if (e == undefined) e = this.diagram.removedConnectors[sub];
 				    var start = step[sub]["remove"]["start"];
   				    if (start) {
 					    this.diagram.removeElement(sub); // FINAL REMOVE, NOT RESTORABLE 
 					} else {
 					    // FINAL REMOVE, NOT RESTORABLE 
-					    if (e) this.diagram.removeConnector(e.from, e.toId, e.type);
+					    if (start != undefined)
+						  this.diagram.removeConnectorById(sub);
 					}
 				  }
 				}
@@ -202,7 +199,7 @@ dm['ctx'] = dm.ms.ctx;
 					  if (start) {
 					    this.diagram.removeElement(i);
 					  } else {
-					    this.diagram.removeConnector(e.from, e.toId, e.type);
+					    this.diagram.removeConnectorById(i);
 					  }
 					}
 					else if (j == "option") {// CSS
@@ -307,7 +304,7 @@ dm['ctx'] = dm.ms.ctx;
 					    this.diagram.removeElement(i);
 					  } else {
 					    if (start != undefined)
-					      this.diagram.removeConnector(e.from, e.toId, e.type);
+					      this.diagram.removeConnectorById(i);
 					  }
 					} else if (j == "add") {
 					  this.diagram.restoreItem(i);
@@ -1160,20 +1157,31 @@ dm['ctx'] = dm.ms.ctx;
             for (var c in this.connectors) {
                 if (((this.connectors[c]['from']  == fromId) || (fromId == undefined))
                   && ((this.connectors[c]['toId'] == toId) || (toId == undefined))) {
-                    for (var i in this.connectors[c].labels) {
-                        this.connectors[c].labels[i].hide();
-                    }
-					this.removedConnectors[c] = this.connectors[c];
-					if (this.removedConnectors[c].options.toId != 'ConnectionHelper') {
-					  this.opman.reportShort("remove", c);
-					}
-                    delete this.connectors[c];
+                    this.removeConnectorById(c);
                 }
             }
             this.draw();
         }
 
     },
+	removeConnectorById: function(euid) {
+	    if (this.removedConnectors[euid]) {
+		  for (var i in this.removedConnectors[euid].labels) {
+             this.removedConnectors[euid].labels[i].remove();
+          }
+		  delete this.removedConnectors[euid];
+		  return;
+		}
+	
+        for (var i in this.connectors[euid].labels) {
+             this.connectors[euid].labels[i].hide();
+        }
+		this.removedConnectors[euid] = this.connectors[euid];
+		if (this.removedConnectors[euid].options.toId != 'ConnectionHelper') {
+		  this.opman.reportShort("remove", euid, false);
+        }
+        delete this.connectors[euid];
+	},
 	restoreItem: function(euid) {
 	  if (this.removedConnectors[euid]) {
 	    this.connectors[euid] = this.removedConnectors[euid];

@@ -28,7 +28,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   if (this.options['aux'] == "Enumeration")
 	     return;
 	   var self = this;
-       var hg = $('<li><a id="operation'+this.opN+'" class="editablefield operation" >' + opt.text + '</a></li>')
+       var hg = $('<li id="operation"><a id="operation'+this.opN+'" class="editablefield operation" >' + opt.text + '</a></li>')
 	            .appendTo("#" + this.euid + " .us-class-operations .us-sortable")
 				.children("a")
 				.editable({onSubmit:function(data) {
@@ -81,7 +81,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   if (this.options['aux'] == "Interface")
 	     return;
 	   var self = this;
-       var hg = $('<li><a id="attribute'+this.atrN+'" class="editablefield attribute" >' + opt.text + '</a></li>')
+       var hg = $('<li id="attribute"><a id="attribute'+this.atrN+'" class="editablefield attribute" >' + opt.text + '</a></li>')
 	   .appendTo("#" + this.euid + " .us-class-attributes .us-sortable")
 	   .children("a")
 	   .editable({onSubmit:function(data) {
@@ -182,12 +182,12 @@ dm.base.diagram("es.class", dm['es']['element'], {
            attributes = "";
 
         for (var i in this.options['operations']) {
-           operations += '<li><a id="operation'+this.atrN+'" class="editablefield operation">' + this.options['operations'][i] + '</a></li>';
+           operations += '<li id="operation"><a id="operation'+this.atrN+'" class="editablefield operation">' + this.options['operations'][i] + '</a></li>';
 		   this.atrN++;
         }
     
         for (var i in this.options['attributes']) {
-           attributes += '<li><a id="attribute'+this.opN+'" class="editablefield attribute">' + this.options['attributes'][i] +'</a></li>';
+           attributes += '<li id="attribute"><a id="attribute'+this.opN+'" class="editablefield attribute">' + this.options['attributes'][i] +'</a></li>';
 		   this.opN++;
         }
 
@@ -249,7 +249,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 			      var start_pos = ui.item.data('start_pos'),
 				      index = ui.item.index();
 				  if (index != start_pos) {
-					self.parrent.opman.reportShort("%"+ui.item.children('A').attr("id"), self.euid, {idx: start_pos}, {idx:index});
+					self.parrent.opman.reportShort("%"+ui.item.attr("id"), self.euid, {idx: start_pos}, {idx:index});
 				  }
 			}
 		};
