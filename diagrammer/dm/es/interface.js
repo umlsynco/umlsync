@@ -45,17 +45,16 @@ dm.base.diagram("es.interface", dm.es.element, {
          .css('background-color', this.options["background-color"]);
 	  }
 
-      // TODO: replace on keep ratio option of resize
-      var self = '#' + this.euid;
-      $('#' + this.euid + "_Border").bind( "resize", function(event, ui) {
-         var w = $(self).width(),
-             h = $(self).height();
+      $('#' + this.euid + "_Border").bind( "resize", "#" + this.euid, function(event, ui) {
+         var w = $(event.data).width(),
+             h = $(event.data).height();
          var m = w;
-         if (w > h ) 
+         if (w > h)
             m = h;
-         $(self + " .us-interface").width(m).height(m);
+         $(event.data).children(".us-interface").width(m).height(m);
 
       });
+
       if (this.options.name) {
 	      var self = this;
           $("<div id='name' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.nameY+"px;left:"+this.options.nameX+"px;\">" + this.options.name + "</div>")
