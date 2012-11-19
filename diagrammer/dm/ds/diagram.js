@@ -1834,14 +1834,15 @@ dm['ctx'] = dm.ms.ctx;
 //@endif
             // You need to select element to start DND
             $('#'+this.euid)
-            .click(function(e) {
-                $.log("clicked element");
-                self.parrent._mouseClick(self, self.options['menu']);
-                e.stopPropagation();
+            .click(self,function(event) {
+                var element = event.data;
+                element.parrent._mouseClick(element, element.options['menu']);
+                event.stopPropagation();
             })       
-            .mouseenter(function (){
-			    if (!self.options.selected && !self.highlighted) {
-				  self.highlighted = true;
+            .mouseenter(self, function (event){
+			    var element = event.data;
+			    if (!element.options.selected && !element.highlighted) {
+				  element.highlighted = true;
                   var $bw = $('#' + this.id +'_Border').css({'border-width':'3px'});
 				  var bw = $bw.css('border-left-width');
 				  $bw.css({left:'-=' + bw, top:'-='+bw});
@@ -1849,23 +1850,24 @@ dm['ctx'] = dm.ms.ctx;
 				}
 //@ifdef EDITOR
                 // Show the  menu if element was selected
-               if (self.parrent.menuIcon && self.options.selected) {
-                    self.parrent.menuIcon['Show'](this.id, self);
+               if (element.parrent.menuIcon && element.options.selected) {
+                    element.parrent.menuIcon['Show'](this.id, element);
                 }
 //@endif
                 //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
             })
-            .mouseleave(function (){
-			    if (!self.options.selected && self.highlighted) {
+            .mouseleave(self, function (event){
+			    var element = event.data;
+			    if (!element.options.selected && element.highlighted) {
                     var $bw = $('#' + this.id +'_Border');
 					var bw = $bw.css('border-left-width');
 				    $bw.css({'border-width':'0px'}).css({left:'+=' + bw, top:'+='+bw});
-					self.highlighted = false;
+					element.highlighted = false;
 				}
 
                 //Check if this.euid is the same as selected
-                if (self.parrent.menuIcon) {
-                    self.parrent.menuIcon['Hide'](this.id);
+                if (element.parrent.menuIcon) {
+                    element.parrent.menuIcon['Hide'](this.id);
                  }
                 $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
@@ -1876,10 +1878,11 @@ dm['ctx'] = dm.ms.ctx;
 //            .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='us-element-min' style='z-index:99999;visibility:hidden;'></img>");
 
             if (this.options['subdiagram']) {
-                $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(function() {
-                    var path = self.options['subdiagram'];
+                $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(self, function(event) {
+				    var element = event.data;
+                    var path = element.options['subdiagram'];
                     if (path != "")
-                      dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
+                      dm.dm.fw['loadDiagram'](element.options['viewid'], {getAbsolutePath:function() {return path;}});
                 });
             }
 
