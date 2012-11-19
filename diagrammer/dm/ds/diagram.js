@@ -48,6 +48,7 @@ dm['ctx'] = dm.ms.ctx;
 (function( $, dm, undefined ) {
 
     dm.base.opman = function(diagram) {
+	    this.queueLimit = 10; // Limit for count of operations.
 		this.diagram = diagram;
 		this.queue = new Array();
         this.revertedQueue = new Array();
@@ -79,17 +80,57 @@ dm['ctx'] = dm.ms.ctx;
 			if (this.count > 0) {
 			  return;
 			}
-			
+
+			this._commitQueue();
+
+			this.started = false;
+		},
+		_commitQueue: function() {
 			if (Object.keys(this.working).length > 0) {
 			  this.queue.push({step: this.working, stack: this.working_stack}); // Add to the queue
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
-              this.revertedQueue.splice(0, this.revertedQueue.length); // Revert queue
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
+              var q = this.revertedQueue.splice(0, this.revertedQueue.length); // Revert queue
+			  for (var s in q) {
+			    var step = q[s].step;
+				for (var sub in step) {
+				  // Check if some added element was reverted
+				  if (step[sub]["add"]) {
+				    var e = this.diagram.removedElements[sub]; // it could be element or connector
+				    if (e == undefined) e = this.diagram.removedConnectors[sub];
+				    var start = step[sub]["add"]["start"];
+  				    if (start) {
+					    this.diagram.removeElement(sub); // FINAL REMOVE, NOT RESTORABLE 
+					} else {
+					    // FINAL REMOVE, NOT RESTORABLE 
+					    if (e) this.diagram.removeConnector(e.from, e.toId, e.type);
+					}
+				  }
+				}
+			  }
 			}
 			
+			while (this.queue.length > this.queueLimit) {
+				var item = this.queue.shift();
+			    var step = item.step;
+				for (var sub in step) {
+				  // Check if some added element was reverted
+				  if (step[sub]["remove"]) {
+				    var e = this.diagram.removedElements[sub]; // it could be element or connector
+				    if (e == undefined) e = this.diagram.removedConnectors[sub];
+				    var start = step[sub]["remove"]["start"];
+  				    if (start) {
+					    this.diagram.removeElement(sub); // FINAL REMOVE, NOT RESTORABLE 
+					} else {
+					    // FINAL REMOVE, NOT RESTORABLE 
+					    if (e) this.diagram.removeConnector(e.from, e.toId, e.type);
+					}
+				  }
+				}
+				delete step;
+				delete item;
+			}
+
 			delete this.working; // Clean the current working copy !!!
 			delete this.working_stack; // Clean stack too
-			this.started = false;
 		},
 		/*
 		 * type : drag, resize, remove, add
@@ -126,12 +167,7 @@ dm['ctx'] = dm.ms.ctx;
 
 			// Push the result if it is not transaction
 			if (!this.started) {
-			  this.queue.push({step: this.working, stack: this.working_stack}); // Add to the queue
-			  delete this.working; // Clean the current working copy !!!
-			  delete this.working_stack;
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
-			  this.revertedQueue.splice(0, this.revertedQueue.length); // JOIN IN A SEPARATE PROCEDURE !!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   ADD REAL REMOVE OF NOT DELETED ELEMENTS !!!!!
+			  this._commitQueue();
 			}
 		},
 		revertOperation: function() {
@@ -195,12 +231,13 @@ dm['ctx'] = dm.ms.ctx;
 					    e[u](start);
 					  } else { // No method for item processing
 					    f+='s';
-					    var item = e[f].splice(start.idx, 1);
+						 var tmp = e[f].splice(start.idx, 1);
+						 delete tmp;
 					  }
 					}
 					else if (j[0] == '-') {  // REMOVE
 					  var f = j.substr(1, j.length -1),
-					      u = _getMethodName("rm", f);   // rm is oposite for add
+					      u = _getMethodName("add", f);   // rm is oposite for add
 					  if (e[u]) {
 					    e[u](start);
 					  } else {
@@ -247,6 +284,11 @@ dm['ctx'] = dm.ms.ctx;
         repeatOperation: function() {
           this.processing = true;
           var item = this.revertedQueue.pop();
+
+		  function _getMethodName(prefix, string) {
+			return prefix + string.charAt(0).toUpperCase() + string.slice(1);
+		  }
+
           if (item) {
             this.queue.push(item);
 			var op = item.step;
@@ -258,29 +300,82 @@ dm['ctx'] = dm.ms.ctx;
 
 				var j = item.stack[o].type;
 				var stop = op[i][j]["stop"];
+				var start = op[i][j]["start"];
 				{ // types of operation
 					if (j == "remove") {
-					  this.diagram.removeElement(i);
+					  if (start) {
+					    this.diagram.removeElement(i);
+					  } else {
+					    if (start != undefined)
+					      this.diagram.removeConnector(e.from, e.toId, e.type);
+					  }
 					} else if (j == "add") {
 					  this.diagram.restoreItem(i);
 					}else if (j == "option") {
 					  e._setOptions(stop); // revert to original state
-					} else if (j[0] == '+') {
-					  var f = j.substr(1, j.length -1);
-					  e[f].splice(stop.idx, 0, stop.value);
+					}
+					else if (j == "recon") {// CSS
+						e.from = stop.fromId;
+						e.toId = stop.toId;
+					}
+					else if (j == "drop") {// CSS
+					    if (e) {
+						  if (stop) {
+						    var prev = this.diagram.elements[stop];
+							prev._dropped[i] = i;
+						  }
+						  if (op[i][j]["start"]) {
+						    var next = this.diagram.elements[op[i][j]["start"]]
+							delete next._dropped[i];
+						  }
+						}
+					}
+					else if (j[0] == '+') {
+					  var f = j.substr(1, j.length -1),
+					      u = _getMethodName("add", f);   // rm is oposite for add
+					  if (e[u]) {
+					    e[u](start);
+					  } else {
+					    e[f+'s'].splice(stop.idx, 0, stop.value);
+					  }
 					} else if (j[0] == '-') {
-					  var f = j.substr(1, j.length -1);
-					  e[f].splice(op[i][j]["start"].idx, 1);  // use "start" for "-" options only !!!
+					  var f = j.substr(1, j.length -1),
+					      u = _getMethodName("rm", f);   // rm is oposite for add
+					  if (e[u]) {
+					    e[u](start);
+					  } else { // No method for item processing
+					    f+='s';
+					    //var item = e[f].splice(start.idx, 1);
+					  }
 					} else if (j[0] == '#') {
-					  var f = j.substr(1, j.length -1);
-					  e[f][stop.idx] = stop.value;
-					} else if (j[0] == '~') {
+					  var f = j.substr(1, j.length -1),
+ 					      u = _getMethodName("move", f);
+
+					  if (e[u]) {
+					    e[u](stop);
+					  } else {
+					    if (stop.idx) {
+  					      e[f+'s'][stop.idx] = stop.value;
+						} else {
+						  $("#" + i + " " + j).css({left:stop.left, top:stop.top});
+						}
+					  }
+					}
+					else if (j[0] == '%') {  // SORTABLE
+                      var f = j.substr(1, j.length -1),
+					      u = _getMethodName("move", f);   // up/down item
+					  var start = op[i][j]["start"];
+					  if (e[u]) {
+					    e[u](stop, start);
+					  }
+					}
+					else if (j[0] == '~') {
 					  var f = j.substr(1, j.length -1);
 					  if (stop.idx) {
 					    e[f][stop.idx] = stop.value;
 					  } else {
 					    $("#" + i + " #" + f).html(stop);
-						e.options[f] = stop;
+						if (e) e.options[f] = stop;
 					  }
 					}
 				}
@@ -1019,10 +1114,20 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
     removeElement: function(euid) {
         var el = this.elements;
+		
+		// REMOVE ELEMENT FINALLY !!!
+		if (this.removedElements[euid]) {
+		   $.log("REMOVING: " + euid);
+		   $('#' +  euid + '_Border').remove();
+		   delete this.removedElements[euid];
+		   return;
+		}		
+
         for (var k in el) {
 		    if (el[k]._dropped != undefined) {
 			  for (var gg in el[k]._dropped) {
 			    if (gg == euid || el[k]._dropped[gg] == euid) {
+				   this.opman.reportShort("drop", euid, k, undefined);
 				   delete el[k]._dropped[gg]; // remove element from dropped
 				   //break; // element could be dropped into one element only
 				}
@@ -1033,7 +1138,7 @@ dm['ctx'] = dm.ms.ctx;
 		// Hide icon menu to prevent icon menu usage after element removal
 		this.menuIcon['Disable'](euid);
 
-        this.opman.reportShort("remove", euid);
+        this.opman.reportShort("remove", euid, true);
 
 		this.removedElements[euid] = el[euid];
         delete el[euid];
@@ -1969,7 +2074,12 @@ dm.base.diagram("cs.connector", {
 			} else {
 			  this.labels.push($item);
 			}
-			this.parrent.opman.reportShort("+label", this.euid, {idx:this.labels.length-1, left:opt.left, top:top});
+			this.parrent.opman.reportShort("+label",
+			                               this.euid,
+										   {idx:this.labels.length-1,
+										    left:opt.left, top:opt.top,
+											text: opt.text
+											});
         },
 		rmLabel: function(opt) {
 		  var l = this.labels[opt.idx];

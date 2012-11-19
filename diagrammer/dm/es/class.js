@@ -54,7 +54,9 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   }
 	   
 	   this.parrent.opman.startTransaction();
-	   this.parrent.opman.reportShort("+operation", this.euid, {idx:$("#" + this.euid + " .operation").length-1});
+	   this.parrent.opman.reportShort("+operation",
+	                                  this.euid,
+									  {idx:$("#" + this.euid + " .operation").length-1, text:opt.text});
 	   if (h1 > h2 ) {
          this.parrent.opman.reportShort("option",
 		                                this.euid,
@@ -109,7 +111,10 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   }
 
 	   this.parrent.opman.startTransaction();
-	   this.parrent.opman.reportShort("+attribute", this.euid, {idx:$("#" + this.euid + " .attribute").length-1});
+	   this.parrent.opman.reportShort("+attribute",
+                                      this.euid,
+									  {idx:$("#" + this.euid + " .attribute").length-1,
+									   text:opt.text});
 	   if (h1 > h2 ) {
          this.parrent.opman.reportShort("option",
 		                                this.euid,
