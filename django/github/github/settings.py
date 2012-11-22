@@ -67,7 +67,7 @@ STATIC_URL = '/static/'
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    "/home/apk301/playground/umlsync/umlsync/django/github/editor",
+    "/home/pavel/dev/umlsync/django/github/editor",
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
@@ -106,7 +106,7 @@ ROOT_URLCONF = 'github.urls'
 WSGI_APPLICATION = 'github.wsgi.application'
 
 TEMPLATE_DIRS = (
-    "/home/apk301/playground/umlsync/umlsync/django/github/templates",
+    "/home/pavel/dev/umlsync/django/github/templates",
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
