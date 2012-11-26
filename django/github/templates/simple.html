@@ -14,26 +14,40 @@
       auth: "oauth"
     });
   };
+  function printRepos(repos ) {
+    for (var i=0;i<repos.length;i++)
+    { 
+      $("#repos").append(repos[i].name + "<br>");
+    }
+  };
   $(document).ready(function() {
+    var user = github().getUser();
+    username = "{{ user }}";
+    user.repos(function(err, repos){ printRepos(repos) });
     $('#commit').submit(function() {
       username = "{{ user }}";
       var user = github().getUser();
       var repo = github().getRepo(username, "octotest");
       var code = $('input[name=code]');
+      var path = $('input[name=path]');
       var msg = $('input[name=msg]');
-      repo.write('master', 'path/test.txt', code.val(), msg.val(), function(err) {});
+      repo.write('master', path.val(), code.val(), msg.val(), function(err) {});
       return false;
     });
   });
 </script>
 </head>
 <body>
-User: {{ user }} <br>
-Access token: {{ access_token }} <br>
+<b>User:</b> {{ user }} <br>
+<b>Access token:</b> {{ access_token }} <br>
+<b>Available repos:</b> <div id="repos"></div></br>
+<div style="border: solid 1px #000000;">
 <form id="commit">
-Code: <input  name="code" type="text" value="JSON code"></input><br>
-Commit: <input name="msg" type="text" value="Test Commit"></input><br>
+Path to file: <input  name="path" type="text" value="path/to/test.json"></input><br>
+Code to commit: <input  name="code" type="text" value="JSON code"></input><br>
+Commit message: <input name="msg" type="text" value="Test Commit"></input><br>
 <input type="submit" value="Commit">
 </form>
+</div>
 </body>
 </html>
