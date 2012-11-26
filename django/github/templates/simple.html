@@ -8,22 +8,30 @@
   <script src="/static/github.js"></script>
   <script>
   $(document).ready(function() {
-    username = "{{ user }}";
-    access_token = "{{access_token}}";
-    var github = new Github({
-      token: access_token,
-      auth: "oauth"
+    $('#commit').submit(function() {
+      username = "{{ user }}";
+      access_token = "{{access_token}}";
+        var github = new Github({
+        token: access_token,
+        auth: "oauth"
+      });
+      var user = github.getUser();
+      var repo = github.getRepo(username, "octotest");
+      var code = $('input[name=code]');
+      var msg = $('input[name=msg]');
+      repo.write('master', 'path/test.txt', code.val(), msg.val(), function(err) {});
+      return false;
     });
-    var user = github.getUser();
-    var repo = github.getRepo(username, "octotest");
-    repo.show(function(err, repo) { console.log(repo) });
-    //repo.write('master', 'path/test.txt', 'Test Commit', 'Test Commit', function(err) {});
-    repo.getTree('master?recursive=true', function(err, tree) { console.log(tree) });
   });
 </script>
 </head>
 <body>
 User: {{ user }} <br>
-Access token: {{ access_token }}
+Access token: {{ access_token }} <br>
+<form id="commit">
+Code: <input  name="code" type="text" value="JSON code"></input><br>
+Commit: <input name="msg" type="text" value="Test Commit"></input><br>
+<input type="submit" value="Commit">
+</form>
 </body>
 </html>
