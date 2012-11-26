@@ -7,16 +7,18 @@
   <script src="/static/underscore-min.js"></script>
   <script src="/static/github.js"></script>
   <script>
+  function github() {
+    access_token = "{{ access_token }}";
+    return new Github({
+      token: access_token,
+      auth: "oauth"
+    });
+  };
   $(document).ready(function() {
     $('#commit').submit(function() {
       username = "{{ user }}";
-      access_token = "{{access_token}}";
-        var github = new Github({
-        token: access_token,
-        auth: "oauth"
-      });
-      var user = github.getUser();
-      var repo = github.getRepo(username, "octotest");
+      var user = github().getUser();
+      var repo = github().getRepo(username, "octotest");
       var code = $('input[name=code]');
       var msg = $('input[name=msg]');
       repo.write('master', 'path/test.txt', code.val(), msg.val(), function(err) {});
