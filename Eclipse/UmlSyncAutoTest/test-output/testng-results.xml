@@ -1,37 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="0" total="2" passed="2">
+<testng-results skipped="0" failed="0" total="3" passed="3">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="32673" started-at="2012-11-23T10:42:58Z" finished-at="2012-11-23T10:43:31Z">
+  <suite name="Default suite" duration-ms="22923" started-at="2012-11-26T14:33:44Z" finished-at="2012-11-26T14:34:07Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="32673" started-at="2012-11-23T10:42:58Z" finished-at="2012-11-23T10:43:31Z">
-      <class name="org.umlsync.autotest.filemenu.ClassDiagramElements">
-        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.ClassDiagramElements@7042058f]" name="startSelenium" is-config="true" duration-ms="6815" started-at="2012-11-23T14:42:58Z" finished-at="2012-11-23T14:43:05Z">
+    <test name="Default test" duration-ms="22923" started-at="2012-11-26T14:33:44Z" finished-at="2012-11-26T14:34:07Z">
+      <class name="org.umlsync.autotest.filemenu.TestOperationManager">
+        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="startSelenium" is-config="true" duration-ms="6254" started-at="2012-11-26T18:33:44Z" finished-at="2012-11-26T18:33:50Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- startSelenium -->
-        <test-method status="PASS" signature="testClassEditable()[pri:0, instance:org.umlsync.autotest.filemenu.ClassDiagramElements@7042058f]" name="testClassEditable" duration-ms="19465" started-at="2012-11-23T14:43:05Z" finished-at="2012-11-23T14:43:25Z">
+        <test-method status="PASS" signature="testAddRemoveDndElement()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="testAddRemoveDndElement" duration-ms="2768" started-at="2012-11-26T18:33:50Z" finished-at="2012-11-26T18:33:53Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testAddRemoveDndElement -->
+        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="stopSelenium" is-config="true" duration-ms="7" started-at="2012-11-26T18:33:53Z" finished-at="2012-11-26T18:33:53Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- stopSelenium -->
+        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="startSelenium" is-config="true" duration-ms="3986" started-at="2012-11-26T18:33:53Z" finished-at="2012-11-26T18:33:57Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- startSelenium -->
+        <test-method status="PASS" signature="testClassEditable()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="testClassEditable" duration-ms="2546" started-at="2012-11-26T18:33:57Z" finished-at="2012-11-26T18:34:00Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testClassEditable -->
-        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.ClassDiagramElements@7042058f]" name="stopSelenium" is-config="true" duration-ms="18" started-at="2012-11-23T14:43:25Z" finished-at="2012-11-23T14:43:25Z">
+        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="stopSelenium" is-config="true" duration-ms="8" started-at="2012-11-26T18:34:00Z" finished-at="2012-11-26T18:34:00Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- stopSelenium -->
-        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.ClassDiagramElements@7042058f]" name="startSelenium" is-config="true" duration-ms="4321" started-at="2012-11-23T14:43:25Z" finished-at="2012-11-23T14:43:29Z">
+        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="startSelenium" is-config="true" duration-ms="4176" started-at="2012-11-26T18:34:00Z" finished-at="2012-11-26T18:34:04Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- startSelenium -->
-        <test-method status="PASS" signature="testClassElementsCreation()[pri:0, instance:org.umlsync.autotest.filemenu.ClassDiagramElements@7042058f]" name="testClassElementsCreation" duration-ms="2017" started-at="2012-11-23T14:43:29Z" finished-at="2012-11-23T14:43:31Z">
+        <test-method status="PASS" signature="testClassSortable()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="testClassSortable" duration-ms="3151" started-at="2012-11-26T18:34:04Z" finished-at="2012-11-26T18:34:07Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testClassElementsCreation -->
-        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.ClassDiagramElements@7042058f]" name="stopSelenium" is-config="true" duration-ms="18" started-at="2012-11-23T14:43:31Z" finished-at="2012-11-23T14:43:31Z">
+        </test-method> <!-- testClassSortable -->
+        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestOperationManager@7129a843]" name="stopSelenium" is-config="true" duration-ms="5" started-at="2012-11-26T18:34:07Z" finished-at="2012-11-26T18:34:07Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- stopSelenium -->
-      </class> <!-- org.umlsync.autotest.filemenu.ClassDiagramElements -->
+      </class> <!-- org.umlsync.autotest.filemenu.TestOperationManager -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>

@@ -102,7 +102,10 @@ public class ClassDiagramElements {
 		
 		selenium.click("css=#class2 > div.us-class-header > a");
 		selenium.keyPress("css=#class2 > div.us-class-header > a > input", "TestEditableByTab");
-		selenium.blur("css=#name input");		
+		selenium.blur("css=#name input");
+		selenium.keyPress("css=#class0", Keys.chord( Keys.CONTROL, "a"));
+		
+		
 		
 		selenium.click("link=Class");
 	}

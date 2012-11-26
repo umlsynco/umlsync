@@ -3,13 +3,12 @@
 <suite name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="org.umlsync.autotest.filemenu.ClassDiagramElements">
+      <class name="org.umlsync.autotest.filemenu.TestOperationManager">
         <methods>
-          <include name="stopSelenium"/>
+          <include name="testClassSortable"/>
           <include name="startSelenium"/>
-          <include name="testClassEditable"/>
         </methods>
-      </class> <!-- org.umlsync.autotest.filemenu.ClassDiagramElements -->
+      </class> <!-- org.umlsync.autotest.filemenu.TestOperationManager -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
