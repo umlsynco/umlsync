@@ -17,7 +17,8 @@
   function printRepos(repos ) {
     for (var i=0;i<repos.length;i++)
     { 
-      $("#repos").append(repos[i].name + "<br>");
+      is_private = repos[i].private ? "Private" : "Public";
+      $("#repos").append(repos[i].full_name + " " +  is_private + "<br>");
     }
   };
   $(document).ready(function() {
