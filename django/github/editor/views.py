@@ -92,4 +92,4 @@ def editor2(request, *args, **kwargs):
     if auth_response:
         return auth_response
 
-    return render_to_response('simple.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))
+    return render_to_response('editor.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))
