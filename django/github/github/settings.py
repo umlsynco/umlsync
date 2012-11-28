@@ -67,7 +67,6 @@ STATIC_URL = '/static/'
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    "/home/pavel/dev/umlsync/django/github/editor",
     "/home/pavel/dev/umlsync/django/3pp",
     "/home/pavel/dev/umlsync/diagrammer"
     # Always use forward slashes, even on Windows.
