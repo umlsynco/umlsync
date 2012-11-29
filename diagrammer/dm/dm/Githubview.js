@@ -96,24 +96,18 @@ Version:
         var self = {
 		    euid: "Github",
             // Check if loging required
-            init: function() {
+            init: function(username) {
 			  $.ajax({
-				url: 'https://api.github.com/user/repos',
+				url: 'https://api.github.com/users/' + username + '/repos',
                   dataType: 'jsonp',
                   success: function(mdata) {
-                       var data = mdata.data;
-					
-					  data = [{name:"umlsync",
-					           full_name:"umlsynco/diagrams",
-							   url: "https://api.github.com/repos/umlsynco/diagrams",
-							   private: false}];
-					
+                  	var data = mdata.data;
 					if (dm.dm.dialogs)
                     dm.dm.dialogs['SelectRepoDialog'](data, function(repo) {
 				      var IGhView = new dm.base.GithubView(repo, "{{ access_token }}");
 				      dm.dm.fw.addView2('Github', IGhView);
 				    });
-  			  }
+  			  		}
 			  });
             },
             info: function(callback) {
@@ -124,7 +118,8 @@ Version:
             },
 		    'save': function(path, data, description) {
 			var content = data;
-			/*alert("SAVE:" + data);
+			alert("SAVE:" + data);
+			/*
 			//if (typeof(content) === "string") {
 content = {
 "content": content,
