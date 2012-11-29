@@ -66,12 +66,12 @@
   <script src="/static/dm/cs/transition.js"></script>
   <script src="/static/dm/hs/framework.js"></script>
   <script src="/static/dm/ms/ctx/class.js"></script>
-  
-  
   <script>
+
   //$.log = function() {};
 
   $(document).ready(function() {
+
     var Loader = new dm.base.loader("http://localhost:8000/static/");
     var fw = new dm.hs.framework(Loader);
 
@@ -144,21 +144,35 @@
   });  
 */
 
+    function github() {
+      access_token = "{{ access_token }}";
+      return new Github({
+        token: access_token,
+        auth: "oauth"
+      });
+    };
+
+    var user = github().getUser();
+    username = "{{ user }}";
+    token = "{{ access_token }}";
+
+    console.log(username);
+    console.log(token);
+
     dm.dm = dm.dm || {};
-	dm.dm.IGithubView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams/");
-  	    dm.dm.IGithubView.euid = "Github";
+    dm.dm.IGithubView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams/", token);
+  	dm.dm.IGithubView.euid = "Github";
 		fw.addView2('Github', dm.dm.IGithubView);
     dm.dm.IGithubView.init();
 	
     dm.dm.IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
-	dm.dm.IFilesView.euid = 'SelfView';
-	fw.addView2('SelfView', dm.dm.IFilesView);
+    dm.dm.IFilesView.euid = 'SelfView';
+    fw.addView2('SelfView', dm.dm.IFilesView);
       
 //		$("li").live("mouseenter", function() {
 //			$(this).attr( {"title": this.id});
 //		});
   });
-  
 </script>
 
 
