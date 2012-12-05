@@ -20,6 +20,7 @@ Version:
 
     dm.base.GithubView = function(url, token) {
         function treeView(data, textStatus, jqXHR) {
+        	  console.log("data", data);
               //the variable 'data' will have the JSON object
               // In your example, the following will work:
                 if (data['data']) {
@@ -32,6 +33,7 @@ Version:
                         ret[j]["isLazy"] = false;
                         ret[j]["title"] = json["tree"][j]["path"];
                         ret[j]["sha"] = json["tree"][j]["sha"];
+                        ret[j]["url"] = json["tree"][j]["url"];
                     } else if (json["tree"][j]["type"] == "tree") {
                         ret[j]["isFolder"] = true;
                         ret[j]["isLazy"] = true;
@@ -104,9 +106,9 @@ Version:
       				});
     			};
     			function showRepos(repos) {
-    				console.log(repos);
 					if (dm.dm.dialogs)
                     	dm.dm.dialogs['SelectRepoDialog'](repos, function(repo) {
+                    		"repo URL is stored in repo variable"
 				      		var IGhView = new dm.base.GithubView(repo, access_token);
 							dm.dm.fw.addView2('Github', IGhView);
 						});
@@ -151,12 +153,15 @@ content = {
 		    },
 			'loadDiagram': function(node, callback) {
 			  if (node && node.data && node.data.sha) {
+			  	console.log("loadDiagram()");
+			  	console.log(node.data);
+			  	console.log(node.data.url);
 		        $.ajax({
-		          url: 'https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs/'+node.data.sha,
+		          url: node.data.url,
                   accepts: 'application/vnd.github-blob.raw',
 			      dataType: 'jsonp',
                   success: function(x, y, z) {decodeContent(x,y,z,callback.success);},
-			      error:callback.error
+			      error: callback.error
 		        });
 			  }
 			},
@@ -226,6 +231,8 @@ content = {
                                dataType:"jsonp"});
                 },
                 onActivate: function(node) {
+                	console.log("activate");
+                	console.log("node" + node.data);
                     if ((!node.data.isFolder)
                         && (node.data.title.indexOf(".json") != -1))
 						dm.dm.fw.loadDiagram(self.euid, node);
