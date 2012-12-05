@@ -16,7 +16,7 @@ Version:
 //@aspect
 (function($, dm, undefined) {
     
-    dm.base.GithubView = function(url, access_token) {
+    dm.base.GithubView = function(url, username, access_token) {
     	function github() {
       		return new Github({
         		token: access_token,
@@ -107,7 +107,7 @@ Version:
 					if (dm.dm.dialogs)
                     	dm.dm.dialogs['SelectRepoDialog'](repos, function(repo) {
                     		"repo URL is stored in repo variable"
-				      		var IGhView = new dm.base.GithubView(repo, access_token);
+				      		var IGhView = new dm.base.GithubView(repo, username, access_token);
 							dm.dm.fw.addView2('Github', IGhView);
 						});
                 };
@@ -190,22 +190,30 @@ Version:
                     dataType:"jsonp",
                     postProcess: treeView
                 },
-                onCreate: function(node, span){
-                   $(span).bind('contextmenu', function(e) {
-				     var node = $.ui.dynatree.getNode(e.currentTarget);
-					 dm.dm.fw.ShowContextMenu("Github", e, node);
-					 e.preventDefault();
-				   });
+                onCreate: function(node, span) {
+                	console.log("onCreate()");
+                	// This reads both public and private repos
+                	var repo = github().getRepo(username, pUrl.split('/').pop());
+                	repo.getTree('master', function(err, tree) {console.log(tree)});
+                	// FIXME: process Object here and push it to the tree
+
+                  	$(span).bind('contextmenu', function(e) {
+				    	var node = $.ui.dynatree.getNode(e.currentTarget);
+					 	dm.dm.fw.ShowContextMenu("Github", e, node);
+					 	e.preventDefault();
+				   	});
                 },
-                onLazyRead: function(node){
+                onLazyRead: function(node) {
+                	console.log("onLazyRead()");
+                	console.log(pUrl);
+
                     if (node.data.isFolder)
                         node.appendAjax({url: pUrl + "/git/trees/" + node.data.sha,
                                postProcess: treeView,
                                dataType:"jsonp"});
                 },
                 onActivate: function(node) {
-                	console.log("activate");
-                	console.log("node" + node.data);
+                	console.log("onActivate()");
                     if ((!node.data.isFolder)
                         && (node.data.title.indexOf(".json") != -1))
 						dm.dm.fw.loadDiagram(self.euid, node);

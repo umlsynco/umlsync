@@ -151,7 +151,7 @@
     console.log(token);
 
     dm.dm = dm.dm || {};
-    dm.dm.IGithubView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams/", token);
+    dm.dm.IGithubView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams/", username, token);
   	dm.dm.IGithubView.euid = "Github";
 		fw.addView2('Github', dm.dm.IGithubView);
     dm.dm.IGithubView.init(username, token);
