@@ -144,18 +144,9 @@
   });  
 */
 
-    function github() {
-      access_token = "{{ access_token }}";
-      return new Github({
-        token: access_token,
-        auth: "oauth"
-      });
-    };
 
-    var user = github().getUser();
     username = "{{ user }}";
     token = "{{ access_token }}";
-
     console.log(username);
     console.log(token);
 

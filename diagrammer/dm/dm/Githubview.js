@@ -16,10 +16,14 @@ Version:
 //@aspect
 (function($, dm, undefined) {
     
-
-
-    dm.base.GithubView = function(url, token) {
-        function treeView(data, textStatus, jqXHR) {
+    dm.base.GithubView = function(url, access_token) {
+    	function github() {
+      		return new Github({
+        		token: access_token,
+        		auth: "oauth"
+      		});
+    	};
+    	function treeView(data, textStatus, jqXHR) {
         	  console.log("data", data);
               //the variable 'data' will have the JSON object
               // In your example, the following will work:
@@ -99,12 +103,6 @@ Version:
 		    euid: "Github",
             // Check if loging required
             init: function(username, access_token) {
-				function github() {
-      				return new Github({
-        				token: access_token,
-        				auth: "oauth"
-      				});
-    			};
     			function showRepos(repos) {
 					if (dm.dm.dialogs)
                     	dm.dm.dialogs['SelectRepoDialog'](repos, function(repo) {
@@ -123,33 +121,8 @@ Version:
                     callback(null);
             },
 		    'save': function(path, data, description) {
-			var content = data;
-			alert("SAVE:" + data);
-			/*
-			//if (typeof(content) === "string") {
-content = {
-"content": content,
-"encoding": "utf-8"
-};
-//} 
-			_request("POST", pUrl + "/git/blobs", content, function(err, res) {
-			    if (err) { alert("ERR:" + err);} else 
-			    alert("SHA:" + res.sha);
-			}); 
-			*/
-  /*            $.ajax({"url":"https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs?access_token=" + token,
-		      "type":"post",
-		      "data":{"content" : data,
-			      "encoding": "utf-8"},
-		      "success":function(response) {
-			  $.RRRRRRRRRRTTTTTTTTTTTTT = reponse;
-			  alert(response);
-			  alert(response.sha);
-			  alert(response.url);
-		       },
-		       "error" : function() { 
-			   alert("FAILED to create blob 1");},
-		      });*/
+				var content = data;
+				console.log("Saving " + data + " on path: " + path);
 		    },
 			'loadDiagram': function(node, callback) {
 			  if (node && node.data && node.data.sha) {
