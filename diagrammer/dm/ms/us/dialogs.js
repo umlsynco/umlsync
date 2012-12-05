@@ -132,11 +132,9 @@ Version:
         var items = [];
 
         for (var i in data) {
-            if (!data[i]['private']) {
-                var name = data[i]['name'],
-                pr = (data[i]['private']) ? "Private: ":"Public: ";
-                items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr +  data[i]['full_name'] + '</li>');
-            }
+            var name = data[i]['name'],
+            pr = (data[i]['private']) ? "Private: ":"Public: ";
+            items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr +  data[i]['full_name'] + '</li>');
         }
 
         var innerHtml = items.join('');

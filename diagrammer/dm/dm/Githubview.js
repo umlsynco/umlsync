@@ -96,19 +96,23 @@ Version:
         var self = {
 		    euid: "Github",
             // Check if loging required
-            init: function(username) {
-			  $.ajax({
-				url: 'https://api.github.com/users/' + username + '/repos',
-                  dataType: 'jsonp',
-                  success: function(mdata) {
-                  	var data = mdata.data;
+            init: function(username, access_token) {
+				function github() {
+      				return new Github({
+        				token: access_token,
+        				auth: "oauth"
+      				});
+    			};
+    			function showRepos(repos) {
+    				console.log(repos);
 					if (dm.dm.dialogs)
-                    dm.dm.dialogs['SelectRepoDialog'](data, function(repo) {
-				      var IGhView = new dm.base.GithubView(repo, "{{ access_token }}");
-				      dm.dm.fw.addView2('Github', IGhView);
-				    });
-  			  		}
-			  });
+                    	dm.dm.dialogs['SelectRepoDialog'](repos, function(repo) {
+				      		var IGhView = new dm.base.GithubView(repo, access_token);
+							dm.dm.fw.addView2('Github', IGhView);
+						});
+                };
+				var user = github().getUser();
+    			user.repos(function(err, repos){ showRepos(repos) });
             },
             info: function(callback) {
                 // TODO: define github view capabilities
