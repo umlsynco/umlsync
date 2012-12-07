@@ -469,7 +469,8 @@ Version:
 				});
 			});
 */
-			var dt = $(id + " #tree").dynatree(IView.tree).dynatree("getTree");
+            IView.initTree(id + " #tree");
+			
 
 				// Get capabilities
 				// Create context menu

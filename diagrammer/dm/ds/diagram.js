@@ -59,7 +59,6 @@ dm['ctx'] = dm.ms.ctx;
 	
 	dm.base.opman.prototype = {
 		startTransaction: function() {
-		//$.log("startTransaction !!!!!!!!!!!!!!" + this.count);
 		    this.count++;
 			if (this.started) {
 			  return;
@@ -69,7 +68,6 @@ dm['ctx'] = dm.ms.ctx;
 			this.working_stack = new Array();
 		},
 		stopTransaction: function() {
-		//$.log("stopTransaction !!!!!!!!!!!!!!");
 			if (!this.started) {
 			  alert("Transaction was not started");
 			  return;

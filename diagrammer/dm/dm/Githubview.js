@@ -206,7 +206,8 @@ content = {
 					}
 				}
 			],
-            tree: {
+            initTree: function (parentSelector){
+			$(parentSelector).dynatree({
                 persist: true,
                 initAjax: {
                     url: pUrl + '/git/trees/master',
@@ -230,7 +231,8 @@ content = {
                     if ((!node.data.isFolder)
                         && (node.data.title.indexOf(".json") != -1))
 						dm.dm.fw.loadDiagram(self.euid, node);
-                },
+                }
+			 });
             },
         };
 		return self;
