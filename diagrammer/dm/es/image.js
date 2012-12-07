@@ -30,6 +30,12 @@ dm.base.diagram("es.image", dm.es.element, {
             m = h;
          $(self + " img"+self +"img").width(m).height(m);
       });
+	  if (this.options['left']) {
+        $('#' + this.euid + "_Border").css("left", this.options['left']);
+      }
+
+      if (this.options['top'])
+        $('#' + this.euid + "_Border").css('top', this.options['top']);
     }
 });
 

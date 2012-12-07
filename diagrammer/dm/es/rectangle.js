@@ -34,6 +34,13 @@ dm.base.diagram("es.rectangle", dm.es.element, {
 
       $('#' + this.euid  + '_Border .us-component')
          .css('width', this.options.width).css('height', this.options.height);
+		 
+	  if (this.options['left']) {
+        $('#' + this.euid + "_Border").css("left", this.options['left']);
+      }
+
+      if (this.options['top'])
+        $('#' + this.euid + "_Border").css('top', this.options['top']);
     }
 });
 //@aspect

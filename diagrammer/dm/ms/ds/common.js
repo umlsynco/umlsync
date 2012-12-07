@@ -205,6 +205,7 @@ Version:
             //               IT IS NECESSARY TO JOIN THEM - OR DESCRIBE THE DIFFERENCE :)
             //               ONE FOR USUAL MENU AND ANOTHER ONE FOR SELF-CONNECTABLE ITEMS
             //               WHICH DOESN'T REQUIRE THE 2-nd ELEMENT
+var kl;
             $("#" + this.diagram.euid + " .elmenu-" + menu_id + " img").draggable({
                 'appendTo': "#" + iconMenuBuilder.diagram.euid,
                 'helper': function(event) {
@@ -228,8 +229,11 @@ Version:
                        iconMenuBuilder.diagram.Connector(this.id, {'fromId': iconMenuBuilder.currentElement, 'toId': "ConnectionHelper"});
                     }
                 },
-                'drag': function(event) {iconMenuBuilder.diagram.draw();},
+                'drag': function(event, ui) {
+				    iconMenuBuilder.diagram.draw();
+				},
                 'stop': function(event, ui) {
+				  
                   var tid = $(this).attr("aux"),
                       element = $.extend({}, iconMenuBuilder.dmb.getElementById(tid)),
                       lcon = iconMenuBuilder.dmb.getConnectorById(this.id);

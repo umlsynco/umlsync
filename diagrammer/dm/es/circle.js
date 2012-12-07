@@ -50,10 +50,17 @@ dm.base.diagram("es.circle", dm.es.element, {
          $(self + " .us-interfaces").width(m).height(m);
 
       });
-       $.log("INIT INTERFACE : " + this.options.name);
+
       if (this.options.name) {
           $("#" + this.euid + " .name").val(this.options.name);
       }
+	  
+	  if (this.options['left']) {
+        $('#' + this.euid + "_Border").css("left", this.options['left']);
+      }
+
+      if (this.options['top'])
+        $('#' + this.euid + "_Border").css('top', this.options['top']);
     }
 });
 

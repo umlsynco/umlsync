@@ -55,6 +55,13 @@ dm.base.diagram("es.interface", dm.es.element, {
 
       });
 
+	  if (this.options['left']) {
+        $('#' + this.euid + "_Border").css("left", this.options['left']);
+      }
+
+      if (this.options['top'])
+        $('#' + this.euid + "_Border").css('top', this.options['top']);
+	  
       if (this.options.name) {
 	      var self = this;
           $("<div id='name' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.nameY+"px;left:"+this.options.nameX+"px;\">" + this.options.name + "</div>")

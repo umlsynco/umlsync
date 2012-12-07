@@ -21,6 +21,12 @@ dm.base.diagram("es.instance", dm.es.element, {
     },
 	_init: function() {
 	  $("#" + this.euid + " .us-instance-spec .us-sortable").sortable().disableSelection();
+	  if (this.options['left']) {
+        $('#' + this.euid + "_Border").css("left", this.options['left']);
+      }
+
+      if (this.options['top'])
+        $('#' + this.euid + "_Border").css('top', this.options['top']);
 	},
 	addSpec: function(desc) {
        var hg = $('<li><a class="editablefield specification" >' + desc + '</a></li>').appendTo("#" + this.euid + " .us-instance-spec .us-sortable").find("a").editable().height();

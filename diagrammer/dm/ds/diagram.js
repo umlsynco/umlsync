@@ -48,7 +48,7 @@ dm['ctx'] = dm.ms.ctx;
 (function( $, dm, undefined ) {
 
     dm.base.opman = function(diagram) {
-	    this.queueLimit = 10; // Limit for count of operations.
+	    this.queueLimit = 24; // Limit for count of operations.
 		this.diagram = diagram;
 		this.queue = new Array();
         this.revertedQueue = new Array();
@@ -1657,6 +1657,11 @@ dm['ctx'] = dm.ms.ctx;
 
             $(this.element).wrap('<div id="' + this.euid + '_Border"' + poz + ' class="us-element-border"></div>');
 
+			// Setup menu attribute for automated testing
+			if (this.options.menu) {
+			   $("#" + this.euid + "_Border").attr("menu", this.options.menu);
+			}
+			
             var parrentClass = this.parrent;
             var self = this;
 			self.highlighted = false;
