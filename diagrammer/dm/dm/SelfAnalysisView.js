@@ -157,7 +157,8 @@ Version:
 			   },
 			  ]
 			},
-			'tree': {
+			'initTree': function(parentSelector) { 
+			  $(parentSelector).dynatree({
 				persist: true,
 				children: {title: 'dm', isLazy:true, isFolder:true, key:"root"}, 
                 onCreate: function(node, span){
@@ -230,7 +231,8 @@ Version:
 						$.log("DYNATREE DND STOP");
 					}
 				}
-			} //tree
+			});
+		    }
 		};
 
 //	@aspect

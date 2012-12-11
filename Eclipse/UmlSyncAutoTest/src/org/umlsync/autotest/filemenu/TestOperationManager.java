@@ -156,7 +156,8 @@ public class TestOperationManager {
 		
 		selenium.dragAndDrop("xpath=//li[@id=\"operation\"][1]", "+42,+62");
 		selenium.dragAndDrop("xpath=//li[@id=\"operation\"][2]", "+22,-22");
-
+String value = selenium.getValue("xpath=//li[@id=\"operation\"][1]");
+value = selenium.getText("xpath=//li[@id=\"operation\"][1]");
 
 		selenium.keyPress("css=#class0", Keys.chord( Keys.CONTROL, "z"));
 		selenium.keyPress("css=#class0", Keys.chord( Keys.CONTROL, "z"));

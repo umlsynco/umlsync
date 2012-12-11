@@ -3,12 +3,53 @@
 <suite name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
+      <class name="org.umlsync.autotest.filemenu.TestFileMenuHandler">
+        <methods>
+          <include name="startSelenium"/>
+        </methods>
+      </class> <!-- org.umlsync.autotest.filemenu.TestFileMenuHandler -->
       <class name="org.umlsync.autotest.filemenu.TestOperationManager">
         <methods>
-          <include name="testClassSortable"/>
+          <include name="stopSelenium"/>
           <include name="startSelenium"/>
         </methods>
       </class> <!-- org.umlsync.autotest.filemenu.TestOperationManager -->
+      <class name="org.umlsync.autotest.filemenu.TestEditorFramework">
+        <methods>
+          <include name="testEditor_CreateAllElements"/>
+          <include name="testEditor_ElementsIconMenusDND"/>
+          <include name="testEditor_ActivateOpenedDiagramMenus"/>
+          <include name="testEditor_ElementsIconMenus"/>
+          <include name="testEditor_CreateAndResizellElements"/>
+          <include name="testEditor_CreateAllElementsAndCheckSelection"/>
+          <include name="testEditor_ActivateOpenedDiagrams"/>
+          <include name="startSelenium"/>
+          <include name="testEditor_CreateAndDndAndResizeAllElements"/>
+          <include name="testEditor_CreateAndDndAndMultipleDndAllElements"/>
+          <include name="testEditor_CreateAndDndAllElements"/>
+          <include name="testEditor_CreateAllTypeOfDiagrams" invocation-numbers="0 1 2 3"/>
+        </methods>
+      </class> <!-- org.umlsync.autotest.filemenu.TestEditorFramework -->
+      <class name="org.umlsync.autotest.filemenu.FileMenuHover">
+        <methods>
+          <include name="startSelenium"/>
+          <include name="stopSelenium"/>
+        </methods>
+      </class> <!-- org.umlsync.autotest.filemenu.FileMenuHover -->
+      <class name="org.umlsync.autotest.filemenu.ClassDiagramElements">
+        <methods>
+          <include name="stopSelenium"/>
+          <include name="startSelenium"/>
+        </methods>
+      </class> <!-- org.umlsync.autotest.filemenu.ClassDiagramElements -->
+      <class name="org.umlsync.autotest.filemenu.TestClassDiagram">
+        <methods>
+          <include name="startSelenium"/>
+          <include name="testClassDiagram_OperationManager3"/>
+          <include name="stopSelenium"/>
+          <include name="testClassDiagram_OperationManager2"/>
+        </methods>
+      </class> <!-- org.umlsync.autotest.filemenu.TestClassDiagram -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

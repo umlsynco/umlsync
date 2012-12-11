@@ -153,7 +153,7 @@ content = {
 			'loadDiagram': function(node, callback) {
 			  if (node && node.data && node.data.sha) {
 		        $.ajax({
-		          url: 'https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs/'+node.data.sha,
+		          url: 'https://api.github.com/repos/umlsynco/diagrams/git/blobs/'+node.data.sha,
                   accepts: 'application/vnd.github-blob.raw',
 			      dataType: 'jsonp',
                   success: function(x, y, z) {decodeContent(x,y,z,callback.success);},
