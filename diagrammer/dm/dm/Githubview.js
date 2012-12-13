@@ -24,7 +24,6 @@ Version:
       		});
     	};
     	function treeView(data, textStatus, jqXHR) {
-        	  console.log("data", data);
               //the variable 'data' will have the JSON object
               // In your example, the following will work:
                 if (data['data']) {
@@ -45,6 +44,7 @@ Version:
                         ret[j]["sha"] = json["tree"][j]["sha"];
                     }
                   }
+                  console.log("Processing ret ->", ret);
                   return ret;
                 }
               return data;
@@ -121,9 +121,12 @@ Version:
                     callback(null);
             },
 		    'save': function(path, data, description) {
-				var content = data;
-				console.log("Saving " + data + " on path: " + path);
-		    },
+				  var content = data;
+				  console.log("Saving " + data.toString() + " on path: " + path.toString());
+          var repo = github().getRepo(username, pUrl.split('/').pop());
+          repo.write('master', path.toString().substring(1), data.toString(), "Autosaving.", function(err) {});
+		    
+        },
 			'loadDiagram': function(node, callback) {
 			  if (node && node.data && node.data.sha) {
 			  	console.log("loadDiagram()");
@@ -183,41 +186,47 @@ Version:
 					}
 				}
 			],
-            tree: {
-                persist: true,
-                initAjax: {
-                    url: pUrl + '/git/trees/master',
-                    dataType:"jsonp",
-                    postProcess: treeView
-                },
-                onCreate: function(node, span) {
-                	console.log("onCreate()");
-                	// This reads both public and private repos
-                	var repo = github().getRepo(username, pUrl.split('/').pop());
-                	repo.getTree('master', function(err, tree) {console.log(tree)});
-                	// FIXME: process Object here and push it to the tree
+            initTree: function (parentSelector) {
+               console.log("initTree()");
+               function updateTree(tree) {
+                    console.log("updateTree()");
+                    datax = {};
+                    datax["data"] = {};
+                    datax["data"]["tree"] = tree;
+                    real_tree = {}
+                    real_tree = treeView(datax);
 
-                  	$(span).bind('contextmenu', function(e) {
-				    	var node = $.ui.dynatree.getNode(e.currentTarget);
-					 	dm.dm.fw.ShowContextMenu("Github", e, node);
-					 	e.preventDefault();
-				   	});
-                },
-                onLazyRead: function(node) {
-                	console.log("onLazyRead()");
-                	console.log(pUrl);
-
-                    if (node.data.isFolder)
+                    $(parentSelector).dynatree({
+                      persist: true,
+                      children: real_tree,
+                      onCreate: function(node, span) {
+                        console.log("onCreate()");
+                        $(span).bind('contextmenu', function(e) {
+                        var node = $.ui.dynatree.getNode(e.currentTarget);
+                        dm.dm.fw.ShowContextMenu("Github", e, node);
+                        e.preventDefault();
+                        });
+                      },
+                    /*onLazyRead: function(node) {
+                      //FIXME not working now
+                      console.log("onLazyRead()");
+                      console.log(pUrl);
+                      if (node.data.isFolder)
                         node.appendAjax({url: pUrl + "/git/trees/" + node.data.sha,
-                               postProcess: treeView,
-                               dataType:"jsonp"});
-                },
-                onActivate: function(node) {
-                	console.log("onActivate()");
-                    if ((!node.data.isFolder)
+                          postProcess: treeView,
+                          dataType:"jsonp"});
+                    },*/
+                    onActivate: function(node) {
+                      console.log("onActivate()");
+                      if ((!node.data.isFolder)
                         && (node.data.title.indexOf(".json") != -1))
-						dm.dm.fw.loadDiagram(self.euid, node);
-                },
+                          dm.dm.fw.loadDiagram(self.euid, node);
+                    }
+                  });
+                  };
+                  // Read repository
+                  var repo = github().getRepo(username, pUrl.split('/').pop());
+                  repo.getTree('master?recursive=true', function(err, tree) { updateTree(tree) });
             },
         };
 		return self;

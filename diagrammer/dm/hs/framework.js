@@ -469,8 +469,7 @@ Version:
 				});
 			});
 */
-			var dt = $(id + " #tree").dynatree(IView.tree).dynatree("getTree");
-
+			IView.initTree(id + " #tree");
 				// Get capabilities
 				// Create context menu
 				return id;
@@ -596,7 +595,7 @@ Version:
 			
 		    var self = this;
 		    if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
-			  alert("View: " + viewid + " was not initialize.");
+			  alert("View: " + viewid + " was not initialized.");
 			  return;
 			}
 			if (self.views[viewid])
