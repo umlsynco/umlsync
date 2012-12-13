@@ -84,20 +84,6 @@ Version:
 	//}
 	data ? xhr.send(JSON.stringify(data)) : xhr.send();
     }         
-        function decodeContent(data, textStatus, jqXHR, callback) {
-          for (d in data) {
-            if (d == 'data') {
-               var splitted = data[d].content.split('\n');
-               var decoded = "";
-               for (s in splitted) {
-                 decoded += $.base64.decode(splitted[s]);
-               }
-               var json = $.parseJSON(decoded);
-			   if (callback) callback(json);
-            }
-          }
-        };
-
         var pUrl = url;
         var self = {
 		    euid: "Github",
@@ -132,13 +118,11 @@ Version:
 			  	console.log("loadDiagram()");
 			  	console.log(node.data);
 			  	console.log(node.data.url);
-		        $.ajax({
-		          url: node.data.url,
-                  accepts: 'application/vnd.github-blob.raw',
-			      dataType: 'jsonp',
-                  success: function(x, y, z) {decodeContent(x,y,z,callback.success);},
-			      error: callback.error
-		        });
+          console.log(node.data.title);
+          var repo = github().getRepo(username, pUrl.split('/').pop());
+          repo.read('master', node.data.title.toString(), function(err, data) {
+            console.log(data);
+            callback.success($.parseJSON(data)) } );
 			  }
 			},
 			'ctx_menu': [
@@ -155,16 +139,6 @@ Version:
 					  if ((!node.data.isFolder)
                         && (node.data.title.indexOf(".json") != -1)) {
 						dm.dm.fw.loadDiagram(self.euid, node);
-                    /*$.ajax({
-                        accepts: 'application/vnd.github-blob.raw',
-                        dataType: 'jsonp',
-                        url: 'https://api.github.com/repos/EvgenyAlexeyev/umlsync/git/blobs/'+node.data.sha,
-                        success: decodeContent,
-                        error: function(jqXHR, textStatus, errorThrown) {
-                           //Error handling code
-                           alert('Oops there was an error');
-                        },
-                    });*/
 				      }
 					} // click
 			   },
