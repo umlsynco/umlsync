@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import org.umlsync.autotest.components.EditorFramework;
 import org.umlsync.autotest.components.elements.ClassWrapper;
+import org.umlsync.autotest.components.elements.Connector;
 import org.umlsync.autotest.components.elements.Diagram;
 import org.umlsync.autotest.components.elements.Element;
 import org.umlsync.autotest.selenium.WebJQueryDriverBackedSelenium;
@@ -279,9 +280,16 @@ public class TestClassDiagram {
 		Assert.assertEquals(element != null, true);
 
 		ClassWrapper classElement = new ClassWrapper(selenium, driver, element);
-		
-		classDiagram.getIconMenu().dragAndDrop(element, "aggregation", 300, 0);
+		classElement.Select();
+		classDiagram.getIconMenu().dragAndDrop(element, "aggregation", 310, 0);
 
+		Element element2 = classDiagram.IdentifyNewElement();
 		
+		Connector con1 = classDiagram.IdentifyNewConnector();
+		
+		con1.AddEpointByIndex(0);
+		con1.AddEpointByIndex(1);
+		con1.AddEpointByIndex(2);
+		con1.AddEpointByIndex(0);
 	}
 }

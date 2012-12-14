@@ -78,16 +78,18 @@ public class ElementWrapper {
 	 * @return width of element
 	 */
 	public int Width() {
+		//eturn selenium.getElementWidth("id="+element.GetEuid()).intValue();
 		WebElement e = driver.findElement(By.id(element.GetEuid()));
-		return e.getSize().width;
+		return e.getSize().getWidth();
 	}
 
 	/*
 	 * @return height of element
 	 */
 	public int Height() {
+//		return selenium.getElementHeight("id="+element.GetEuid()).intValue();
 		WebElement e = driver.findElement(By.id(element.GetEuid()));
-		return e.getSize().height;
+		return e.getSize().getHeight();
 	}
 	
 	public Dimension Dimention() {

@@ -24,6 +24,7 @@ public class Diagram {
 	public ContextMenuHandler contextMenuHandler;
 	
 	private List<Element> elements = new ArrayList<Element>();
+	private List<Connector> connectors = new ArrayList<Connector>();
 	
 	public KeyHandler keyHandler;
 	
@@ -105,10 +106,12 @@ public class Diagram {
 		return elements;
 	}
 
-	public String CreateConnector(String type) {
-		return null;
+/*	public Connector CreateConnector(String euid, Element from, Element to) {
+		Connector con =  new Connector(selenium, driver, euid, this, from, to);
+		connectors.add(con);
+		return con;
 	}
-
+*/
 	public boolean IsActive() {
 
 		return false;		
@@ -127,6 +130,46 @@ public class Diagram {
 	public void SelectNone() {
 		selenium.click("id="+this.locator);
 		
+	}
+	
+	public Element GetElementByEuid(String euid) {
+		Iterator<Element> iter = this.elements.iterator();
+		while (iter.hasNext()) {
+			Element next = iter.next();
+			if (next.GetEuid().equals(euid)) {
+				return next;
+			}
+		}
+		return null;
+	}
+
+	public Connector IdentifyNewConnector() {
+		String res = selenium.getEval("dm.at.cs.created;");
+		if (res == null)
+			return null;
+
+		String[] splitted = res.split(",");
+		String conEuid = (splitted[2].split("="))[1];
+		String fromEuid = (splitted[1].split("="))[1];
+		String toEuid = (splitted[0].split("="))[1];
+		
+	
+		return new Connector(selenium,
+				 			 driver,
+				 			 conEuid,
+				 			 this,
+				 			 new ElementWrapper(selenium, driver, GetElementByEuid(fromEuid)),
+				 			 new ElementWrapper(selenium, driver, GetElementByEuid(toEuid)));
+	}
+
+	public int Left() {
+		WebElement e = driver.findElement(By.id(this.locator));
+		return e.getLocation().x;
+	}
+
+	public int Top() {
+		WebElement e = driver.findElement(By.id(this.locator));
+		return e.getLocation().y;
 	}
 
 }
