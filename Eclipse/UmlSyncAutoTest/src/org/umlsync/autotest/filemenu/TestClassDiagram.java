@@ -26,17 +26,17 @@ public class TestClassDiagram {
 	@BeforeSuite
 	public void startSelenium() {
 		driver = new FirefoxDriver();
-		selenium = new WebJQueryDriverBackedSelenium(driver, "https://mail.google.com/");
+		selenium = new WebJQueryDriverBackedSelenium(driver, AutomatedTestConfiguration.EDITOR_BASE_URL);
 
 		editor = new EditorFramework();
 		editor.init(selenium, driver);
 		editor.Maximize();
 		
 		// Open the page and skip first dialogs
-		selenium.open("file:///C:/Users/aea301/Desktop/Diagrammer/GITHUB/umlsync/diagrammer/index2.html");
-		editor.dialogManager.CancelAll();
-		classDiagram = editor.CreateDiagram("UML class diagram", "TestClassDiagram");
-		Assert.assertEquals(editor.IsDiagramActive(classDiagram), true);
+		selenium.open(AutomatedTestConfiguration.EDITOR_URL);
+		editor.GetDialogManager().CancelAll();
+		classDiagram = editor.GetDiagramManager().CreateDiagram("UML class diagram", "TestClassDiagram");
+		Assert.assertEquals(editor.GetDiagramManager().IsDiagramActive(classDiagram), true);
 	}
 
 	@AfterSuite

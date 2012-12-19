@@ -29,15 +29,15 @@ public class TestEditorFramework {
 	@BeforeSuite
 	public void startSelenium() {
 		driver = new FirefoxDriver();
-		selenium = new WebJQueryDriverBackedSelenium(driver, "https://mail.google.com/");
+		selenium = new WebJQueryDriverBackedSelenium(driver, AutomatedTestConfiguration.EDITOR_BASE_URL);
 
 		editor = new EditorFramework();
 		editor.init(selenium, driver);
 		editor.Maximize();
 
 		// Open the page and skip first dialogs
-		selenium.open("file:///C:/Users/aea301/Desktop/Diagrammer/GITHUB/umlsync/diagrammer/index2.html");
-		editor.dialogManager.CancelAll();
+		selenium.open(AutomatedTestConfiguration.EDITOR_URL);
+		editor.GetDialogManager().CancelAll();
 	}
 
 	@AfterSuite
@@ -57,19 +57,19 @@ public class TestEditorFramework {
 
 	@Test(dataProvider = "NewDiagramSelectorsData")	
 	public void testEditor_CreateAllTypeOfDiagrams(String did, boolean status) {
-		Diagram d = editor.CreateDiagram(did, "Test");
-		Assert.assertEquals(editor.IsDiagramActive(d), status);
+		Diagram d = editor.GetDiagramManager().CreateDiagram(did, "Test");
+		Assert.assertEquals(editor.GetDiagramManager().IsDiagramActive(d), status);
 	}
 
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"}, enabled = true)	
 	public void testEditor_ActivateOpenedDiagrams() {
 		for (int i=0; i<IterationCount; ++i) {
-			Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+			Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 			Diagram d;
 			for (; ds.hasNext();) {
 				d = ds.next();
-				editor.ActivateDiagram(d);
-				Assert.assertEquals(editor.IsDiagramActive(d), true);
+				editor.GetDiagramManager().ActivateDiagram(d);
+				Assert.assertEquals(editor.GetDiagramManager().IsDiagramActive(d), true);
 				Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			}
 		}
@@ -78,7 +78,7 @@ public class TestEditorFramework {
 	@Test(dependsOnMethods={"testEditor_ActivateOpenedDiagrams"}, enabled = true)	
 	public void testEditor_ActivateOpenedDiagramMenus() {
 		for (int i=0; i<IterationCount; ++i) {
-			Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+			Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 			Diagram d;
 			for (; ds.hasNext();) {
 				d = ds.next();
@@ -91,11 +91,11 @@ public class TestEditorFramework {
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"}, enabled = true)	
 	public void testEditor_CreateAllElements() {
 		int x=100,y=100;
-		Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+		Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 		Diagram d;
 		for (; ds.hasNext();) {
 			d = ds.next();
-			editor.ActivateDiagram(d);
+			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
@@ -112,13 +112,13 @@ public class TestEditorFramework {
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"}, enabled = true)	
 	public void testEditor_CreateAndDndAllElements() {
 		int x=100,y=100;
-		Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+		Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 		Diagram d;
 		for (; ds.hasNext();) {
 			int x1=x, y1=y;
 
 			d = ds.next();
-			editor.ActivateDiagram(d);
+			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
@@ -139,13 +139,13 @@ public class TestEditorFramework {
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"}, enabled = true)	
 	public void testEditor_CreateAndResizellElements() {
 		int x=100,y=100;
-		Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+		Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 		Diagram d;
 		for (; ds.hasNext();) {
 			int x1=x, y1=y;
 			d = ds.next();
 			
-			editor.ActivateDiagram(d);
+			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
@@ -165,13 +165,13 @@ public class TestEditorFramework {
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"}, enabled = true)
 	public void testEditor_CreateAndDndAndResizeAllElements() {
 		int x=100,y=100;
-		Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+		Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 		Diagram d;
 		for (; ds.hasNext();) {
 			int x1=x, y1=y;
 			d = ds.next();
 
-			editor.ActivateDiagram(d);
+			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
@@ -194,13 +194,13 @@ public class TestEditorFramework {
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"}, enabled = true)	
 	public void testEditor_CreateAndDndAndMultipleDndAllElements() {
 		int x=100,y=100;
-		Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+		Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 		Diagram d;
 		for (; ds.hasNext();) {
 			int x1=x, y1=y;
 
 			d = ds.next();
-			editor.ActivateDiagram(d);
+			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
@@ -228,12 +228,12 @@ public class TestEditorFramework {
 	 */
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"}, enabled = true)
 	public void testEditor_CreateAllElementsAndCheckSelection() {
-		Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+		Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 		Diagram d;
 		for (; ds.hasNext();) {
 
 			d = ds.next();
-			editor.ActivateDiagram(d);
+			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
@@ -260,12 +260,12 @@ public class TestEditorFramework {
 	//(dependsOnMethods={"testEditor_CreateAllElementsAndCheckSelection"})
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"}, enabled = true)
 	public void testEditor_ElementsIconMenus() {
-		Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+		Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 		Diagram d;
 		for (; ds.hasNext();) {
 
 			d = ds.next();
-			editor.ActivateDiagram(d);
+			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
@@ -288,7 +288,7 @@ public class TestEditorFramework {
 	
 	@Test(dependsOnMethods={"testEditor_CreateAllTypeOfDiagrams"})
 	public void testEditor_ElementsIconMenusDND() {
-		Iterator<Diagram> ds = editor.GetAllDiagrams().iterator();
+		Iterator<Diagram> ds = editor.GetDiagramManager().GetAllDiagrams().iterator();
 		Diagram d;
 		for (; ds.hasNext();) {
 
@@ -299,7 +299,7 @@ public class TestEditorFramework {
 				// Therefore it is not in scope of simple auto tests
 				continue;
 			}
-			editor.ActivateDiagram(d);
+			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 

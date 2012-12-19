@@ -55,12 +55,12 @@ public class TestFileMenuHover {
 	@BeforeMethod
 	public void startSelenium() {
 		driver = new FirefoxDriver();
-		selenium = new WebJQueryDriverBackedSelenium(driver, "https://mail.google.com/");
+		selenium = new WebJQueryDriverBackedSelenium(driver, AutomatedTestConfiguration.EDITOR_BASE_URL);
 		dialogManager = new DialogManager();
 		dialogManager.init(selenium, driver);
 
 		// Open the page and skip first dilogs
-		selenium.open("file:///C:/Users/aea301/Desktop/Diagrammer/GITHUB/umlsync/diagrammer/index2.html");
+		selenium.open(AutomatedTestConfiguration.EDITOR_URL);
 		selenium.click("xpath=(//button[@type='button'])[6]");
 		selenium.click("xpath=(//button[@type='button'])[4]");
 	}
