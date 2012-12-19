@@ -5,18 +5,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.umlsync.autotest.components.elements.Diagram;
 import org.umlsync.autotest.components.elements.Element;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class ContextMenuHandler {
-	private Selenium selenium;
-	private WebDriver driver;
+public class ContextMenuHandler extends TSeleniumClient {
 	private Diagram diagram;
 
-	public ContextMenuHandler(Selenium sel, WebDriver drv, Diagram d) {
-		selenium = sel;
-		driver = drv;
+	public ContextMenuHandler(Diagram d) {
 		diagram = d;
+		d.addClient(this);
 	}
 	
 	/*

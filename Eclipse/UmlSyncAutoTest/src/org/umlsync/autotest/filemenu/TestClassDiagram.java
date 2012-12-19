@@ -28,8 +28,10 @@ public class TestClassDiagram {
 		driver = new FirefoxDriver();
 		selenium = new WebJQueryDriverBackedSelenium(driver, "https://mail.google.com/");
 
-		editor = new EditorFramework(selenium, driver);
-
+		editor = new EditorFramework();
+		editor.init(selenium, driver);
+		editor.Maximize();
+		
 		// Open the page and skip first dialogs
 		selenium.open("file:///C:/Users/aea301/Desktop/Diagrammer/GITHUB/umlsync/diagrammer/index2.html");
 		editor.dialogManager.CancelAll();
@@ -47,7 +49,7 @@ public class TestClassDiagram {
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
 
-		ClassWrapper classElement = new ClassWrapper(selenium, driver, element);
+		ClassWrapper classElement = new ClassWrapper(element);
 
 		classElement.setTitle("TestEditable");
 		Assert.assertEquals(classElement.getTitle().equals("TestEditable"), true);
@@ -64,7 +66,7 @@ public class TestClassDiagram {
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
 
-		ClassWrapper classElement = new ClassWrapper(selenium, driver, element);
+		ClassWrapper classElement = new ClassWrapper(element);
 		int h0 = classElement.getFieldsAreaHeight().intValue();
 
 		classElement.addField("(+) int field1");
@@ -139,7 +141,7 @@ public class TestClassDiagram {
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
 
-		ClassWrapper classElement = new ClassWrapper(selenium, driver, element);
+		ClassWrapper classElement = new ClassWrapper(element);
 		String title = classElement.getTitle();
 		
 		// Set title
@@ -215,7 +217,7 @@ public class TestClassDiagram {
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
 
-		ClassWrapper classElement = new ClassWrapper(selenium, driver, element);
+		ClassWrapper classElement = new ClassWrapper(element);
 		
 		Dimension dim = classElement.Dimention();
 		int fh = classElement.getFieldsAreaHeight().intValue();
@@ -279,7 +281,7 @@ public class TestClassDiagram {
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
 
-		ClassWrapper classElement = new ClassWrapper(selenium, driver, element);
+		ClassWrapper classElement = new ClassWrapper(element);
 		classElement.Select();
 		classDiagram.getIconMenu().dragAndDrop(element, "aggregation", 310, 0);
 
@@ -287,9 +289,11 @@ public class TestClassDiagram {
 		
 		Connector con1 = classDiagram.IdentifyNewConnector();
 		
-		con1.AddEpointByIndex(0);
-		con1.AddEpointByIndex(1);
-		con1.AddEpointByIndex(2);
-		con1.AddEpointByIndex(0);
+		con1.AddEpointByIndex(0, 100, 100);
+		con1.AddEpointByIndex(1, 100, 100);
+		con1.AddEpointByIndex(2, -100, 100);
+		con1.AddEpointByIndex(1, +300, -200);
+		con1.AddEpointByIndex(1, +100, +200);
+		con1.AddEpointByIndex(1, -300, +200);
 	}
 }

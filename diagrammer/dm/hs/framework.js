@@ -65,6 +65,7 @@ Version:
 			  }
 			});
 
+			
 			var $tabs = $("#tabs")
 			        .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
 					'scrollable': true,
@@ -107,6 +108,14 @@ Version:
 					
             $("#tabs").append('<canvas id="SingleCanvas" class="us-canvas" style="left:18px;top:44px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
 
+			// AUTOMATED TEST WORK_AROUND !!!
+			$("#content-right DIV.ui-scrollable-tabs").scroll(
+			   function (e){
+				 $(this).scrollTop(0);
+			     e.preventDefault();
+				 e.stopPropagation();
+			   });
+			   
 			$('#tabs span.ui-test').live('click', function() {
 					var index = $('li', $tabs).index($(this).parent().parent()),
 					    ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
@@ -114,7 +123,6 @@ Version:
 					if (self.diagrams && self.diagrams[ahref]) {
 //@ifdef EDITOR
 						if (self.diagrams[ahref].isModified()) {
-						  alert("SAVE:");
 					  	  var diagram = self.diagrams[ahref];
 					      var data = diagram.getDescription();
                           self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");

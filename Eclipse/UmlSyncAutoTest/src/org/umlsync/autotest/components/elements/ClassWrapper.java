@@ -13,8 +13,8 @@ import org.openqa.selenium.interactions.Actions;
 import com.thoughtworks.selenium.Selenium;
 
 public class ClassWrapper extends ElementWrapper {
-	public ClassWrapper(Selenium sel, WebDriver drv, Element e) {
-		super(sel, drv, e);
+	public ClassWrapper(Element e) {
+		super(e);
 	}
 	
 	/*

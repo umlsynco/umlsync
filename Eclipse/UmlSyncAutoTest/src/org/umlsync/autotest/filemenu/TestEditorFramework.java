@@ -31,7 +31,9 @@ public class TestEditorFramework {
 		driver = new FirefoxDriver();
 		selenium = new WebJQueryDriverBackedSelenium(driver, "https://mail.google.com/");
 
-		editor = new EditorFramework(selenium, driver);
+		editor = new EditorFramework();
+		editor.init(selenium, driver);
+		editor.Maximize();
 
 		// Open the page and skip first dialogs
 		selenium.open("file:///C:/Users/aea301/Desktop/Diagrammer/GITHUB/umlsync/diagrammer/index2.html");
@@ -68,7 +70,7 @@ public class TestEditorFramework {
 				d = ds.next();
 				editor.ActivateDiagram(d);
 				Assert.assertEquals(editor.IsDiagramActive(d), true);
-				Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+				Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			}
 		}
 	}
@@ -80,8 +82,8 @@ public class TestEditorFramework {
 			Diagram d;
 			for (; ds.hasNext();) {
 				d = ds.next();
-				editor.dmh.Activate(d.GetType());
-				Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+				editor.GetDiagramMenuHandler().Activate(d.GetType());
+				Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			}
 		}
 	}
@@ -94,10 +96,10 @@ public class TestEditorFramework {
 		for (; ds.hasNext();) {
 			d = ds.next();
 			editor.ActivateDiagram(d);
-			Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
-			Iterator<String> types = editor.dmh.GetElements(d.GetType()).iterator();
+			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
@@ -117,15 +119,15 @@ public class TestEditorFramework {
 
 			d = ds.next();
 			editor.ActivateDiagram(d);
-			Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
-			Iterator<String> types = editor.dmh.GetElements(d.GetType()).iterator();
+			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				ElementWrapper diagramElementWrapper = new ElementWrapper(selenium, driver, diagramElement);
+				ElementWrapper diagramElementWrapper = new ElementWrapper(diagramElement);
 				diagramElementWrapper.DragAndDrop("+"+x1+",-"+y1);
 				x1+=10;
 				y1-=10;
@@ -144,15 +146,15 @@ public class TestEditorFramework {
 			d = ds.next();
 			
 			editor.ActivateDiagram(d);
-			Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
-			Iterator<String> types = editor.dmh.GetElements(d.GetType()).iterator();
+			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				ElementWrapper diagramElementWrapper = new ElementWrapper(selenium, driver, diagramElement);
+				ElementWrapper diagramElementWrapper = new ElementWrapper(diagramElement);
 				diagramElementWrapper.Resize("se-u", "+50,+50");
 				x1+=10;
 				y1-=10;
@@ -170,15 +172,15 @@ public class TestEditorFramework {
 			d = ds.next();
 
 			editor.ActivateDiagram(d);
-			Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
-			Iterator<String> types = editor.dmh.GetElements(d.GetType()).iterator();
+			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				ElementWrapper diagramElementWrapper = new ElementWrapper(selenium, driver, diagramElement);
+				ElementWrapper diagramElementWrapper = new ElementWrapper(diagramElement);
 				diagramElementWrapper.DragAndDrop("+"+x1+",-"+y1);
 				diagramElementWrapper.Resize("se-u", "+50,+50");
 				x1+=10;
@@ -199,16 +201,16 @@ public class TestEditorFramework {
 
 			d = ds.next();
 			editor.ActivateDiagram(d);
-			Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
-			Iterator<String> types = editor.dmh.GetElements(d.GetType()).iterator();
+			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			ElementWrapper diagramElementWrapper = null;
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				diagramElementWrapper = new ElementWrapper(selenium, driver, diagramElement);
+				diagramElementWrapper = new ElementWrapper(diagramElement);
 				diagramElementWrapper.DragAndDrop("+"+x1+",-"+y1);
 				x1+=10;
 				y1-=10;
@@ -232,16 +234,16 @@ public class TestEditorFramework {
 
 			d = ds.next();
 			editor.ActivateDiagram(d);
-			Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
-			Iterator<String> types = editor.dmh.GetElements(d.GetType()).iterator();
+			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			ElementWrapper diagramElementWrapper = null;
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				diagramElementWrapper = new ElementWrapper(selenium, driver, diagramElement);
+				diagramElementWrapper = new ElementWrapper(diagramElement);
 				diagramElementWrapper.Select();
 				Assert.assertEquals(diagramElementWrapper.IsHightlighted(), true);
 				Assert.assertEquals(diagramElementWrapper.IsSelected(), true);
@@ -264,16 +266,16 @@ public class TestEditorFramework {
 
 			d = ds.next();
 			editor.ActivateDiagram(d);
-			Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
-			Iterator<String> types = editor.dmh.GetElements(d.GetType()).iterator();
+			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			ElementWrapper diagramElementWrapper = null;
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				diagramElementWrapper = new ElementWrapper(selenium, driver, diagramElement);
+				diagramElementWrapper = new ElementWrapper(diagramElement);
 				diagramElementWrapper.Select();
 				Assert.assertEquals(diagramElementWrapper.IsHightlighted(), true);
 				Assert.assertEquals(diagramElementWrapper.IsSelected(), true);
@@ -298,17 +300,17 @@ public class TestEditorFramework {
 				continue;
 			}
 			editor.ActivateDiagram(d);
-			Assert.assertEquals(editor.dmh.IsActive(d.GetType()), true);
+			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
 			d.keyHandler.RemoveAll();            // Remove all previous elements
 
-			Iterator<String> types = editor.dmh.GetElements(d.GetType()).iterator();
+			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			ElementWrapper diagramElementWrapper = null;
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				
 				Assert.assertNotNull(diagramElement);
-				diagramElementWrapper = new ElementWrapper(selenium, driver, diagramElement);
+				diagramElementWrapper = new ElementWrapper(diagramElement);
 				diagramElementWrapper.Select();
 				
 				Assert.assertEquals(diagramElementWrapper.IsHightlighted(), true);

@@ -7,15 +7,13 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.umlsync.autotest.selenium.TSeleniumClient;
+
 import com.thoughtworks.selenium.Selenium;
 
-public class DiagramMenuHandler {
-	private Selenium selenium;
-	private WebDriver driver;
+public class DiagramMenuHandler extends TSeleniumClient {
 
-	public DiagramMenuHandler(Selenium sel, WebDriver drv) {
-		selenium = sel;
-		driver = drv;
+	public DiagramMenuHandler() {
 	}
 
 	public boolean IsActive() {

@@ -14,18 +14,16 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.umlsync.autotest.components.elements.Diagram;
 import org.umlsync.autotest.components.elements.Element;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class IconMenuHandler {
-	private Selenium selenium;
-	private WebDriver driver;
+public class IconMenuHandler extends TSeleniumClient {
 	private Diagram diagram;
 
-	public IconMenuHandler(Selenium sel, WebDriver drv, Diagram d) {
-		selenium = sel;
-		driver = drv;
+	public IconMenuHandler(Diagram d) {
 		diagram = d;
+		d.addClient(this);
 	}
 
 

@@ -26,6 +26,8 @@ var dm = (function( window, undefined ) {
     dm.dm = {};
     dm.ms = {ctx:{},ds:{}};
 
+	dm.at = {cs:{created:null, selected:null}}; // Automated testing helpers
+	
     return dm;
 })(window);
 
@@ -790,9 +792,11 @@ dm['ctx'] = dm.ms.ctx;
                     var p = $(this).offset(),
                     x = e.pageX - p.left,
                     y = e.pageY - p.top;
-                    
                     var status = diag.isPointOnLine(x,y);
                     if (status) {
+					  dm.at.mouse = dm.at.mouse || {};
+					  dm.at.mouse.x = x;
+					  dm.at.mouse.y = y;
                       //$("#possition_locator").val("X:" + x + "  y:" + y + " on");
                       e.stopPropagation();
                     }
@@ -805,9 +809,17 @@ dm['ctx'] = dm.ms.ctx;
                     diag.stopConnectorTransform(x,y);
                 })
                 .mousedown(function(e) { 
+				
                     var p = $(this).offset(),
                     x = e.pageX - p.left,
                     y = e.pageY - p.top;
+					
+					// Selenium can't clickAndHold at concreate position
+					if (x<1 && y<1) {
+					  x = dm.at.mouse.x;
+					  y = dm.at.mouse.y;
+					}
+					
                     diag.startConnectorTransform(x,y);
 
                     if ((diag.selectedconntector)
@@ -820,7 +832,6 @@ dm['ctx'] = dm.ms.ctx;
                     if (diag.selectedconntector) {
     diag.menuCtx['HideAll']();
     diag.menuCtx['visit'](diag.selectedconntector, e.pageX , e.pageY);
-    $.log("context menu ");
     e.preventDefault();
     diag.multipleSelection = true; // work around to hide connector selection on click
                     }
@@ -1427,6 +1438,11 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
      isPointOnLine: function(x,y) {
         if (Object.keys(this.connectors).length > 0) {
+            var ctx = this.canvas.getContext("2d");
+            ctx.fillStyle = "#EEEEEE";
+			ctx.beginPath();
+			ctx.arc(x,y, 10, 0, 3.14, true);
+			ctx.stroke();
 //@ifdef EDITOR
             if (this.transformStarted == true) {
                 this.selectedconntector.TransformTo(x,y);
@@ -1454,6 +1470,7 @@ dm['ctx'] = dm.ms.ctx;
             }
 //@endif
             this.selectedconntector = undefined;
+			dm.at.cs.mouseover = null;
             this.draw();
         }
 
@@ -2172,6 +2189,9 @@ dm.base.diagram("cs.connector", {
             this.epoints = [];
 			this.label_count = 0;
             this.cleanOnNextTransform = false;
+			
+			dm.at.cs.created = {euid: this.euid, from:this.options.fromId, to:this.options.toId};
+			
             if (this.options['stored']) {
                 for (var i in this.parrent.elements) {
 //                    alert("ELEMENT: " + this.parrent.elements[i].euid);
@@ -2272,6 +2292,15 @@ dm.base.diagram("cs.connector", {
             if (this.points == undefined)
                 return false;
 
+				// Check if mouse is near to some extra point ?
+            for (var c=0; c<this.epoints.length; ++c) {
+                if ((this.epoints[c][0] - 12 < x) && (this.epoints[c][0] + 12 > x)
+                  && (this.epoints[c][1] - 12 < y) && (this.epoints[c][1] + 12> y)) {
+                    dm.at.cs.mouseover = {euid:this.euid,idx:c};
+                    return true;
+                }
+            }
+
             for (var i=0;i<this.points.length-1;++i) {
                 var dx1 = x - this.points[i][0],
                 dy1 = y - this.points[i][1],
@@ -2281,6 +2310,7 @@ dm.base.diagram("cs.connector", {
                 gip = Math.sqrt(dx*dx + dy*dy);
 
                 if (((gip1 + gip) - this.gip[i]) < 0.2 ) {
+					dm.at.cs.mouseover = {euid:this.euid};
                     return true;
                 }
             }
@@ -2302,7 +2332,7 @@ dm.base.diagram("cs.connector", {
             gip1 = Math.sqrt(dx1*dx1 + dy1*dy1),
             gip2 = Math.sqrt(dx2*dx2 + dy2*dy2),
             gip = Math.sqrt(dx*dx + dy*dy);
-            if (((gip1 + gip2) - gip) < 0.2)
+            if (((gip1 + gip2) - gip) < 0.5)
                 return true;
             return false;
         },
@@ -2350,10 +2380,11 @@ dm.base.diagram("cs.connector", {
                 this.points = this['_getConnectionPoints'](this['from'], this['toId'], this.epoints);
                 newPoint = [];
                 newPoint[0] = x1; newPoint[1] = y1;
-                for (var i=0;i<this.points.length-1;++i) {
-                    if (this.canRemovePoint(this.points[i], this.points[i+1], newPoint)) { // Is Point on Line ?  Stuipid double check on mouseMove !!!
-                      this.eppos = i;
-                      this.epoints.splice(i, 0, newPoint);
+				var zi=0;
+                for (;zi<this.points.length-1;++zi) {
+                    if (this.canRemovePoint(this.points[zi], this.points[zi+1], newPoint)) { // Is Point on Line ?  Stuipid double check on mouseMove !!!
+                      this.eppos = zi;
+                      this.epoints.splice(zi, 0, newPoint);
 					  break;
                     }
                 }

@@ -7,6 +7,7 @@
         <methods>
           <include name="startSelenium"/>
           <include name="testClassDiagram_OperationManager3"/>
+          <include name="stopSelenium"/>
         </methods>
       </class> <!-- org.umlsync.autotest.filemenu.TestClassDiagram -->
     </classes>

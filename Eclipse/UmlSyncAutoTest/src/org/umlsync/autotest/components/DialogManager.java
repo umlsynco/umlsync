@@ -1,17 +1,10 @@
 package org.umlsync.autotest.components;
 
-import org.openqa.selenium.WebDriver;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
-import com.thoughtworks.selenium.Selenium;
+public class DialogManager extends TSeleniumClient {
 
-public class DialogManager {
-
-	private Selenium selenium;
-	private WebDriver BaseDriver;
-
-	public DialogManager(Selenium sel, WebDriver driver) {
-		selenium = sel;
-		BaseDriver = driver;	
+	public DialogManager() {
 	}
 	
 	public boolean IsDialogActive(String name) {

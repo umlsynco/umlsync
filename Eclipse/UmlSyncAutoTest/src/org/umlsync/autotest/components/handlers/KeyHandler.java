@@ -2,19 +2,16 @@ package org.umlsync.autotest.components.handlers;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.umlsync.autotest.components.elements.Diagram;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class KeyHandler {
-
-	private Selenium selenium;
-	private WebDriver driver;
+public class KeyHandler extends TSeleniumClient {
 	private Diagram diagram;
 
-	public KeyHandler(Selenium sel, WebDriver drv, Diagram d) {
-		selenium = sel;
-		driver = drv;
+	public KeyHandler(Diagram d) {
 		diagram = d;
+		d.addClient(this);
 	}
 	
 	public void RemoveAll() {

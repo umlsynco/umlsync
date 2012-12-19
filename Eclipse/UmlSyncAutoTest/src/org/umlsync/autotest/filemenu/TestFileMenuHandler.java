@@ -19,15 +19,18 @@ public class TestFileMenuHandler {
 	WebDriver driver;
 	Selenium selenium;
 	private DialogManager dialogManager;
-	FileMenuHandler fmh = null;
+	FileMenuHandler fileMenuHandler = null;
 
 	@BeforeSuite
 	public void startSelenium() {
 		driver = new FirefoxDriver();
 		selenium = new WebJQueryDriverBackedSelenium(driver, "https://mail.google.com/");
 
-		dialogManager = new DialogManager(selenium, driver);
-		fmh = new FileMenuHandler(selenium, driver);
+		dialogManager = new DialogManager();
+		dialogManager.init(selenium, driver);
+
+		fileMenuHandler = new FileMenuHandler();
+		fileMenuHandler.init(selenium, driver);
 
 		// Open the page and skip first dialogs
 		selenium.open("file:///C:/Users/aea301/Desktop/Diagrammer/GITHUB/umlsync/diagrammer/index2.html");
@@ -54,8 +57,8 @@ public class TestFileMenuHandler {
 
 	@Test(dataProvider = "MouseOverData")	  
 	public void testFileMenu_MenuHover(String menu, String id) {
-		Assert.assertEquals(fmh.MouseOver(menu), id);
-		Assert.assertEquals(fmh.MouseOut(menu), id);
+		Assert.assertEquals(fileMenuHandler.MouseOver(menu), id);
+		Assert.assertEquals(fileMenuHandler.MouseOut(menu), id);
 	}
 
 	@DataProvider(name = "ProjectMenusData")
@@ -71,7 +74,7 @@ public class TestFileMenuHandler {
 	@Test(dataProvider = "ProjectMenusData")	  
 	public void testFileMenu_ProjectDialogs(String menuPath, String dialogId) {
 
-		fmh.Click(menuPath);
+		fileMenuHandler.Click(menuPath);
 
 		Assert.assertEquals(dialogManager.IsDialogActive(dialogId), true);
 
@@ -93,7 +96,7 @@ public class TestFileMenuHandler {
 	public void testFileMenu_ProjectDialogsSelectors(String menuPath, String dialogId, String itemList) {
 		String[] items = itemList.split("\\|");
 
-		fmh.Click(menuPath);
+		fileMenuHandler.Click(menuPath);
 
 		Assert.assertEquals(dialogManager.IsDialogActive(dialogId), true);
 

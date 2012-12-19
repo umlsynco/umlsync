@@ -1,23 +1,15 @@
 package org.umlsync.autotest.components;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class FileMenuHandler {
+public class FileMenuHandler extends TSeleniumClient {
 	String[][]  MenuPath = null;
-	WebDriver driver;
-	Selenium selenium;
 	
-	public FileMenuHandler(Selenium Selenium, WebDriver Driver) {
-		driver = Driver;
-		selenium = Selenium;
-		
+	public FileMenuHandler() {
 		MenuPath = new String[][] {{"Project", "Change repository","Change branch","New diagram", "New gist diagram"},
 				{"Actions", "Post for review"},
 				{"Edit","Un-do", "Re-do", "Cut", "Copy", "Past", "Delete", "Select All"},

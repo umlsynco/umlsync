@@ -5,18 +5,16 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class ElementWrapper {
-	protected Selenium selenium;
-	protected WebDriver driver;
+public class ElementWrapper  extends TSeleniumClient{
 	protected Element element;
 
-	public ElementWrapper(Selenium sel, WebDriver drv,Element e) {
-		selenium = sel;
-		driver = drv;
+	public ElementWrapper(Element e) {
 		element = e;
+		e.addClient(this);
 	}
 	
 	public void DragAndDrop(String diff) {

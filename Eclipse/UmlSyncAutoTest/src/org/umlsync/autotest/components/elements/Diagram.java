@@ -11,15 +11,13 @@ import org.umlsync.autotest.components.DiagramMenuHandler;
 import org.umlsync.autotest.components.handlers.ContextMenuHandler;
 import org.umlsync.autotest.components.handlers.IconMenuHandler;
 import org.umlsync.autotest.components.handlers.KeyHandler;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class Diagram {
-
-	private Selenium selenium;
-	private WebDriver driver;
+public class Diagram extends TSeleniumClient  {
 	private String locator;
-	private DiagramMenuHandler dmh;
+	private DiagramMenuHandler diagramMenuHandler;
 	public org.umlsync.autotest.components.handlers.IconMenuHandler iconMenuHandler;
 	public ContextMenuHandler contextMenuHandler;
 	
@@ -32,9 +30,7 @@ public class Diagram {
 	public String type;
 	
 
-	public Diagram(Selenium sel, WebDriver drv, String loc, String header) {
-		selenium = sel;
-		driver = drv;
+	public Diagram(String loc, String header) {
 		locator = loc;
 		headerId = header;
 		for(int x = 4, length = loc.length(); x < length; x++) {  
@@ -42,10 +38,12 @@ public class Diagram {
 				type = loc.substring(0, x);
 			}  
 		}
-		dmh = new DiagramMenuHandler(selenium, driver);
-		keyHandler = new KeyHandler(selenium, driver, this);
-		iconMenuHandler = new IconMenuHandler(selenium, driver, this);
-		contextMenuHandler = new ContextMenuHandler(selenium, driver, this);
+		diagramMenuHandler = new DiagramMenuHandler();
+		this.addClient(diagramMenuHandler);
+
+		keyHandler = new KeyHandler(this);
+		iconMenuHandler = new IconMenuHandler(this);
+		contextMenuHandler = new ContextMenuHandler(this);
 	}
 
 	/*
@@ -85,7 +83,7 @@ public class Diagram {
 
 			// New element
 			if (!found) {
-				Element e = new Element(selenium, driver, id, this);
+				Element e = new Element(id, this);
 				elements.add(e);
 				return e;
 			}
@@ -94,10 +92,10 @@ public class Diagram {
 	}
 	
 	public Element CreateElement(String etype, String name) {
-		if (!dmh.IsActive(type)) {
-		  dmh.Activate(type);
+		if (!diagramMenuHandler.IsActive(type)) {
+		  diagramMenuHandler.Activate(type);
 		}
-		dmh.Click(type, etype);
+		diagramMenuHandler.Click(type, etype);
 
 		return IdentifyNewElement();
 	}
@@ -143,6 +141,11 @@ public class Diagram {
 		return null;
 	}
 
+	public boolean IsMouseOver() {
+		
+		return false;
+	}
+	
 	public Connector IdentifyNewConnector() {
 		String res = selenium.getEval("dm.at.cs.created;");
 		if (res == null)
@@ -153,13 +156,13 @@ public class Diagram {
 		String fromEuid = (splitted[1].split("="))[1];
 		String toEuid = (splitted[0].split("="))[1];
 		
-	
-		return new Connector(selenium,
-				 			 driver,
-				 			 conEuid,
+		ElementWrapper ewFrom = new ElementWrapper(GetElementByEuid(fromEuid));
+		ElementWrapper ewTo = new ElementWrapper(GetElementByEuid(toEuid));
+
+		return new Connector(conEuid,
 				 			 this,
-				 			 new ElementWrapper(selenium, driver, GetElementByEuid(fromEuid)),
-				 			 new ElementWrapper(selenium, driver, GetElementByEuid(toEuid)));
+				 			 ewFrom,
+				 			 ewTo);
 	}
 
 	public int Left() {

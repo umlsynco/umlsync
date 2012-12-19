@@ -1,25 +1,23 @@
 package org.umlsync.autotest.components.elements;
 
 import org.openqa.selenium.WebDriver;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class Element {
-
-	private Selenium selenium;
-	private WebDriver driver;
+public class Element extends TSeleniumClient {
 	private String borderId;
 	public String euid;
 	public String diagramId;
 	private Diagram parent;
 
-	public Element(Selenium sel, WebDriver drv, String id, Diagram diagram) {
-		selenium = sel;
-		driver = drv;	
+	public Element(String id, Diagram diagram) {
 		borderId = id;
 		euid = borderId.substring(0, borderId.indexOf("_Border"));
 		diagramId = diagram.GetLocator();
 		parent = diagram;
+
+		diagram.addClient(this);
 	}
 
 	/*

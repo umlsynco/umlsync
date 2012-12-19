@@ -8,30 +8,28 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.umlsync.autotest.components.elements.Diagram;
+import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class EditorFramework {
-
-	private Selenium selenium;
-	private WebDriver driver;
-	
-	private FileMenuHandler fmh;
+public class EditorFramework extends TSeleniumClient {
+	private FileMenuHandler fileMenuHandler;
 	private List<Diagram> diagrams = new ArrayList<Diagram>();
 
 	public DialogManager dialogManager;
-	public DiagramMenuHandler dmh; 
+	public DiagramMenuHandler diagramMenuHandler; 
 
-	public EditorFramework(Selenium sel, WebDriver drv) {
-		selenium = sel;
-		driver = drv;
-		dialogManager = new DialogManager(selenium, driver);
-		fmh = new FileMenuHandler(selenium, driver);
-		dmh = new DiagramMenuHandler(selenium, driver);
-		driver.manage().window().maximize();
+	public EditorFramework() {
+		dialogManager = new DialogManager();
+		fileMenuHandler = new FileMenuHandler();
+		diagramMenuHandler = new DiagramMenuHandler();
+
+		this.addClient(dialogManager);
+		this.addClient(fileMenuHandler);
+		this.addClient(diagramMenuHandler);
 	}
 
-	private String GetActiveDiagramHid() {
+	private String GetActiveDiagramHeaderId() {
 		WebElement elem = driver.findElement(By.cssSelector("#tabs ul.ui-tabs-nav > li.ui-state-active > a"));
 		if (elem != null) {
 			String text = elem.getText();
@@ -44,7 +42,7 @@ public class EditorFramework {
 		return null;
 	}
 	
-	private String GetEuidByHid(String hid) {
+	private String GetEuidByHeaderId(String hid) {
 		WebElement elem = driver.findElement(By.id(hid));
 		if (elem != null) {
 			WebElement e = elem.findElement(By.tagName("DIV"));
@@ -57,16 +55,17 @@ public class EditorFramework {
 	}
 
 	public Diagram CreateDiagram(String type, String name) {
-		fmh.Click("Project|New diagram");
+		fileMenuHandler.Click("Project|New diagram");
 		dialogManager.Select("NewDiagram", type);
 		dialogManager.Input("NewDiagram", name);
 		dialogManager.Ok("NewDiagram");
 
-		String hid = GetActiveDiagramHid();
-		String euid = GetEuidByHid(hid);
+		String hid = GetActiveDiagramHeaderId();
+		String euid = GetEuidByHeaderId(hid);
 		if (euid != null && hid != null) {
-		  Diagram d = new Diagram(selenium, driver, euid, hid);
+		  Diagram d = new Diagram(euid, hid);
 		  diagrams.add(d);
+		  this.addClient(d);
 		  return d;
 		}
 		return null;
@@ -106,10 +105,18 @@ public class EditorFramework {
 	}
 
 	public boolean IsDiagramActive(Diagram d) {
-		return (d.headerId.endsWith(GetActiveDiagramHid()));
+		return (d.headerId.endsWith(GetActiveDiagramHeaderId()));
 	}
 	
 	public List<Diagram> GetAllDiagrams() {
 		return diagrams;
+	}
+
+	public  DiagramMenuHandler GetDiagramMenuHandler() {
+		return diagramMenuHandler;
+	}
+
+	public void Maximize() {
+		driver.manage().window().maximize();
 	}
 }
