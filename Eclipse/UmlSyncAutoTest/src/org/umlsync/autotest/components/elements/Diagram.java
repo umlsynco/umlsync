@@ -8,9 +8,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.umlsync.autotest.components.DiagramMenuHandler;
+import org.umlsync.autotest.components.elements.wrappers.ElementWrapper;
 import org.umlsync.autotest.components.handlers.ContextMenuHandler;
 import org.umlsync.autotest.components.handlers.IconMenuHandler;
 import org.umlsync.autotest.components.handlers.KeyHandler;
+import org.umlsync.autotest.components.handlers.OperationManager;
 import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
@@ -28,6 +30,7 @@ public class Diagram extends TSeleniumClient  {
 	
 	public String headerId;
 	public String type;
+	private OperationManager operationManager;
 	
 
 	public Diagram(String loc, String header) {
@@ -44,30 +47,38 @@ public class Diagram extends TSeleniumClient  {
 		keyHandler = new KeyHandler(this);
 		iconMenuHandler = new IconMenuHandler(this);
 		contextMenuHandler = new ContextMenuHandler(this);
+		operationManager = new OperationManager(this);
 	}
 
 	/*
+	 * @return operation manager
+	 */
+	public OperationManager GetOperationManager() {
+		return operationManager;
+	}
+	
+	/*
 	 * @return context menu handler
 	 */
-	public ContextMenuHandler getContextMenu() {
+	public ContextMenuHandler GetContextMenuHandler() {
 		return contextMenuHandler;
 	}
 	
 	/*
 	 * @return icon menu handler
 	 */	
-	public IconMenuHandler getIconMenu() {
+	public IconMenuHandler GetIconMenuHandler() {
 		return iconMenuHandler;
 	}
 	
 	/*
 	 * @return input key handler
 	 */
-	public KeyHandler getKeyHandler() {
+	public KeyHandler GetKeyHandler() {
 		return this.keyHandler;
 	}
 	
-	public Element IdentifyNewElement() {
+	public Element IdentifyNewElement(String type) {
 		Iterator<WebElement> iter = driver.findElements(By.cssSelector("#"+locator + " .us-element-border")).iterator();
 		while (iter.hasNext()) {
 			WebElement elem = iter.next();
@@ -83,7 +94,13 @@ public class Diagram extends TSeleniumClient  {
 
 			// New element
 			if (!found) {
-				Element e = new Element(id, this);
+				Element e = null;
+				if (type.equals("Class")) {
+					e = new ClassElement(id, this);
+				}
+				else {
+					e = new Element(id, this);
+				}
 				elements.add(e);
 				return e;
 			}
@@ -97,7 +114,7 @@ public class Diagram extends TSeleniumClient  {
 		}
 		diagramMenuHandler.Click(type, etype);
 
-		return IdentifyNewElement();
+		return IdentifyNewElement(etype);
 	}
 	
 	public List<Element> GetElements() {
@@ -156,13 +173,10 @@ public class Diagram extends TSeleniumClient  {
 		String fromEuid = (splitted[1].split("="))[1];
 		String toEuid = (splitted[0].split("="))[1];
 		
-		ElementWrapper ewFrom = new ElementWrapper(GetElementByEuid(fromEuid));
-		ElementWrapper ewTo = new ElementWrapper(GetElementByEuid(toEuid));
-
 		return new Connector(conEuid,
 				 			 this,
-				 			 ewFrom,
-				 			 ewTo);
+				 			 GetElementByEuid(fromEuid).GetElementWrapper(),
+				 			 GetElementByEuid(toEuid).GetElementWrapper());
 	}
 
 	public int Left() {

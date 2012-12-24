@@ -1,6 +1,7 @@
 package org.umlsync.autotest.components.elements;
 
 import org.openqa.selenium.WebDriver;
+import org.umlsync.autotest.components.elements.wrappers.ElementWrapper;
 import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
@@ -10,6 +11,7 @@ public class Element extends TSeleniumClient {
 	public String euid;
 	public String diagramId;
 	private Diagram parent;
+	protected ElementWrapper elementWrapper = null;
 
 	public Element(String id, Diagram diagram) {
 		borderId = id;
@@ -19,6 +21,14 @@ public class Element extends TSeleniumClient {
 
 		diagram.addClient(this);
 	}
+	
+	public ElementWrapper GetElementWrapper() {
+		if (elementWrapper == null)
+		  elementWrapper = new ElementWrapper(this);
+		return elementWrapper;
+	}
+	
+	
 
 	/*
 	 * Get parent diagram which element belong to.

@@ -369,7 +369,11 @@ dm['ctx'] = dm.ms.ctx;
 					else if (j[0] == '~') {
 					  var f = j.substr(1, j.length -1);
 					  if (stop.idx) {
-					    e[f][stop.idx] = stop.value;
+					    if (e[f]) {
+					      e[f][stop.idx] = stop.value;
+						} else {
+						   $("#" + i + " #" + f).html(stop.value);
+						}
 					  } else {
 					    $("#" + i + " #" + f).html(stop);
 						if (e) e.options[f] = stop;

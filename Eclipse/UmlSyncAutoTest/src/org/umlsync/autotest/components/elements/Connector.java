@@ -7,6 +7,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.umlsync.autotest.components.elements.wrappers.ElementWrapper;
 import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;

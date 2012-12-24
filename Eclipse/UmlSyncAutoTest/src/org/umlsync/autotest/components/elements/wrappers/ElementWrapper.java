@@ -1,15 +1,55 @@
-package org.umlsync.autotest.components.elements;
+package org.umlsync.autotest.components.elements.wrappers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.umlsync.autotest.components.elements.Element;
+import org.umlsync.autotest.components.handlers.IOperation;
 import org.umlsync.autotest.selenium.TSeleniumClient;
 
 import com.thoughtworks.selenium.Selenium;
 
-public class ElementWrapper  extends TSeleniumClient{
+public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
+	public class TPositionStatus extends IStatus {
+		protected int top,left;			
+
+		public TPositionStatus(Element e) {
+			top = e.GetElementWrapper().Top();
+			left = e.GetElementWrapper().Left();
+		}
+
+		public boolean Check(Element e) {
+			return ((top == e.GetElementWrapper().Top()) && (left == e.GetElementWrapper().Left())); 
+		}
+	};
+
+	public class TResizeStatus extends TPositionStatus {
+		private Dimension dimention;
+
+		public TResizeStatus(Element e) { 
+			super(e);
+		    dimention = e.GetElementWrapper().Dimention();
+		}
+
+		public boolean Check(Element e) {
+			return super.Check(element) && e.GetElementWrapper().Dimention().equals(dimention); 
+		}
+	};	
+	
+
+	@Override
+	public IStatus GetStatus(String name) {
+		if (name.equals("position")) {
+			return new TPositionStatus(this.element);
+		} else if (name.equals("resize")) {
+			return new TResizeStatus(this.element);
+		}
+		return null;
+	}
+
+	
 	protected Element element;
 
 	public ElementWrapper(Element e) {
@@ -18,7 +58,12 @@ public class ElementWrapper  extends TSeleniumClient{
 	}
 	
 	public void DragAndDrop(String diff) {
-		selenium.dragAndDrop("id="+element.euid, diff);		
+		TCommonOperation op = new TCommonOperation("position", element);
+		
+		selenium.dragAndDrop("id="+element.euid, diff);
+
+		op.Complete();		
+		element.getParent().GetOperationManager().ReportOperation(op);
 	}
 
 	/*
@@ -27,8 +72,12 @@ public class ElementWrapper  extends TSeleniumClient{
 	 * @param diff movement string
 	 */
 	public void Resize(String item, String diff) {
+		TCommonOperation op = new TCommonOperation("resize", element);
 		selenium.click("id="+element.euid);
 		selenium.dragAndDrop("css=#"+element.GetBorderLocator() + " div.ui-resizable-"+item, diff);
+
+		op.Complete();		
+		element.getParent().GetOperationManager().ReportOperation(op);
 	}
 
 	/*
@@ -96,12 +145,12 @@ public class ElementWrapper  extends TSeleniumClient{
 	}
 	
 	public int Top() {
-		WebElement e = driver.findElement(By.id(element.GetEuid()));
+		WebElement e = driver.findElement(By.id(element.GetBorderLocator()));
 		return e.getLocation().y;
 	}
 	
 	public int Left() {
-		WebElement e = driver.findElement(By.id(element.euid));
+		WebElement e = driver.findElement(By.id(element.GetBorderLocator()));
 		return e.getLocation().x;
 	}
 	

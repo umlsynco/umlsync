@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 import org.umlsync.autotest.components.EditorFramework;
 import org.umlsync.autotest.components.elements.Diagram;
 import org.umlsync.autotest.components.elements.Element;
-import org.umlsync.autotest.components.elements.ElementWrapper;
+import org.umlsync.autotest.components.elements.wrappers.ElementWrapper;
 import org.umlsync.autotest.selenium.WebJQueryDriverBackedSelenium;
 
 import com.thoughtworks.selenium.Selenium;
@@ -335,7 +335,7 @@ public class TestEditorFramework {
 						200 + (int)(350*Math.sin(angle*step)),
 						(int)(350*Math.cos(angle*step)));
 					angle++;
-					Element newElement = d.IdentifyNewElement();
+					Element newElement = d.IdentifyNewElement("Class");
 					Assert.assertEquals(newElement != null, true);
 				}
 				d.keyHandler.RemoveAll();

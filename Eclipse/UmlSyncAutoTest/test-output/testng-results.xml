@@ -1,115 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="2" total="5" passed="3">
+<testng-results skipped="0" failed="0" total="1" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="27487" started-at="2012-12-19T15:40:19Z" finished-at="2012-12-19T15:40:47Z">
+  <suite name="Default suite" duration-ms="23130" started-at="2012-12-24T13:29:22Z" finished-at="2012-12-24T13:29:45Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="27487" started-at="2012-12-19T15:40:19Z" finished-at="2012-12-19T15:40:47Z">
+    <test name="Default test" duration-ms="23130" started-at="2012-12-24T13:29:22Z" finished-at="2012-12-24T13:29:45Z">
       <class name="org.umlsync.autotest.filemenu.TestClassDiagram">
-        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6335d858]" name="startSelenium" is-config="true" duration-ms="8057" started-at="2012-12-19T19:40:11Z" finished-at="2012-12-19T19:40:19Z">
+        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6991c88c]" name="startSelenium" is-config="true" duration-ms="7085" started-at="2012-12-24T17:29:14Z" finished-at="2012-12-24T17:29:22Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- startSelenium -->
-        <test-method status="FAIL" signature="testClassDiagram_EditableFields()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6335d858]" name="testClassDiagram_EditableFields" duration-ms="8346" started-at="2012-12-19T19:40:19Z" finished-at="2012-12-19T19:40:28Z">
-          <exception class="java.lang.AssertionError">
-            <message>
-              <![CDATA[expected [true] but found [false]]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: expected [true] but found [false]
-	at org.testng.Assert.fail(Assert.java:94)
-	at org.testng.Assert.failNotEquals(Assert.java:494)
-	at org.testng.Assert.assertEquals(Assert.java:123)
-	at org.testng.Assert.assertEquals(Assert.java:286)
-	at org.testng.Assert.assertEquals(Assert.java:296)
-	at org.umlsync.autotest.filemenu.TestClassDiagram.testClassDiagram_EditableFields(TestClassDiagram.java:120)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
-	at java.lang.reflect.Method.invoke(Unknown Source)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:128)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1203)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1128)
-	at org.testng.TestNG.run(TestNG.java:1036)
-	at org.testng.remote.RemoteTestNG.run(RemoteTestNG.java:111)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:204)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:175)
-]]>
-            </full-stacktrace>
-          </exception> <!-- java.lang.AssertionError -->
+        <test-method status="PASS" signature="testClassDiagram_OperationManagerImproved()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6991c88c]" name="testClassDiagram_OperationManagerImproved" duration-ms="23120" started-at="2012-12-24T17:29:22Z" finished-at="2012-12-24T17:29:45Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testClassDiagram_EditableFields -->
-        <test-method status="PASS" signature="testClassDiagram_EditableTitle()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6335d858]" name="testClassDiagram_EditableTitle" duration-ms="733" started-at="2012-12-19T19:40:28Z" finished-at="2012-12-19T19:40:29Z">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClassDiagram_EditableTitle -->
-        <test-method status="PASS" signature="testClassDiagram_OperationManager()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6335d858]" name="testClassDiagram_OperationManager" duration-ms="6458" started-at="2012-12-19T19:40:29Z" finished-at="2012-12-19T19:40:35Z">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClassDiagram_OperationManager -->
-        <test-method status="FAIL" signature="testClassDiagram_OperationManager2()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6335d858]" name="testClassDiagram_OperationManager2" duration-ms="1373" started-at="2012-12-19T19:40:35Z" finished-at="2012-12-19T19:40:36Z">
-          <exception class="java.lang.AssertionError">
-            <message>
-              <![CDATA[expected [true] but found [false]]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: expected [true] but found [false]
-	at org.testng.Assert.fail(Assert.java:94)
-	at org.testng.Assert.failNotEquals(Assert.java:494)
-	at org.testng.Assert.assertEquals(Assert.java:123)
-	at org.testng.Assert.assertEquals(Assert.java:286)
-	at org.testng.Assert.assertEquals(Assert.java:296)
-	at org.umlsync.autotest.filemenu.TestClassDiagram.testClassDiagram_OperationManager2(TestClassDiagram.java:237)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
-	at java.lang.reflect.Method.invoke(Unknown Source)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:128)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1203)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1128)
-	at org.testng.TestNG.run(TestNG.java:1036)
-	at org.testng.remote.RemoteTestNG.run(RemoteTestNG.java:111)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:204)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:175)
-]]>
-            </full-stacktrace>
-          </exception> <!-- java.lang.AssertionError -->
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClassDiagram_OperationManager2 -->
-        <test-method status="PASS" signature="testClassDiagram_OperationManager3()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6335d858]" name="testClassDiagram_OperationManager3" duration-ms="10545" started-at="2012-12-19T19:40:36Z" finished-at="2012-12-19T19:40:47Z">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClassDiagram_OperationManager3 -->
-        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6335d858]" name="stopSelenium" is-config="true" duration-ms="16" started-at="2012-12-19T19:40:47Z" finished-at="2012-12-19T19:40:47Z">
+        </test-method> <!-- testClassDiagram_OperationManagerImproved -->
+        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@6991c88c]" name="stopSelenium" is-config="true" duration-ms="1" started-at="2012-12-24T17:29:45Z" finished-at="2012-12-24T17:29:45Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- stopSelenium -->

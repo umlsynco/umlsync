@@ -28,7 +28,15 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   if (this.options['aux'] == "Enumeration")
 	     return;
 	   var self = this;
-       var hg = $('<li id="operation"><a id="operation'+this.opN+'" class="editablefield operation" >' + opt.text + '</a></li>')
+
+	   var old_id;
+	   if (opt.id) {
+	     old_id = opt.id;
+       } else {
+	    old_id  = ('operation'+this.opN);
+		++this.opN;
+	   }
+       var hg = $('<li id="operation"><a id="'+old_id+'" class="editablefield operation" >' + opt.text + '</a></li>')
 	            .appendTo("#" + this.euid + " .us-class-operations .us-sortable")
 				.children("a")
 				.editable({onSubmit:function(data) {
@@ -40,7 +48,6 @@ dm.base.diagram("es.class", dm['es']['element'], {
 					return true;
 	             }})
 				.height();
-	   ++this.opN;
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-operations").height(),
 		   h3, h4;
@@ -56,7 +63,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   this.parrent.opman.startTransaction();
 	   this.parrent.opman.reportShort("+operation",
 	                                  this.euid,
-									  {idx:$("#" + this.euid + " .operation").length-1, text:opt.text});
+									  {idx:$("#" + this.euid + " .operation").length-1, text:opt.text, id: old_id});
 	   if (h1 > h2 ) {
          this.parrent.opman.reportShort("option",
 		                                this.euid,
@@ -81,7 +88,15 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   if (this.options['aux'] == "Interface")
 	     return;
 	   var self = this;
-       var hg = $('<li id="attribute"><a id="attribute'+this.atrN+'" class="editablefield attribute" >' + opt.text + '</a></li>')
+	   var old_attr;
+	   if (opt.id) {
+	     old_attr = opt.id;
+	   } else {
+	     old_attr = 'attribute'+this.atrN;
+	     this.atrN++;
+	   }
+	   
+       var hg = $('<li id="attribute"><a id="'+ old_attr +'" class="editablefield attribute" >' + opt.text + '</a></li>')
 	   .appendTo("#" + this.euid + " .us-class-attributes .us-sortable")
 	   .children("a")
 	   .editable({onSubmit:function(data) {
@@ -93,7 +108,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 					return true;
 	             }})
 	   .height();
-	   this.atrN++;
+	   
 
        var h1 = $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-attributes").height(),
@@ -114,7 +129,8 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   this.parrent.opman.reportShort("+attribute",
                                       this.euid,
 									  {idx:$("#" + this.euid + " .attribute").length-1,
-									   text:opt.text});
+									   text:opt.text,
+									   id: old_attr});
 	   if (h1 > h2 ) {
          this.parrent.opman.reportShort("option",
 		                                this.euid,
