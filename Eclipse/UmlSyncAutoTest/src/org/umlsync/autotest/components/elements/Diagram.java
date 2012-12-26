@@ -194,4 +194,44 @@ public class Diagram extends TSeleniumClient  {
 		return e.getLocation().y;
 	}
 
+	private boolean IsMultipleSelection() {
+		List<WebElement> elem = driver.findElements(By.cssSelector("#"+this.locator+" > div.us-element-border > div.ui-resizable-se-u"));
+		if (elem == null || elem.size() ==1 ) {
+			return false;
+		}
+		
+		int visible = 0;
+		Iterator<WebElement> iter = elem.iterator();
+		while (iter.hasNext()) {
+			if(iter.next().isDisplayed())
+				visible++;
+		}
+		
+		return (visible > 1);
+	}
+
+	public void StartMultipleDragAndDrop(Element element) {
+		if (IsMultipleSelection()) {
+			operationManager.StartTransaction();
+			Iterator<Element> iter = elements.iterator();
+			while (iter.hasNext()) {
+				Element next = iter.next();
+				if(element != next )
+					next.GetElementWrapper().DragStart();
+			}
+		}
+	}
+
+	public void StopMultipleDragAndDrop(Element element) {
+		if (IsMultipleSelection()) {
+				Iterator<Element> iter = elements.iterator();
+			while (iter.hasNext()) {
+				Element next = iter.next();
+				if(element != next )
+					next.GetElementWrapper().DragStop();
+			}
+			operationManager.StopTransaction();
+		}
+	}
+
 }

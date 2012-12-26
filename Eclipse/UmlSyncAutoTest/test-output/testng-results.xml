@@ -1,59 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="1" total="1" passed="0">
+<testng-results skipped="0" failed="0" total="1" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="111247" started-at="2012-12-26T10:48:49Z" finished-at="2012-12-26T10:50:41Z">
+  <suite name="Default suite" duration-ms="13138" started-at="2012-12-26T21:05:33Z" finished-at="2012-12-26T21:05:46Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="111247" started-at="2012-12-26T10:48:49Z" finished-at="2012-12-26T10:50:41Z">
+    <test name="Default test" duration-ms="13138" started-at="2012-12-26T21:05:33Z" finished-at="2012-12-26T21:05:46Z">
       <class name="org.umlsync.autotest.filemenu.TestClassDiagram">
-        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@39d9f91c]" name="startSelenium" is-config="true" duration-ms="34201" started-at="2012-12-26T14:48:15Z" finished-at="2012-12-26T14:48:49Z">
+        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@ac82d1f]" name="startSelenium" is-config="true" duration-ms="5680" started-at="2012-12-27T01:05:27Z" finished-at="2012-12-27T01:05:33Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- startSelenium -->
-        <test-method status="FAIL" signature="testClassDiagram_OperationManager_ClassResizeSimple()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@39d9f91c]" name="testClassDiagram_OperationManager_ClassResizeSimple" duration-ms="111047" started-at="2012-12-26T14:48:49Z" finished-at="2012-12-26T14:50:40Z">
-          <exception class="java.lang.AssertionError">
-            <message>
-              <![CDATA[expected [true] but found [false]]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: expected [true] but found [false]
-	at org.testng.Assert.fail(Assert.java:94)
-	at org.testng.Assert.failNotEquals(Assert.java:494)
-	at org.testng.Assert.assertTrue(Assert.java:42)
-	at org.testng.Assert.assertTrue(Assert.java:52)
-	at org.umlsync.autotest.filemenu.TestClassDiagram.testClassDiagram_OperationManager_ClassResizeSimple(TestClassDiagram.java:216)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
-	at java.lang.reflect.Method.invoke(Unknown Source)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:128)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1203)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1128)
-	at org.testng.TestNG.run(TestNG.java:1036)
-	at org.testng.remote.RemoteTestNG.run(RemoteTestNG.java:111)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:204)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:175)
-]]>
-            </full-stacktrace>
-          </exception> <!-- java.lang.AssertionError -->
+        <test-method status="PASS" signature="testClassDiagram_OperationManager_DNDMultiple()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@ac82d1f]" name="testClassDiagram_OperationManager_DNDMultiple" duration-ms="13138" started-at="2012-12-27T01:05:33Z" finished-at="2012-12-27T01:05:46Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testClassDiagram_OperationManager_ClassResizeSimple -->
-        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@39d9f91c]" name="stopSelenium" is-config="true" duration-ms="81" started-at="2012-12-26T14:50:41Z" finished-at="2012-12-26T14:50:41Z">
+        </test-method> <!-- testClassDiagram_OperationManager_DNDMultiple -->
+        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@ac82d1f]" name="stopSelenium" is-config="true" duration-ms="16" started-at="2012-12-27T01:05:46Z" finished-at="2012-12-27T01:05:46Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- stopSelenium -->

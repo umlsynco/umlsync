@@ -193,6 +193,38 @@ public class TestClassDiagram {
 		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(points.length));
 		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(points.length));
 	}
+	
+	
+	@Test
+	public void testClassDiagram_OperationManager_DNDMultiple() {
+		classDiagram.GetKeyHandler().RemoveAll();
+
+
+		Element element = classDiagram.CreateElement("Class", "FirstClass");
+		Assert.assertEquals(element != null, true);
+
+		classDiagram.CreateElement("Class", "FirstClass").GetElementWrapper().DragAndDrop("+300,0");
+		classDiagram.CreateElement("Class", "FirstClass").GetElementWrapper().DragAndDrop("+300,200");
+		classDiagram.CreateElement("Class", "FirstClass").GetElementWrapper().DragAndDrop("+500,0");
+		classDiagram.CreateElement("Class", "FirstClass").GetElementWrapper().DragAndDrop("+150,200");
+
+		
+		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
+		
+		Point[] points = {new Point(100,100),new Point(100,-100),new Point(100,-100),
+				          new Point(100,100),new Point(100,100),new Point(100,-100),
+		                  new Point(100,0)};
+		classElement.Select();
+		classElement.DragAndDrop("+20,0");
+		classDiagram.GetKeyHandler().SelectAll();
+		for (int h=0; h<points.length; ++h) {
+			classDiagram.GetKeyHandler().SelectAll();
+			classElement.DragAndDrop(""+points[h].x + ","+points[h].y);
+		}
+		
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(points.length));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(points.length));
+	}
 
 	/*
 	 * Issue #64: Multiple resize of class element lead to damage
@@ -212,6 +244,7 @@ public class TestClassDiagram {
 
 		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
 
+		classElement.Select();
 		classElement.Resize("se-u", "+100,+50");
 		classElement.ResizeFieldsArea(+30);
 
@@ -291,8 +324,7 @@ public class TestClassDiagram {
 	}		
 
 	/*
-	 * Check that framework removes html instances of reverted elements
-	 * on new operation repot. 
+	 * Check that framework keep the reverted elements and removes them if on operation report only
 	 * 
 	 * 1. Create two class elements
 	 * 2. Revert adding

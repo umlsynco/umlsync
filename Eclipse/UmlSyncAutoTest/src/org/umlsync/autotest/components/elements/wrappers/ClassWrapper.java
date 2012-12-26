@@ -442,5 +442,5 @@ public class ClassWrapper extends ElementWrapper {
 		Number result = selenium.getElementHeight("css=#"+element.GetBorderLocator() + " div.us-class-operations");
 		return result;
 	}
-
 }
+

@@ -31,4 +31,8 @@ public class KeyHandler extends TSeleniumClient {
 		selenium.keyPress("css=#"+diagram.GetLocator(), Keys.chord( Keys.CONTROL, "y"));		
 	}
 
+	public void SelectAll() {
+		selenium.keyPress("css=#"+diagram.GetLocator(), Keys.chord( Keys.CONTROL, "a"));
+	}
+
 }

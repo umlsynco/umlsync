@@ -23,6 +23,10 @@ public class Element extends TSeleniumClient {
 		GetElementWrapper();
 	}
 	
+	public Diagram GetDiagram() {
+		return parent;
+	}
+	
 	public ElementWrapper GetElementWrapper() {
 		if (elementWrapper == null)
 		  elementWrapper = new ElementWrapper(this);
@@ -83,5 +87,6 @@ public class Element extends TSeleniumClient {
 	public String GetEuid() {
 		return this.euid;
 	}
+
 
 }

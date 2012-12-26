@@ -53,6 +53,7 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 
 	
 	protected Element element;
+	protected TCommonOperation tempOperation = null;
 
 	public ElementWrapper(Element e) {
 		element = e;
@@ -60,12 +61,15 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 	}
 	
 	public void DragAndDrop(String diff) {
-		TCommonOperation op = new TCommonOperation("position", element);
+		element.GetDiagram().StartMultipleDragAndDrop(element);
+
+		DragStart();
 		
 		selenium.dragAndDrop("id="+element.euid, diff);
 
-		op.Complete();		
-		element.getParent().GetOperationManager().ReportOperation(op);
+		DragStop();
+
+		element.GetDiagram().StopMultipleDragAndDrop(element);	
 	}
 
 	/*
@@ -169,6 +173,18 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 		  return e != null ? e.isDisplayed():false;
 		}
 		return false;
+	}
+
+	public void DragStart() {
+		tempOperation  = new TCommonOperation("position", element);
+	}
+	
+	public void DragStop() {
+		tempOperation.Complete();
+
+		element.getParent().GetOperationManager().ReportOperation(tempOperation);
+
+		tempOperation = null;
 	}
 
 }

@@ -10,15 +10,35 @@ public class OperationManager extends TSeleniumClient {
 	private Diagram parent;
 	private List<IOperation> operations = new ArrayList<IOperation>();
 	private List<IOperation> reverted = new ArrayList<IOperation>();
+	
+	private boolean isMultipleOperation = false;
+	private TOperationAggregator aggregator = null;
 
 	public OperationManager(Diagram d) {
 		parent = d;
 		d.addClient(this);
 	}
 	
-	public void ReportOperation(IOperation op) {
-		operations.add(op);
+	public void StartTransaction() {
+		isMultipleOperation = true;
+		aggregator = new TOperationAggregator();
+	}
+
+	public void StopTransaction() {
+		isMultipleOperation = false;
+		
+		operations.add(aggregator);
 		reverted.clear();
+		aggregator = null;
+	}
+	
+	public void ReportOperation(IOperation op) {
+		if (isMultipleOperation) {
+			aggregator.Add(op);
+		} else {
+		  operations.add(op);
+		  reverted.clear();
+		}
 	}
 	
 	public boolean RevertOperation(int stepsCount) {
