@@ -160,6 +160,8 @@ public class TestClassDiagram {
 
 		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
 
+		classElement.Select();
+
 		classElement.addField(null);
 		classElement.addField(null);
 

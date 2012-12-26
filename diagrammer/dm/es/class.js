@@ -122,7 +122,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
 		 h4 = $("#" + this.euid + "_Border .us-class-attributes").height();
 		 this.options.height_a = h4;
-		 this.options.height += $("#" + this.euid + "_Border").height();;
+		 this.options.height = $("#" + this.euid + "_Border").height();
 	   }
 
 	   this.parrent.opman.startTransaction();
