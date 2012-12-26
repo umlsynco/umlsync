@@ -1442,11 +1442,6 @@ dm['ctx'] = dm.ms.ctx;
     //@proexp
      isPointOnLine: function(x,y) {
         if (Object.keys(this.connectors).length > 0) {
-            var ctx = this.canvas.getContext("2d");
-            ctx.fillStyle = "#EEEEEE";
-			ctx.beginPath();
-			ctx.arc(x,y, 10, 0, 3.14, true);
-			ctx.stroke();
 //@ifdef EDITOR
             if (this.transformStarted == true) {
                 this.selectedconntector.TransformTo(x,y);

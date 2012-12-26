@@ -309,9 +309,14 @@ dm.base.diagram("es.class", dm['es']['element'], {
          $('#' + this.euid  + '_Border .us-class-attributes').css('height', value);
 
 		 var v = parseInt(value) - parseInt(oval);
+		 
 		 var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
 
          $('#' + this.euid  + '_Border').css('height', inc);
+
+		 // Change the default height value too
+		 this.options['height'] += v;
+
 		 return true;
 	  }/* else if (key.indexOf('height') == 0) {
 	     var diff = parseInt(value) - parseInt(this.options['height_a']) - $('#' + this.euid + ' .us-class-header').height();

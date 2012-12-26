@@ -645,7 +645,6 @@ Version:
 				if (e.ctrlKey && e.keyCode == 17) {
 					fw.CtrlDown = true;
 				} else if (e.keyCode == 46) { // Del
-				    alert("DEL PRESSED ");
 				    if (($(".editablefield input").length == 0) && (fw.diagrams[fw.selectedDiagramId] != undefined))  {
 						if (fw.diagrams[fw.selectedDiagramId]) {
 							fw.diagrams[fw.selectedDiagramId].removeSelectedElements();

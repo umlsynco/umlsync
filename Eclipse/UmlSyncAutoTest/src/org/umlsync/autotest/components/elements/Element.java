@@ -20,6 +20,7 @@ public class Element extends TSeleniumClient {
 		parent = diagram;
 
 		diagram.addClient(this);
+		GetElementWrapper();
 	}
 	
 	public ElementWrapper GetElementWrapper() {

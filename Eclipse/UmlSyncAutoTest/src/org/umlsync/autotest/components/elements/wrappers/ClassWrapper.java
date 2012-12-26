@@ -18,7 +18,7 @@ import org.umlsync.autotest.components.elements.wrappers.ElementWrapper.TResizeS
 import com.thoughtworks.selenium.Selenium;
 
 public class ClassWrapper extends ElementWrapper {
-	
+
 	public class TTitleStatus extends IStatus {
 		protected String title;			
 
@@ -30,9 +30,9 @@ public class ClassWrapper extends ElementWrapper {
 			return title.equals(((ClassWrapper)e.GetElementWrapper()).getTitle()); 
 		}
 	};
-	
+
 	public class TClassSizeStatus extends TResizeStatus {
-		
+
 		private Number fheight,fwidth;
 		private Number mheight,mwidth;
 		public TClassSizeStatus(Element e) {
@@ -50,50 +50,50 @@ public class ClassWrapper extends ElementWrapper {
 					&& (mwidth.equals(((ClassWrapper)e.GetElementWrapper()).getMethodsAreaWidth()));
 		}
 	};
-	
+
 	public class TFieldsStatus extends TClassSizeStatus {
-		
+
 		private List<String> fields = null;
 		public TFieldsStatus(Element e) {
-			 super(e);
-			 fields  = ((ClassWrapper)e.GetElementWrapper()).getFields();
+			super(e);
+			fields  = ((ClassWrapper)e.GetElementWrapper()).getFields();
 		}
 
 		public boolean Check(Element e) {
 			return super.Check(element) && (fields.equals(((ClassWrapper)e.GetElementWrapper()).getFields()));
 		}
 	};
-	
+
 	public class TMethodsStatus extends TClassSizeStatus {
-		
+
 		private List<String> methods = null;
 		public TMethodsStatus(Element e) {
-			 super(e);
-			 methods  = ((ClassWrapper)e.GetElementWrapper()).getMethods();
+			super(e);
+			methods  = ((ClassWrapper)e.GetElementWrapper()).getMethods();
 		}
 		public boolean Check(Element e) {
 			return super.Check(element) && (methods.equals(((ClassWrapper)e.GetElementWrapper()).getMethods()));
 		}
 	};
-	
+
 	public class TFullStatus extends TFieldsStatus {
-		
+
 		private List<String> methods = null;
 		public TFullStatus(Element e) {
-			 super(e);
-			 methods  = ((ClassWrapper)e.GetElementWrapper()).getMethods();
+			super(e);
+			methods  = ((ClassWrapper)e.GetElementWrapper()).getMethods();
 		}
 
 		public boolean Check(Element e) {
 			return super.Check(element) && (methods.equals(((ClassWrapper)e.GetElementWrapper()).getMethods()));
 		}
 	};	
-	
+
 	public ClassWrapper(Element e) {
 		super(e);
 	}
-	
-	
+
+
 	@Override
 	public IStatus GetStatus(String name) {
 		if (name.equals("class-title")) {
@@ -109,7 +109,7 @@ public class ClassWrapper extends ElementWrapper {
 		}
 		return super.GetStatus(name);
 	}
-	
+
 	/*
 	 * drag and drop resize element
 	 * @param item resizable corner of element: "n-u","se-u" etc
@@ -136,12 +136,12 @@ public class ClassWrapper extends ElementWrapper {
 	 */
 	public void setTitle(String title) {
 		TCommonOperation op = new TCommonOperation("class-title", element);
-		
+
 		selenium.click("css=#" + element.euid + " > div.us-class-header > a");
 		selenium.type("css=#" + element.euid + " > div.us-class-header > a > input", title);
 		//selenium.keyPress("css=#" + element.euid + " > div.us-class-header > a > input", title);
 		selenium.keyDown("css=#" + element.euid + " #name input", "13");
-		
+
 		op.Complete();
 		element.getParent().GetOperationManager().ReportOperation(op);
 	}
@@ -151,7 +151,7 @@ public class ClassWrapper extends ElementWrapper {
 	 * @param template value
 	 */	
 	public void setTemplate(String template) {
-		
+
 	}
 
 	/*
@@ -168,26 +168,28 @@ public class ClassWrapper extends ElementWrapper {
 
 		op.Complete();
 		element.getParent().GetOperationManager().ReportOperation(op);
-		
-		op = new TCommonOperation("class-fields", element);
-		List<WebElement> fields = driver.findElements(By.cssSelector("#" + element.euid + " div.us-class-attributes > ul > li > a"));
-		if (fields != null && fields.size() > 0) {
-			WebElement f = fields.get(fields.size()-1);
-			f.click();
-			WebElement input = f.findElement(By.tagName("input"));
-			if (input != null) {
-			  input.clear();
-			  input.sendKeys(field);
 
-			  // FORCE ENTER KEY PRESS !!!
-			  selenium.keyDown("css=#"+ element.GetEuid() +" input", "13");
+		if (field != null) {
+			op = new TCommonOperation("class-fields", element);
+			List<WebElement> fields = driver.findElements(By.cssSelector("#" + element.euid + " div.us-class-attributes > ul > li > a"));
+			if (fields != null && fields.size() > 0) {
+				WebElement f = fields.get(fields.size()-1);
+				f.click();
+				WebElement input = f.findElement(By.tagName("input"));
+				if (input != null) {
+					input.clear();
+					input.sendKeys(field);
+
+					// FORCE ENTER KEY PRESS !!!
+					selenium.keyDown("css=#"+ element.GetEuid() +" input", "13");
+				}
 			}
-		}
 
-		op.Complete();
-		element.getParent().GetOperationManager().ReportOperation(op);
+			op.Complete();
+			element.getParent().GetOperationManager().ReportOperation(op);
+		}
 	}
-	
+
 	/*
 	 * Update field of class
 	 * @param index of class item
@@ -195,7 +197,7 @@ public class ClassWrapper extends ElementWrapper {
 	 */
 	public void updateField(int index, String field) {
 		TCommonOperation op = new TCommonOperation("class-fields", element);
-		
+
 		op.Complete();
 		element.getParent().GetOperationManager().ReportOperation(op);
 	}
@@ -213,15 +215,15 @@ public class ClassWrapper extends ElementWrapper {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Update field of class
 	 * @param index of class item
 	 */
 	public void removeField(int index) {
-		
+
 	}
-	
+
 	/*
 	 * Sorting fields
 	 * @param fromIdx index of from position 
@@ -231,32 +233,32 @@ public class ClassWrapper extends ElementWrapper {
 		TCommonOperation op = new TCommonOperation("class-fields", element);
 
 		List<WebElement> fields =
-          driver.findElements(By.cssSelector("#" + element.euid + " div.us-class-attributes > ul > li"));
+				driver.findElements(By.cssSelector("#" + element.euid + " div.us-class-attributes > ul > li"));
 		//String locator = "css=#" + element.euid + " div.us-class-attributes > ul > li:nth(";
 		//selenium.dragAndDropToObject(locator + fromIdx + ")", locator + toIdx + ")");
 		if (fields != null
-		  && fields.size() > 0
-		  && fields.size() > fromIdx
-		  && fields.size() > toIdx) {
+				&& fields.size() > 0
+				&& fields.size() > fromIdx
+				&& fields.size() > toIdx) {
 			WebElement fe = fields.get(fromIdx);
 			WebElement te = fields.get(toIdx);
-			
+
 			Point fel = fe.getLocation();
 			Point tel = te.getLocation();
 
 			int diff = tel.y - fel.y;
-			
+
 			Actions builder = (new Actions(driver))
-			.clickAndHold(fe);
+					.clickAndHold(fe);
 
 			for (int tmp=1; tmp<= 15; ++tmp) {
 				builder.moveByOffset(1, diff/13);
 			}
-			
+
 			if (diff > 0) {
 				builder.moveByOffset(1, 6);
 			}
-			
+
 			builder.build().perform();
 			WebElement placeholder = driver.findElement(By.cssSelector("#" + element.euid + " div.us-class-attributes > ul > li.ui-sortable-placeholder"));
 			builder.release(placeholder).build().perform();
@@ -275,8 +277,8 @@ public class ClassWrapper extends ElementWrapper {
 		if (fields != null && fields.size() > 0) {
 			Iterator<WebElement> iter = fields.iterator();
 			while (iter.hasNext()) {
-			  WebElement f = iter.next();
-			  result.add(f.getText());
+				WebElement f = iter.next();
+				result.add(f.getText());
 			}
 		}
 		return result;
@@ -284,10 +286,11 @@ public class ClassWrapper extends ElementWrapper {
 
 	/*
 	 * Add method to class
-	 * @param method 
+	 * And rename it
+	 * @param method method description if null then keep the default value 
 	 */
 	public void addMethod(String method) {
-		
+
 		// There are two operation perform:  Add method + rename method
 		TCommonOperation op = new TCommonOperation("class-methods", element);
 
@@ -296,25 +299,27 @@ public class ClassWrapper extends ElementWrapper {
 
 		op.Complete();
 		element.getParent().GetOperationManager().ReportOperation(op);
-		
-		op = new TCommonOperation("class-methods", element);
-		List<WebElement> methods = driver.findElements(By.cssSelector("#" + element.euid + " div.us-class-operations > ul > li > a"));
-		if (methods != null && methods.size() > 0) {
-			WebElement m = methods.get(methods.size()-1);
-			m.click();
-			WebElement input = m.findElement(By.tagName("input"));
-			if (input != null) {
-			  input.clear();
-			  input.sendKeys(method);
 
-			  // FORCE ENTER KEY PRESS !!!
-			  selenium.keyDown("css=#"+ element.GetEuid() +" input", "13");
+		if (method != null) {
+			op = new TCommonOperation("class-methods", element);
+			List<WebElement> methods = driver.findElements(By.cssSelector("#" + element.euid + " div.us-class-operations > ul > li > a"));
+			if (methods != null && methods.size() > 0) {
+				WebElement m = methods.get(methods.size()-1);
+				m.click();
+				WebElement input = m.findElement(By.tagName("input"));
+				if (input != null) {
+					input.clear();
+					input.sendKeys(method);
+
+					// FORCE ENTER KEY PRESS !!!
+					selenium.keyDown("css=#"+ element.GetEuid() +" input", "13");
+				}
 			}
+			op.Complete();
+			element.getParent().GetOperationManager().ReportOperation(op);
 		}
-		op.Complete();
-		element.getParent().GetOperationManager().ReportOperation(op);
 	}
-	
+
 	/*
 	 * Update method of class
 	 * @param index of class item
@@ -325,7 +330,7 @@ public class ClassWrapper extends ElementWrapper {
 		op.Complete();
 		element.getParent().GetOperationManager().ReportOperation(op);
 	}
-	
+
 	/*
 	 * Update method of class
 	 * @param index of class item
@@ -333,7 +338,7 @@ public class ClassWrapper extends ElementWrapper {
 	public void removeMethod(int index) {
 		TCommonOperation op = new TCommonOperation("class-methods", element);
 	}
-	
+
 	/*
 	 * Get methods of class
 	 * @return the list of available methods 
@@ -344,13 +349,13 @@ public class ClassWrapper extends ElementWrapper {
 		if (methods != null && methods.size() > 0) {
 			Iterator<WebElement> iter = methods.iterator();
 			while (iter.hasNext()) {
-			  WebElement f = iter.next();
-			  result.add(f.getText());
+				WebElement f = iter.next();
+				result.add(f.getText());
 			}
 		}
 		return result;
 	}
-	
+
 	/*
 	 * Return the method on index
 	 * @param index of class item
@@ -372,33 +377,33 @@ public class ClassWrapper extends ElementWrapper {
 	 */
 	public void sortMethods(int fromIdx, int toIdx) {
 		TCommonOperation op = new TCommonOperation("class-methods", element);
-		
+
 		List<WebElement> fields =
-          driver.findElements(By.cssSelector("#" + element.euid + " div.us-class-operations > ul > li"));
+				driver.findElements(By.cssSelector("#" + element.euid + " div.us-class-operations > ul > li"));
 
 		if (fields != null
-		  && fields.size() > 0
-		  && fields.size() > fromIdx
-		  && fields.size() > toIdx) {
+				&& fields.size() > 0
+				&& fields.size() > fromIdx
+				&& fields.size() > toIdx) {
 			WebElement fe = fields.get(fromIdx);
 			WebElement te = fields.get(toIdx);
-			
+
 			Point fel = fe.getLocation();
 			Point tel = te.getLocation();
 
 			int diff = tel.y - fel.y;
-			
+
 			Actions builder = (new Actions(driver))
-			.clickAndHold(fe);
+					.clickAndHold(fe);
 
 			for (int tmp=1; tmp<= 15; ++tmp) {
 				builder.moveByOffset(1, diff/13);
 			}
-			
+
 			if (diff > 0) {
 				builder.moveByOffset(1, 6);
 			}
-			
+
 			builder.build().perform();
 			WebElement placeholder = driver.findElement(By.cssSelector("#" + element.euid + " div.us-class-operations > ul > li.ui-sortable-placeholder"));
 			builder.release(placeholder).build().perform();
@@ -407,7 +412,7 @@ public class ClassWrapper extends ElementWrapper {
 		element.getParent().GetOperationManager().ReportOperation(op);
 	}
 
-	
+
 	public void ResizeFieldsArea(int diff) {
 		TCommonOperation op = new TCommonOperation("class-size", element);
 
@@ -417,12 +422,12 @@ public class ClassWrapper extends ElementWrapper {
 		op.Complete();
 		element.getParent().GetOperationManager().ReportOperation(op);
 	}
-	
+
 	public Number getFieldsAreaWidth() {
 		Number result = selenium.getElementWidth("css=#"+element.GetBorderLocator() + " div.us-class-attributes");
 		return result;
 	}
-	
+
 	public Number  getFieldsAreaHeight() {
 		Number result = selenium.getElementHeight("css=#"+element.GetBorderLocator() + " div.us-class-attributes"); 
 		return  result;
@@ -432,7 +437,7 @@ public class ClassWrapper extends ElementWrapper {
 		Number result = selenium.getElementWidth("css=#"+element.GetBorderLocator() + " div.us-class-operations");
 		return result;
 	}
-	
+
 	public Number getMethodsAreaHeight() {
 		Number result = selenium.getElementHeight("css=#"+element.GetBorderLocator() + " div.us-class-operations");
 		return result;

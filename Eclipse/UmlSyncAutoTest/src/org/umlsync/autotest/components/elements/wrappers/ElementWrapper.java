@@ -37,14 +37,16 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 			return super.Check(element) && e.GetElementWrapper().Dimention().equals(dimention); 
 		}
 	};	
-	
 
+	
 	@Override
 	public IStatus GetStatus(String name) {
 		if (name.equals("position")) {
 			return new TPositionStatus(this.element);
 		} else if (name.equals("resize")) {
 			return new TResizeStatus(this.element);
+		} else if (name.equals("create")) {
+			element.getParent().GetOperationManager().ReportOperation(new TCreateOperation(element));
 		}
 		return null;
 	}
@@ -125,7 +127,6 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 	 * @return width of element
 	 */
 	public int Width() {
-		//eturn selenium.getElementWidth("id="+element.GetEuid()).intValue();
 		WebElement e = driver.findElement(By.id(element.GetEuid()));
 		return e.getSize().getWidth();
 	}
@@ -134,7 +135,6 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 	 * @return height of element
 	 */
 	public int Height() {
-//		return selenium.getElementHeight("id="+element.GetEuid()).intValue();
 		WebElement e = driver.findElement(By.id(element.GetEuid()));
 		return e.getSize().getHeight();
 	}
@@ -158,9 +158,17 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 		WebElement e = driver.findElement(By.id(element.euid));
 		return e.getLocation();
 	}
-	
-	public boolean isDisplayed() {
-		WebElement e = driver.findElement(By.id(element.euid));
-		return e != null ? e.isDisplayed():false;
+
+	public boolean isPresent() {
+	  return selenium.isElementPresent("id=" + element.GetBorderLocator());
 	}
+
+	public boolean isDisplayed() {
+		if (selenium.isElementPresent("id=" + element.GetBorderLocator())) {
+		  WebElement e = driver.findElement(By.id(element.euid));
+		  return e != null ? e.isDisplayed():false;
+		}
+		return false;
+	}
+
 }

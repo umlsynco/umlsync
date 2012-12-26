@@ -1,12 +1,17 @@
 package org.umlsync.autotest.filemenu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.umlsync.autotest.components.EditorFramework;
 import org.umlsync.autotest.components.elements.Connector;
@@ -56,6 +61,10 @@ public class TestClassDiagram {
 
 		classElement.setTitle("TestEditable2");
 		Assert.assertEquals(classElement.getTitle().equals("TestEditable2"), true);
+
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(2));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(2));
+
 	}
 
 	@Test
@@ -67,61 +76,28 @@ public class TestClassDiagram {
 		Assert.assertEquals(element != null, true);
 
 		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
-		int h0 = classElement.getFieldsAreaHeight().intValue();
-
 		classElement.addField("(+) int field1");
-		int h1 = classElement.getFieldsAreaHeight().intValue();
-		Assert.assertEquals(h0 ==h1, true);
-
 		classElement.addField("(+) int field2");
-		int h2 = classElement.getFieldsAreaHeight().intValue();
-		Assert.assertEquals(h2 > h1, true); // Check auto field increase
-
 		classElement.addField("(+) int field3");
-		int h3 = classElement.getFieldsAreaHeight().intValue();
-		Assert.assertEquals(h3 > h2, true);
+
 		classElement.sortFields(1, 2);
-		String val = classElement.getFieldByIndex(2);
-		Assert.assertNotNull(val);
-		Assert.assertEquals(val.contains("field2"), true);
-
 		classElement.sortFields(2, 1);
-		val = classElement.getFieldByIndex(2);
-		Assert.assertNotNull(val);
-		Assert.assertEquals(val.contains("field3"), true);
-
 		classElement.sortFields(2, 0);
-		val = classElement.getFieldByIndex(2);
-		Assert.assertNotNull(val);
-		Assert.assertEquals(val.contains("field2"), true);
 
 		classElement.addMethod("(+) bool getField1()");
 		classElement.addMethod("(+) bool getField2()");
 		classElement.addMethod("(+) bool getField3()");
 
 		classElement.sortMethods(1, 2);
-		val = classElement.getMethodByIndex(2);
-		Assert.assertNotNull(val);
-		Assert.assertEquals(val.contains("Field2"), true);
-
 		classElement.sortMethods(2, 1);
-		val = classElement.getMethodByIndex(2);
-		Assert.assertNotNull(val);
-		Assert.assertEquals(val.contains("Field3"), true);
-
 		classElement.sortMethods(2, 0);
-		val = classElement.getMethodByIndex(2);
-		Assert.assertNotNull(val);
-		Assert.assertEquals(val.contains("Field2"), true);
 
-		int h = classElement.getFieldsAreaHeight().intValue();
-		classElement.ResizeFieldsArea(40);
-		h2 = classElement.getFieldsAreaHeight().intValue();
-		Assert.assertEquals(h2 >= h + 40, true);
+		//		classElement.ResizeFieldsArea(40);
+		//		classElement.ResizeFieldsArea(-40);
 
-		classElement.ResizeFieldsArea(-40);
-		h2 = classElement.getFieldsAreaHeight().intValue();
-		Assert.assertEquals(h2 == h, true);
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(17));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(17));
+
 	}
 
 	/*
@@ -135,93 +111,7 @@ public class TestClassDiagram {
 	 * revert all items above
 	 */
 	@Test
-	public void testClassDiagram_OperationManager() {
-		classDiagram.GetKeyHandler().RemoveAll();
-
-		Element element = classDiagram.CreateElement("Class", "FirstClass");
-		Assert.assertEquals(element != null, true);
-
-		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
-		String title = classElement.getTitle();
-
-		// Set title
-		classElement.setTitle("TestEditable");
-		Assert.assertEquals(classElement.getTitle().equals("TestEditable"), true);
-
-		int fieldsHeight = classElement.getFieldsAreaHeight().intValue();
-
-		classElement.addField("(+) int field1"); // Keep fields area size (2 operations add and edit)
-		classElement.addField("(+) int field2"); // Increase fields area size
-		int fieldsHeight2 = classElement.getFieldsAreaHeight().intValue();
-
-		classElement.sortFields(0, 1); // Check both sort direction
-		classElement.sortFields(1, 0);
-
-
-		int methodsHeight0 = classElement.getMethodsAreaHeight().intValue();
-		classElement.addMethod("(+) bool getField1()");
-		int methodsHeight1 = classElement.getMethodsAreaHeight().intValue();
-		classElement.addMethod("(+) bool getField2()");
-		int methodsHeight2 = classElement.getMethodsAreaHeight().intValue();
-
-		classElement.sortMethods(0, 1);
-		classElement.sortMethods(1, 0);
-
-
-		Assert.assertEquals(classElement.getMethodByIndex(1).contains("Field2"), true);
-
-		classDiagram.GetKeyHandler().Revert();
-		Assert.assertEquals(classElement.getMethodByIndex(1).contains("Field1"), true);
-
-		classDiagram.GetKeyHandler().Revert();
-		Assert.assertEquals(classElement.getMethodByIndex(1).contains("Field2"), true);
-
-		classDiagram.GetKeyHandler().Revert();
-		classDiagram.GetKeyHandler().Revert();
-		int mh = classElement.getMethodsAreaHeight().intValue();
-		Assert.assertEquals(mh == methodsHeight1, true);
-
-		classDiagram.GetKeyHandler().Revert();
-		classDiagram.GetKeyHandler().Revert();
-		mh = classElement.getMethodsAreaHeight().intValue();
-		Assert.assertEquals(mh == methodsHeight0, true);
-
-		Assert.assertEquals(classElement.getFieldByIndex(1).contains("field2"), true);
-		classDiagram.GetKeyHandler().Revert();
-		Assert.assertEquals(classElement.getFieldByIndex(1).contains("field1"), true);
-		classDiagram.GetKeyHandler().Revert();
-		Assert.assertEquals(classElement.getFieldByIndex(1).contains("field2"), true);
-
-		classDiagram.GetKeyHandler().Revert();
-		classDiagram.GetKeyHandler().Revert();
-		mh = classElement.getFieldsAreaHeight().intValue();
-		Assert.assertEquals(mh == fieldsHeight, true);
-
-		Assert.assertEquals(classElement.getMethods() == null, true);
-
-		classDiagram.GetKeyHandler().Revert();
-		classDiagram.GetKeyHandler().Revert();
-		mh = classElement.getFieldsAreaHeight().intValue();
-		Assert.assertEquals(mh == fieldsHeight, true);
-
-		Assert.assertEquals(classElement.getFields() == null, true);
-
-		classDiagram.GetKeyHandler().Revert();
-		Assert.assertEquals(classElement.getTitle().equals("TestEditable"), false);
-	}
-
-	/*
-	 * Test:
-	 * create class
-	 * change name
-	 * add field and rename X3
-	 * sort fields x3
-	 * add method and rename x3
-	 * sort fields x3
-	 * revert all items above
-	 */
-	@Test
-	public void testClassDiagram_OperationManagerImproved() {
+	public void testClassDiagram_OperationManager_ClassInternalsWithRename() {
 		classDiagram.GetKeyHandler().RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
@@ -251,9 +141,18 @@ public class TestClassDiagram {
 		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(13));
 	}		
 
-
+	/*
+	 * Issue #65:
+	 * 
+	 * Class diagram:
+	 * 1. create class 
+	 * 2. AddField x2
+	 * 3. AddMethod x2
+	 * 4. AddField x1
+	 * 5. Revert previous operations (2-4) 
+	 */
 	@Test
-	public void testClassDiagram_OperationManager2() {
+	public void testClassDiagram_OperationManager_ClassInternals() {
 		classDiagram.GetKeyHandler().RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
@@ -261,64 +160,227 @@ public class TestClassDiagram {
 
 		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
 
-		Dimension dim = classElement.Dimention();
-		int fh = classElement.getFieldsAreaHeight().intValue();
-		int mh = classElement.getMethodsAreaHeight().intValue();
+		classElement.addField(null);
+		classElement.addField(null);
 
-		classElement.Resize("se-u", "+10,+20");
-		Dimension dim2 = classElement.Dimention();
-		int fh2 = classElement.getFieldsAreaHeight().intValue();
-		int mh2 = classElement.getMethodsAreaHeight().intValue();
+		classElement.addMethod(null);
+		classElement.addMethod(null);
+
+		classElement.addField(null);
+
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(5));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(5));
+	}
+	
+	@Test
+	public void testClassDiagram_OperationManager_DND() {
+		classDiagram.GetKeyHandler().RemoveAll();
+
+		Element element = classDiagram.CreateElement("Class", "FirstClass");
+		Assert.assertEquals(element != null, true);
+
+		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
+		
+		Point[] points = {new Point(100,100),new Point(100,-100),new Point(100,-100),
+				          new Point(100,100),new Point(100,100),new Point(100,-100),
+		                  new Point(100,0)};
+		for (int h=0; h<points.length; ++h) {
+			classElement.DragAndDrop(""+points[h].x + ","+points[h].y);
+		}
+		
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(points.length));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(points.length));
+	}
+
+	/*
+	 * Issue #64: Multiple resize of class element lead to damage
+	 * 
+	 * 1. Create class on class diagram
+	 * 2. Resize class via right-bottom selector
+	 * 3. Resize fields area 
+	 * 4. revert 2 operations
+	 * 
+	 */
+	@Test
+	public void testClassDiagram_OperationManager_ClassResizeSimple() {
+		classDiagram.GetKeyHandler().RemoveAll();
+
+		Element element = classDiagram.CreateElement("Class", "FirstClass");
+		Assert.assertEquals(element != null, true);
+
+		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
+
+		classElement.Resize("se-u", "+100,+50");
+		classElement.ResizeFieldsArea(+30);
+
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(2));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(2));
+	}		
 
 
-		Assert.assertEquals(dim2.height == dim.height+20, true);
-		Assert.assertEquals(dim2.width == dim.width+10, true);
+	/*
+	 * 1. Create class on class diagram
+	 * 2. Resize class via right-bottom selector
+	 * 3. Resize fields area
+	 * ...
+	 * N. Revert all operations 
+	 * 
+	 */
+	@Test
+	public void testClassDiagram_OperationManager_ClassResizeComplex() {
+		classDiagram.GetKeyHandler().RemoveAll();
 
-		classElement.ResizeFieldsArea(30);
-		Dimension dim3 = classElement.Dimention();
-		Assert.assertEquals(dim3.height == dim2.height+30, true);
-		int fh3 = classElement.getFieldsAreaHeight().intValue();
-		int mh3 = classElement.getMethodsAreaHeight().intValue();
+		Element element = classDiagram.CreateElement("Class", "FirstClass");
+		Assert.assertEquals(element != null, true);
 
-		classDiagram.GetKeyHandler().Revert();
-		Dimension dim_tmp = classElement.Dimention();
-		int fh_tmp = classElement.getFieldsAreaHeight().intValue();
-		int mh_tmp = classElement.getMethodsAreaHeight().intValue();
+		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
 
-		Assert.assertEquals(dim_tmp.height == dim2.height, true);
-		Assert.assertEquals(fh_tmp == fh2, true);
-		Assert.assertEquals(mh_tmp == mh2, true);
+		classElement.Resize("se-u", "+100,+50");
+		classElement.ResizeFieldsArea(+30);
+		classElement.ResizeFieldsArea(-20);
+		classElement.Resize("se-u", "-20,-20");
+		classElement.ResizeFieldsArea(+10);
 
-		classDiagram.GetKeyHandler().Revert();
-		dim_tmp = classElement.Dimention();
-		fh_tmp = classElement.getFieldsAreaHeight().intValue();
-		mh_tmp = classElement.getMethodsAreaHeight().intValue();
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(5));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(5));
+	}
 
-		Assert.assertEquals(dim_tmp.height == dim.height, true);
-		Assert.assertEquals(fh_tmp == fh, true);
-		Assert.assertEquals(mh_tmp == mh, true);
+	/*
+	 * 1. Create class on class diagram
+	 * 2. Resize class via right-bottom selector
+	 * 3. Resize fields area
+	 * ...
+	 * M. Some operations with add fields and methods
+	 * ...
+	 * N. Revert all operations 
+	 * N+1. Repeat all operations 
+	 * 
+	 */
+	@Test
+	public void testClassDiagram_OperationManager_ClassResizeComplexWithAttributes() {
+		classDiagram.GetKeyHandler().RemoveAll();
 
-		classDiagram.GetKeyHandler().Repeat();
-		dim_tmp = classElement.Dimention();
-		fh_tmp = classElement.getFieldsAreaHeight().intValue();
-		mh_tmp = classElement.getMethodsAreaHeight().intValue();
+		Element element = classDiagram.CreateElement("Class", "FirstClass");
+		Assert.assertEquals(element != null, true);
 
-		Assert.assertEquals(dim_tmp.height == dim2.height, true);
-		Assert.assertEquals(fh_tmp == fh2, true);
-		Assert.assertEquals(mh_tmp == mh2, true);
+		ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
 
-		classDiagram.GetKeyHandler().Repeat();
-		dim_tmp = classElement.Dimention();
-		fh_tmp = classElement.getFieldsAreaHeight().intValue();
-		mh_tmp = classElement.getMethodsAreaHeight().intValue();
+		classElement.addField(null);
+		classElement.addField(null);
 
-		Assert.assertEquals(dim_tmp.height == dim3.height, true);
-		Assert.assertEquals(fh_tmp == fh3, true);
-		Assert.assertEquals(mh_tmp == mh3, true);
+		classElement.addMethod(null);
+		classElement.addMethod(null);
+
+		classElement.Resize("se-u", "+100,+20");
+		classElement.ResizeFieldsArea(+10);
+
+		classElement.addField(null);
+		classElement.addField(null);
+
+		classElement.addMethod(null);
+		classElement.addMethod(null);
+
+		classElement.ResizeFieldsArea(-20);
+		classElement.Resize("se-u", "-20,+20");
+		classElement.ResizeFieldsArea(+40);
+
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(13));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(13));
+	}		
+
+	/*
+	 * Check that framework removes html instances of reverted elements
+	 * on new operation repot. 
+	 * 
+	 * 1. Create two class elements
+	 * 2. Revert adding
+	 * 3. Create new element
+	 * 4. Check that reverted elements disappeared from diagram at all !!!!
+	 */
+	@Test
+	public void testClassDiagram_OperationManager_RemovedQueueClean() {
+		classDiagram.GetKeyHandler().RemoveAll();
+
+		Element element1 = classDiagram.CreateElement("Class", "FirstClass");
+		Element element2 = classDiagram.CreateElement("Class", "2ndClass");
+
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(2));
+
+		Assert.assertEquals(element1.GetElementWrapper().isPresent(), true);
+		Assert.assertEquals(element1.GetElementWrapper().isDisplayed(), false);
+
+		Assert.assertEquals(element2.GetElementWrapper().isPresent(), true);
+		Assert.assertEquals(element2.GetElementWrapper().isDisplayed(), false);
+
+		Element element3 = classDiagram.CreateElement("Class", "NewClass");
+		Assert.assertEquals(element1.GetElementWrapper().isPresent(), false);
+		Assert.assertEquals(element2.GetElementWrapper().isPresent(), false);
+
+	}
+
+	class IconElementDescription {
+		Point point;
+		int idx;
+		boolean creator;
+		IconElementDescription(int i, boolean c, Point p) {
+			point = p;
+			idx = i;
+			creator = c;
+		}
+	}
+
+	IconElementDescription[] iconSet1 =  {
+		new IconElementDescription(0, true, new Point(300, 0)),
+		new IconElementDescription(1, true, new Point(0, 200)),
+		new IconElementDescription(2, false, new Point(-360, -130))
+		};
+
+	IconElementDescription[] iconSet2 =  {
+			new IconElementDescription(0, true, new Point(300, -100)),
+			new IconElementDescription(1, true, new Point(0, 200)),
+			new IconElementDescription(2, true, new Point(200, -100)),
+			new IconElementDescription(3, false, new Point(-300, -30))
+			};
+
+	
+	@DataProvider(name = "CreateElementsViaIconMenu")
+	public Object[][] CreateElementsViaIconMenu() {
+		return new Object[][]{
+				{iconSet1},
+				{iconSet2}
+				};
+	}
+
+	@Test(dataProvider = "CreateElementsViaIconMenu")	  
+	public void testClassDiagram_OperationManager_IconMenu(IconElementDescription[] params) {
+		classDiagram.GetKeyHandler().RemoveAll();
+
+		Element element = classDiagram.CreateElement("Class", "FirstClass");
+		Assert.assertEquals(element != null, true);
+		List<Element> elements = new ArrayList<Element>();
+		elements.add(element);
+
+
+		for (int i=0; i<params.length; ++i) {
+
+			element = elements.get(params[i].idx);
+		    Assert.assertNotNull(element);
+
+			ClassWrapper classElement = (ClassWrapper) element.GetElementWrapper();
+			classElement.Select();
+			classDiagram.GetIconMenuHandler().dragAndDrop(element, "aggregation", params[i].point.x, params[i].point.y);
+			
+			Element newElement = classDiagram.IdentifyNewElement("Class");
+			Assert.assertEquals(newElement != null, params[i].creator);
+			if (newElement != null) {
+				elements.add(newElement);
+			}
+		}
 	}
 
 	@Test
-	public void testClassDiagram_OperationManager3() {
+	public void testClassDiagram_OperationManager_ConnectorsSimple() {
+
 		classDiagram.GetKeyHandler().RemoveAll();
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);

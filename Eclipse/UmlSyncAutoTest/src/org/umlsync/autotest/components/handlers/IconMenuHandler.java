@@ -89,18 +89,10 @@ public class IconMenuHandler extends TSeleniumClient {
 						Actions builder = (new Actions(driver))
 						.clickAndHold(n);
 						
-						int max = (x>y)?x:y;
-						int step = (max / 20) + 1; 
-						
-						int x1 = 0,y1 = 0;
-						for (int h =0; h <max; h+=step) {
-						    if (h < x) {
-						    	x1 = h;
-						    }
-						    
-						    if (h < y) {
-						    	y1 = h;
-						    }
+						int x1 =0, diffx = x/20,y1 = 0, diffy = y/20;
+						for (int h =0; h <20; ++h) {
+							x1 += diffx;
+							y1 += diffy;
 							builder.moveByOffset(x1, y1);
 						}
 						builder.build().perform();

@@ -101,6 +101,7 @@ public class Diagram extends TSeleniumClient  {
 				else {
 					e = new Element(id, this);
 				}
+				e.GetElementWrapper().GetStatus("create");
 				elements.add(e);
 				return e;
 			}
@@ -115,6 +116,10 @@ public class Diagram extends TSeleniumClient  {
 		diagramMenuHandler.Click(type, etype);
 
 		return IdentifyNewElement(etype);
+	}
+	
+	public void RemoveElement(Element e) {
+		
 	}
 	
 	public List<Element> GetElements() {

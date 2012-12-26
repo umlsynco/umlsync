@@ -6,31 +6,28 @@ import java.lang.reflect.Type;
 import org.umlsync.autotest.components.elements.Element;
 import org.umlsync.autotest.components.handlers.IOperation;
 
-public final class TCommonOperation extends IOperation {
+public class TCreateOperation extends IOperation {
 
 	private Element element;
-	private IStatus before, after;
-	private String name;
+	private IStatus state;
 
-	TCommonOperation(String type, Element e) {
+	TCreateOperation(Element e) {
 		element = e;
-		name = type;
-		before = element.GetElementWrapper().GetStatus(type);
+		state = element.GetElementWrapper().GetStatus("resize");
 	}
 
 	@Override
 	public boolean RevertCheck() {
-		return before.Check(element);
+		return !element.GetElementWrapper().isDisplayed();
 	}
 
 	@Override
 	public boolean RepeatCheck() {
-		return after.Check(element);
+		return element.GetElementWrapper().isDisplayed() && state.Check(element);
 	}
 
 	@Override
 	public boolean Complete() {
-		after = element.GetElementWrapper().GetStatus(name);
 		return true;
 	}
 };

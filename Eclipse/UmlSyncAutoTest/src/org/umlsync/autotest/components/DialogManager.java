@@ -48,7 +48,7 @@ public class DialogManager extends TSeleniumClient {
 			selenium.click("xpath=(//button[@type='button'])[2]");
 		}
 		
-		if (selenium.isVisible("id=repo-selection-dialog")) {
+		if (selenium.isElementPresent("id=repo-selection-dialog") && selenium.isVisible("id=repo-selection-dialog")) {
 			selenium.click("xpath=(//button[@type='button'])[6]");
 		}
 		
