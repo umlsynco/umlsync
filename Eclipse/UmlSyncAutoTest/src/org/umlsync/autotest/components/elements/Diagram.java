@@ -24,6 +24,7 @@ public class Diagram extends TSeleniumClient  {
 	public ContextMenuHandler contextMenuHandler;
 	
 	private List<Element> elements = new ArrayList<Element>();
+	private List<Element> removedElements = new ArrayList<Element>();
 	private List<Connector> connectors = new ArrayList<Connector>();
 	
 	public KeyHandler keyHandler;
@@ -91,6 +92,16 @@ public class Diagram extends TSeleniumClient  {
 					break;
 				}
 			}
+			
+			if (!found) {
+				i = removedElements.iterator();
+				while (i.hasNext()) {
+					if (i.next().GetBorderLocator().equals(id)) {
+						found = true;
+						break;
+					}
+				}
+			}
 
 			// New element
 			if (!found) {
@@ -118,10 +129,7 @@ public class Diagram extends TSeleniumClient  {
 		return IdentifyNewElement(etype);
 	}
 	
-	public void RemoveElement(Element e) {
-		
-	}
-	
+
 	public List<Element> GetElements() {
 		return elements;
 	}
@@ -216,7 +224,7 @@ public class Diagram extends TSeleniumClient  {
 			Iterator<Element> iter = elements.iterator();
 			while (iter.hasNext()) {
 				Element next = iter.next();
-				if(element != next )
+				if(element != next && next.GetElementWrapper().IsSelected() )
 					next.GetElementWrapper().DragStart();
 			}
 		}
@@ -227,10 +235,61 @@ public class Diagram extends TSeleniumClient  {
 				Iterator<Element> iter = elements.iterator();
 			while (iter.hasNext()) {
 				Element next = iter.next();
-				if(element != next )
+				if(element != next && next.GetElementWrapper().IsSelected() )
 					next.GetElementWrapper().DragStop();
 			}
 			operationManager.StopTransaction();
+		}
+	}
+
+	public void RemoveSelected() {
+		operationManager.StartTransaction();
+
+		Iterator<Element> iter = elements.iterator();
+		while (iter.hasNext()) {
+			Element next = iter.next();
+
+			if (next.GetElementWrapper().IsSelected()) {
+				next.GetElementWrapper().GetStatus("remove");
+				iter = elements.iterator();
+			}
+		}
+		keyHandler.Del();
+		operationManager.StopTransaction();
+	}
+	
+	public void RemoveAll() {
+		operationManager.StartTransaction();
+
+		try {
+		keyHandler.SelectAll();
+		while (elements.get(0) != null) {
+			Element next = elements.get(0);
+			next.GetElementWrapper().GetStatus("remove");
+		}
+		
+		} catch (IndexOutOfBoundsException e) {
+		}
+
+		keyHandler.RemoveAll();
+		operationManager.StopTransaction();
+	}
+
+	
+	public void ElementsListChange(Element e, boolean remove) {
+		if (remove) {
+			if (elements.contains(e)) {
+				removedElements.add(e);
+				elements.remove(e);
+			}
+			else if (removedElements.contains(e)) {
+				removedElements.remove(e);	
+			}
+		} else {
+			if (removedElements.contains(e)) {
+				elements.add(e);
+				removedElements.remove(e);
+			}
 		}
 	}
 

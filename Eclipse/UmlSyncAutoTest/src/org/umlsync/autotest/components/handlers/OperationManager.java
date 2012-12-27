@@ -1,6 +1,7 @@
 package org.umlsync.autotest.components.handlers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.umlsync.autotest.components.elements.Diagram;
@@ -28,16 +29,30 @@ public class OperationManager extends TSeleniumClient {
 		isMultipleOperation = false;
 		
 		operations.add(aggregator);
-		reverted.clear();
+
+		ReduceQueue();
+		
 		aggregator = null;
 	}
 	
+	private void ReduceQueue() {
+		Iterator<IOperation> iter = reverted.iterator();
+		while (iter.hasNext()) {
+			iter.next().Destructor();
+		}
+		
+		if (operations.size() > 20) {
+			operations.remove(0).Destructor();
+		}
+		reverted.clear();
+	}
+
 	public void ReportOperation(IOperation op) {
 		if (isMultipleOperation) {
 			aggregator.Add(op);
 		} else {
 		  operations.add(op);
-		  reverted.clear();
+		  ReduceQueue();
 		}
 	}
 	

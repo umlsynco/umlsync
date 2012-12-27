@@ -47,6 +47,8 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 			return new TResizeStatus(this.element);
 		} else if (name.equals("create")) {
 			element.getParent().GetOperationManager().ReportOperation(new TCreateOperation(element));
+		} else if (name.equals("remove")) {
+			element.getParent().GetOperationManager().ReportOperation(new TRemoveOperation(element));
 		}
 		return null;
 	}
@@ -168,7 +170,7 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 	}
 
 	public boolean isDisplayed() {
-		if (selenium.isElementPresent("id=" + element.GetBorderLocator())) {
+		if (selenium.isElementPresent("id=" + element.GetEuid())) {
 		  WebElement e = driver.findElement(By.id(element.euid));
 		  return e != null ? e.isDisplayed():false;
 		}
@@ -185,6 +187,13 @@ public class ElementWrapper  extends TSeleniumClient implements IStatusProvider{
 		element.getParent().GetOperationManager().ReportOperation(tempOperation);
 
 		tempOperation = null;
+	}
+	
+	public void RemoveViaContextMenu() {
+		if (isDisplayed()) {
+			GetStatus("remove");
+			element.getParent().GetContextMenuHandler().Click(element, "Remove");
+		}
 	}
 
 }

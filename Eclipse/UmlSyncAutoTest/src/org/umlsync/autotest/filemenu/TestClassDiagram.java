@@ -1,6 +1,7 @@
 package org.umlsync.autotest.filemenu;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.openqa.selenium.Dimension;
@@ -18,6 +19,7 @@ import org.umlsync.autotest.components.elements.Connector;
 import org.umlsync.autotest.components.elements.Diagram;
 import org.umlsync.autotest.components.elements.Element;
 import org.umlsync.autotest.components.elements.wrappers.ClassWrapper;
+import org.umlsync.autotest.components.elements.wrappers.ElementWrapper;
 import org.umlsync.autotest.selenium.WebJQueryDriverBackedSelenium;
 
 import com.thoughtworks.selenium.Selenium;
@@ -226,6 +228,59 @@ public class TestClassDiagram {
 		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(points.length));
 	}
 
+	/*
+	 * Complex test on element add/remove. Editor have to keep element HTML instance invisible on remove and
+	 * removes html-instance in some cases:
+	 * 1. Add -> Revert         -> new add
+	 *           keep instance  -> remove instance
+
+	 * 2. 
+	 * 
+	 */
+	
+	@Test
+	public void testClassDiagram_OperationManager_Remove() {
+		classDiagram.GetKeyHandler().RemoveAll();
+
+
+		List<Element> es = new ArrayList<Element>();
+		Element element = null;
+		
+		element = classDiagram.CreateElement("Class", "FirstClass");
+		element.GetElementWrapper().Select();
+		element.GetElementWrapper().RemoveViaContextMenu();
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(1));
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(1));
+		Assert.assertTrue(element.GetElementWrapper().isPresent() && (!element.GetElementWrapper().isDisplayed()));
+
+		
+		for (int i=0;i<5; ++i) {
+		
+			element = classDiagram.CreateElement("Class", "FirstClass");
+			Assert.assertEquals(element != null, true);
+			element.GetElementWrapper().DragAndDrop("+"+((int)Math.round(Math.random()*500)) +
+					"," + ((int)Math.round(Math.random()*300 - 200)));
+			es.add(element);
+		}
+
+		classDiagram.RemoveAll();
+		Assert.assertTrue(classDiagram.GetOperationManager().RevertOperation(1));
+
+		Iterator<Element> iter = es.iterator();
+		while (iter.hasNext()) {
+			Element next = iter.next();
+			Assert.assertTrue(next.GetElementWrapper().isDisplayed());
+		}
+		
+		Assert.assertTrue(classDiagram.GetOperationManager().RepeatOperation(1));
+		iter = es.iterator();
+		while (iter.hasNext()) {
+			 ElementWrapper next = iter.next().GetElementWrapper();
+			Assert.assertTrue(next.isPresent() && (!next.isDisplayed()));
+		}
+
+
+	}
 	/*
 	 * Issue #64: Multiple resize of class element lead to damage
 	 * 

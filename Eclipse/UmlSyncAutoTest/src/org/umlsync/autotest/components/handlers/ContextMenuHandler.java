@@ -22,6 +22,14 @@ public class ContextMenuHandler extends TSeleniumClient {
 	 */
 	public void Click(Element e, String item) {
 		selenium.contextMenu("css=#"+e.GetEuid()+" > div.us-class-header");
-		selenium.click("link="+item);
+		WebElement d = driver.findElement(By.id(e.getParent().GetLocator()));
+		WebElement ctxMenu = d.findElement(By.id("classECtx"));
+		if (ctxMenu != null) {
+			WebElement link = ctxMenu.findElement(By.linkText(item));
+			if (link != null) {
+				link.click();
+			}
+		}
 	}
+
 }
