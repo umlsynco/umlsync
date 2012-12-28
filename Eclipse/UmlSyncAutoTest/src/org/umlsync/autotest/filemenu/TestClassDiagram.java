@@ -20,6 +20,7 @@ import org.umlsync.autotest.components.elements.Diagram;
 import org.umlsync.autotest.components.elements.Element;
 import org.umlsync.autotest.components.elements.wrappers.ClassWrapper;
 import org.umlsync.autotest.components.elements.wrappers.ElementWrapper;
+import org.umlsync.autotest.selenium.FirefoxDriverWrapper;
 import org.umlsync.autotest.selenium.WebJQueryDriverBackedSelenium;
 
 import com.thoughtworks.selenium.Selenium;
@@ -482,6 +483,8 @@ public class TestClassDiagram {
 
 		Connector con1 = classDiagram.IdentifyNewConnector();
 
+		con1.AddLable(0,"some text");
+		
 		con1.AddEpointByIndex(0, 100, 100);
 		con1.AddEpointByIndex(1, 100, 100);
 		con1.AddEpointByIndex(2, -100, 100);

@@ -2,6 +2,7 @@ package org.umlsync.autotest.selenium;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.WebElement;
@@ -34,11 +35,12 @@ public class WebJQueryDriverBackedSelenium extends WebDriverBackedSelenium {
 			((JavascriptExecutor)BaseDriver).executeScript("$('"+(locator.substring(4))+"').trigger('blur');");
 		}
 	}
-	
+
 	public void contextMenu(String locator) {
 		if (locator.contains("css=")) {
 			WebElement elem = BaseDriver.findElement(By.cssSelector(locator.substring(4)));
 			(new Actions(BaseDriver)).contextClick(elem).build().perform();
 		}
 	}
+
 }

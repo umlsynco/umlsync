@@ -2,20 +2,20 @@
 <testng-results skipped="0" failed="0" total="1" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="7255" started-at="2012-12-27T20:03:39Z" finished-at="2012-12-27T20:03:46Z">
+  <suite name="Default suite" duration-ms="173936" started-at="2012-12-28T15:43:54Z" finished-at="2012-12-28T15:46:48Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="7255" started-at="2012-12-27T20:03:39Z" finished-at="2012-12-27T20:03:46Z">
+    <test name="Default test" duration-ms="173936" started-at="2012-12-28T15:43:54Z" finished-at="2012-12-28T15:46:48Z">
       <class name="org.umlsync.autotest.filemenu.TestClassDiagram">
-        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@57e603e6]" name="startSelenium" is-config="true" duration-ms="5556" started-at="2012-12-28T00:03:33Z" finished-at="2012-12-28T00:03:39Z">
+        <test-method status="PASS" signature="startSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@516e9cbe]" name="startSelenium" is-config="true" duration-ms="35259" started-at="2012-12-28T19:43:18Z" finished-at="2012-12-28T19:43:54Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- startSelenium -->
-        <test-method status="PASS" signature="testClassDiagram_OperationManager_Remove()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@57e603e6]" name="testClassDiagram_OperationManager_Remove" duration-ms="7239" started-at="2012-12-28T00:03:39Z" finished-at="2012-12-28T00:03:46Z">
+        <test-method status="PASS" signature="testClassDiagram_OperationManager_ConnectorsSimple()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@516e9cbe]" name="testClassDiagram_OperationManager_ConnectorsSimple" duration-ms="173836" started-at="2012-12-28T19:43:54Z" finished-at="2012-12-28T19:46:48Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testClassDiagram_OperationManager_Remove -->
-        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@57e603e6]" name="stopSelenium" is-config="true" duration-ms="16" started-at="2012-12-28T00:03:46Z" finished-at="2012-12-28T00:03:46Z">
+        </test-method> <!-- testClassDiagram_OperationManager_ConnectorsSimple -->
+        <test-method status="PASS" signature="stopSelenium()[pri:0, instance:org.umlsync.autotest.filemenu.TestClassDiagram@516e9cbe]" name="stopSelenium" is-config="true" duration-ms="1" started-at="2012-12-28T19:46:48Z" finished-at="2012-12-28T19:46:48Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- stopSelenium -->

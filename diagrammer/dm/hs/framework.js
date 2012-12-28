@@ -614,7 +614,7 @@ Version:
 				var tabname = self.options.tabRight + "-" + self.counter;
 				self.counter++;
 				
-				$("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
+				$("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
 				tabname = "#" + tabname; 
 				$("#" + self.options.tabs).tabs("add", tabname, json.name);
 				
@@ -623,6 +623,7 @@ Version:
 						, function(obj) {
 					self.diagrams[tabname] = obj;
 					obj.options['viewid'] = viewid;
+					$("#puh").remove();
 				});
 				self.updateFrameWork(true);
 			  },

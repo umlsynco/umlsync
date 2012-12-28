@@ -6,8 +6,8 @@
       <class name="org.umlsync.autotest.filemenu.TestClassDiagram">
         <methods>
           <include name="startSelenium"/>
+          <include name="testClassDiagram_OperationManager_ConnectorsSimple"/>
           <include name="stopSelenium"/>
-          <include name="testClassDiagram_OperationManager_Remove"/>
         </methods>
       </class> <!-- org.umlsync.autotest.filemenu.TestClassDiagram -->
     </classes>

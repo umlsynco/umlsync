@@ -833,6 +833,7 @@ dm['ctx'] = dm.ms.ctx;
                     }
                 })
                 .bind('contextmenu', function(e) {
+				$.log("CONTEXT MENU PRESSED !!!");
                     if (diag.selectedconntector) {
     diag.menuCtx['HideAll']();
     diag.menuCtx['visit'](diag.selectedconntector, e.pageX , e.pageY);
