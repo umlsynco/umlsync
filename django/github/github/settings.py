@@ -67,8 +67,7 @@ STATIC_URL = '/static/'
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    "/home/pavel/dev/umlsync/django/3pp",
-    "/home/pavel/dev/umlsync/diagrammer"
+    "/home/evgeny/Projects/UGITHUB/umlsync/diagrammer",
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
@@ -107,7 +106,7 @@ ROOT_URLCONF = 'github.urls'
 WSGI_APPLICATION = 'github.wsgi.application'
 
 TEMPLATE_DIRS = (
-    "/home/pavel/dev/umlsync/django/github/templates",
+    "/home/evgeny/Projects/UGITHUB/umlsync/django/github/templates",
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -144,8 +143,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 SOCIAL_AUTH_ENABLED_BACKENDS = ('github',)
 SOCIAL_AUTH_DEFAULT_USERNAME = 'new_user'
 
-GITHUB_APP_ID = '5c85112533f13ed4cacc' # os.environ['GITHUB_APP_ID']
-GITHUB_API_SECRET = 'ca28aa0744087e334b897a2c1a2d1ec987c0e6c5' #os.environ['GITHUB_API_SECRET']
+GITHUB_APP_ID = '2495af26a8418ad2f652' # os.environ['GITHUB_APP_ID']
+GITHUB_API_SECRET = 'cacef225c2e332b31791bc6e8ddfd7078a3690c0' #os.environ['GITHUB_API_SECRET']
 
 GITHUB_EXTENDED_PERMISSIONS = ['repo']
 
