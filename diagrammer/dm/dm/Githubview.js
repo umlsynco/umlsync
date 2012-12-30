@@ -45,7 +45,8 @@ Copyright (c) 2012 UMLSync. All rights reserved.
           if (dm.dm.dialogs)
             dm.dm.dialogs['SelectRepoDialog'](repos, function(repo) {
               "repo URL is stored in repo variable"
-              var IGhView = new dm.base.GithubView(repo, username, access_token);
+              var IGhView = new dm.base.GithubView(
+                repo, username, access_token);
               dm.dm.fw.addView2('Github', IGhView);
             });
         };
@@ -60,9 +61,15 @@ Copyright (c) 2012 UMLSync. All rights reserved.
       },
       'save': function(path, data, description) {
         var content = data;
-        console.log("Saving " + data.toString() + " on path: " + path.toString());
+        console.log("Saving " + data.toString() + " on " + path.toString());
         var repo = github().getRepo(username, pUrl.split('/').pop());
-        repo.write('master', path.toString().substring(1), data.toString(), "Autosaving.", function(err) {});
+        repo.write(
+          'master',
+          path.toString().substring(1),
+          data.toString(),
+          "Autosaving.",
+          function(err) {}
+        );
       },
       'loadDiagram': function(node, callback) {
         if (node && node.data && node.data.sha) {
@@ -71,9 +78,14 @@ Copyright (c) 2012 UMLSync. All rights reserved.
           console.log(node.data.url);
           console.log(node.data.title);
           var repo = github().getRepo(username, pUrl.split('/').pop());
-          repo.read('master', node.data.title.toString(), function(err, data) {
-            console.log(data);
-            callback.success($.parseJSON(data)) } );
+          repo.read(
+            'master',
+            node.data.title.toString(),
+            function(err, data) {
+              console.log(data);
+              callback.success($.parseJSON(data))
+            } 
+          );
         }
       },
       'ctx_menu': [
@@ -101,13 +113,20 @@ Copyright (c) 2012 UMLSync. All rights reserved.
         {
           title:"New folder",
           click: function(node) {
-            this.newfolder(node.getAbsolutePath(), "newFolder", function(desc) {node.addChild(desc);});
+            this.newfolder(
+              node.getAbsolutePath(),
+              "newFolder",
+              function(desc) { node.addChild(desc); }
+            );
           }
         },
         {
           title:"Remove",
           click: function(node) {
-            this.remove(node.getAbsolutePath(), function() {node.remove();});
+            this.remove(
+              node.getAbsolutePath(),
+              function() {node.remove(); }
+            );
           }
         }
       ],
@@ -149,8 +168,10 @@ Copyright (c) 2012 UMLSync. All rights reserved.
         };
         // Read repository
         var repo = github().getRepo(username, pUrl.split('/').pop());
-        repo.getTree('master?recursive=true',
-          function(err, tree) { updateTree(tree) });
+        repo.getTree(
+          'master?recursive=true',
+          function(err, tree) { updateTree(tree) }
+        );
       },
     };
     return self;
