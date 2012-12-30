@@ -13,13 +13,10 @@ Copyright (c) 2012 UMLSync. All rights reserved.
         auth: "oauth"
         });
     };
-    function treeView(data, textStatus, jqXHR) {
-      //the variable 'data' will have the JSON object
-      // In your example, the following will work:
-      if (data['data']) {
+    function processTree(data) {
+      if (data) {
         var ret = [];
-        var json = data['data'];
-        for (j in json["tree"]) {
+        for (j in data) {
           ret[j] = {};
           if (json["tree"][j]["type"] == "blob") {
             ret[j]["isFolder"] = false;
@@ -40,43 +37,9 @@ Copyright (c) 2012 UMLSync. All rights reserved.
       }
       return data;
     };
-    function _request(method, path, data, cb, raw) {
-      function getURL() {
-        var url = path;
-        return url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
-      }
-      var xhr = new XMLHttpRequest();
-      if (!raw) {xhr.dataType = "json"}
-      xhr.open(method, getURL());
-      xhr.onreadystatechange = function () {
-        if (this.readyState == 4) {
-          if (this.status >= 200 && this.status < 300 || this.status === 304) {
-            cb(null, raw ? this.responseText : this.responseText ? JSON.parse(this.responseText) : true);
-          }
-          else {
-            cb({request: this, error: this.status});
-          }
-        }
-      }
-      xhr.setRequestHeader('Accept','application/vnd.github.raw');
-      xhr.setRequestHeader('Content-Type','application/json');
-/*  if (
-  (options.auth == 'oauth' && options.token) ||
-  (options.auth == 'basic' && options.username && options.password)
-  ) {*/
-      xhr.setRequestHeader('Authorization', 'token'+token);
-//      options.auth == 'oauth'
-//      ? 'token '+ options.token
-      //: 'Basic ' + Base64.encode(options.username + ':' + options.password)
-//      );
-  //}
-      data ? xhr.send(JSON.stringify(data)) : xhr.send();
-    } //end of _request
-
     var pUrl = url;
     var self = {
       euid: "Github",
-      // Check if loging required
       init: function(username, access_token) {
         function showRepos(repos) {
           if (dm.dm.dialogs)
@@ -153,10 +116,9 @@ Copyright (c) 2012 UMLSync. All rights reserved.
         function updateTree(tree) {
           console.log("updateTree()");
           datax = {};
-          datax["data"] = {};
-          datax["data"]["tree"] = tree;
+          datax["tree"] = tree;
           real_tree = {}
-          real_tree = treeView(datax);
+          real_tree = processTree(datax);
           $(parentSelector).dynatree({
             persist: true,
             children: real_tree,
@@ -187,11 +149,11 @@ Copyright (c) 2012 UMLSync. All rights reserved.
         };
         // Read repository
         var repo = github().getRepo(username, pUrl.split('/').pop());
-        repo.getTree('master?recursive=true', function(err, tree) { updateTree(tree) });
+        repo.getTree('master?recursive=true',
+          function(err, tree) { updateTree(tree) });
       },
     };
     return self;
   };
 //@aspect
 })(jQuery, dm);
-
