@@ -92,4 +92,7 @@ def editor2(request, *args, **kwargs):
     if auth_response:
         return auth_response
 
-    return render_to_response('editor.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))
+#    if request.COOKIES.get("redirect_viewer"):
+    return render_to_response('viewer.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))
+#    else :
+    #return render_to_response('editor.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))
