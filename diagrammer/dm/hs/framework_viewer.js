@@ -883,7 +883,8 @@ $(id + " #search_form .classy")
                         }
                         if (self.views[viewid])
                         self.views[viewid].view.loadDiagram(path, repo, {
-                          'success': function(json) {
+                          'success': function(err, data) {
+                              var json = $.parseJSON(data);
                             var tabname = parent;
                                 var force = true;
                             if (parent == undefined) {
@@ -934,7 +935,7 @@ $(id + " #search_form .classy")
 
                         if (self.views[viewid])
                          self.views[viewid].view.loadMarkdown(path, repo, {
-                          'success': function(json) {
+                          'success': function(err, json) {
                                 var tabname = self.options.tabRight + "-" + self.counter;
                                 self.counter++;
 
@@ -955,7 +956,7 @@ $(id + " #search_form .classy")
 
                 var count = 0;
                                 $(tabname + " article.markdown-body .pack-diagram").each(function() {
-                                  var repo = $(this).attr("repo"),
+                                  //var repo = $(this).attr("repo"),
                                       sum = $(this).attr("sha"),
                                           path = $(this).attr("path");
 

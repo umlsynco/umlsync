@@ -137,35 +137,24 @@ Version:
                 },
                 'loadDiagram': function(node, repo, callback) {
                         if (node && node.data && node.data.sha) {
-                                $.ajax({
+                            repo.getBlob(node.data.sha, callback.success);
+                            /*    $.ajax({
                                         url: 'https://api.github.com/repos/'+repo+'/git/blobs/'+node.data.sha,
                                         accepts: 'application/vnd.github-blob.raw',
                                         dataType: 'jsonp',
                                         success: function(x, y, z) {decodeContent(x,y,z,callback.success);},
                                         error:callback.error
-                                });
+                                });*/
                         }
                 },
                 'loadCode': function(node, repo, callback) {
                         if (node && node.data && node.data.sha) {
-                                $.ajax({
-                                        url: 'https://api.github.com/repos/'+repo+'/git/blobs/'+node.data.sha,
-                                        accepts: 'application/vnd.github-blob.raw',
-                                        dataType: 'jsonp',
-                                        success: function(x, y, z) {decodeContent2(x,y,z,callback.success);},
-                                        error:callback.error
-                                });
+                            repo.getBlob(node.data.sha, callback.success);
                         }
                 },
                 'loadMarkdown': function(node, repo, callback) {
                         if (node && node.data && node.data.sha) {
-                                $.ajax({
-                                        url: 'https://api.github.com/repos/'+repo+'/git/blobs/'+node.data.sha,
-                                        accepts: 'application/vnd.github-blob.raw',
-                                        dataType: 'jsonp',
-                                        success: function(x, y, z) {decodeMDContent(x,y,z,callback.success);},
-                                        error:callback.error
-                                });
+                            repo.getBlob(node.data.sha, callback.success);
                         }
                 },
                 'ctx_menu': [

@@ -9,12 +9,7 @@
 <body>
 <div style="width:800px; margin:0 auto;">
   <a id="github" href="{% url socialauth_begin 'github' %}">Login to Github (Editor)</a><br>
-  <a id="github" href="{% url socialauth_begin 'github' %}" click="function() {
-var exdate=new Date();
-exdate.setDate(exdate.getDate() + 1);
-var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-document.cookie=c_name + "=" + c_value;
-      }">Login to Github (Viewer)</a>
+  <a id="github" href="{% url socialauth_begin 'github' %}?next={{ redirect_url }}">Login to Github (Viewer)</a>
 </div>
 </body>
 </html>

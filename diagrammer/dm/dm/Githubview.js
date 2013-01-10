@@ -18,7 +18,7 @@ URL:
     };
     function processTree(data) {
       if (data) {
-        console.log(data);
+        $.log(data);
         var ret = [];
         for (j in data["tree"]) {
           ret[j] = {};
@@ -36,7 +36,7 @@ URL:
             ret[j]["sha"] = data["tree"][j]["sha"];
           }
         }
-        console.log("Processing ret ->", ret);
+        $.log("Processing ret ->", ret);
         return ret;
       }
       return data;
@@ -66,7 +66,7 @@ URL:
       },
       'save': function(path, data, description) {
         self.modifiedList[path] = data;
-        console.log("Saving " + data.toString() + " on " + path.toString());
+        $.log("Saving " + data.toString() + " on " + path.toString());
         //var repo = github().getRepo(username, pUrl.split('/').pop());
         //repo.write(
         //  'master',
@@ -78,10 +78,10 @@ URL:
       },
       'loadDiagram': function(node, callback) {
         if (node && node.data && node.data.sha) {
-          console.log("loadDiagram()");
-          console.log(node.data);
-          console.log(node.data.url);
-          console.log(node.data.title);
+          $.log("loadDiagram()");
+          $.log(node.data);
+          $.log(node.data.url);
+          $.log(node.data.title);
           var repo = github().getRepo(username, pUrl.split('/').pop());
           repo.getBlob(node.data.sha,
                       function(err, data) {
@@ -99,7 +99,7 @@ URL:
               view.modifiedList,
               function(message, items) {
                 var repo = github().getRepo(username, pUrl.split('/').pop());
-                console.log("Commiting...");
+                $.log("Commiting...");
                 // REPO MULTIPLE WRITE  
                 //repo.write('master', path.toString().substring(1), data.toString(), "Autosaving.", function(err) {});
                 // REMOVE THE COMMITED ITEMS
@@ -149,9 +149,9 @@ URL:
         }
       ],
       initTree: function (parentSelector) {
-        console.log("initTree()");
+        $.log("initTree()");
         function updateTree(tree) {
-          console.log("updateTree()");
+          $.log("updateTree()");
           datax = {};
           datax["tree"] = tree;
           real_tree = {}
@@ -160,7 +160,7 @@ URL:
             persist: true,
             children: real_tree,
             onCreate: function(node, span) {
-              console.log("onCreate()");
+              $.log("onCreate()");
               $(span).bind('contextmenu', function(e) {
                 var node = $.ui.dynatree.getNode(e.currentTarget);
                 dm.dm.fw.ShowContextMenu("Github", e, node);
@@ -168,7 +168,7 @@ URL:
               });
             },
             onLazyRead: function(node) {
-              console.log("onLazyRead()");
+              $.log("onLazyRead()");
               if (node.data.isFolder) {
                 repo.getTree(node.data.sha, function(err, tree) {
                   datax = {};
@@ -185,7 +185,7 @@ URL:
               }// IsFolder
             },
             onActivate: function(node) {
-              console.log("onActivate()");
+              $.log("onActivate()");
               if ((!node.data.isFolder)
                 && (node.data.title.indexOf(".json") != -1))
                 dm.dm.fw.loadDiagram(self.euid, node);
