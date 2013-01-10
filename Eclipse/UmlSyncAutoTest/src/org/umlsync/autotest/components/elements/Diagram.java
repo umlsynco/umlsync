@@ -186,6 +186,8 @@ public class Diagram extends TSeleniumClient  {
 		String fromEuid = (splitted[1].split("="))[1];
 		String toEuid = (splitted[0].split("="))[1];
 		
+		conEuid = conEuid.substring(0,conEuid.length()-1);
+		
 		return new Connector(conEuid,
 				 			 this,
 				 			 GetElementByEuid(fromEuid).GetElementWrapper(),

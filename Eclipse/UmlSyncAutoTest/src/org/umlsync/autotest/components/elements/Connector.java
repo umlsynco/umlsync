@@ -1,5 +1,7 @@
 package org.umlsync.autotest.components.elements;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import org.openqa.selenium.By;
@@ -16,6 +18,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.umlsync.autotest.components.elements.wrappers.ElementWrapper;
+import org.umlsync.autotest.components.elements.wrappers.TCommonOperation;
 import org.umlsync.autotest.selenium.ActionsWrapper;
 import org.umlsync.autotest.selenium.FirefoxDriverWrapper;
 import org.umlsync.autotest.selenium.MouseWrapper;
@@ -27,8 +30,70 @@ public class Connector extends TSeleniumClient {
 	public String euid;
 	private Diagram parent;
 	private ElementWrapper fromElement, toElement;
+	
+	
+	public class Label extends  TSeleniumClient {
+		public Label(String labelEuid) {
+			euid = labelEuid;
+		}
+		int top, left;
+		String text;
+		String euid;
+		
+		/*
+		 * DND Label by offset
+		 * param x - offset x
+		 * param y - offset y
+		 */
+		public void DragAndDrop(int x, int y) {
+			selenium.dragAndDrop("id="+euid, x + "," +y);
+		}
+		
+		/*
+		 * Change the default text of label
+		 * param text - new text 
+		 */
+		public void Editable(String text) {
+			selenium.click("css=#" + euid);
+			selenium.type("css=#" + euid + " input", text);
+			selenium.keyDown("css=#" + euid + " input", "13");
+		}
+		
+		/*
+		 * return true if element's HTML instance exists and false otherwise
+		 */
+		public boolean IsPresent() {
+			return selenium.isElementPresent("id="+euid);
+		}
+		
+		/*
+		 * return the coordinates of label HTML instance on the screen
+		 */
+		public Point GetCoordinates() {
+			WebElement e = driver.findElement(By.id(euid));
+			return e.getLocation();
+		}
+
+		/*
+		 * return the text field value of label
+		 */
+		public String  GetText() {
+			WebElement name = driver.findElement(By.cssSelector("#" + euid));
+			return (null != name) ? name.getText() : null;
+		}
+
+		
+		/*
+		 * Highlight the label
+		 */
+		public void MouseOver() {
+			selenium.mouseOver("id=#"+euid);
+		}
+	}
 
 	private Vector<Point> epoints = new Vector<Point>();
+	private int labelCount = 0;
+	private List<Label> labels = new ArrayList<Label>();
 
 	public Connector(
 			String id,
@@ -160,44 +225,15 @@ public class Connector extends TSeleniumClient {
 		epoints.add(idx, new Point(x3,y3));
 	}
 
-	class SuperActions extends Actions {
-		public class ContextLocatable implements Locatable {
-			Locatable element;
 
-			public ContextLocatable(WebElement onElement) {
-				element = (Locatable)onElement;
-			}
-
-			@Override
-			public Point getLocationOnScreenOnceScrolledIntoView() {
-				Point point = element.getLocationOnScreenOnceScrolledIntoView();
-				return point;
-			}
-
-			@Override
-			public Coordinates getCoordinates() {
-				Coordinates point = element.getCoordinates();
-				return point;
-			}
-
-		};
-
-		public SuperActions(WebDriver driver) {
-			super(driver);
-		}
-
-		public Actions contextClick(WebElement onElement) {
-			action.addAction(new ContextClickAction(mouse, (Locatable) new ContextLocatable(onElement)));
-			return this;
-		}
-
-	};
-
-	public void AddLable(int idx,String string) {
+	/*
+	 * return index of added label
+	 */
+	public int AddLabel(int idx,String string) {
 		int x1 = 0,x2 =0 ,x3,y1=0,y2=0,y3;
 
 		if (idx < 0) {
-			return;
+			return -1;
 		}
 
 		if (epoints.size() == 0) {
@@ -255,7 +291,23 @@ public class Connector extends TSeleniumClient {
 		                 x3+",pageY:"+
 				         y3+"});jQuery('#"+(parent.GetLocator())+"').trigger(ctxEvent);$.log('trigger');";
 		((JavascriptExecutor)driver).executeScript(command);
+
 		parent.GetContextMenuHandler().Click(this, "Add \"Text\"");
+		String labelEuid = euid + "_l"+labelCount;
+		WebElement label = driver.findElement(By.id(labelEuid));
+		if (label != null) {
+			Label l = new Label(labelEuid);
+			labels.add(l);
+			
+			addClient(l); // get driver and selenium
+
+			++labelCount;
+		}
+		return labelCount-1;
+	}
+	
+	public Label GetLabel(int idx) {
+		return labels.get(idx);
 	}
 
 

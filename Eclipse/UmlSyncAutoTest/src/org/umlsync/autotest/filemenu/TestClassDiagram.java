@@ -16,6 +16,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.umlsync.autotest.components.EditorFramework;
 import org.umlsync.autotest.components.elements.Connector;
+import org.umlsync.autotest.components.elements.Connector.Label;
 import org.umlsync.autotest.components.elements.Diagram;
 import org.umlsync.autotest.components.elements.Element;
 import org.umlsync.autotest.components.elements.wrappers.ClassWrapper;
@@ -483,7 +484,10 @@ public class TestClassDiagram {
 
 		Connector con1 = classDiagram.IdentifyNewConnector();
 
-		con1.AddLable(0,"some text");
+		int idx = con1.AddLabel(0,"some text");
+		Label l = con1.GetLabel(idx);
+		l.DragAndDrop(100, 100);
+		l.Editable("Some cool test was written here  !!!!");
 		
 		con1.AddEpointByIndex(0, 100, 100);
 		con1.AddEpointByIndex(1, 100, 100);
