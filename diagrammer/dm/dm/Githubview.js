@@ -99,14 +99,24 @@ URL:
               view.modifiedList,
               function(message, items) {
                 $.log("Commiting...");
-                for (path in items) {
-                  $.log(path);
-                  repo = github().getRepo(username, pUrl.split('/').pop());
-                  // second call won't work as we need to update the tree
-                  repo.write('master', path.toString().substring(1), items[path].toString(), message, function(err) {});
-                  // Remove from updated list
-                  delete view.modifiedList[path];
-                };
+                //for (path in items) {
+                //  $.log(path);
+                //  repo = github().getRepo(username, pUrl.split('/').pop());
+                //  // second call won't work as we need to update the tree
+                //  repo.write('master', path.toString().substring(1), items[path].toString(), message, function(err) {});
+                //  // Remove from updated list
+                //  delete view.modifiedList[path];
+                //};
+                repo = github().getRepo(username, pUrl.split('/').pop());
+                var paths = []
+                var contents = []
+                for (item in items) {
+                  paths.push(item.toString().substring(1));
+                  contents.push(items[item].toString());
+                }
+                $.log(paths);
+                $.log(contents);
+                repo.multi_write('master', paths, contents, message, function(err) {});
               });
           }
         },

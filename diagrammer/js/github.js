@@ -22,7 +22,7 @@
       }
 
       var xhr = new XMLHttpRequest();
-      if (!raw) {xhr.dataType = "json"}
+      if (!raw) {xhr.dataType = "json";}
 
       xhr.open(method, getURL());
       xhr.onreadystatechange = function () {
@@ -33,7 +33,7 @@
             cb({request: this, error: this.status});
           }
         }
-      }
+      };
       xhr.setRequestHeader('Accept','application/vnd.github.raw');
       xhr.setRequestHeader('Content-Type','application/json');
       if (
@@ -80,10 +80,12 @@
       // -------
 
       this.show = function(username, cb) {
+        var command = username ? "/users/"+username : "/user";
+
         _request("GET", "/users/"+username, null, function(err, res) {
           cb(err, res);
         });
-      }
+      };
 
       // List user repositories
       // -------
@@ -108,6 +110,24 @@
 
       this.orgRepos = function(orgname, cb) {
         _request("GET", "/orgs/"+orgname+"/repos?type=all&per_page=1000&sort=updated&direction=desc", null, function(err, res) {
+          cb(err, res);
+        });
+      };
+
+      // Follow user
+      // -------
+
+      this.follow = function(username, cb) {
+        _request("PUT", "/user/following/"+username, null, function(err, res) {
+          cb(err, res);
+        });
+      };
+
+      // Unfollow user
+      // -------
+
+      this.unfollow = function(username, cb) {
+        _request("DELETE", "/user/following/"+username, null, function(err, res) {
           cb(err, res);
         });
       };
@@ -342,7 +362,7 @@
         updateTree(branch, function(err, latestCommit) {
           that.getTree(latestCommit+"?recursive=true", function(err, tree) {
             // Update Tree
-            var newTree = _.reject(tree, function(ref) { return ref.path === path });
+            var newTree = _.reject(tree, function(ref) { return ref.path === path; });
             _.each(newTree, function(ref) {
               if (ref.type === "tree") delete ref.sha;
             });
@@ -399,6 +419,43 @@
           });
         });
       };
+
+      this.multi_write = function(branch, paths, contents, message, cb) {
+        updateTree(branch, function(err, latestCommit) {
+          if (err) return cb(err);
+          blob_calls = {};
+          for (var i=0; i<contents.length; i++) {
+            var content = contents[i];
+            $.log("-----------------------");
+            $.log(i);
+            $.log(contents[i]);
+            $.log(paths[i]);
+            blob_calls[i] = function(callback) {
+              $.log("content for blob");
+              $.log(content);
+              that.postBlob(content, function(err, blob) {
+                if (err) return cb(err);
+                $.log("postBlob() called");
+                callback(err, blob);
+              });
+            };
+          };
+          $.log(blob_calls);
+          async.series(blob_calls, function(err, results) {  
+            if (err) return cb(err);
+            // blobs now stored in results
+            $.log("blobs");
+            $.log(results);
+            //that.updateTree(latestCommit, path[0], blob[0], function(err, tree) {
+            //  if (err) return cb(err);
+            //  that.commit(latestCommit, tree, message, function(err, commit) {
+            //    if (err) return cb(err);
+            //    that.updateHead(branch, commit, cb);
+            //  });
+            //});
+          });
+        });
+      };
     };
 
     // Gists API
@@ -406,7 +463,6 @@
 
     Github.Gist = function(options) {
       var id = options.id;
-      var that = this;
       var gistPath = "/gists/"+id;
 
       // Read the gist
