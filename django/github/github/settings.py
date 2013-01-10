@@ -1,6 +1,6 @@
 # Django settings for github project.
 
-# import os
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -64,11 +64,13 @@ STATIC_ROOT = ''
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
+UMLSYNC_HOME = os.environ.get("UMLSYNC_HOME")
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    "/Users/pavel/Code/umlsync/django/3pp",
-    "/Users/pavel/Code/umlsync/diagrammer"
+    UMLSYNC_HOME + "/umlsync/django/3pp",
+    UMLSYNC_HOME + "/umlsync/diagrammer"
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
@@ -107,7 +109,7 @@ ROOT_URLCONF = 'github.urls'
 WSGI_APPLICATION = 'github.wsgi.application'
 
 TEMPLATE_DIRS = (
-    "/Users/pavel/Code/umlsync/django/github/templates",
+    UMLSYNC_HOME + "/umlsync/django/github/templates",
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
