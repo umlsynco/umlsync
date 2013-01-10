@@ -426,25 +426,33 @@
           blob_calls = {};
           for (var i=0; i<contents.length; i++) {
             var content = contents[i];
+            var path = paths[i];
             $.log("-----------------------");
             $.log(i);
             $.log(contents[i]);
             $.log(paths[i]);
             blob_calls[i] = function(callback) {
               $.log("content for blob");
-              $.log(content);
-              that.postBlob(content, function(err, blob) {
+              var local_content = content;
+              $.log(local_content);
+              that.postBlob(local_content, function(err, blob) {
                 if (err) return cb(err);
-                $.log("postBlob() called");
-                callback(err, blob);
+                $.log("postBlob() was called");
+                $.log(path);
+                $.log(blob);
+                that.updateTree(latestCommit, path, blob, function(err, tree) {
+                  if (err) return cb(err);
+                  $.log("updateTree() was called");
+                  callback(err, tree);
+                });
               });
             };
           };
           $.log(blob_calls);
           async.series(blob_calls, function(err, results) {  
             if (err) return cb(err);
-            // blobs now stored in results
-            $.log("blobs");
+            // trees now stored in results
+            $.log("trees");
             $.log(results);
             //that.updateTree(latestCommit, path[0], blob[0], function(err, tree) {
             //  if (err) return cb(err);
