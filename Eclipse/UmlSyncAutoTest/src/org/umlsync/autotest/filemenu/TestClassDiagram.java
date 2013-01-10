@@ -74,7 +74,7 @@ public class TestClassDiagram {
 	@Test
 	public void testClassDiagram_EditableFields() {
 
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
@@ -116,7 +116,7 @@ public class TestClassDiagram {
 	 */
 	@Test
 	public void testClassDiagram_OperationManager_ClassInternalsWithRename() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
@@ -157,7 +157,7 @@ public class TestClassDiagram {
 	 */
 	@Test
 	public void testClassDiagram_OperationManager_ClassInternals() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
@@ -180,7 +180,7 @@ public class TestClassDiagram {
 	
 	@Test
 	public void testClassDiagram_OperationManager_DND() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
@@ -201,7 +201,7 @@ public class TestClassDiagram {
 	
 	@Test
 	public void testClassDiagram_OperationManager_DNDMultiple() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
@@ -242,7 +242,7 @@ public class TestClassDiagram {
 	
 	@Test
 	public void testClassDiagram_OperationManager_Remove() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 
 		List<Element> es = new ArrayList<Element>();
@@ -294,7 +294,7 @@ public class TestClassDiagram {
 	 */
 	@Test
 	public void testClassDiagram_OperationManager_ClassResizeSimple() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
@@ -320,7 +320,7 @@ public class TestClassDiagram {
 	 */
 	@Test
 	public void testClassDiagram_OperationManager_ClassResizeComplex() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
@@ -350,7 +350,7 @@ public class TestClassDiagram {
 	 */
 	@Test
 	public void testClassDiagram_OperationManager_ClassResizeComplexWithAttributes() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
@@ -390,7 +390,7 @@ public class TestClassDiagram {
 	 */
 	@Test
 	public void testClassDiagram_OperationManager_RemovedQueueClean() {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element1 = classDiagram.CreateElement("Class", "FirstClass");
 		Element element2 = classDiagram.CreateElement("Class", "2ndClass");
@@ -444,7 +444,7 @@ public class TestClassDiagram {
 
 	@Test(dataProvider = "CreateElementsViaIconMenu")	  
 	public void testClassDiagram_OperationManager_IconMenu(IconElementDescription[] params) {
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
@@ -472,7 +472,7 @@ public class TestClassDiagram {
 	@Test
 	public void testClassDiagram_OperationManager_ConnectorsSimple() {
 
-		classDiagram.GetKeyHandler().RemoveAll();
+		classDiagram.RemoveAll();
 		Element element = classDiagram.CreateElement("Class", "FirstClass");
 		Assert.assertEquals(element != null, true);
 

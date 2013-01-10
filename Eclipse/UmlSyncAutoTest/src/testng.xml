@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Default suite">
+  <test verbose="2" name="Local editor tests">
+    <classes>
+      <class name="org.umlsync.autotest.filemenu.TestFileMenuHandler"/>
+      <class name="org.umlsync.autotest.filemenu.TestClassDiagram"/>
+      <class name="org.umlsync.autotest.filemenu.TestEditorFramework"/>
+      <class name="org.umlsync.autotest.filemenu.TestFileMenuHover"/>
+    </classes>
+  </test> <!-- Default test -->
+</suite> <!-- Default suite -->

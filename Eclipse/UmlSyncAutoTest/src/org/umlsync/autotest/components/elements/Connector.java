@@ -293,6 +293,8 @@ public class Connector extends TSeleniumClient {
 		((JavascriptExecutor)driver).executeScript(command);
 
 		parent.GetContextMenuHandler().Click(this, "Add \"Text\"");
+		parent.GetKeyHandler().Esc();
+		
 		String labelEuid = euid + "_l"+labelCount;
 		WebElement label = driver.findElement(By.id(labelEuid));
 		if (label != null) {

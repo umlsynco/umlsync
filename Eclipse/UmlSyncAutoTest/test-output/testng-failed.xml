@@ -1,15 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [Default suite]">
-  <test name="Default test(failed)">
+  <test name="Local editor tests(failed)">
     <classes>
       <class name="org.umlsync.autotest.filemenu.TestClassDiagram">
         <methods>
-          <include name="startSelenium"/>
+          <include name="testClassDiagram_OperationManager_IconMenu" invocation-numbers="1"/>
+          <include name="testClassDiagram_OperationManager_ClassInternals"/>
+          <include name="testClassDiagram_OperationManager_DNDMultiple"/>
+          <include name="testClassDiagram_OperationManager_ClassResizeSimple"/>
           <include name="testClassDiagram_OperationManager_ConnectorsSimple"/>
+          <include name="testClassDiagram_OperationManager_Remove"/>
+          <include name="testClassDiagram_OperationManager_ClassResizeComplex"/>
+          <include name="startSelenium"/>
+          <include name="testClassDiagram_OperationManager_RemovedQueueClean"/>
+          <include name="testClassDiagram_OperationManager_ClassInternalsWithRename"/>
+          <include name="testClassDiagram_OperationManager_ClassResizeComplexWithAttributes"/>
+          <include name="testClassDiagram_OperationManager_DND"/>
           <include name="stopSelenium"/>
+          <include name="testClassDiagram_EditableTitle"/>
+          <include name="testClassDiagram_EditableFields"/>
         </methods>
       </class> <!-- org.umlsync.autotest.filemenu.TestClassDiagram -->
+      <class name="org.umlsync.autotest.filemenu.TestFileMenuHandler">
+        <methods>
+          <include name="startSelenium"/>
+        </methods>
+      </class> <!-- org.umlsync.autotest.filemenu.TestFileMenuHandler -->
+      <class name="org.umlsync.autotest.filemenu.TestFileMenuHover">
+        <methods>
+          <include name="stopSelenium"/>
+          <include name="startSelenium"/>
+        </methods>
+      </class> <!-- org.umlsync.autotest.filemenu.TestFileMenuHover -->
+      <class name="org.umlsync.autotest.filemenu.TestEditorFramework">
+        <methods>
+          <include name="testEditor_CreateAllElements"/>
+          <include name="testEditor_ElementsIconMenusDND"/>
+          <include name="testEditor_ActivateOpenedDiagramMenus"/>
+          <include name="testEditor_ElementsIconMenus"/>
+          <include name="testEditor_CreateAndResizellElements"/>
+          <include name="testEditor_CreateAllElementsAndCheckSelection"/>
+          <include name="testEditor_ActivateOpenedDiagrams"/>
+          <include name="startSelenium"/>
+          <include name="testEditor_CreateAndDndAndResizeAllElements"/>
+          <include name="testEditor_CreateAndDndAndMultipleDndAllElements"/>
+          <include name="testEditor_CreateAndDndAllElements"/>
+          <include name="testEditor_CreateAllTypeOfDiagrams" invocation-numbers="0 1 2 3"/>
+        </methods>
+      </class> <!-- org.umlsync.autotest.filemenu.TestEditorFramework -->
     </classes>
-  </test> <!-- Default test(failed) -->
+  </test> <!-- Local editor tests(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

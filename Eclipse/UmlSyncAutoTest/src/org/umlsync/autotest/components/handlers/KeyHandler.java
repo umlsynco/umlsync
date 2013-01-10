@@ -39,4 +39,9 @@ public class KeyHandler extends TSeleniumClient {
 		selenium.keyPress("css=#"+diagram.GetLocator(), Keys.chord(Keys.DELETE));
 	}
 
+	public void Esc() {
+		selenium.keyPress("css=#"+diagram.GetLocator(), Keys.chord(Keys.ESCAPE));
+	}
+
+	
 }

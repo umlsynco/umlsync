@@ -97,7 +97,7 @@ public class TestEditorFramework {
 			d = ds.next();
 			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
-			d.keyHandler.RemoveAll();            // Remove all previous elements
+			d.RemoveAll();
 
 			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			while (types.hasNext()) {
@@ -120,14 +120,14 @@ public class TestEditorFramework {
 			d = ds.next();
 			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
-			d.keyHandler.RemoveAll();            // Remove all previous elements
+			d.RemoveAll();
 
 			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				ElementWrapper diagramElementWrapper = new ElementWrapper(diagramElement);
+				ElementWrapper diagramElementWrapper = diagramElement.GetElementWrapper();
 				diagramElementWrapper.DragAndDrop("+"+x1+",-"+y1);
 				x1+=10;
 				y1-=10;
@@ -147,14 +147,14 @@ public class TestEditorFramework {
 			
 			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
-			d.keyHandler.RemoveAll();            // Remove all previous elements
+			d.RemoveAll();
 
 			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				ElementWrapper diagramElementWrapper = new ElementWrapper(diagramElement);
+				ElementWrapper diagramElementWrapper = diagramElement.GetElementWrapper();
 				diagramElementWrapper.Resize("se-u", "+50,+50");
 				x1+=10;
 				y1-=10;
@@ -173,14 +173,14 @@ public class TestEditorFramework {
 
 			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
-			d.keyHandler.RemoveAll();            // Remove all previous elements
+			d.RemoveAll();
 
 			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			while (types.hasNext()) {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				ElementWrapper diagramElementWrapper = new ElementWrapper(diagramElement);
+				ElementWrapper diagramElementWrapper = diagramElement.GetElementWrapper();
 				diagramElementWrapper.DragAndDrop("+"+x1+",-"+y1);
 				diagramElementWrapper.Resize("se-u", "+50,+50");
 				x1+=10;
@@ -202,7 +202,7 @@ public class TestEditorFramework {
 			d = ds.next();
 			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
-			d.keyHandler.RemoveAll();            // Remove all previous elements
+			d.RemoveAll();
 
 			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			ElementWrapper diagramElementWrapper = null;
@@ -210,7 +210,7 @@ public class TestEditorFramework {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				diagramElementWrapper = new ElementWrapper(diagramElement);
+				diagramElementWrapper = diagramElement.GetElementWrapper();
 				diagramElementWrapper.DragAndDrop("+"+x1+",-"+y1);
 				x1+=10;
 				y1-=10;
@@ -235,7 +235,7 @@ public class TestEditorFramework {
 			d = ds.next();
 			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
-			d.keyHandler.RemoveAll();            // Remove all previous elements
+			d.RemoveAll();
 
 			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			ElementWrapper diagramElementWrapper = null;
@@ -243,7 +243,7 @@ public class TestEditorFramework {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				diagramElementWrapper = new ElementWrapper(diagramElement);
+				diagramElementWrapper = diagramElement.GetElementWrapper();
 				diagramElementWrapper.Select();
 				Assert.assertEquals(diagramElementWrapper.IsHightlighted(), true);
 				Assert.assertEquals(diagramElementWrapper.IsSelected(), true);
@@ -267,7 +267,7 @@ public class TestEditorFramework {
 			d = ds.next();
 			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
-			d.keyHandler.RemoveAll();            // Remove all previous elements
+			d.RemoveAll();
 
 			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			ElementWrapper diagramElementWrapper = null;
@@ -275,7 +275,7 @@ public class TestEditorFramework {
 				String t = types.next();
 				Element diagramElement = d.CreateElement(t, null);
 				Assert.assertNotNull(diagramElement);
-				diagramElementWrapper = new ElementWrapper(diagramElement);
+				diagramElementWrapper = diagramElement.GetElementWrapper();
 				diagramElementWrapper.Select();
 				Assert.assertEquals(diagramElementWrapper.IsHightlighted(), true);
 				Assert.assertEquals(diagramElementWrapper.IsSelected(), true);
@@ -301,7 +301,7 @@ public class TestEditorFramework {
 			}
 			editor.GetDiagramManager().ActivateDiagram(d);
 			Assert.assertEquals(editor.GetDiagramMenuHandler().IsActive(d.GetType()), true);
-			d.keyHandler.RemoveAll();            // Remove all previous elements
+			d.RemoveAll();
 
 			Iterator<String> types = editor.GetDiagramMenuHandler().GetElements(d.GetType()).iterator();
 			ElementWrapper diagramElementWrapper = null;
@@ -310,7 +310,7 @@ public class TestEditorFramework {
 				Element diagramElement = d.CreateElement(t, null);
 				
 				Assert.assertNotNull(diagramElement);
-				diagramElementWrapper = new ElementWrapper(diagramElement);
+				diagramElementWrapper = diagramElement.GetElementWrapper();
 				diagramElementWrapper.Select();
 				
 				Assert.assertEquals(diagramElementWrapper.IsHightlighted(), true);
@@ -338,7 +338,7 @@ public class TestEditorFramework {
 					Element newElement = d.IdentifyNewElement("Class");
 					Assert.assertEquals(newElement != null, true);
 				}
-				d.keyHandler.RemoveAll();
+				d.RemoveAll();
 				d.SelectNone();
 			}
 		}

@@ -55,6 +55,9 @@ public class TestFileMenuHandler {
 				{"Project|New gist diagram", "css=#file-menu_0_3 > a"}};
 	}
 
+	/*
+	 * Perform mouser over detection
+	 */
 	@Test(dataProvider = "MouseOverData")	  
 	public void testFileMenu_MenuHover(String menu, String id) {
 		Assert.assertEquals(fileMenuHandler.MouseOver(menu), id);
