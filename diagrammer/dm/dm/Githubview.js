@@ -98,12 +98,15 @@ URL:
             dm.dm.dialogs['CommitDataDialog'](
               view.modifiedList,
               function(message, items) {
-                var repo = github().getRepo(username, pUrl.split('/').pop());
                 $.log("Commiting...");
-                // REPO MULTIPLE WRITE  
-                //repo.write('master', path.toString().substring(1), data.toString(), "Autosaving.", function(err) {});
-                // REMOVE THE COMMITED ITEMS
-                // FROM THE LIST OF MODIFIED !!!
+                for (path in items) {
+                  $.log(path);
+                  repo = github().getRepo(username, pUrl.split('/').pop());
+                  // second call won't work as we need to update the tree
+                  repo.write('master', path.toString().substring(1), items[path].toString(), message, function(err) {});
+                  // Remove from updated list
+                  delete view.modifiedList[path];
+                };
               });
           }
         },
