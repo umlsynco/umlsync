@@ -419,6 +419,43 @@
           });
         });
       };
+
+      this.multi_write = function(branch, paths, contents, message, cb) {
+        updateTree(branch, function(err, latestCommit) {
+          if (err) return cb(err);
+          blob_calls = {};
+          for (var i=0; i<contents.length; i++) {
+            var content = contents[i];
+            $.log("-----------------------");
+            $.log(i);
+            $.log(contents[i]);
+            $.log(paths[i]);
+            blob_calls[i] = function(callback) {
+              $.log("content for blob");
+              $.log(content);
+              that.postBlob(content, function(err, blob) {
+                if (err) return cb(err);
+                $.log("postBlob() called");
+                callback(err, blob);
+              });
+            };
+          };
+          $.log(blob_calls);
+          async.series(blob_calls, function(err, results) {  
+            if (err) return cb(err);
+            // blobs now stored in results
+            $.log("blobs");
+            $.log(results);
+            //that.updateTree(latestCommit, path[0], blob[0], function(err, tree) {
+            //  if (err) return cb(err);
+            //  that.commit(latestCommit, tree, message, function(err, commit) {
+            //    if (err) return cb(err);
+            //    that.updateHead(branch, commit, cb);
+            //  });
+            //});
+          });
+        });
+      };
     };
 
     // Gists API
