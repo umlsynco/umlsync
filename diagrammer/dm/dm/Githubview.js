@@ -1,7 +1,10 @@
 /*
 Class: GithubView
 
-Copyright (c) 2012 UMLSync. All rights reserved.
+Copyright (c) 2012-2013 UMLSync. All rights reserved.
+
+URL:
+  umlsync.org/about
 
 */
 //@aspect
@@ -11,25 +14,26 @@ Copyright (c) 2012 UMLSync. All rights reserved.
       return new Github({
         token: access_token,
         auth: "oauth"
-        });
+      });
     };
     function processTree(data) {
       if (data) {
+        console.log(data);
         var ret = [];
-        for (j in data) {
+        for (j in data["tree"]) {
           ret[j] = {};
-          if (json["tree"][j]["type"] == "blob") {
+          if (data["tree"][j]["type"] == "blob") {
             ret[j]["isFolder"] = false;
             ret[j]["isLazy"] = false;
-            ret[j]["title"] = json["tree"][j]["path"];
-            ret[j]["sha"] = json["tree"][j]["sha"];
-            ret[j]["url"] = json["tree"][j]["url"];
+            ret[j]["title"] = data["tree"][j]["path"];
+            ret[j]["sha"] = data["tree"][j]["sha"];
+            ret[j]["url"] = data["tree"][j]["url"];
             }
-          else if (json["tree"][j]["type"] == "tree") {
+          else if (data["tree"][j]["type"] == "tree") {
             ret[j]["isFolder"] = true;
             ret[j]["isLazy"] = true;
-            ret[j]["title"] = json["tree"][j]["path"];
-            ret[j]["sha"] = json["tree"][j]["sha"];
+            ret[j]["title"] = data["tree"][j]["path"];
+            ret[j]["sha"] = data["tree"][j]["sha"];
           }
         }
         console.log("Processing ret ->", ret);
@@ -40,6 +44,7 @@ Copyright (c) 2012 UMLSync. All rights reserved.
     var pUrl = url;
     var self = {
       euid: "Github",
+      modifiedList: {}, // The list of modified files by sha
       init: function(username, access_token) {
         function showRepos(repos) {
           if (dm.dm.dialogs)
@@ -60,16 +65,16 @@ Copyright (c) 2012 UMLSync. All rights reserved.
           callback(null);
       },
       'save': function(path, data, description) {
-        var content = data;
+        self.modifiedList[path] = data;
         console.log("Saving " + data.toString() + " on " + path.toString());
-        var repo = github().getRepo(username, pUrl.split('/').pop());
-        repo.write(
-          'master',
-          path.toString().substring(1),
-          data.toString(),
-          "Autosaving.",
-          function(err) {}
-        );
+        //var repo = github().getRepo(username, pUrl.split('/').pop());
+        //repo.write(
+        //  'master',
+        //  path.toString().substring(1),
+        //  data.toString(),
+        //  "Autosaving.",
+        //  function(err) {}
+        //);
       },
       'loadDiagram': function(node, callback) {
         if (node && node.data && node.data.sha) {
@@ -78,17 +83,30 @@ Copyright (c) 2012 UMLSync. All rights reserved.
           console.log(node.data.url);
           console.log(node.data.title);
           var repo = github().getRepo(username, pUrl.split('/').pop());
-          repo.read(
-            'master',
-            node.data.title.toString(),
-            function(err, data) {
-              console.log(data);
-              callback.success($.parseJSON(data))
-            } 
-          );
+          repo.getBlob(node.data.sha,
+                      function(err, data) {
+                        $.log(data);
+                        callback.success($.parseJSON(data))
+                      });
         }
       },
       'ctx_menu': [
+      {
+        title:"Commit...",
+        click: function(node, view) {
+          if (dm.dm.dialogs)
+            dm.dm.dialogs['CommitDataDialog'](
+              view.modifiedList,
+              function(message, items) {
+                var repo = github().getRepo(username, pUrl.split('/').pop());
+                console.log("Commiting...");
+                // REPO MULTIPLE WRITE  
+                //repo.write('master', path.toString().substring(1), data.toString(), "Autosaving.", function(err) {});
+                // REMOVE THE COMMITED ITEMS
+                // FROM THE LIST OF MODIFIED !!!
+              });
+          }
+        },
         {
           title:"Reload",
           click: function(node) {
@@ -149,15 +167,23 @@ Copyright (c) 2012 UMLSync. All rights reserved.
                 e.preventDefault();
               });
             },
-            /*onLazyRead: function(node) {
-              //FIXME not working now
+            onLazyRead: function(node) {
               console.log("onLazyRead()");
-              console.log(pUrl);
-              if (node.data.isFolder)
-                node.appendAjax({url: pUrl + "/git/trees/" + node.data.sha,
-                postProcess: treeView,
-                dataType:"jsonp"});
-            },*/
+              if (node.data.isFolder) {
+                repo.getTree(node.data.sha, function(err, tree) {
+                  datax = {};
+                  datax["tree"] = tree;
+                  real_tree = {}
+                  real_tree = processTree(datax);
+                  if (err) {
+                    $.log("Failed to update SHA tree for a git repo: " + err);
+                  }
+                  else {
+                    node.append(real_tree);
+                  }
+                }); // getTree
+              }// IsFolder
+            },
             onActivate: function(node) {
               console.log("onActivate()");
               if ((!node.data.isFolder)
@@ -166,12 +192,16 @@ Copyright (c) 2012 UMLSync. All rights reserved.
             }
           });
         };
-        // Read repository
+        // Reading a repository
         var repo = github().getRepo(username, pUrl.split('/').pop());
-        repo.getTree(
-          'master?recursive=true',
-          function(err, tree) { updateTree(tree) }
-        );
+        repo.getTree('master', function(err, tree) {
+          if (err) {
+            $.log("Failed to load a git repo: " + err);
+          }
+            else {
+              updateTree(tree);
+            }
+        });
       },
     };
     return self;
