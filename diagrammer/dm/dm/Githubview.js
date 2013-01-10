@@ -100,6 +100,8 @@ URL:
               function(message, items) {
                 var repo = github().getRepo(username, pUrl.split('/').pop());
                 console.log("Commiting...");
+                console.log(message);
+                console.log(items);
                 // REPO MULTIPLE WRITE  
                 //repo.write('master', path.toString().substring(1), data.toString(), "Autosaving.", function(err) {});
                 // REMOVE THE COMMITED ITEMS

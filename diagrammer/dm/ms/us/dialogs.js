@@ -214,7 +214,7 @@ Version:
     'CommitDataDialog':function(data, commit_callback){
         var items = [];
          for (var d in data) {
-                items.push('<tr><td> <input type="checkbox"/></td><td>' + d + '</td></tr>');
+                items.push('<tr><td> <input type="checkbox" checked/></td><td>' + d + '</td></tr>');
          }
 
       var innerHtml = items.join('');
@@ -244,7 +244,7 @@ Version:
                 buttons: {
                 "Commit": function() {
                     var commit_items = {};
-                    var message = $("#us-commit-message").text();
+                    var message = $("#us-commit-message").val();
                     $("#us-commit-table tr:not(:first)").each(function(idx){
                         var raw = $(this);
                         var column = raw.children("td");
