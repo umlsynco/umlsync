@@ -252,6 +252,32 @@
         });
       };
 
+      this.multipleUpdateTree = function(baseTree, blobs, cb) {
+        var p;
+        var data = {
+          "base_tree": baseTree,
+          "tree": [
+          ]
+        };
+        
+        for (p in blobs) {
+            data["tree"].push(
+            {
+              "path": p,
+              "mode": "100644",
+              "type": "blob",
+              "sha": blobs[p]
+            }
+            );
+        }
+        
+        _request("POST", repoPath + "/git/trees", data, function(err, res) {
+          if (err) return cb(err);
+          cb(null, res.sha);
+        });
+      };
+
+
       // Post a new tree object having a file path pointer replaced
       // with a new blob SHA getting a tree SHA back
       // -------
@@ -399,7 +425,44 @@
           });
         });
       };
+
+      // Write file contents to a given branch and path
+      // -------
+
+      this.multipleWrite = function(branch, mapPathContent, message, cb) {
+        updateTree(branch, function(err, latestCommit) {
+          if (err) return cb(err);
+          var blobContentList = mapPathContent;
+          var blobShaList = {};
+          var nextBlob;
+          
+          function nextBlobOrTree(err, blob) {
+              if (err) return cb(err);
+              
+              if (nextBlob) {
+                  blobShaList[nextBlob.path] = blob;
+              }
+              
+              nextBlob =  blobContentList.shift();
+              if (nextBlob) {
+                  that.postBlob(nextBlob.content, nextBlobOrTree);
+              }
+              else {
+                  that.multipleUpdateTree(latestCommit, blobShaList, function(err, tree) {
+                     that.commit(latestCommit, tree, message, function(err, commit) {
+                       if (err) return cb(err);
+                       that.updateHead(branch, commit, cb);
+                     });
+                  });
+              }
+          };
+          
+          nextBlobOrTree();
+        });
+      };
     };
+
+
 
     // Gists API
     // =======

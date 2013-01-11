@@ -98,15 +98,25 @@ URL:
             dm.dm.dialogs['CommitDataDialog'](
               view.modifiedList,
               function(message, items) {
+                var path;
                 $.log("Commiting...");
+
+                repo = github().getRepo(username, pUrl.split('/').pop());
+
+                var contents = [];
                 for (path in items) {
                   $.log(path);
-                  repo = github().getRepo(username, pUrl.split('/').pop());
-                  // second call won't work as we need to update the tree
-                  repo.write('master', path.toString().substring(1), items[path].toString(), message, function(err) {});
+                  contents.push({
+                      'path': path.toString().substring(1),
+                      'content': items[path].toString()
+                  });
                   // Remove from updated list
-                  delete view.modifiedList[path];
+                  delete self.modifiedList[path];
                 };
+                
+                  // second call won't work as we need to update the tree
+                  repo.multipleWrite('master', contents, message, function(err) {});
+
               });
           }
         },
