@@ -114,7 +114,7 @@ Version:
                                                 if (self.diagrams && self.diagrams[ahref]) {
                                                         //@ifdef EDITOR
                                                         if (self.diagrams[ahref].isModified()) {
-                                                                alert("SAVE:");
+                                                                $.log("Saving...");
                                                                 var diagram = self.diagrams[ahref];
                                                                 var data = diagram.getDescription();
                                                                 self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");

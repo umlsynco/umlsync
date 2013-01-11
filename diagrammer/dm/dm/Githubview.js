@@ -116,7 +116,6 @@ URL:
                 
                   // second call won't work as we need to update the tree
                   repo.multipleWrite('master', contents, message, function(err) {});
-
               });
           }
         },

@@ -22,7 +22,7 @@
       }
 
       var xhr = new XMLHttpRequest();
-      if (!raw) {xhr.dataType = "json"}
+      if (!raw) {xhr.dataType = "json";}
 
       xhr.open(method, getURL());
       xhr.onreadystatechange = function () {
@@ -33,7 +33,7 @@
             cb({request: this, error: this.status});
           }
         }
-      }
+      };
       xhr.setRequestHeader('Accept','application/vnd.github.raw');
       xhr.setRequestHeader('Content-Type','application/json');
       if (
@@ -80,10 +80,12 @@
       // -------
 
       this.show = function(username, cb) {
+        var command = username ? "/users/"+username : "/user";
+
         _request("GET", "/users/"+username, null, function(err, res) {
           cb(err, res);
         });
-      }
+      };
 
       // List user repositories
       // -------
@@ -108,6 +110,24 @@
 
       this.orgRepos = function(orgname, cb) {
         _request("GET", "/orgs/"+orgname+"/repos?type=all&per_page=1000&sort=updated&direction=desc", null, function(err, res) {
+          cb(err, res);
+        });
+      };
+
+      // Follow user
+      // -------
+
+      this.follow = function(username, cb) {
+        _request("PUT", "/user/following/"+username, null, function(err, res) {
+          cb(err, res);
+        });
+      };
+
+      // Unfollow user
+      // -------
+
+      this.unfollow = function(username, cb) {
+        _request("DELETE", "/user/following/"+username, null, function(err, res) {
           cb(err, res);
         });
       };
@@ -368,7 +388,7 @@
         updateTree(branch, function(err, latestCommit) {
           that.getTree(latestCommit+"?recursive=true", function(err, tree) {
             // Update Tree
-            var newTree = _.reject(tree, function(ref) { return ref.path === path });
+            var newTree = _.reject(tree, function(ref) { return ref.path === path; });
             _.each(newTree, function(ref) {
               if (ref.type === "tree") delete ref.sha;
             });
@@ -426,7 +446,7 @@
         });
       };
 
-      // Write file contents to a given branch and path
+      // Write multiple file contents to a given branch and path
       // -------
 
       this.multipleWrite = function(branch, mapPathContent, message, cb) {
@@ -469,7 +489,6 @@
 
     Github.Gist = function(options) {
       var id = options.id;
-      var that = this;
       var gistPath = "/gists/"+id;
 
       // Read the gist
