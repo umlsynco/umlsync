@@ -20,9 +20,9 @@ Version:
 //@aspect
 (function($, dm, undefined) {
 
-        //@export:dm.hs.framework:plain
-        dm.hs.framework = function(options) {
-        var activeNode;
+//@export:dm.hs.framework:plain
+dm.hs.framework = function(options) {
+  var activeNode;
             var converter = new Showdown.converter();
                 function getInstance(options) {
                         dm.dm = dm.dm || {};
@@ -152,7 +152,7 @@ $acc.children("div").addClass('ui-accordion-content ui-helper-reset ui-widget-co
 $("#us-search").editable({onSubmit:function(data) {
     if (data["current"] == data["previous"])
           return;
-        self.views['Github'].view.Search(data["current"]);
+        self.views['Github'].view.search(data["current"]);
         return true;
 }})
    .click(function(e){e.stopPropagation();}) // Pevent handling by parent DIV
@@ -649,7 +649,7 @@ $(id + " #search_form").submit(function(e) {e.preventDefault();return false;});
 $(id + " #search_form .classy")
 .submit(function(e) {e.preventDefault();return false;})
 .click(function() {
-    dm.dm.fw.views['Github'].view.Search($(".text").val());
+    dm.dm.fw.views['Github'].view.search($(".text").val());
 });
 
                 if (this.LastSearchId)
@@ -884,7 +884,7 @@ $(id + " #search_form .classy")
                         if (self.views[viewid])
                         self.views[viewid].view.loadDiagram(path, repo, {
                           'success': function(err, data) {
-                              var json = $.parseJSON(data);
+                              var json = (typeof data ===  "string") ? $.parseJSON(data) : data;
                             var tabname = parent;
                                 var force = true;
                             if (parent == undefined) {
@@ -957,7 +957,7 @@ $(id + " #search_form .classy")
                 var count = 0;
                                 $(tabname + " article.markdown-body .pack-diagram").each(function() {
                                   //var repo = $(this).attr("repo"),
-                                      sum = $(this).attr("sha"),
+                                      var sum = $(this).attr("sha"),
                                           path = $(this).attr("path");
 
                                           $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
@@ -995,7 +995,7 @@ $(id + " #search_form .classy")
 
                         if (self.views[viewid])
                          self.views[viewid].view.loadCode(path, repo, {
-                          'success': function(json) {
+                          'success': function(err, json) {
                                 var tabname = self.options.tabRight + "-" + self.counter;
                                 self.counter++;
 

@@ -16,14 +16,40 @@ Version:
 //@aspect
 (function($, dm, undefined) {
 
-        dm.base.GithubView = function(url, username, access_token) {
-                function github() {
-                        return new Github({
-                                token: access_token,
-                                auth: "oauth"
-                        });
-                };
+dm.base.GithubView = function(url, username, access_token) {
+  function github() {
+    return new Github({
+                       token: access_token,
+                       auth: "oauth"
+                      });
+  };
 
+
+    function processTree(data) {
+      if (data) {
+        $.log(data);
+        var ret = [];
+        for (j in data["tree"]) {
+          ret[j] = {};
+          if (data["tree"][j]["type"] == "blob") {
+            ret[j]["isFolder"] = false;
+            ret[j]["isLazy"] = false;
+            ret[j]["title"] = data["tree"][j]["path"];
+            ret[j]["sha"] = data["tree"][j]["sha"];
+            ret[j]["url"] = data["tree"][j]["url"];
+            }
+          else if (data["tree"][j]["type"] == "tree") {
+            ret[j]["isFolder"] = true;
+            ret[j]["isLazy"] = true;
+            ret[j]["title"] = data["tree"][j]["path"];
+            ret[j]["sha"] = data["tree"][j]["sha"];
+          }
+        }
+        $.log("Processing ret ->", ret);
+        return ret;
+      }
+      return data;
+    };
 
                 function treeView(data, textStatus, jqXHR, readmeLoader) {
                         //the variable 'data' will have the JSON object
@@ -107,25 +133,24 @@ Version:
 
                 var pUrl = url;
                 var self = {
-                                euid: "Github",
-                                init: function() {
-                        function showRepos(repos) {
-                                dm.dm.fw.addRepositories(self.euid, 'user', repos);
-                                dm.dm.fw.addSearchResults(self.euid, 'diagrams',data["repositories"]);
-                        }
-                        var user = github().getUser();
-                        user.repos(function(err, repos){ showRepos(repos) });
-                },
-                Search: function(name) {
-                        $.ajax({
-                                url: 'https://api.github.com/legacy/repos/search/:' + name,
-                                dataType: 'jsonp',
-                                success: function(mdata) {
-                                var data = mdata.data;
-                                dm.dm.fw.addSearchResults(self.euid, name, data["repositories"]);
-                        }
-                        });
-                },
+                            euid: "Github",
+                            init: function() {
+                                     function showRepos(repos) {
+                                        dm.dm.fw.addRepositories(self.euid, 'user', repos);
+                                     }
+                                     var user = github().getUser();
+                                     user.repos(function(err, repos){ showRepos(repos) });
+                                 },
+                            search: function(name) {
+                                     $.ajax({
+                                             url: 'https://api.github.com/legacy/repos/search/:' + name,
+                                             dataType: 'jsonp',
+                                             success: function(mdata) {
+                                                        var data = mdata.data;
+                                                        dm.dm.fw.addSearchResults(self.euid, name, data["repositories"]);
+                                                      }
+                                     });
+                           },
                 info: function(callback) {
                         // TODO: define github view capabilities
                         //       right now only view available
@@ -136,8 +161,16 @@ Version:
                         var content = data;
                 },
                 'loadDiagram': function(node, repo, callback) {
-                        if (node && node.data && node.data.sha) {
-                            repo.getBlob(node.data.sha, callback.success);
+                        if (node && node.data) {
+                            if (node.data.sha) {
+                              repo.getBlob(node.data.sha, callback.success);
+                            } else if (node.data.path) {
+                                if (node.data.path.indexOf("Diagrammer") !== -1) {
+                                    node.data.path = node.data.path.slice(12);
+                                  
+                                }
+                                repo.contents(node.data.path, callback.success);
+                            }
                             /*    $.ajax({
                                         url: 'https://api.github.com/repos/'+repo+'/git/blobs/'+node.data.sha,
                                         accepts: 'application/vnd.github-blob.raw',
@@ -196,10 +229,10 @@ Version:
 
 
                              initTree: function(parentSelector, repo) {
-                        var pUrl = "https://api.github.com/repos/"  + repo;
-                        function extractReadMe(LoadReadMe) {
-                                dm.dm.fw.loadMarkdown(self.euid, repo, {data:{sha:LoadReadMe}});
-                        }
+                               var pUrl = "https://api.github.com/repos/"  + repo;
+                               function extractReadMe(LoadReadMe) {
+                                 dm.dm.fw.loadMarkdown(self.euid, repo, {data:{sha:LoadReadMe}});
+                               }
                         function postProcessTreeView(data, textStatus, jqXHR) {
                                 return treeView(data, textStatus, jqXHR, extractReadMe);
                         }
@@ -224,10 +257,20 @@ Version:
                                         });
                                 },
                                 onLazyRead: function(node){
-                                        if (node.data.isFolder)
-                                                node.appendAjax({url: pUrl + "/git/trees/" + node.data.sha,
-                                                        postProcess: postProcessTreeView,
-                                                        dataType:"jsonp"});
+                                   if (node.data.isFolder) {
+                                      repo.getTree(node.data.sha, function(err, tree) {
+                                            var datax = {};
+                                            datax["tree"] = tree;
+                  var real_tree = {}
+                  real_tree = processTree(datax);
+                  if (err) {
+                    $.log("Failed to update SHA tree for a git repo: " + err);
+                  }
+                  else {
+                    node.append(real_tree);
+                  }
+                }); // getTree
+              }// IsFolder
                                 },
                                 onActivate: function(node) {
                                         if (!node.data.isFolder) {
