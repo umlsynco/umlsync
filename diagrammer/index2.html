@@ -58,7 +58,7 @@
   <script src="./dm/hs/menu.js"></script>
   <script src="./dm/ms/us/dialogs.js"></script>
   <script src="./dm/es/class.js"></script>
-  <script src="./dm/es/objinstance.js"></script>
+  <script src="./dm/es/note.js"></script>
   <script src="./dm/cs/nested.js"></script>
   <script src="./dm/cs/arc.js"></script>
   <script src="./dm/cs/aggregation.js"></script>
@@ -87,13 +87,13 @@
 		  'Post for review':{handler: function() {	  }}
 		},
 		'Edit':{
-		  'Un-do':{handler: function(){		  }},
-		  'Re-do':{handler: function(){		  }},
-		  'Cut':{handler: function(){		  }},
-		  'Copy':{handler: function(){		  }},
-		  'Past':{handler: function(){		  }},
-		  'Delete':{handler: function(){		  }},
-		  'Select All':{handler: function(){		  }}
+		  'Un-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;	e.keyCode = 90; $(window).trigger(e); }},
+		  'Re-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 89; $(window).trigger(e); }},
+		  'Cut':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 88; $(window).trigger(e); }},
+		  'Copy':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 67; $(window).trigger(e); }},
+		  'Past':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 86; $(window).trigger(e); }},
+		  'Delete':{handler: function(){var e = $.Event('keydown');	e.keyCode = 46; $(window).trigger(e); }},
+		  'Select All':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 65; $(window).trigger(e); }},
 		},
 		'Views':{
 		  'Google code':{handler: function(){		  }},
