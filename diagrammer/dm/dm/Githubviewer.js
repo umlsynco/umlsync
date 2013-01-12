@@ -165,10 +165,6 @@ dm.base.GithubView = function(url, username, access_token) {
                             if (node.data.sha) {
                               repo.getBlob(node.data.sha, callback.success);
                             } else if (node.data.path) {
-                                if (node.data.path.indexOf("Diagrammer") !== -1) {
-                                    node.data.path = node.data.path.slice(12);
-                                  
-                                }
                                 repo.contents(node.data.path, callback.success);
                             }
                             /*    $.ajax({
