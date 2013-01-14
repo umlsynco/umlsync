@@ -85,8 +85,12 @@ URL:
           var repo = github().getRepo(username, pUrl.split('/').pop());
           repo.getBlob(node.data.sha,
                       function(err, data) {
-                        $.log(data);
-                        callback.success($.parseJSON(data))
+                        json = $.parseJSON(data);
+                        path = json["fullname"];
+                        if (self.modifiedList[path]) {
+                          json = self.modifiedList[path];
+                        }
+                        callback.success(json);
                       });
         }
       },
@@ -113,7 +117,7 @@ URL:
                   // Remove from updated list
                   delete self.modifiedList[path];
                 };
-                
+
                   // second call won't work as we need to update the tree
                   repo.multipleWrite('master', contents, message, function(err) {});
               });
