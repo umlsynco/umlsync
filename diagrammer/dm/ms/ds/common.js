@@ -28,6 +28,7 @@ Version:
 		
 		$(menu).listmenu({
 	           data:actions,
+		   urlPrefix: dm.dm.loader.getUrl(),
 	           onSelect: function(item) {
   			      if (item.click)
 				    item.click(menuBuilder.currentElement, self.x, self.y);
@@ -405,6 +406,7 @@ Version:
                 fw['CreateDiagramMenu'](type, innerHtml, function() { 
             $("#"+ulid).listmenu({
 	           selector: "element-selector",
+		   urlPrefix: dm.dm.loader.getUrl(),
 	           selectable: false,
 			   path:"./",
 	           data:elements,
@@ -430,6 +432,7 @@ Version:
 			$("#"+ulid).listmenu({
 	           selector: "connector-selector",
 	           selectable: true,
+		   urlPrefix: dm.dm.loader.getUrl(),
 			   path:"./",
 	           data:connectors,
 	           onSelect: function(item) {

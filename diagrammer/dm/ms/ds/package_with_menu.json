@@ -16,7 +16,7 @@
 	{"type": "note",
 	 "description": "Note",
 	 "menu":"vp-note-menu",
-	 "image": [{"small": "./dm/icons/vp/es/common/note.png"}]
+	 "image": [{"small": "./dm/icons/vp/es/common/Note.png"}]
 	}
     ],
     "connectors": [

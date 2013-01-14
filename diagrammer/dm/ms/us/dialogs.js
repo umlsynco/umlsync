@@ -68,6 +68,7 @@ Version:
             $("#diagram-menu").listmenu({
                selector: "diagram-selector",
                selectable: true,
+               urlPrefix: dm.dm.loader.getUrl(),
                data:data,
                onSelect: function(item) {
                  self.selected = item.id;

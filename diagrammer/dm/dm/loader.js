@@ -43,6 +43,9 @@ Version:
             this.working = false;
  
             return {
+             getUrl: function() {
+                 return urlArg;
+             },
             _addToLoadQueue: function(item) {
                 var instance = dm.dm['loader'];
                 if (!instance._loadQueue) {

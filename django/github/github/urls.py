@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.conf.urls.defaults import *
+from django.conf.urls.static import static
 
 # from django.views.generic.simple import redirect_to
 
@@ -21,4 +23,4 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-)
+) + static(settings.IMAGES_URL, document_root=settings.IMAGES_ROOT)

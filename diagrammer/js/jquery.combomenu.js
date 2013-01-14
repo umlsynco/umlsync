@@ -110,7 +110,7 @@
 		var items = [],
 		    data = options.data,
 			callback = options.onSelect;
-		var urlPrefix="./",
+		var urlPrefix= options.urlPrefix ? options.urlPrefix : "./",
        		self = this;
 		var selector = (options.selector) ? "class='" + options.selector + "' " : "";
 		var path = (options.path) ? options.path : "";
@@ -119,7 +119,7 @@
 		    if (data[i]['hidden']) // hidden element
 			  continue;
 		    var name = data[i]['title'] || data[i]['full_name'] || (data[i]['owner'] != undefined ? data[i]['owner'] + "/" + data[i]['name'] : data[i]['name']);
-			var image = (data[i]['icon'] != undefined) ? "list-style-image:url(\'" + path + data[i]['icon'] + "\')" : "list-style-type:none";
+			var image = (data[i]['icon'] != undefined) ? "list-style-image:url(\'"+urlPrefix + path + data[i]['icon'] + "\')" : "list-style-type:none";
 			items.push('<li id="'+ i +'" '+ selector + ' style="cursor:pointer;' + image + ';" id="'  + data[i]['id'] +'"><a>' +
 					name + '</a></li>');
 		}
