@@ -2222,7 +2222,7 @@ dm.base.diagram("cs.connector", {
             this.labels = new Array();
             for (var i in this.options['labels']) {
                 var l = this.options['labels'][i];
-                this.addLabel(l.name, parseInt(l.x), parseInt(l.y));
+                this.addLabel({text:l.name, left:parseInt(l.x), right:parseInt(l.y)});
             }
         },
         //@proexp
