@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.template.loader import get_template
 from django.template import Context
 
+from django.utils.http import urlquote
 
 from django.contrib.auth import BACKEND_SESSION_KEY
 from django.contrib.auth.models import AnonymousUser
@@ -20,9 +21,8 @@ from social_auth.utils import setting
 from social_auth.backends.contrib.github import GithubBackend
 
 def editor(request, name='index.html'):
-	t = get_template('index.html')
-	html = t.render(Context({}))
-	return HttpResponse(html)
+  redirect_url = urlquote("http://localhost:8000/editor/?viewer=asdnkkl12e1inmasdnln12x123x123mm;asd000")
+  return render_to_response('index.html', {'redirect_url' : redirect_url}, RequestContext(request))
 
 def editor22(request, name='index.html'):
         t = get_template('editor.html')
@@ -91,5 +91,8 @@ def editor2(request, *args, **kwargs):
     auth_response =  kwargs.get('auth_response')
     if auth_response:
         return auth_response
+
+    if request.GET.get('viewer'):
+        return render_to_response('viewer.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))
 
     return render_to_response('editor.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))

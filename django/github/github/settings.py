@@ -1,6 +1,6 @@
 # Django settings for github project.
 
-# import os
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -21,6 +21,8 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+UMLSYNC_HOME = os.environ.get("UMLSYNC_HOME")
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -54,20 +56,28 @@ MEDIA_ROOT = ''
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = ''
 
+
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
 
+IMAGES_ROOT = UMLSYNC_HOME + "/umlsync/diagrammer/images/"
+
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
+IMAGES_URL = '/images/'
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    "/home/evgeny/Projects/KGITHUB2/umlsync/editor",
+    UMLSYNC_HOME + "/umlsync/django/3pp",
+    UMLSYNC_HOME + "/umlsync/diagrammer"
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
@@ -106,7 +116,7 @@ ROOT_URLCONF = 'github.urls'
 WSGI_APPLICATION = 'github.wsgi.application'
 
 TEMPLATE_DIRS = (
-    "/home/evgeny/Projects/KGITHUB2/umlsync/django/github/templates",
+    UMLSYNC_HOME + "/umlsync/django/github/templates",
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -160,15 +170,9 @@ LOGIN_ERROR_URL = '/login-error/'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },

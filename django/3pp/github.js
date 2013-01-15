@@ -272,32 +272,6 @@
         });
       };
 
-      this.multipleUpdateTree = function(baseTree, blobs, cb) {
-        var p;
-        var data = {
-          "base_tree": baseTree,
-          "tree": [
-          ]
-        };
-        
-        for (p in blobs) {
-            data["tree"].push(
-            {
-              "path": p,
-              "mode": "100644",
-              "type": "blob",
-              "sha": blobs[p]
-            }
-            );
-        }
-        
-        _request("POST", repoPath + "/git/trees", data, function(err, res) {
-          if (err) return cb(err);
-          cb(null, res.sha);
-        });
-      };
-
-
       // Post a new tree object having a file path pointer replaced
       // with a new blob SHA getting a tree SHA back
       // -------
@@ -352,7 +326,7 @@
       // --------
 
       this.contents = function(path, cb) {
-        _request("GET", repoPath + "/contents/" + path, null, cb);
+        _request("GET", repoPath + "/contents", { path: path }, cb);
       };
 
       // Fork repository
@@ -446,43 +420,43 @@
         });
       };
 
-      // Write multiple file contents to a given branch and path
-      // -------
-
-      this.multipleWrite = function(branch, mapPathContent, message, cb) {
+      this.multi_write = function(branch, paths, contents, message, cb) {
         updateTree(branch, function(err, latestCommit) {
           if (err) return cb(err);
-          var blobContentList = mapPathContent;
-          var blobShaList = {};
-          var nextBlob;
-          
-          function nextBlobOrTree(err, blob) {
-              if (err) return cb(err);
-              
-              if (nextBlob) {
-                  blobShaList[nextBlob.path] = blob;
-              }
-              
-              nextBlob =  blobContentList.shift();
-              if (nextBlob) {
-                  that.postBlob(nextBlob.content, nextBlobOrTree);
-              }
-              else {
-                  that.multipleUpdateTree(latestCommit, blobShaList, function(err, tree) {
-                     that.commit(latestCommit, tree, message, function(err, commit) {
-                       if (err) return cb(err);
-                       that.updateHead(branch, commit, cb);
-                     });
-                  });
-              }
+          blob_calls = {};
+          for (var i=0; i<contents.length; i++) {
+            var content = contents[i];
+            $.log("-----------------------");
+            $.log(i);
+            $.log(contents[i]);
+            $.log(paths[i]);
+            blob_calls[i] = function(callback) {
+              $.log("content for blob");
+              $.log(content);
+              that.postBlob(content, function(err, blob) {
+                if (err) return cb(err);
+                $.log("postBlob() called");
+                callback(err, blob);
+              });
+            };
           };
-          
-          nextBlobOrTree();
+          $.log(blob_calls);
+          async.series(blob_calls, function(err, results) {  
+            if (err) return cb(err);
+            // blobs now stored in results
+            $.log("blobs");
+            $.log(results);
+            //that.updateTree(latestCommit, path[0], blob[0], function(err, tree) {
+            //  if (err) return cb(err);
+            //  that.commit(latestCommit, tree, message, function(err, commit) {
+            //    if (err) return cb(err);
+            //    that.updateHead(branch, commit, cb);
+            //  });
+            //});
+          });
         });
       };
     };
-
-
 
     // Gists API
     // =======

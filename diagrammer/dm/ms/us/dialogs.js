@@ -27,7 +27,7 @@ Version:
         this.dialogs = new Array();
         // status of modal dialogs
         this.status = new Array();
-		this.callback = new Array();
+        this.callback = new Array();
     };
 
 
@@ -40,15 +40,15 @@ Version:
         if (!name)
             return;
         this.status[name] = true; // active dialog. It is possible to activate dialog before it's creation. in that case it will be shown on creation.
-		this.callback[name] = callback;
-		if (name == "new-diagram-dialog") {
-			//var vs = this.handler.getAvailableViews();
-			var av = this.handler.getActiveView();
-			if (av) {
-			  $("#selectale-views input").each(function(d) { if(this.value == av.euid) this.checked = true;});
-			  $("#new-diagram-dialog input#VP_inputselector").val(av.getActivePath() + "/");
-			}
-		}
+        this.callback[name] = callback;
+        if (name == "new-diagram-dialog") {
+            //var vs = this.handler.getAvailableViews();
+            var av = this.handler.getActiveView();
+            if (av) {
+              $("#selectale-views input").each(function(d) { if(this.value == av.euid) this.checked = true;});
+              $("#new-diagram-dialog input#VP_inputselector").val(av.getActivePath() + "/");
+            }
+        }
 
         $( "#" + name ).dialog( "open" );
     },
@@ -56,9 +56,9 @@ Version:
 
         var innerHtml = '<form id="us-dialog-newdiagram">\
             <fieldset><div id="selectable-list" style="scroll:auto;height:40px;"><ul id="diagram-menu"></ul></div>\
-			<div id="selectale-views"><input style="margin-top:10px;" type="radio" name=view value="Github" checked=true>GitHub&nbsp\
-			<input style="margin-top:10px;" type="radio" name=view value="Github">GitHub Gist&nbsp\
-			<input type="radio" name=view value="pe" disabled>Eclipse</div>\
+            <div id="selectale-views"><input style="margin-top:10px;" type="radio" name=view value="Github" checked=true>GitHub&nbsp\
+            <input style="margin-top:10px;" type="radio" name=view value="Github">GitHub Gist&nbsp\
+            <input type="radio" name=view value="pe" disabled>Eclipse</div>\
             <p><label class="left" for="name">Name:</label><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
             </p></fieldset></form>';
             $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
@@ -68,11 +68,12 @@ Version:
             $("#diagram-menu").listmenu({
                selector: "diagram-selector",
                selectable: true,
+               urlPrefix: dm.dm.loader.getUrl(),
                data:data,
                onSelect: function(item) {
                  self.selected = item.id;
                  var val = $("#new-diagram-dialog input#VP_inputselector").val();
-                 $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram"); 
+                 $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
                }
             });
 
@@ -91,7 +92,7 @@ Version:
                     var sp = diagram_name.split("/");
                     if (sp.length > 1)
                         diagram_name = sp[sp.length-1];
-					var vid = $('#us-dialog-newdiagram #selectale-views input[name=view]:checked').val();
+                    var vid = $('#us-dialog-newdiagram #selectale-views input[name=view]:checked').val();
                     self.handler['addDiagram']("base", self.selected, diagram_name, {'fullname': fullname, 'viewid': vid});
                 }
                 $(this).dialog("close");
@@ -120,7 +121,7 @@ Version:
                 $(this).addClass('selected');
 
                 var val = $("#new-diagram-dialog input").val();
-                $("#new-diagram-dialog input").val(val.substr(0, val.lastIndexOf('/') + 1) + this.id + "Diagram"); 
+                $("#new-diagram-dialog input").val(val.substr(0, val.lastIndexOf('/') + 1) + this.id + "Diagram");
                 //  $("#vp_main_menu .finish").css("background-color","#5D689A").css("cursor","pointer");
             }).hover(function () {
                     $(this).addClass('hover');
@@ -132,11 +133,9 @@ Version:
         var items = [];
 
         for (var i in data) {
-            if (!data[i]['private']) {
-                var name = data[i]['name'],
-                pr = (data[i]['private']) ? "Private: ":"Public: ";
-                items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr +  data[i]['full_name'] + '</li>');
-            }
+            var name = data[i]['name'],
+            pr = (data[i]['private']) ? "Private: ":"Public: ";
+            items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr +  data[i]['full_name'] + '</li>');
         }
 
         var innerHtml = items.join('');
@@ -153,7 +152,7 @@ Version:
                 'buttons': {
                 "Create": function() {
                 var rep = self.selected;
-                if (callback) 
+                if (callback)
                     callback(rep);
 
                 $(this).dialog("close");
@@ -183,7 +182,7 @@ Version:
             <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" /></div>\
             </fieldset>\
             </form>';
-		var self = this;
+        var self = this;
             $('<div id="new-project-dialog" title="New folder:"></div>').appendTo('body');
             $(innerHtml).appendTo("#new-project-dialog");
             $("#new-project-dialog").dialog({
@@ -209,11 +208,63 @@ Version:
             },
             close: function() {
                 $("#new-project-dialog input").val("");
-				$("#new-project-dialog #dl-validation-tip").text("");				
+                $("#new-project-dialog #dl-validation-tip").text("");
             }
             });
     },
-    'CommitDataDialog':function(data, callback){
+    'CommitDataDialog':function(data, commit_callback){
+        var items = [];
+         for (var d in data) {
+                items.push('<tr><td> <input type="checkbox" checked/></td><td>' + d + '</td></tr>');
+         }
+
+      var innerHtml = items.join('');
+      
+      innerHtml = "<div id='list-item'><div><div class='scrollable' style='scroll:auto;'>\
+        <table id='us-commit-table' class='tablesorter'><thead><tr class='header'><th></th><th>File path</th></tr></thead><tbody>\
+        " + innerHtml + "</tbody></table></div>" +
+        "<p><label>Commit message: </label><br>"+
+        "<textarea id='us-commit-message' maxlength='300' pattern='[a-zA-Z ]{5,}' style='width:99%;'></textarea></p>" +
+        "</div></div>";
+
+        var self = this;
+        if ($("#commit-changes-dialog").empty()) {
+            $('<div id="commit-changes-dialog" title="Commit data:"></div>').appendTo('body');
+        } else {
+            // remove the previous values
+            $("#commit-changes-dialog #list-item").remove();
+        }
+            $(innerHtml).appendTo("#commit-changes-dialog");
+            
+            var commit_data = data;
+            $("#commit-changes-dialog").dialog({
+                autoOpen: true,
+                height: 254,
+                width: 550,
+                modal: true,
+                buttons: {
+                "Commit": function() {
+                    var commit_items = {};
+                    var message = $("#us-commit-message").val();
+                    $("#us-commit-table tr:not(:first)").each(function(idx){
+                        var raw = $(this);
+                        var column = raw.children("td");
+                        var checker = column.children("input");
+                        if (checker.is(':checked')) {
+                           var file = raw.children("td:last").text();
+                           commit_items[file] = commit_data[file];
+                        }
+                    });
+                    $( this ).dialog( "close" );
+                    commit_callback(message, commit_items);
+                },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {
+            }
+            });
 
     }
     };

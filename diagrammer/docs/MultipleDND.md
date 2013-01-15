@@ -42,7 +42,7 @@ dm.base.diagram("es.note", dm.es.element, {
 
 
 <br>
-<div id="ClassInheritanceExample" class="pack-diagram" repo="umlsynco/umlsync" path="/Diagrammer/diagrammer/docs/dm-diagrams/ClassInheritanceExample.umlsync">
+<div id="ClassInheritanceExample" class="pack-diagram" repo="umlsynco/umlsync" path="diagrammer/docs/dm-diagrams/ClassInheritanceExample.umlsync">
 UMLSync package structure diagram. 
 </div>
 <br>
