@@ -1,4 +1,4 @@
-/*
+/**
 Class: GithubView
 
 Copyright (c) 2012-2013 UMLSync. All rights reserved.
@@ -94,120 +94,122 @@ URL:
             });
           }
         },
-        'ctx_menu': [
-               {
-                 title:"Commit...",
-                 click: function(node, view) {
-                 if (dm.dm.dialogs)
-                   dm.dm.dialogs['CommitDataDialog'](
-                       view.modifiedList,
-                       function(message, items) {
-                         var path;
-                         $.log("Commiting...");
+        'ctx_menu': 
+          [
+           {
+             title:"Commit...",
+             click: function(node, view) {
+             if (dm.dm.dialogs)
+               dm.dm.dialogs['CommitDataDialog'](
+                   view.modifiedList,
+                   function(message, items) {
+                     var path;
+                     $.log("Commiting...");
 
-                         repo = github().getRepo(username, pUrl.split('/').pop());
+                     repo = github().getRepo(username, pUrl.split('/').pop());
 
-                         var contents = [];
-                         for (path in items) {
-                           $.log(path);
-                           contents.push({
-                             'path': path.toString().substring(1),
-                             'content': items[path].toString()
-                           });
-                           // Remove from updated list
-                           delete self.modifiedList[path];
-                         };
-
-                         // second call won't work as we need to update the tree
-                         repo.multipleWrite('master', contents, message, function(err) {});
+                     var contents = [];
+                     for (path in items) {
+                       $.log(path);
+                       contents.push({
+                         'path': path.toString().substring(1),
+                         'content': items[path].toString()
                        });
-               }
-               },
-               {
-                 title:"Reload",
-                 click: function(node) {
-                 node.reloadChildren();
-               }
-               },
-               {
-                 title:"Open",
-                 click: function(node) {
-                 // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
-                 if ((!node.data.isFolder)
-                     && (node.data.title.indexOf(".json") != -1)) {
-                   dm.dm.fw.loadDiagram(self.euid, node);
-                 }
-               }
-               },
-               {
-                 title: "Save",
-                 click:function(node) {
-               },
-               },
-               {
-                 title:"New folder",
-                 click: function(node) {
-                 this.newfolder(
-                     node.getAbsolutePath(),
-                     "newFolder",
-                     function(desc) { node.addChild(desc); }
-                     );
-               }
-               },
-               {
-                 title:"Remove",
-                 click: function(node) {
-                 this.remove(
-                     node.getAbsolutePath(),
-                     function() {node.remove(); }
-                     );
-               }
-               }
-               ],
-               initTree: function (parentSelector) {
-          $.log("initTree()");
+                       // Remove from updated list
+                       delete self.modifiedList[path];
+                     };
+
+                     // second call won't work as we need to update the tree
+                     repo.multipleWrite('master', contents, message, function(err) {});
+                   });
+           }
+           },
+           {
+             title:"Reload",
+             click: function(node) {
+             node.reloadChildren();
+           }
+           },
+           {
+             title:"Open",
+             click: function(node) {
+             // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
+             if ((!node.data.isFolder)
+                 && (node.data.title.indexOf(".json") != -1)) {
+               dm.dm.fw.loadDiagram(self.euid, node);
+             }
+           }
+           },
+           {
+             title: "Save",
+             click:function(node) {
+           },
+           },
+           {
+             title:"New folder",
+             click: function(node) {
+             this.newfolder(
+                 node.getAbsolutePath(),
+                 "newFolder",
+                 function(desc) { node.addChild(desc); }
+             );
+           }
+           },
+           {
+             title:"Remove",
+             click: function(node) {
+             this.remove(
+                 node.getAbsolutePath(),
+                 function() {node.remove(); }
+             );
+           }
+           }
+           ],
+           initTree: function (parentSelector) {
           function updateTree(tree) {
             $.log("updateTree()");
             datax = {};
             datax["tree"] = tree;
             real_tree = {}
             real_tree = processTree(datax);
-            $(parentSelector).dynatree({
-              persist: true,
-              children: real_tree,
-              onCreate: function(node, span) {
-              $.log("onCreate()");
-              $(span).bind('contextmenu', function(e) {
-                var node = $.ui.dynatree.getNode(e.currentTarget);
-                dm.dm.fw.ShowContextMenu("Github", e, node);
-                e.preventDefault();
-              });
-            },
-            onLazyRead: function(node) {
-              $.log("onLazyRead()");
-              if (node.data.isFolder) {
-                repo.getTree(node.data.sha, function(err, tree) {
-                  datax = {};
-                  datax["tree"] = tree;
-                  real_tree = {}
-                  real_tree = processTree(datax);
-                  if (err) {
-                    $.log("Failed to update SHA tree for a git repo: " + err);
-                  }
-                  else {
-                    node.append(real_tree);
-                  }
-                }); // getTree
-              }// IsFolder
-            },
-            onActivate: function(node) {
-              $.log("onActivate()");
-              if ((!node.data.isFolder)
-                  && ((node.data.title.indexOf(".json") != -1)
-                  || (node.data.title.indexOf(".umlsync") != -1)))
-                dm.dm.fw.loadDiagram(self.euid, node);
-            }
-            });
+            $(parentSelector).dynatree(
+                {
+                  persist: true,
+                  children: real_tree,
+                  onCreate: function(node, span) {
+                  $.log("onCreate()");
+                  $(span).bind('contextmenu', function(e) {
+                    var node = $.ui.dynatree.getNode(e.currentTarget);
+                    dm.dm.fw.ShowContextMenu("Github", e, node);
+                    e.preventDefault();
+                  });
+                },
+                onLazyRead: function(node) {
+                  $.log("onLazyRead()");
+                  if (node.data.isFolder) {
+                    repo.getTree(node.data.sha, function(err, tree) {
+                      datax = {};
+                      datax["tree"] = tree;
+                      real_tree = {}
+                      real_tree = processTree(datax);
+                      if (err) {
+                        $.log("Failed to update SHA tree for a git repo: " + err);
+                      }
+                      else {
+                        node.append(real_tree);
+                      }
+                    }); // getTree
+                  }// IsFolder
+                },
+                onActivate: function(node) {
+                  $.log("onActivate()");
+                  if ((!node.data.isFolder)
+                      && ((node.data.title.indexOf(".json") != -1)
+                          || (node.data.title.indexOf(".umlsync") != -1)))
+                    dm.dm.fw.loadDiagram(self.euid, node);
+                }
+                }
+            );
           };
           // Reading a repository
           var repo = github().getRepo(username, pUrl.split('/').pop());
