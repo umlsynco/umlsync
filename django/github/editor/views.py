@@ -13,6 +13,7 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
 from social_auth.models import UserSocialAuth
@@ -83,7 +84,7 @@ def facebook_decorator(func):
 
     return wrapper
 
-
+@login_required
 @csrf_exempt
 @facebook_decorator
 def editor2(request, *args, **kwargs):

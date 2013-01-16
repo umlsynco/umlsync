@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.defaults import *
 from django.conf.urls.static import static
 
-# from django.views.generic.simple import redirect_to
+from django.views.generic.simple import redirect_to
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -10,9 +10,7 @@ from django.conf.urls.static import static
 
 urlpatterns = patterns('',
     url(r'', include('social_auth.urls')),
-#    url(r'^login/$', redirect_to, {'url': 'login/github'}),
-    # Examples:
-
+    url(r'^login/', redirect_to, {'url': '/login/github/'}),
     url(r'^$', 'editor.views.editor', name='editor.html'),
     url(r'^editor/', 'editor.views.editor2', name='editor.html'),
     url(r'^login-error/', 'editor.views.error', name='editor.html'),
