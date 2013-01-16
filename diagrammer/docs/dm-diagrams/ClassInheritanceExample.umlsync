@@ -4,8 +4,8 @@
 "viewid":"pe",
 "base_type":"base",
 "multicanvas":"true",
-"connectors":[{"type":"generalization","fromId":"0","toId":"1","epoints":[{"0":"490","1":"87"}],"lables":[]},{"type":"generalization","fromId":"1","toId":"2","epoints":[{"0":"221","1":"88"}],"lables":[]},{"type":"generalization","fromId":"3","toId":"1","epoints":[{"0":"485.6499938964844","1":"276.6333312988281"},
-{"0":"487.6499938964844","1":"127.63333129882812"}],"lables":[]}]
+"connectors":[{"type":"generalization","fromId":"0","toId":"1","epoints":[{"0":"490","1":"87"}],"labels":[]},{"type":"generalization","fromId":"1","toId":"2","epoints":[{"0":"221","1":"88"}],"labels":[]},{"type":"generalization","fromId":"3","toId":"1","epoints":[{"0":"485.6499938964844","1":"276.6333312988281"},
+{"0":"487.6499938964844","1":"127.63333129882812"}],"labels":[]}]
 ,"elements":[{"width":"150",
 "height":"170",
 "pageY":"25.000004752929684",

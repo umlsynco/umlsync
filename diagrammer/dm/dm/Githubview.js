@@ -203,7 +203,8 @@ URL:
             onActivate: function(node) {
               $.log("onActivate()");
               if ((!node.data.isFolder)
-                  && (node.data.title.indexOf(".json") != -1))
+                  && ((node.data.title.indexOf(".json") != -1)
+                  || (node.data.title.indexOf(".umlsync") != -1)))
                 dm.dm.fw.loadDiagram(self.euid, node);
             }
             });
