@@ -66,40 +66,40 @@ Version:
           });
 
           var $tabs = $("#tabs")
-              .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
-                'scrollable': true,
-                'add': function(event, ui) {
-                if (self.diagrams) {
-                  self.selectedDiagramId = "#" + ui.panel.id;
-                }
-                $tabs.tabs('select', '#' + ui.panel.id);
-              },
-              'select': function(event, ui) {
-                if (self.diagrams) {
-                  self.selectedDiagramId = "#" + ui.panel.id;
-                  var did = self.diagrams[self.selectedDiagramId];
-                  if (did) {
-                    //@ifdef EDITOR
-                    self['ActivateDiagramMenu'](did.options['type']);
-                    //@endif
-                    did.draw();
-                  }
-                }
-                self.updateFrameWork(true);
-              },
-              'show': function(event, ui) {
-                if (self.diagrams) {
-                  self.selectedDiagramId = "#" + ui.panel.id;
-                  var did = self.diagrams[self.selectedDiagramId];
-                  if (did) {
-                    did.draw();
-                  }
-                }
+          .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+            'scrollable': true,
+            'add': function(event, ui) {
+            if (self.diagrams) {
+              self.selectedDiagramId = "#" + ui.panel.id;
+            }
+            $tabs.tabs('select', '#' + ui.panel.id);
+          },
+          'select': function(event, ui) {
+            if (self.diagrams) {
+              self.selectedDiagramId = "#" + ui.panel.id;
+              var did = self.diagrams[self.selectedDiagramId];
+              if (did) {
+                //@ifdef EDITOR
+                self['ActivateDiagramMenu'](did.options['type']);
+                //@endif
+                did.draw();
               }
-              /*                    'remove': function(event, ui) { // it is too late to save diagram at this moment
+            }
+            self.updateFrameWork(true);
+          },
+          'show': function(event, ui) {
+            if (self.diagrams) {
+              self.selectedDiagramId = "#" + ui.panel.id;
+              var did = self.diagrams[self.selectedDiagramId];
+              if (did) {
+                did.draw();
+              }
+            }
+          }
+          /*                    'remove': function(event, ui) { // it is too late to save diagram at this moment
                         self.updateFrameWork(true);
                     }*/
-              });
+          });
           $("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
 
 
@@ -109,15 +109,15 @@ Version:
 
           // AUTOMATED TEST WORK_AROUND !!!
           $("#content-right DIV.ui-scrollable-tabs").scroll(
-            function (e){
-              $(this).scrollTop(0);
-              e.preventDefault();
-              e.stopPropagation();
-          });
+              function (e){
+                $(this).scrollTop(0);
+                e.preventDefault();
+                e.stopPropagation();
+              });
 
           $('#tabs span.ui-test').live('click', function() {
             var index = $('li', $tabs).index($(this).parent().parent()),
-                ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
+            ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
             // TODO: Add dialog "Would you like to store diagram ?"
             if (self.diagrams && self.diagrams[ahref]) {
               //@ifdef EDITOR
@@ -134,8 +134,8 @@ Version:
           });
 
           var $treetabs = $("#treetabs")
-              .tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
-                'scrollable': true}).css({'background-color':"#7E8380", 'background':"none"});
+          .tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+            'scrollable': true}).css({'background-color':"#7E8380", 'background':"none"});
 
 
 
@@ -163,7 +163,7 @@ Version:
     }
 
     framework.prototype = {
-        options: {
+                           options: {
       tabRight:"diag-",
       tabLeft:"view-",
       tabs:"tabs",
@@ -179,13 +179,13 @@ Version:
         $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({'active': len, autoHeight:false});
       } else {
         var header = '<div id="diagram-menu-header" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">\
-            <span id="ui-dialog-title-vp_main_menu" class="ui-dialog-title">Toolbox</span>\
-            <a class="ui-dialog-titlebar-close ui-corner-all" href="#" role="button">\
-            <span class="ui-icon ui-icon-closethick">close</span></a></div>';
+          <span id="ui-dialog-title-vp_main_menu" class="ui-dialog-title">Toolbox</span>\
+          <a class="ui-dialog-titlebar-close ui-corner-all" href="#" role="button">\
+          <span class="ui-icon ui-icon-closethick">close</span></a></div>';
 
-            $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
-            $("#accordion").accordion({'active': 0, autoHeight:false});
-            $(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
+          $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
+          $("#accordion").accordion({'active': 0, autoHeight:false});
+          $(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
       }
       if (callback) {
         callback(len); // len == index
@@ -235,7 +235,7 @@ Version:
           'dataType': json_type,
           'success':  function(json) {
           var innerHtml = "",
-              selectHtml = "";
+          selectHtml = "";
           for (i in json) {
             innerHtml += "<li><a href='#'>" + json[i]['title']+ "</a></li>";
             selectHtml += "<option>" + json[i]['title'] + "</option>";
@@ -275,15 +275,15 @@ Version:
         var hhh = $(window).height() - $(this.options.top).outerHeight(true) - 5 - $("#"+this.options.content+"-bottom").outerHeight(true);
 
         var $ch1 = $("#" + this.options.content).height(hhh)  // set height of middle:  #content
-            .children("DIV").height(hhh)              // #content-left; #content-right; #content-left-right-resize;  No border for this items available
-            .children(".ui-scrollable-tabs").height(hhh - 2)    // 1px solid border defined for .ui-scrollable-tabs
-            .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
+        .children("DIV").height(hhh)              // #content-left; #content-right; #content-left-right-resize;  No border for this items available
+        .children(".ui-scrollable-tabs").height(hhh - 2)    // 1px solid border defined for .ui-scrollable-tabs
+        .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
 
         var $ch;
         if ($ch1.children(".ui-tabs-panel").length) {
           hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
           $ch = $ch1.children(".ui-tabs-panel").height(hhh)
-              .children("div").height(hhh - 24); // Border 1px + padding 11
+          .children("div").height(hhh - 24); // Border 1px + padding 11
           hhh -= 24;
         }
 
@@ -377,7 +377,7 @@ Version:
           var counter = 0;
           for (var r in IView['element_menu']) {
             var rs = r.split(","), // Multiple elements support "Package,Subsystem"
-                nm = IView.euid + "-" + counter;
+            nm = IView.euid + "-" + counter;
             for (var h in rs) {
               self.views[IView.euid]['element_menu'][rs[h]] = nm;
             }
@@ -496,8 +496,8 @@ Version:
       desc = data.options.title;
       $.log("ShowElementContextMenu: " + desc + "   VID: " + viewid + "  DATA: " + data.options + "  TYPE: " + data.options.title + " DESC:" + data.options.description);
       if (self.views && self.views[viewid]
-          && self.views[viewid]['element_menu']
-              && self.views[viewid]['element_menu'][desc]) {
+      && self.views[viewid]['element_menu']
+      && self.views[viewid]['element_menu'][desc]) {
         // Enable the context menu for element
         var uniqueName = "#view-";
         uniqueName += self.views[viewid]['element_menu'][desc];// Id of the menu
@@ -533,7 +533,7 @@ Version:
           $("#toolboxitem" + i).click(i, function(e) {
             if (tb.items[e.data] && tb.items[e.data].method)
               tb.items[e.data].method(dt.getActiveNode());}
-              );
+          );
         }
       }
       return id;
@@ -589,7 +589,7 @@ Version:
       $.log("VIEWID IS:" + viewid);
 
       var self = this,
-          absPath = path.getAbsolutePath();
+      absPath = path.getAbsolutePath();
       if (self.diagrams) {
         for (var r in self.diagrams) {
           var d = self.diagrams[r];
@@ -657,97 +657,97 @@ Version:
           $(".editablefield input").trigger('blur');
         } else if (e.ctrlKey) {
           switch (e.keyCode) {
-          case 65:// Handle Ctrl-A
-          if (fw.diagrams[fw.selectedDiagramId]) {
-            fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", true);
-          }
-          e.preventDefault();
-          break;
+            case 65:// Handle Ctrl-A
+              if (fw.diagrams[fw.selectedDiagramId]) {
+                fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", true);
+              }
+              e.preventDefault();
+              break;
 
-          case 67: // Handle Ctrl-C
-            // 1. Get focus manager
-            // 2. if element ? => copy it on clipboard
-            //              stop propagate
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              $.clippy = fw.diagrams[fw.selectedDiagramId].getDescription("selected", true);
-            } else {
-              $.clippy = undefined;
-            }
-            break;
-          case 88:
-            // Handle Ctrl-X
-            // 1. Get focus manager
-            // 2. if element ? => copy it on clipboard
-            //              stop propagate
-            // 3. Remove element
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              if (fw.diagrams[fw.selectedDiagramId].clickedElement != undefined) {
-                fw.diagrams[fw.selectedDiagramId].clickedElement._update();
-                $.clippy = fw.diagrams[fw.selectedDiagramId].clickedElement.getDescription();
-                $("#" + fw.diagrams[fw.selectedDiagramId].clickedElement.euid + "_Border").remove();
+            case 67: // Handle Ctrl-C
+              // 1. Get focus manager
+              // 2. if element ? => copy it on clipboard
+              //              stop propagate
+              if (fw.diagrams[fw.selectedDiagramId])  {
+                $.clippy = fw.diagrams[fw.selectedDiagramId].getDescription("selected", true);
               } else {
                 $.clippy = undefined;
               }
-            } else {
-              $.clippy = undefined;
-            }
-            break;
-          case 86:// Handle Ctrl-V
-            // 1. Get focus manager
-            // 2. if diagram ? => try copy element from clipboard
-            //              stop propagate if success
-            if (($.clippy)  && (fw.diagrams[fw.selectedDiagramId])) {
-              // Make selected only inserter items
-              fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", false);
-              fw.diagrams[fw.selectedDiagramId].multipleSelection = true;
-              var obj = $.parseJSON($.clippy),
-                  es = obj["elements"],
-                  cs = obj["connectors"];
-              for (j in es) {
-                es[j].pageX = parseInt(es[j].pageX) + 10;
-                $.log("pzgeX: " + es[j].pageX);
-                es[j].pageY = parseInt(es[j].pageY) + 10;
-                fw.diagrams[fw.selectedDiagramId].Element(es[j].type, es[j]);
+              break;
+            case 88:
+              // Handle Ctrl-X
+              // 1. Get focus manager
+              // 2. if element ? => copy it on clipboard
+              //              stop propagate
+              // 3. Remove element
+              if (fw.diagrams[fw.selectedDiagramId])  {
+                if (fw.diagrams[fw.selectedDiagramId].clickedElement != undefined) {
+                  fw.diagrams[fw.selectedDiagramId].clickedElement._update();
+                  $.clippy = fw.diagrams[fw.selectedDiagramId].clickedElement.getDescription();
+                  $("#" + fw.diagrams[fw.selectedDiagramId].clickedElement.euid + "_Border").remove();
+                } else {
+                  $.clippy = undefined;
+                }
+              } else {
+                $.clippy = undefined;
               }
+              break;
+            case 86:// Handle Ctrl-V
+              // 1. Get focus manager
+              // 2. if diagram ? => try copy element from clipboard
+              //              stop propagate if success
+              if (($.clippy)  && (fw.diagrams[fw.selectedDiagramId])) {
+                // Make selected only inserter items
+                fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", false);
+                fw.diagrams[fw.selectedDiagramId].multipleSelection = true;
+                var obj = $.parseJSON($.clippy),
+                es = obj["elements"],
+                cs = obj["connectors"];
+                for (j in es) {
+                  es[j].pageX = parseInt(es[j].pageX) + 10;
+                  $.log("pzgeX: " + es[j].pageX);
+                  es[j].pageY = parseInt(es[j].pageY) + 10;
+                  fw.diagrams[fw.selectedDiagramId].Element(es[j].type, es[j]);
+                }
 
-              //for (j in cs)
-              //fw.diagrams[fw.selectedDiagramId].Connector(cs[j].type, cs[j]);
-              $.clippy = undefined;
-            }
-            break;
-          case 90:// Handle Ctrl-Z
-            // 1. Get focus manager
-            // 2. if diagram => get operation sequence manager
-            //             -> goBack()
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              fw.diagrams[fw.selectedDiagramId].opman.revertOperation();
-            }
-            break;
-          case 89:// Handle Ctrl-Y
-            // 1. Get focus manager
-            // 2. if diagram => get operation sequence manager
-            //             -> goForward()
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              fw.diagrams[fw.selectedDiagramId].opman.repeatOperation();
-            }
-            break;
-          case 83:// Handle Ctrl-S
-            // 1. Get focus manager
-            // 2. if diagram =>  Store the current diagram
-            //             -> goBack()
-            break;
-          default:
-            break;
+                //for (j in cs)
+                //fw.diagrams[fw.selectedDiagramId].Connector(cs[j].type, cs[j]);
+                $.clippy = undefined;
+              }
+              break;
+            case 90:// Handle Ctrl-Z
+              // 1. Get focus manager
+              // 2. if diagram => get operation sequence manager
+              //             -> goBack()
+              if (fw.diagrams[fw.selectedDiagramId])  {
+                fw.diagrams[fw.selectedDiagramId].opman.revertOperation();
+              }
+              break;
+            case 89:// Handle Ctrl-Y
+              // 1. Get focus manager
+              // 2. if diagram => get operation sequence manager
+              //             -> goForward()
+              if (fw.diagrams[fw.selectedDiagramId])  {
+                fw.diagrams[fw.selectedDiagramId].opman.repeatOperation();
+              }
+              break;
+            case 83:// Handle Ctrl-S
+              // 1. Get focus manager
+              // 2. if diagram =>  Store the current diagram
+              //             -> goBack()
+              break;
+            default:
+              break;
           }
         }
       }
-          )
-          .keyup(function(e) {
-            if (e.keyCode == 17) {
-              fw.CtrlDown = false;
-            }
-          }
-              );
+      )
+      .keyup(function(e) {
+        if (e.keyCode == 17) {
+          fw.CtrlDown = false;
+        }
+      }
+      );
       //@endif
     },
     initializeToolBox: function(Loader) {
