@@ -132,6 +132,7 @@ Version:
   },
   'SelectRepoDialog': function(data, callback) {
     var items = [];
+    var self = this;
 
     for (var i in data) {
       var name = data[i]['name'],

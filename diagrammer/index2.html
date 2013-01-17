@@ -145,11 +145,10 @@
 */
 
     dm.dm = dm.dm || {};
-	dm.dm.IGithubView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams/");
-  	    dm.dm.IGithubView.euid = "Github";
-		fw.addView2('Github', dm.dm.IGithubView);
-    dm.dm.IGithubView.init();
-	
+	dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager('umlsynco', null, "https://api.github.com/repos/umlsynco/diagrams/");
+	//fw.addViewManager('Github', dm.dm.IGithubViewsManager);
+    dm.dm.IGithubViewsManager.init();
+
     dm.dm.IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
 	dm.dm.IFilesView.euid = 'SelfView';
 	fw.addView2('SelfView', dm.dm.IFilesView);

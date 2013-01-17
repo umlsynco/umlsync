@@ -9,13 +9,21 @@ URL:
  */
 //@aspect
 (function($, dm, undefined) {
-  dm.base.GithubView = function(url, username, access_token) {
+  dm.base.GithubViewsManager = function(username, access_token, url) {
+    // local web site mode
+	var isLocal = (url != undefined);
+
     function github() {
-      return new Github({
-        token: access_token,
-        auth: "oauth"
-      });
+	  // create singletone object. It is not possible to have two access tokens
+	  if (dm.dm.github == undefined) {
+        dm.dm.github = new Github({
+          token: access_token,
+          auth: "oauth"
+        });
+	  }
+	  return dm.dm.github;
     };
+
     function processTree(data) {
       if (data) {
         $.log(data);
@@ -41,23 +49,44 @@ URL:
       }
       return data;
     };
-    var pUrl = url;
-    var self = {
+
+    this.init = function() {
+      function showRepos(repos) {
+        if (dm.dm.dialogs) {
+          dm.dm.dialogs['SelectRepoDialog'](
+		    repos,
+			function(repo) {
+              "repo URL is stored in repo variable"
+              dm.dm.fw.addView2('Github', new IGithubView(repo));
+            }
+		  );
+		}
+      };
+
+	  if (!isLocal) {
+        var user = github().getUser();
+        user.repos(function(err, repos){ showRepos(repos) });
+	  }
+	  else {
+	    showRepos(
+		  [
+		    {
+		      "name": "diagrams",
+              "full_name": "umlsynco/diagrams",
+              "description": "Diagrams repository",
+              "private": false,
+			  "url": "https://api.github.com/repos/umlsynco/diagrams"
+		    }
+		  ]
+		);
+	  }
+    };
+    
+    var IGithubView = function (repoUrl) {
+	  var pUrl = repoUrl;
+	  var self = {
         euid: "Github",
         modifiedList: {}, // The list of modified files by sha
-        init: function(username, access_token) {
-          function showRepos(repos) {
-            if (dm.dm.dialogs)
-              dm.dm.dialogs['SelectRepoDialog'](repos, function(repo) {
-                "repo URL is stored in repo variable"
-                var IGhView = new dm.base.GithubView(
-                    repo, username, access_token);
-                dm.dm.fw.addView2('Github', IGhView);
-              });
-          };
-          var user = github().getUser();
-          user.repos(function(err, repos){ showRepos(repos) });
-        },
         info: function(callback) {
           // TODO: define github view capabilities
           // right now only view available
@@ -222,8 +251,9 @@ URL:
             }
           });
         },
+      };
+	  return self;
     };
-    return self;
   };
   //@aspect
 })(jQuery, dm);
