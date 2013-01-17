@@ -154,9 +154,8 @@
     console.log(token);
 
     dm.dm = dm.dm || {};
-    dm.dm.IGithubView = new dm.base.GithubView("https://api.github.com/repos/umlsynco/diagrams/", username, token);
-    dm.dm.IGithubView.init(username, token);
-     
+    dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager('umlsynco', token);
+    dm.dm.IGithubViewsManager.init();
   });
 </script>
 
