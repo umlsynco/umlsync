@@ -49,7 +49,13 @@ Version:
       // Think about field set
       $("#" + this.options.content).append('\
           <div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;">\
-          <div id="treetabs"><ul></ul></div>\
+	       <div id="reposwitcher" style="background-color:gray;">\
+	         <h3 class="ui-accordion-header ui-helper-reset ui-corner-top ui-state-default">\
+			   <a href="#" id="us-active-repo">Active Repository</a><span class="ui-icon ui-icon-triangle-1-s" style="right:0px;left:none;"></span>\
+			 </h3>\
+			 <div id="opened-repos" style="position:absolute;right:0px;z-index:9999;"></div>\
+             <div id="treetabs"></div>\
+	       </div>\
           </div>\
           <div id="'+ this.options.content +'-left-right-resize" style="width:6px;left:200px;height:100%;position:absolute;padding:0;margin:0;border:0px solid gray;background-color:gray;cursor: col-resize;"></div>\
           <div id="'+ this.options.content +'-right" style="width:100px;left:206px;height:100%;position:absolute;padding:0;margin:0;">\
@@ -65,6 +71,32 @@ Version:
             }
           });
 
+          var $switcher = $('#reposwitcher');
+          $switcher.addClass('ui-accordion ui-widget ui-helper-reset ui-accordion-icons');
+		  var SWITCH_STATE_STUB = true;
+
+		  $switcher.children("H3").click(function() {
+		     if (SWITCH_STATE_STUB) {
+			    $switcher.children("#opened-repos").children("H3").slideUp();
+			 } else {
+			    $switcher.children("#opened-repos").children("H3").slideDown();
+			 }
+			 SWITCH_STATE_STUB = !SWITCH_STATE_STUB;
+		  });
+		  
+		  $switcher
+		  .children("#opened-repos")
+		  .mouseleave(
+		    function(evt) {
+		      $(this).children("H3").slideUp();
+		    }
+		  )
+		  .mouseenter(
+		    function(evt) {
+			  $(this).children("H3").slideDown();
+			}
+		  );
+		  
           var $tabs = $("#tabs")
           .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
             'scrollable': true,
@@ -133,17 +165,17 @@ Version:
             $tabs.tabs('remove', index);
           });
 
-          var $treetabs = $("#treetabs")
-          .tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
-            'scrollable': true}).css({'background-color':"#7E8380", 'background':"none"});
+          var $treetabs = $("#treetabs");
+          //.tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+            //'scrollable': true}).css({'background-color':"#7E8380", 'background':"none"});
 
 
 
-          $('#treetabs span.ui-test').live('click', function() {
+/*          $('#treetabs span.ui-test').live('click', function() {
             var index = $('li', $treetabs).index($(this).parent());
-            $treetabs.tabs('remove', index);
+            ///$treetabs.tabs('remove', index);
           });
-
+*/
           $("#content-left-right-resize").draggable({ axis: 'x', 'drag': function(ui) {
             self.updateFrameWork(false, ui);
           },
@@ -341,13 +373,44 @@ Version:
       //    it could help to prevent some mess with localhost views
       var id = this.options.tabLeft+ this.left_counter;
       this.left_counter++;
+	  $("#treetabs").children("DIV").hide();
       $("#treetabs").append("<div id='"+id+"'></div>");
-      id = "#" + id;
-      $("#treetabs").tabs("add", id, name);
+
+	  
+	  $("#reposwitcher #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
+	  $("#reposwitcher A#" + id).parent()
+	    .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')
+		.click(function() {
+            //if ($(this).hasClass('ui-state-default')) {
+              var height = 0;
+              $(this).removeClass('ui-state-default').addClass('ui-state-active');
+			  var id = "DIV#" + $(this).children().attr('id');
+			  $("#treetabs").children("DIV").hide(); // hide all trees 
+			  $(id).show(); // open this one
+			  $("#reposwitcher #opened-repos").children("H3").slideUp();
+			  $("#us-active-repo").text($(this).text());
+            //}
+            return false;
+          })
+          .hover(
+              function() {
+                $(this).addClass('ui-state-hover');
+              },
+              function(e) {
+                $(this).removeClass('ui-state-hover');
+              }
+          );
+
+	  id = "DIV#" + id;
       var $treetabs = $("#treetabs");
+	  $("#treetabs " + id).addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');
 
       $(id).append("<div id='tree'></div>");
-      var self = this;
+          var self = this;
+
+          
+
+	  
 
       function initCtxMenu(vid, items, view) {
         $('<ul id="view-'+  vid +'" class="context-menu" ></ul>').hide().appendTo('body');
