@@ -12,18 +12,20 @@ class SVGClass(sw.container.Group):
     """
     def __init__(self, properties):
         sw.container.Group.__init__(self)
-        self.x = properties["pageX"]
-        self.y = properties["pageY"]
-        self.width = properties["width"]
-        self.height = properties["height"]
+        self.x = float(properties["pageX"])
+        self.y = float(properties["pageY"])
+        self.width = float(properties["width"])
+        self.height = float(properties["height"])
+        self.right = self.x + self.width
+        self.bottom = self.y + self.height
         body = sw.shapes.Rect(insert=(self.x, self.y),
                               size=(self.width, self.height),
                               fill='white', stroke='black', stroke_width=1)
         caption = sw.shapes.Rect(insert=(self.x, self.y),
                                  size=(self.width, 10),
                                  fill='white', stroke='black', stroke_width=1)
-        self.center_x = str(float(self.x) + float(self.width) / 2)
-        self.center_y = str(float(self.y) + float(self.height) / 2)
+        self.center_x = self.x + self.width / 2.0
+        self.center_y = self.y + self.height / 2.0
         self.add(body)
         self.add(caption)
 
@@ -38,10 +40,34 @@ class SVGConnector(sw.container.Group):
         self.from_id = properties["fromId"]
         self.to_id = properties["toId"]
         self.epoints = properties["epoints"]
-        line = sw.shapes.Line(start=(start.center_x, start.center_y),
-                              end=(end.center_x, end.center_y),
-                              stroke='black', stroke_width=1)
-        self.add(line)
+        line_cx = (start.center_x + end.center_x) / 2.0
+        line_cy = (start.center_y + end.center_y) / 2.0
+        if abs(start.right - line_cx) < abs(start.x - line_cx):
+            line_sx = start.right
+        else:
+            line_sx = start.x
+        if abs(end.right - line_cx) < abs(end.x - line_cx):
+            line_ex = end.right
+        else:
+            line_ex = end.x
+        if abs(start.bottom - line_cy) < abs(start.y - line_cy):
+            line_sy = start.bottom
+        else:
+            line_sy = start.y
+        if abs(end.bottom - line_cy) < abs(end.y - line_cy):
+            line_ey = end.bottom
+        else:
+            line_ey = end.y
+        points = []
+        points.append((line_sx, line_sy))
+        for epoint in self.epoints:
+            points.append((float(epoint["0"]), float(epoint["1"])))
+        points.append((line_ex, line_ey))
+        for i in range(len(points) - 1):
+            line = sw.shapes.Line(start=points[i],
+                                  end=points[i+1],
+                                  stroke='black', stroke_width=1)
+            self.add(line)
 
 
 class CustomJSONtoSVGConverter:
@@ -63,7 +89,6 @@ class CustomJSONtoSVGConverter:
                 svg_class = SVGClass(element)
                 elements[element["id"]] = svg_class
                 dwg.add(svg_class)
-
         for connector in self.json_data["connectors"]:
             start = elements[connector["toId"]]
             end = elements[connector["fromId"]]
