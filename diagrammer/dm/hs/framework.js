@@ -49,11 +49,128 @@ Version:
       // Think about field set
       $("#" + this.options.content).append('\
           <div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;">\
-	       <div id="reposwitcher" style="background-color:gray;">\
-	         <h3 class="ui-accordion-header ui-helper-reset ui-corner-top ui-state-default">\
-			   <a href="#" id="us-active-repo">Active Repository</a><span class="ui-icon ui-icon-triangle-1-s" style="right:0px;left:none;"></span>\
-			 </h3>\
-			 <div id="opened-repos" style="position:absolute;right:0px;z-index:9999;"></div>\
+	       <div id="accordion" style="background-color:gray;">\
+		     <div class="dropdown-widget" style="display:none;">\
+			 <div class="select-menu">\
+			 <a class="minibutton select-menu-button js-menu-target">\
+                 <span class="mini-icon mini-icon-branch"></span>\
+                 <i>Repository:</i>\
+                 <span class="js-select-button">umlsynco/umlsync</span>\
+             </a>\
+  			   <div id="opened-repos" style="position:absolute;right:0px;z-index:9999;">\
+			   <div class="select-menu-modal js-select-menu-pane">\
+          <div class="select-menu-header">\
+            <span class="select-menu-title">Switch branches/tags</span>\
+            <span class="mini-icon mini-icon-remove-close js-menu-close"></span>\
+          </div> <!-- /.select-menu-header -->\
+          <div class="select-menu-filters">\
+            <div class="select-menu-text-filter">\
+              <input type="text" placeholder="Find a branch…" class="js-select-menu-text-filter js-filterable-field js-navigation-enable" id="commitish-filter-field">\
+            </div> <!-- /.select-menu-text-filter -->\
+            <div class="select-menu-tabs">\
+              <ul>\
+                <li class="select-menu-tab">\
+                  <a class="js-select-menu-tab selected" data-filter="branches" href="#">Branches</a>\
+                </li>\
+                <li class="select-menu-tab">\
+                  <a class="js-select-menu-tab" data-filter="tags" href="#">Tags</a>\
+                </li>\
+              </ul>\
+            </div><!-- /.select-menu-tabs -->\
+          </div><!-- /.select-menu-filters -->\
+          <div data-filterable-type="substring" data-filterable-for="commitish-filter-field" class="select-menu-list js-filter-tab js-filter-branches" style="display: block;">\
+              <div class="select-menu-item js-navigation-item js-navigation-target">\
+                <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+                    <a rel="nofollow" data-name="AccordionMenu" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/AccordionMenu">AccordionMenu</a>\
+              </div> <!-- /.select-menu-item -->\
+              <div class="select-menu-item js-navigation-item js-navigation-target">\
+                <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+\
+                    <a rel="nofollow" data-name="DiagramMenuToolbox" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/DiagramMenuToolbox">DiagramMenuToolbox</a>\
+\
+              </div> <!-- /.select-menu-item -->\
+\
+\
+\
+              <div class="select-menu-item js-navigation-item js-navigation-target">\
+                <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+\
+                    <a rel="nofollow" data-name="editor_repo_selection" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/editor_repo_selection">editor_repo_selection</a>\
+\
+              </div> <!-- /.select-menu-item -->\
+\
+\
+\
+              <div class="select-menu-item js-navigation-item js-navigation-target">\
+                <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+\
+                    <a rel="nofollow" data-name="github_integration" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/github_integration">github_integration</a>\
+\
+              </div> <!-- /.select-menu-item -->\
+\
+\
+\
+              <div class="select-menu-item js-navigation-item js-navigation-target">\
+                <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+\
+                    <a rel="nofollow" data-name="grid-align" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/grid-align">grid-align</a>\
+\
+              </div> <!-- /.select-menu-item -->\
+\
+\
+\
+              <div class="select-menu-item js-navigation-item js-navigation-target">\
+                <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+\
+                    <a rel="nofollow" data-name="IE9" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/IE9">IE9</a>\
+\
+              </div> <!-- /.select-menu-item -->\
+\
+\
+\
+              <div class="select-menu-item js-navigation-item js-navigation-target selected last-visible navigation-focus">\
+                <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+\
+                    <a rel="nofollow" data-name="master" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/master">master</a>\
+\
+              </div> <!-- /.select-menu-item -->\
+\
+\
+              <form method="post" class="js-create-branch select-menu-footer select-menu-item select-menu-new-item-form js-navigation-item js-navigation-target js-new-item-form" action="/umlsynco/umlsync/branches" accept-charset="UTF-8"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="/+3C5/PUTxi24+gIy6hmjxmh4fWwBLoH8WI59aC9Anc=" name="authenticity_token"></div>\
+                <span class="mini-icon mini-icon-branch-create"></span>\
+                <div class="select-menu-item-text">\
+                  <h4>Create branch: <span class="js-new-item-name"></span></h4>\
+                  <span class="description">from ‘master’</span>\
+                </div>\
+                <input type="hidden" class="js-new-item-submit" id="name" name="name">\
+                <input type="hidden" value="master" id="branch" name="branch">\
+\
+              </form> <!-- /.select-menu-footer -->\
+\
+\
+          </div> <!-- /.select-menu-list -->\
+\
+\
+          <div style="display: none;" data-filterable-type="substring" data-filterable-for="commitish-filter-field" class="select-menu-list js-filter-tab js-filter-tags filterable-empty">\
+\
+\
+            <div class="select-menu-no-results js-not-filterable">Nothing to show</div>\
+\
+          </div> <!-- /.select-menu-list -->\
+\
+        </div>\
+			   </div>\
+			 </div>\
+			 </div>\
+		     <div class="branchnav-widget ui-state-default">\
+			 <div class="select-menu">\
+			 <a class="minibutton select-menu-button js-menu-target">\
+                 <span class="mini-icon mini-icon-branch"></span>\
+                 <i>Branch:</i>\
+                 <span class="js-select-button">master</span>\
+			 </a>\
+			 </div>\
+			 </div>\
              <div id="treetabs"></div>\
 	       </div>\
           </div>\
@@ -71,7 +188,7 @@ Version:
             }
           });
 
-          var $switcher = $('#reposwitcher');
+          var $switcher = $('#accordion');
           $switcher.addClass('ui-accordion ui-widget ui-helper-reset ui-accordion-icons');
 		  var SWITCH_STATE_STUB = true;
 
@@ -192,6 +309,30 @@ Version:
 
           this.left_counter = 0;
           this.right_counter = 0;
+
+		this.initDropDownSelector('#accordion',
+		  {
+		    filter:true,
+			mtitle: 'Repository',
+			title: 'Open/Switch repository',
+			tabs:
+			{
+			  'Yours': ['umlsynco/diagrams', 'umlsynco/umlsync', 'kalaidin/octotest', 'umlsynco/GIST'],
+			  'Follow': ['absde/somethe'],
+			  'Starred': ['absde/somethe'],
+			  'Search': ['search/result']
+			},
+			onSelect: function(selectedTab, selectedItem) {
+			  if (selectedTab == 'Yours') {
+			    // simply change repo
+			  }
+			  else if (selectedTab == 'Follow') {
+			    // open gists
+			  }
+			}
+		  }
+		); // initDropDownSelector
+			
     }
 
     framework.prototype = {
@@ -203,6 +344,27 @@ Version:
       bottom:"#content-bottom",
       content:"content"
     },
+	// create the drop down selector with tabs
+	// param - element id to attach widget
+	// desc - JSON description of drop down selector
+	//        {filter: true/false, mtitle: MiniTitle, title: TITLE, tabs:{ name1: {id1, id2}, name2: {id3, id4}}}
+	//
+	initDropDownSelector: function(id, desc) {
+
+        $('<div class="dropdown-widget">\
+			          <div class="select-menu">\
+			            <a class="minibutton select-menu-button js-menu-target">\
+                          <span class="mini-icon mini-icon-branch"></span>\
+                          <i>'+desc.mtitle+':</i>\
+                          <span class="js-select-button">none</span>\
+                        </a>\
+					  </div>\
+					  </div>')
+        .appendTo(id)
+		.click(function() {
+          dm.dm.dialogs['Activate']("repo-selection-dialog");
+		});
+	},
     // Loading the main menu JSON description and put it as argument to callback function
     //@proexp
     'CreateDiagramMenu':function(type, innerHtml, callback) {
@@ -377,8 +539,8 @@ Version:
       $("#treetabs").append("<div id='"+id+"'></div>");
 
 	  
-	  $("#reposwitcher #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
-	  $("#reposwitcher A#" + id).parent()
+	  $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
+	  $("#accordion A#" + id).parent()
 	    .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')
 		.click(function() {
             //if ($(this).hasClass('ui-state-default')) {
@@ -387,7 +549,7 @@ Version:
 			  var id = "DIV#" + $(this).children().attr('id');
 			  $("#treetabs").children("DIV").hide(); // hide all trees 
 			  $(id).show(); // open this one
-			  $("#reposwitcher #opened-repos").children("H3").slideUp();
+			  $("#accordion #opened-repos").children("H3").slideUp();
 			  $("#us-active-repo").text($(this).text());
             //}
             return false;

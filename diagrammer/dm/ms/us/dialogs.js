@@ -149,10 +149,10 @@ Version:
 
       $( "#repo-selection-dialog" ).dialog(
 	  {
-        'autoOpen': true,
+        'autoOpen': false,
         'minWidth': 350,
-        'modal': true,
-        'buttons': {
+        'modal': false,
+/*        'buttons': {
           "Create": function() {
             var rep = self.selected;
             if (callback)
@@ -164,6 +164,7 @@ Version:
             $(this).dialog("close");
           }
         },
+		*/
         'close': function() {
         }
       }
