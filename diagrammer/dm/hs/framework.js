@@ -353,10 +353,10 @@ Version:
       bottom:"#content-bottom",
       content:"content"
     },
-	addRepositories: function(title, IViewsManager, descr) {
+    addRepositories: function(title, IViewsManager, descr) {
         if (dm.dm.dialogs) {
           dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
-		}
+        }
 	},
 	
 	// create the drop down selector with tabs
@@ -379,10 +379,12 @@ Version:
 		.click(function() {
 		  if (uid == "us-repo")
             dm.dm.dialogs['Activate']("repo-selection-dialog");
-		  if (uid == "us-branch")
-            dm.dm.dialogs['Activate']("branch-selection-dialog");
-			
-		});
+		  if (uid == "us-branch") {
+            var text = $("#us-repo .js-select-button").text();
+            var repoId = text.replace("/", "-");
+            dm.dm.dialogs['Activate']("branch-selection-dialog-"+repoId);
+          }
+        });
 	},
     // Loading the main menu JSON description and put it as argument to callback function
     //@proexp
@@ -548,16 +550,25 @@ Version:
       //$("#treetabs .ui-tabs-panel").height(tabsHeight-45);
 
     },
+    addBranch: function(title, repoUrl, IBranchSelectObserver, desc) {
+      var repoId = repoUrl.replace("/", "-");
+      if (dm.dm.dialogs) {
+        dm.dm.dialogs['ChangeBranchDialog'](title, desc, repoId, IBranchSelectObserver);
+      }
+    },
     //@proexp
     'addView2': function(name, IView) {
       //TODO: don't load view if name/euid is reserved yet !
       //    it could help to prevent some mess with localhost views
       var id = this.options.tabLeft+ this.left_counter;
       this.left_counter++;
-	  $("#treetabs").children("DIV").hide();
+      $("#treetabs").children("DIV").hide();
       $("#treetabs").append("<div id='"+id+"'></div>");
 
-	  $("#us-repo .js-select-button").text(IView.repo);
+      IView.initBranches();
+
+	  $("#us-repo .js-select-button").text(IView.getRepository());
+      $("#us-branch .js-select-button").text("master");
 /*	  $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
 	  $("#accordion A#" + id).parent()
 	    .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')

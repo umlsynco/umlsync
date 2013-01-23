@@ -149,7 +149,7 @@ Version:
   var
     tabContent = '<div id="us-'+title+'"><ul>'+getTabContent(repos)+'</ul></div>';
   
-  if ($("#repo-selection-dialog #selectable-list").empty()) {
+  if ($("#repo-selection-dialog #selectable-list").length == 0) {
       var innerHtml = '<form>\
        <fieldset>\
       <div id="us-search"></div>\
@@ -176,8 +176,8 @@ Version:
     );
   }
   else {
-      $("#tabs").append(tabContent);
-      $('#tabs').tabs("add", "#us-" + title, title);
+      $("#repo-selection-dialog #selectable-list").append(tabContent);
+      $("#repo-selection-dialog #selectable-list").tabs("add", "#us-" + title, title);
   }
   
     $("#us-"+title+" .diagramSelector").click(function() {
@@ -187,58 +187,67 @@ Version:
     ISelectObserver.onRepoSelect(title, text);
     });
   },
-  'ChangeBranchDialog': function(desc, callback) {
+  // Append tab to the branch select dialog for the selected repository
+  // params:
+  //    title - the title of tab
+  //    desc  - description of tab content
+  //    repoId- the repository unique id
+  //    IBranchSelectObserver - object for callback
+  'ChangeBranchDialog': function(title, desc, repoId, IBranchSelectObserver) {
     var self = this;
 
-  function getTabContent(data) {
-    var items = [];
+    function getTabContent(data) {
+      var items = [];
       for (var i in data) {
         var name = data[i]['name'];
-        //pr = "<i>" + (data[i]['private']) ? "Private: ":"Public: </i>" ;
-        //items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr + "<span>" + data[i]['full_name'] + '</span></li>');
-    items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
+        items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
       }
       return items.join('');
-  }
+    }
   
-  var innerHtml = "", tabContent = "";
-    for (var j in desc) {
-    innerHtml += '<li><a href="#us-'+j+'">'+j+'</a></li>';
-    tabContent += '<div id="us-'+j+'"><ul>'+getTabContent(desc[j])+'</ul></div>';
-  }
-  
-    innerHtml = '<form>\
+    var tabContent = '<div id="us-'+title+'"><ul>'+getTabContent(desc)+'</ul></div>';
+   
+    if ($("#branch-selection-dialog-" + repoId).length == 0) {
+      innerHtml = '<form>\
        <fieldset>\
-      <div id="us-search"></div>\
-    <div id="selectable-list" style="scroll:auto;">\
-     <ul>' + innerHtml + '</ul>'
-     + tabContent + 
-    '</div>\
-       </fieldset>\
-    </form>';
-      $("<div id='branch-selection-dialog' title='Change/Switch branch'></div>").appendTo('body');
-      $(innerHtml).appendTo("#branch-selection-dialog");
+         <div id="us-search"></div>\
+           <input/>\
+           <div id="selectable-list" style="scroll:auto;">\
+             <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
+             + tabContent + '\
+           </div>\
+         </fieldset>\
+       </form>';
+      $("<div id='branch-selection-dialog-"+repoId+"' title='Change/Switch branch'></div>").appendTo('body');
+      $(innerHtml).appendTo("#branch-selection-dialog-"+repoId);
 
-    $("#branch-selection-dialog #selectable-list").tabs();
+      $("#branch-selection-dialog-"+repoId+" #selectable-list").tabs();
 
-      var $dialog = $( "#branch-selection-dialog" ).dialog(
-    {
-        'autoOpen': false,
-        'minWidth': 100,
-        'modal': false,
-        'minHeight': 20,
-        'close': function() {
+      var $dialog = $( "#branch-selection-dialog-"+repoId ).dialog(
+        {
+          'autoOpen': false,
+          'minWidth': 100,
+          'modal': false,
+          'minHeight': 20,
+          "position": "left",
+          'close': function() {
+          }
         }
-      }
-    );
+      );
+    }
+    else {
+      $("#repo-selection-dialog-"+repoId + " #selectable-list").append(tabContent);
+      $("#repo-selection-dialog-"+repoId + " #selectable-list").tabs("add", "#us-" + title, title);
+    }
 
-      $(".diagramSelector").click(function() {
-        self.selected = $(this).attr('url');
-          var text = $(this).children("span").text();
-          $dialog.dialog("close");
-          callback('Branches', text);
-          $("#us-branch .js-select-button").text(text);
-      });
+    $("#branch-selection-dialog-"+repoId+" .diagramSelector").click(function() {
+      self.selected = $(this).attr('url');
+      var text = $(this).children("span").text();
+
+      $("#branch-selection-dialog-"+repoId).dialog("close");
+      IBranchSelectObserver.onBranchSelected(title, text);
+      $("#us-branch .js-select-button").text(text);
+    });
   },
   'SaveDiagramDialog':function(){
 
@@ -295,7 +304,7 @@ Version:
       "</div></div>";
 
       var self = this;
-      if ($("#commit-changes-dialog").empty()) {
+      if (!$("#commit-changes-dialog").length) {
         $('<div id="commit-changes-dialog" title="Commit data:"></div>').appendTo('body');
       } else {
         // remove the previous values

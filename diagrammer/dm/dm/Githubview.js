@@ -11,19 +11,19 @@ URL:
 (function($, dm, undefined) {
   dm.base.GithubViewsManager = function(username, access_token, url) {
     // local web site mode
-	var isLocal = (url != undefined);
-	var ISelectionObserver = this;
-	var viewsMap = {};
+    var isLocal = (url != undefined);
+    var ISelectionObserver = this;
+    var viewsMap = {};
 
     function github() {
-	  // create singletone object. It is not possible to have two access tokens
-	  if (dm.dm.github == undefined) {
+      // create singletone object. It is not possible to have two access tokens
+      if (dm.dm.github == undefined) {
         dm.dm.github = new Github({
           token: access_token,
           auth: "oauth"
         });
-	  }
-	  return dm.dm.github;
+      }
+      return dm.dm.github;
     };
 
     function processTree(data) {
@@ -52,64 +52,65 @@ URL:
       return data;
     };
 
-	this.onRepoSelect = function(title, repo) {
+    this.onRepoSelect = function(title, repo) {
       if (title == 'Yours') {
-	    if (viewsMap[repo] == undefined) {
+        if (viewsMap[repo] == undefined) {
           dm.dm.fw.addView2(repo, new IGithubView(repo));
-		}
-		else {
-		  dm.dm.fw.activateView(repo);
-		}
-	  }
-	};
+        }
+        else {
+          dm.dm.fw.activateView(repo);
+        }
+      }
+    };
 
     this.init = function() {
       function showRepos(repos) {
-	    dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
+        dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
       };
 
-	  if (!isLocal) {
+      if (!isLocal) {
         var user = github().getUser();
         user.repos(function(err, repos){ showRepos(repos) });
-	  }
-	  else {
-	    showRepos([{full_name:'umlsynco/diagrams'},
-			      {full_name:'umlsynco/umlsync'},
-				  {full_name:'kalaidin/octotest'},
-				  {full_name: 'umlsynco/GIST'}]);
-/*			{
-			  'Yours': [ ],
-			  'Follow': [{name:'absde/somethe'}],
-			  'Starred': [{name:'absde/somethe'}],
-			  'Search': [{name:'search/result'}]
-			}
-		);*/
-	  }
+      }
+      else {
+        showRepos([{full_name:'umlsynco/diagrams'},
+                  {full_name:'umlsynco/umlsync'},
+                  {full_name:'kalaidin/octotest'},
+                  {full_name:'umlsynco/GIST'}]);
+      }
     };
     
     var IGithubView = function (repoUrl) {
-	  var pUrl = repoUrl;
-	  var self = {
+      var pUrl = repoUrl;
+
+      // Reading a repository
+      var repo = github().getRepo(username, pUrl.split('/').pop());
+      var self = {
         euid: "Github",
-		repo: pUrl,
+        activeBranch: "master",
+        getRepository: function() { return pUrl},
         modifiedList: {}, // The list of modified files by sha
-        info: function(callback) {
-          // TODO: define github view capabilities
-          // right now only view available
-          if (callback)
-            callback(null);
+        initBranches: function() {
+            repo.listBranches(
+              function(err, branches) {
+                dm.dm.fw.addBranch("Branches", repoUrl, self, branches);
+//                repo.listTags(
+//                  function(err, tags) {
+//                  dm.dm.fw.addBranch("Tags", repoUrl, self, tags);
+//                }
+//            );
+
+              }
+            );
+        },
+        onBranchSelected: function(tab, branch) {
+            self.activeBranch = branch;
+            //$(self.treeParentSelector).children().empty();
+            self.initTree(self.treeParentSelector);
         },
         'save': function(path, data, description) {
           self.modifiedList[path] = data;
           $.log("Saving " + data.toString() + " on " + path.toString());
-          //var repo = github().getRepo(username, pUrl.split('/').pop());
-          //repo.write(
-          //  'master',
-          //  path.toString().substring(1),
-          //  data.toString(),
-          //  "Autosaving.",
-          //  function(err) {}
-          //);
         },
         'loadDiagram': function(node, callback) {
           if (node && node.data && node.data.sha) {
@@ -117,7 +118,6 @@ URL:
             $.log(node.data);
             $.log(node.data.url);
             $.log(node.data.title);
-            var repo = github().getRepo(username, pUrl.split('/').pop());
             repo.getBlob(node.data.sha,
                 function(err, data) {
               json = $.parseJSON(data);
@@ -140,8 +140,6 @@ URL:
                    function(message, items) {
                      var path;
                      $.log("Commiting...");
-
-                     repo = github().getRepo(username, pUrl.split('/').pop());
 
                      var contents = [];
                      for (path in items) {
@@ -201,23 +199,24 @@ URL:
            }
            ],
            initTree: function (parentSelector) {
-          function updateTree(tree) {
-            $.log("updateTree()");
-            datax = {};
-            datax["tree"] = tree;
-            real_tree = {}
-            real_tree = processTree(datax);
-            $(parentSelector).dynatree(
-                {
-                  persist: true,
-                  children: real_tree,
-                  onCreate: function(node, span) {
-                  $.log("onCreate()");
-                  $(span).bind('contextmenu', function(e) {
-                    var node = $.ui.dynatree.getNode(e.currentTarget);
-                    dm.dm.fw.ShowContextMenu("Github", e, node);
-                    e.preventDefault();
-                  });
+             self.treeParentSelector = parentSelector;
+             function updateTree(tree) {
+               $.log("updateTree()");
+               datax = {};
+               datax["tree"] = tree;
+               real_tree = {}
+               real_tree = processTree(datax);
+               $(parentSelector).dynatree(
+                 {
+                   persist: true,
+                   children: real_tree,
+                   onCreate: function(node, span) {
+                   $.log("onCreate()");
+                   $(span).bind('contextmenu', function(e) {
+                     var node = $.ui.dynatree.getNode(e.currentTarget);
+                     dm.dm.fw.ShowContextMenu("Github", e, node);
+                     e.preventDefault();
+                   });
                 },
                 onLazyRead: function(node) {
                   $.log("onLazyRead()");
@@ -246,9 +245,7 @@ URL:
                 }
             );
           };
-          // Reading a repository
-          var repo = github().getRepo(username, pUrl.split('/').pop());
-          repo.getTree('master', function(err, tree) {
+          repo.getTree(self.activeBranch , function(err, tree) {
             if (err) {
               $.log("Failed to load a git repo: " + err);
             }
@@ -258,7 +255,7 @@ URL:
           });
         },
       };
-	  return self;
+      return self;
     };
   };
   //@aspect
