@@ -197,9 +197,19 @@
       // -------
 
       this.listBranches = function(cb) {
-        _request("GET", repoPath + "/git/refs/heads", null, function(err, heads) {
+        _request("GET", repoPath + "/branches", null, function(err, res) {
           if (err) return cb(err);
-          cb(null, _.map(heads, function(head) { return _.last(head.ref.split('/')); }));
+          cb(null, res);
+        });
+      };
+
+      // List all tags of a repository
+      // -------
+
+      this.listTags = function(cb) {
+        _request("GET", repoPath + "/tags", null, function(err, res) {
+          if (err) return cb(err);
+          cb(null, res);
         });
       };
 
