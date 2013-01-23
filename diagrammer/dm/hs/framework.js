@@ -49,7 +49,7 @@ Version:
       // Think about field set
       $("#" + this.options.content).append('\
           <div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;">\
-	       <div id="accordion" style="background-color:gray;">\
+	       <div id="switcher" style="background-color:gray;">\
 		     <div class="dropdown-widget" style="display:none;">\
 			 <div class="select-menu">\
 			 <a class="minibutton select-menu-button js-menu-target">\
@@ -162,7 +162,7 @@ Version:
 			   </div>\
 			 </div>\
 			 </div>\
-		     <div class="branchnav-widget ui-state-default">\
+		     <div class="branchnav-widget ui-state-default" style="display:none;">\
 			 <div class="select-menu">\
 			 <a class="minibutton select-menu-button js-menu-target">\
                  <span class="mini-icon mini-icon-branch"></span>\
@@ -171,6 +171,7 @@ Version:
 			 </a>\
 			 </div>\
 			 </div>\
+			 <div id="reponav"></div>\
              <div id="treetabs"></div>\
 	       </div>\
           </div>\
@@ -188,8 +189,8 @@ Version:
             }
           });
 
-          var $switcher = $('#accordion');
-          $switcher.addClass('ui-accordion ui-widget ui-helper-reset ui-accordion-icons');
+          var $switcher = $('#switcher');
+          $switcher.addClass('ui-switcher ui-widget ui-helper-reset ui-switcher-icons');
 		  var SWITCH_STATE_STUB = true;
 
 		  $switcher.children("H3").click(function() {
@@ -310,18 +311,11 @@ Version:
           this.left_counter = 0;
           this.right_counter = 0;
 
-		this.initDropDownSelector('#accordion',
+		this.initDropDownSelector('#switcher #reponav', "us-repo", 
 		  {
 		    filter:true,
 			mtitle: 'Repository',
 			title: 'Open/Switch repository',
-			tabs:
-			{
-			  'Yours': ['umlsynco/diagrams', 'umlsynco/umlsync', 'kalaidin/octotest', 'umlsynco/GIST'],
-			  'Follow': ['absde/somethe'],
-			  'Starred': ['absde/somethe'],
-			  'Search': ['search/result']
-			},
 			onSelect: function(selectedTab, selectedItem) {
 			  if (selectedTab == 'Yours') {
 			    // simply change repo
@@ -329,6 +323,21 @@ Version:
 			  else if (selectedTab == 'Follow') {
 			    // open gists
 			  }
+			}
+		  }
+		); // initDropDownSelector
+		this.initDropDownSelector('#switcher #reponav', 'us-branch',
+		  {
+		    filter:true,
+			mtitle: 'Branch',
+			onSelect: function(selectedTab, selectedItem) {
+			  if (selectedTab == 'Yours') {
+			    // simply change repo
+			  }
+			  else if (selectedTab == 'Follow') {
+			    // open gists
+			  }
+			  alert("SELECTED !!!");
 			}
 		  }
 		); // initDropDownSelector
@@ -344,14 +353,20 @@ Version:
       bottom:"#content-bottom",
       content:"content"
     },
+	addRepositories: function(title, IViewsManager, descr) {
+        if (dm.dm.dialogs) {
+          dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
+		}
+	},
+	
 	// create the drop down selector with tabs
 	// param - element id to attach widget
 	// desc - JSON description of drop down selector
 	//        {filter: true/false, mtitle: MiniTitle, title: TITLE, tabs:{ name1: {id1, id2}, name2: {id3, id4}}}
 	//
-	initDropDownSelector: function(id, desc) {
+	initDropDownSelector: function(parentId, uid, desc) {
 
-        $('<div class="dropdown-widget">\
+        $('<div class="dropdown-widget" id="'+uid+'">\
 			          <div class="select-menu">\
 			            <a class="minibutton select-menu-button js-menu-target">\
                           <span class="mini-icon mini-icon-branch"></span>\
@@ -360,9 +375,13 @@ Version:
                         </a>\
 					  </div>\
 					  </div>')
-        .appendTo(id)
+        .appendTo(parentId)
 		.click(function() {
-          dm.dm.dialogs['Activate']("repo-selection-dialog");
+		  if (uid == "us-repo")
+            dm.dm.dialogs['Activate']("repo-selection-dialog");
+		  if (uid == "us-branch")
+            dm.dm.dialogs['Activate']("branch-selection-dialog");
+			
 		});
 	},
     // Loading the main menu JSON description and put it as argument to callback function
@@ -538,8 +557,8 @@ Version:
 	  $("#treetabs").children("DIV").hide();
       $("#treetabs").append("<div id='"+id+"'></div>");
 
-	  
-	  $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
+	  $("#us-repo .js-select-button").text(IView.repo);
+/*	  $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
 	  $("#accordion A#" + id).parent()
 	    .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')
 		.click(function() {
@@ -562,7 +581,7 @@ Version:
                 $(this).removeClass('ui-state-hover');
               }
           );
-
+*/
 	  id = "DIV#" + id;
       var $treetabs = $("#treetabs");
 	  $("#treetabs " + id).addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');

@@ -11,7 +11,9 @@ URL:
 (function($, dm, undefined) {
   dm.base.GithubViewsManager = function(username, access_token, url) {
     // local web site mode
-	var isLocal = (url != undefined);
+	var isLocal = true; //(url != undefined);
+	var ISelectionObserver = this;
+	var viewsMap = {};
 
     function github() {
 	  // create singletone object. It is not possible to have two access tokens
@@ -50,35 +52,38 @@ URL:
       return data;
     };
 
+	this.onRepoSelect = function(title, repo) {
+      if (title == 'Yours') {
+	    if (viewsMap[repo] == undefined) {
+          dm.dm.fw.addView2(repo, new IGithubView(repo));
+		}
+		else {
+		  dm.dm.fw.activateView(repo);
+		}
+	  }
+	};
+
     this.init = function() {
       function showRepos(repos) {
-        if (dm.dm.dialogs) {
-          dm.dm.dialogs['SelectRepoDialog'](
-		    repos,
-			function(repo) {
-              "repo URL is stored in repo variable"
-              dm.dm.fw.addView2('Github', new IGithubView(repo));
-            }
-		  );
-		}
+	    dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
       };
 
 	  if (!isLocal) {
         var user = github().getUser();
-        user.repos(function(err, repos){ showRepos(repos) });
+        user.repos(function(err, repos){ showRepos({'Yours':repos}) });
 	  }
 	  else {
-	    showRepos(
-		  [
-		    {
-		      "name": "diagrams",
-              "full_name": "umlsynco/diagrams",
-              "description": "Diagrams repository",
-              "private": false,
-			  "url": "https://api.github.com/repos/umlsynco/diagrams"
-		    }
-		  ]
-		);
+	    showRepos([{name:'umlsynco/diagrams'},
+			      {name:'umlsynco/umlsync'},
+				  {name:'kalaidin/octotest'},
+				  {name: 'umlsynco/GIST'}]);
+/*			{
+			  'Yours': [ ],
+			  'Follow': [{name:'absde/somethe'}],
+			  'Starred': [{name:'absde/somethe'}],
+			  'Search': [{name:'search/result'}]
+			}
+		);*/
 	  }
     };
     
@@ -86,6 +91,7 @@ URL:
 	  var pUrl = repoUrl;
 	  var self = {
         euid: "Github",
+		repo: pUrl,
         modifiedList: {}, // The list of modified files by sha
         info: function(callback) {
           // TODO: define github view capabilities

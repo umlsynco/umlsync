@@ -504,7 +504,6 @@ a {
 }
 
 #selectable-list {
-  min-height: 100px;
   height: 100%;
   overflow: auto;
   background-color: #eee;

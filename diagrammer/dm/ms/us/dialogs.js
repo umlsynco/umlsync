@@ -130,28 +130,103 @@ Version:
         $(this).removeClass('hover');
       });
   },
-  'SelectRepoDialog': function(data, callback) {
-    var items = [];
+  'SelectRepoDialog': function(title, ISelectObserver, repos) {
     var self = this;
-
-    for (var i in data) {
-      var name = data[i]['name'],
-      pr = (data[i]['private']) ? "Private: ":"Public: ";
-      items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr +  data[i]['full_name'] + '</li>');
-    }
-
-    var innerHtml = items.join('');
-    innerHtml = '<form>\
-      <fieldset><div id="selectable-list" style="scroll:auto;height:40px;"><ul>' + innerHtml + '</ul></div>\
-      </fieldset></form>';
+//	this.titleMap = this.titleMap || {};
+//	this.titleMap[title] = ISelectObserver;
+	
+	function getTabContent(data) {
+	  var items = [];
+      for (var i in data) {
+        var name = data[i]['name'];
+        //pr = "<i>" + (data[i]['private']) ? "Private: ":"Public: </i>" ;
+        //items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr + "<span>" + data[i]['full_name'] + '</span></li>');
+		items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
+      }
+      return items.join('');
+	}
+	
+	var
+	  tabContent = '<div id="us-'+title+'"><ul>'+getTabContent(repos)+'</ul></div>';
+	
+	if ($("#repo-selection-dialog #selectable-list").empty()) {
+      var innerHtml = '<form>\
+       <fieldset>\
+	    <div id="us-search"></div>\
+		<div id="selectable-list" style="scroll:auto;">\
+		 <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
+		 + tabContent + 
+		'</div>\
+       </fieldset>\
+	  </form>';
       $("<div id='repo-selection-dialog' title='Repository selection'></div>").appendTo('body');
       $(innerHtml).appendTo("#repo-selection-dialog");
 
-      $( "#repo-selection-dialog" ).dialog(
+	  $("#repo-selection-dialog #selectable-list").tabs();
+
+      var $dialog = $( "#repo-selection-dialog" ).dialog(
 	  {
         'autoOpen': false,
-        'minWidth': 350,
+        'minWidth': 100,
         'modal': false,
+		'minHeight': 20,
+        'close': function() {
+        }
+      }
+	  );
+	}
+	else {
+      $("#tabs").append(tabContent);
+      $('#tabs').tabs("add", "#us-" + title, title);
+	}
+	
+    $("#us-"+title+" .diagramSelector").click(function() {
+      self.selected = $(this).attr('url');
+      var text = $(this).children("span").text();
+      $("#repo-selection-dialog" ).dialog("close");
+	  ISelectObserver.onRepoSelect(title, text);
+    });
+  },
+  'ChangeBranchDialog': function(desc, callback) {
+    var self = this;
+
+	function getTabContent(data) {
+	  var items = [];
+      for (var i in data) {
+        var name = data[i]['name'];
+        //pr = "<i>" + (data[i]['private']) ? "Private: ":"Public: </i>" ;
+        //items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr + "<span>" + data[i]['full_name'] + '</span></li>');
+		items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
+      }
+      return items.join('');
+	}
+	
+	var innerHtml = "", tabContent = "";
+    for (var j in desc) {
+	  innerHtml += '<li><a href="#us-'+j+'">'+j+'</a></li>';
+	  tabContent += '<div id="us-'+j+'"><ul>'+getTabContent(desc[j])+'</ul></div>';
+	}
+	
+    innerHtml = '<form>\
+       <fieldset>\
+	    <div id="us-search"></div>\
+		<div id="selectable-list" style="scroll:auto;">\
+		 <ul>' + innerHtml + '</ul>'
+		 + tabContent + 
+		'</div>\
+       </fieldset>\
+	  </form>';
+      $("<div id='branch-selection-dialog' title='Change/Switch branch'></div>").appendTo('body');
+      $(innerHtml).appendTo("#branch-selection-dialog");
+
+	  $("#branch-selection-dialog #selectable-list").tabs();
+
+      var $dialog = $( "#branch-selection-dialog" ).dialog(
+	  {
+        'autoOpen': false,
+        'minWidth': 100,
+        'modal': false,
+		'minHeight': 20,
 /*        'buttons': {
           "Create": function() {
             var rep = self.selected;
@@ -172,8 +247,12 @@ Version:
 
       $(".diagramSelector").click(function() {
         self.selected = $(this).attr('url');
-        $(".diagramSelector").css("background-color","#eee").css("color", "#000");
-        $(this).css("background-color","#5D689A").css("color", "#fff");
+		var text = $(this).children("span").text();
+		$dialog.dialog("close");
+		callback('Branches', text);
+		$("#us-branch .js-select-button").text(text);
+        //$(".diagramSelector").css("background-color","#eee").css("color", "#000");
+        //$(this).css("background-color","#5D689A").css("color", "#fff");
       });
   },
   'SaveDiagramDialog':function(){
