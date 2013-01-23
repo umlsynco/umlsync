@@ -172,10 +172,16 @@ Version:
       var $dialog = $( "#repo-selection-dialog" ).dialog(
     {
         'autoOpen': false,
+        appendTo: '#switcher',
+        position: 'left',
         'minWidth': 100,
         'modal': false,
         'minHeight': 20,
         'close': function() {
+        },
+        open: function( event, ui ) {
+          $( "#repo-selection-dialog")
+            .parent().offset($("#us-branch").offset());
         }
       }
     );
@@ -184,7 +190,7 @@ Version:
       $("#repo-selection-dialog #selectable-list").append(tabContent);
       $("#repo-selection-dialog #selectable-list").tabs("add", "#us-" + title, title);
   }
-  
+
     $("#us-"+title+" .diagramSelector").click(function() {
       self.selected = $(this).attr('url');
       var text = $(this).children("span").text();
@@ -232,10 +238,13 @@ Version:
         {
           'autoOpen': false,
           'minWidth': 100,
+          draggable: false,
           'modal': false,
           'minHeight': 20,
           "position": "left",
-          'close': function() {
+          'open': function() {
+            $( "#branch-selection-dialog-"+repoId )
+              .parent().offset($("#toolbox").offset());
           }
         }
       );
