@@ -49,16 +49,16 @@ Version:
       // Think about field set
       $("#" + this.options.content).append('\
           <div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;">\
-	       <div id="switcher" style="background-color:gray;">\
-		     <div class="dropdown-widget" style="display:none;">\
-			 <div class="select-menu">\
-			 <a class="minibutton select-menu-button js-menu-target">\
+           <div id="switcher" style="background-color:gray;">\
+             <div class="dropdown-widget" style="display:none;">\
+             <div class="select-menu">\
+             <a class="minibutton select-menu-button js-menu-target">\
                  <span class="mini-icon mini-icon-branch"></span>\
                  <i>Repository:</i>\
                  <span class="js-select-button">umlsynco/umlsync</span>\
              </a>\
-  			   <div id="opened-repos" style="position:absolute;right:0px;z-index:9999;">\
-			   <div class="select-menu-modal js-select-menu-pane">\
+                 <div id="opened-repos" style="position:absolute;right:0px;z-index:9999;">\
+               <div class="select-menu-modal js-select-menu-pane">\
           <div class="select-menu-header">\
             <span class="select-menu-title">Switch branches/tags</span>\
             <span class="mini-icon mini-icon-remove-close js-menu-close"></span>\
@@ -159,28 +159,28 @@ Version:
           </div> <!-- /.select-menu-list -->\
 \
         </div>\
-			   </div>\
-			 </div>\
-			 </div>\
-		     <div class="branchnav-widget ui-state-default" style="display:none;">\
-			 <div class="select-menu">\
-			 <a class="minibutton select-menu-button js-menu-target">\
+               </div>\
+             </div>\
+             </div>\
+             <div class="branchnav-widget ui-state-default" style="display:none;">\
+             <div class="select-menu">\
+             <a class="minibutton select-menu-button js-menu-target">\
                  <span class="mini-icon mini-icon-branch"></span>\
                  <i>Branch:</i>\
                  <span class="js-select-button">master</span>\
-			 </a>\
-			 </div>\
-			 </div>\
-			 <div id="reponav"></div>\
-			 <div id="toolbox"><ul style="list-style:none;">\
+             </a>\
+             </div>\
+             </div>\
+             <div id="reponav"></div>\
+             <div id="toolbox"><ul style="list-style:none;">\
                <li class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
-			   <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
-			   <li title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
-			   <li title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
-			   <li title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
-			 </ul></div>\
+               <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
+               <li title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
+               <li title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
+               <li title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
+             </ul></div>\
              <div id="treetabs"></div>\
-	       </div>\
+           </div>\
           </div>\
           <div id="'+ this.options.content +'-left-right-resize" style="width:6px;left:200px;height:100%;position:absolute;padding:0;margin:0;border:0px solid gray;background-color:gray;cursor: col-resize;"></div>\
           <div id="'+ this.options.content +'-right" style="width:100px;left:206px;height:100%;position:absolute;padding:0;margin:0;">\
@@ -198,30 +198,30 @@ Version:
 
           var $switcher = $('#switcher');
           $switcher.addClass('ui-switcher ui-widget ui-helper-reset ui-switcher-icons');
-		  var SWITCH_STATE_STUB = true;
+          var SWITCH_STATE_STUB = true;
 
-		  $switcher.children("H3").click(function() {
-		     if (SWITCH_STATE_STUB) {
-			    $switcher.children("#opened-repos").children("H3").slideUp();
-			 } else {
-			    $switcher.children("#opened-repos").children("H3").slideDown();
-			 }
-			 SWITCH_STATE_STUB = !SWITCH_STATE_STUB;
-		  });
-		  
-		  $switcher
-		  .children("#opened-repos")
-		  .mouseleave(
-		    function(evt) {
-		      $(this).children("H3").slideUp();
-		    }
-		  )
-		  .mouseenter(
-		    function(evt) {
-			  $(this).children("H3").slideDown();
-			}
-		  );
-		  
+          $switcher.children("H3").click(function() {
+             if (SWITCH_STATE_STUB) {
+                $switcher.children("#opened-repos").children("H3").slideUp();
+             } else {
+                $switcher.children("#opened-repos").children("H3").slideDown();
+             }
+             SWITCH_STATE_STUB = !SWITCH_STATE_STUB;
+          });
+
+          $switcher
+          .children("#opened-repos")
+          .mouseleave(
+            function(evt) {
+              $(this).children("H3").slideUp();
+            }
+          )
+          .mouseenter(
+            function(evt) {
+              $(this).children("H3").slideDown();
+            }
+          );
+
           var $tabs = $("#tabs")
           .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
             'scrollable': true,
@@ -318,36 +318,36 @@ Version:
           this.left_counter = 0;
           this.right_counter = 0;
 
-		this.initDropDownSelector('#switcher #reponav', "us-repo", 
-		  {
-		    filter:true,
-			mtitle: 'Repository',
-			title: 'Open/Switch repository',
-			onSelect: function(selectedTab, selectedItem) {
-			  if (selectedTab == 'Yours') {
-			    // simply change repo
-			  }
-			  else if (selectedTab == 'Follow') {
-			    // open gists
-			  }
-			}
-		  }
-		); // initDropDownSelector
-		this.initDropDownSelector('#switcher #reponav', 'us-branch',
-		  {
-		    filter:true,
-			mtitle: 'Branch',
-			onSelect: function(selectedTab, selectedItem) {
-			  if (selectedTab == 'Yours') {
-			    // simply change repo
-			  }
-			  else if (selectedTab == 'Follow') {
-			    // open gists
-			  }
-			  alert("SELECTED !!!");
-			}
-		  }
-		); // initDropDownSelector
+        this.initDropDownSelector('#switcher #reponav', "us-repo",
+          {
+            filter:true,
+            mtitle: 'Repository',
+            title: 'Open/Switch repository',
+            onSelect: function(selectedTab, selectedItem) {
+              if (selectedTab == 'Yours') {
+                // simply change repo
+              }
+              else if (selectedTab == 'Follow') {
+                // open gists
+              }
+            }
+          }
+        ); // initDropDownSelector
+        this.initDropDownSelector('#switcher #reponav', 'us-branch',
+          {
+            filter:true,
+            mtitle: 'Branch',
+            onSelect: function(selectedTab, selectedItem) {
+              if (selectedTab == 'Yours') {
+                // simply change repo
+              }
+              else if (selectedTab == 'Follow') {
+                // open gists
+              }
+              alert("SELECTED !!!");
+            }
+          }
+        ); // initDropDownSelector
 
         // Update the sizes first time
         this.updateFrameWork(true);
@@ -366,35 +366,35 @@ Version:
         if (dm.dm.dialogs) {
           dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
         }
-	},
-	
-	// create the drop down selector with tabs
-	// param - element id to attach widget
-	// desc - JSON description of drop down selector
-	//        {filter: true/false, mtitle: MiniTitle, title: TITLE, tabs:{ name1: {id1, id2}, name2: {id3, id4}}}
-	//
-	initDropDownSelector: function(parentId, uid, desc) {
+    },
+
+    // create the drop down selector with tabs
+    // param - element id to attach widget
+    // desc - JSON description of drop down selector
+    //        {filter: true/false, mtitle: MiniTitle, title: TITLE, tabs:{ name1: {id1, id2}, name2: {id3, id4}}}
+    //
+    initDropDownSelector: function(parentId, uid, desc) {
 
         $('<div class="dropdown-widget" id="'+uid+'">\
-			          <div class="select-menu">\
-			            <a class="minibutton select-menu-button js-menu-target">\
+                      <div class="select-menu">\
+                        <a class="minibutton select-menu-button js-menu-target">\
                           <span class="mini-icon mini-icon-branch"></span>\
                           <i>'+desc.mtitle+':</i>\
                           <span class="js-select-button">none</span>\
                         </a>\
-					  </div>\
-					  </div>')
+                      </div>\
+                      </div>')
         .appendTo(parentId)
-		.click(function() {
-		  if (uid == "us-repo")
+        .click(function() {
+          if (uid == "us-repo")
             dm.dm.dialogs['Activate']("repo-selection-dialog");
-		  if (uid == "us-branch") {
+          if (uid == "us-branch") {
             var text = $("#us-repo .js-select-button").text();
             var repoId = text.replace("/", "-");
             dm.dm.dialogs['Activate']("branch-selection-dialog-"+repoId);
           }
         });
-	},
+    },
     // Loading the main menu JSON description and put it as argument to callback function
     //@proexp
     'CreateDiagramMenu':function(type, innerHtml, callback) {
@@ -581,20 +581,20 @@ var repoH = $("#switcher #reponav").height(),
 
       IView.initBranches();
 
-	  $("#us-repo .js-select-button").text(IView.getRepository());
+      $("#us-repo .js-select-button").text(IView.getRepository());
       $("#us-branch .js-select-button").text("master");
-/*	  $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
-	  $("#accordion A#" + id).parent()
-	    .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')
-		.click(function() {
+/*      $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
+      $("#accordion A#" + id).parent()
+        .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')
+        .click(function() {
             //if ($(this).hasClass('ui-state-default')) {
               var height = 0;
               $(this).removeClass('ui-state-default').addClass('ui-state-active');
-			  var id = "DIV#" + $(this).children().attr('id');
-			  $("#treetabs").children("DIV").hide(); // hide all trees 
-			  $(id).show(); // open this one
-			  $("#accordion #opened-repos").children("H3").slideUp();
-			  $("#us-active-repo").text($(this).text());
+              var id = "DIV#" + $(this).children().attr('id');
+              $("#treetabs").children("DIV").hide(); // hide all trees
+              $(id).show(); // open this one
+              $("#accordion #opened-repos").children("H3").slideUp();
+              $("#us-active-repo").text($(this).text());
             //}
             return false;
           })
@@ -607,16 +607,16 @@ var repoH = $("#switcher #reponav").height(),
               }
           );
 */
-	  id = "DIV#" + id;
+      id = "DIV#" + id;
       var $treetabs = $("#treetabs");
-//	  $("#treetabs " + id).addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');
+//      $("#treetabs " + id).addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');
 
       $(id).append("<div id='tree'></div>");
           var self = this;
 
-          
 
-	  
+
+
 
       function initCtxMenu(vid, items, view) {
         $('<ul id="view-'+  vid +'" class="context-menu" ></ul>').hide().appendTo('body');
