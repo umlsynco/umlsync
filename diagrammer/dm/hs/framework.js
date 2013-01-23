@@ -173,11 +173,11 @@ Version:
 			 </div>\
 			 <div id="reponav"></div>\
 			 <div id="toolbox"><ul style="list-style:none;">\
-               <li class="us-left" title="Commit changes"><img src="images/commit.png" class="ui-icon"></li>\
-			   <li class="us-left" title="Reload tree"><img src="images/reload.png" class="ui-icon"></li>\
-			   <li title="New diagram"><img src="images/newdoc.png" class="ui-icon"></li>\
-			   <li title="Revert diagram"><img src="images/revertdoc.png" class="ui-icon"></li>\
-			   <li title="Remove diagram"><img src="images/deldoc.png" class="ui-icon"></li>\
+               <li class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
+			   <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
+			   <li title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
+			   <li title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
+			   <li title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
 			 </ul></div>\
              <div id="treetabs"></div>\
 	       </div>\
@@ -348,7 +348,9 @@ Version:
 			}
 		  }
 		); // initDropDownSelector
-			
+
+        // Update the sizes first time
+        this.updateFrameWork(true);
     }
 
     framework.prototype = {
@@ -501,6 +503,11 @@ Version:
         .children(".ui-scrollable-tabs").height(hhh - 2)    // 1px solid border defined for .ui-scrollable-tabs
         .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
 
+// content left maximize treetabs area
+var repoH = $("#switcher #reponav").height(),
+    toolboxH = $("#switcher #toolbox").height();
+    $("#switcher #treetabs").height(hhh - repoH - toolboxH-2);
+
         var $ch;
         if ($ch1.children(".ui-tabs-panel").length) {
           hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
@@ -602,7 +609,7 @@ Version:
 */
 	  id = "DIV#" + id;
       var $treetabs = $("#treetabs");
-	  $("#treetabs " + id).addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');
+//	  $("#treetabs " + id).addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');
 
       $(id).append("<div id='tree'></div>");
           var self = this;
