@@ -2,6 +2,7 @@
 Custom JSON to SVG converter.
 """
 import json
+import math
 import pprint
 import svgwrite as sw
 
@@ -35,6 +36,9 @@ class SVGClass(sw.container.Group):
 
 class SVGConnector(sw.container.Group):
     """Represent connection element."""
+    angle = math.pi / 8
+    arrow_length = 15
+
     def __init__(self, properties, start, end):
         sw.container.Group.__init__(self)
         self.from_id = properties["fromId"]
@@ -65,9 +69,35 @@ class SVGConnector(sw.container.Group):
         points.append((line_ex, line_ey))
         for i in range(len(points) - 1):
             line = sw.shapes.Line(start=points[i],
-                                  end=points[i+1],
+                                  end=points[i + 1],
                                   stroke='black', stroke_width=1)
             self.add(line)
+            if i == len(points) - 2:
+                # draw an arrow
+                (x1, y1) = points[i]
+                (x2, y2) = points[i + 1]
+                length = ((x1 - x2)**2 + (y2 - y1)**2)**0.5
+                vec = ((x1 - x2) / length, (y1 - y2) / length)
+                arrow = (vec[0] * math.cos(self.angle) +
+                         vec[1] * math.sin(-self.angle),
+                         vec[0] * math.sin(self.angle) +
+                         vec[1] * math.cos(self.angle))
+                arrow_dots = (x2 + arrow[0] * self.arrow_length,
+                              y2 + arrow[1] * self.arrow_length)
+                line = sw.shapes.Line(start=points[i + 1],
+                                      end=arrow_dots,
+                                      stroke='black', stroke_width=1)
+                self.add(line)
+                arrow = (vec[0] * math.cos(-self.angle) +
+                         vec[1] * math.sin(self.angle),
+                         vec[0] * math.sin(-self.angle) +
+                         vec[1] * math.cos(-self.angle))
+                arrow_dots = (x2 + arrow[0] * self.arrow_length,
+                              y2 + arrow[1] * self.arrow_length)
+                line = sw.shapes.Line(start=points[i + 1],
+                                      end=arrow_dots,
+                                      stroke='black', stroke_width=1)
+                self.add(line)
 
 
 class CustomJSONtoSVGConverter:
@@ -78,7 +108,7 @@ class CustomJSONtoSVGConverter:
         """Read and parse JSON file."""
         with open(filename) as f:
             self.json_data = json.load(f)
-            #pprint.pprint(self.json_data)
+            pprint.pprint(self.json_data)
 
     def dump(self, filename):
         """Convert JSON to SVG."""
