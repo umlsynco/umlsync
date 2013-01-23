@@ -1723,6 +1723,7 @@ dm['at'] = dm.at; //automated testing
       })
       .draggable({
         'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
+        'grid': [2,2],
         'scroll': true,
         'start': function(event, ui) {
         self.operation_start = {left: ui.position.left, top: ui.position.top};
