@@ -51,7 +51,12 @@ Version:
       }
     }
 
-    $( "#" + name ).dialog( "open" );
+    if ($( "#" + name ).dialog( "isOpen" )) {
+      $( "#" + name ).dialog( "close" );
+    }
+    else {
+      $( "#" + name ).dialog( "open" );
+    }
   },
   'NewDiagramDialog':function(data) {
 
