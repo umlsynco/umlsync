@@ -1025,3 +1025,12 @@ span.cfolder span.dynatree-icon {
 #toolbox ul li:hover {
   background-color:green;
 }
+
+#treetabs > DIV {
+  height:100%;
+  overflow:auto;
+}
+
+#treetabs DIV DIV UL {
+  overflow: visible;
+}
