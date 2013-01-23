@@ -11,7 +11,7 @@ URL:
 (function($, dm, undefined) {
   dm.base.GithubViewsManager = function(username, access_token, url) {
     // local web site mode
-	var isLocal = true; //(url != undefined);
+	var isLocal = (url != undefined);
 	var ISelectionObserver = this;
 	var viewsMap = {};
 
@@ -70,13 +70,13 @@ URL:
 
 	  if (!isLocal) {
         var user = github().getUser();
-        user.repos(function(err, repos){ showRepos({'Yours':repos}) });
+        user.repos(function(err, repos){ showRepos(repos) });
 	  }
 	  else {
-	    showRepos([{name:'umlsynco/diagrams'},
-			      {name:'umlsynco/umlsync'},
-				  {name:'kalaidin/octotest'},
-				  {name: 'umlsynco/GIST'}]);
+	    showRepos([{full_name:'umlsynco/diagrams'},
+			      {full_name:'umlsynco/umlsync'},
+				  {full_name:'kalaidin/octotest'},
+				  {full_name: 'umlsynco/GIST'}]);
 /*			{
 			  'Yours': [ ],
 			  'Follow': [{name:'absde/somethe'}],
