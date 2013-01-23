@@ -11,12 +11,16 @@ class SVGClass(sw.container.Group):
     """
     Represent Class element grouping several SVG primitives.
     """
+    text_height = 15
+
     def __init__(self, properties):
         sw.container.Group.__init__(self)
         self.x = float(properties["pageX"])
         self.y = float(properties["pageY"])
         self.width = float(properties["width"])
         self.height = float(properties["height"])
+        self.height_a = float(properties["height_a"])
+        self.height_o = float(properties["height_o"])
         self.right = self.x + self.width
         self.bottom = self.y + self.height
         body = sw.shapes.Rect(insert=(self.x, self.y),
@@ -29,6 +33,31 @@ class SVGClass(sw.container.Group):
         self.center_y = self.y + self.height / 2.0
         self.add(body)
         self.add(caption)
+        for i, attribute in enumerate(properties["attributes"]):
+            start = (self.x, self.y + 10 + self.height_a * i)
+            att = sw.shapes.Rect(insert=start,
+                                 size=(self.width, self.height_a),
+                                 fill='gray', stroke='black', stroke_width=1)
+            text_start = (self.x + 5, self.y + 10 + self.height_a * i +
+                          self.text_height)
+            text = sw.text.Text(insert=text_start,
+                                text=attribute)
+            self.add(att)
+            self.add(text)
+        for i, operation in enumerate(properties["operations"]):
+            start = (self.x, self.y + 10 + self.height_o * i +
+                     self.height_a * len(properties["attributes"]))
+            op = sw.shapes.Rect(insert=start,
+                                size=(self.width, self.height_o),
+                                fill='whitesmoke', stroke='black',
+                                stroke_width=1)
+            text_start = (self.x + 5, self.y + 10 + self.height_o * i +
+                          self.height_a * len(properties["attributes"]) +
+                          self.text_height)
+            text = sw.text.Text(insert=text_start,
+                                text=operation)
+            self.add(op)
+            self.add(text)
 
     def get_coords(self):
         pass
