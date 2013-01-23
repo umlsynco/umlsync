@@ -199,6 +199,7 @@ URL:
            }
            ],
            initTree: function (parentSelector) {
+             var isReload = (self.treeParentSelector == parentSelector);
              self.treeParentSelector = parentSelector;
              function updateTree(tree) {
                $.log("updateTree()");
@@ -206,7 +207,14 @@ URL:
                datax["tree"] = tree;
                real_tree = {}
                real_tree = processTree(datax);
-               $(parentSelector).dynatree(
+               if (isReload) {
+                  var $root = $(parentSelector).dynatree("getTree");
+                  $root.options.children = real_tree;
+                  $root.reload();
+                   return;
+               }
+
+               self.$tree = $(parentSelector).dynatree(
                  {
                    persist: true,
                    children: real_tree,
@@ -243,7 +251,7 @@ URL:
                     dm.dm.fw.loadDiagram(self.euid, node);
                 }
                 }
-            );
+               );
           };
           repo.getTree(self.activeBranch , function(err, tree) {
             if (err) {
