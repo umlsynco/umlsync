@@ -4,6 +4,7 @@ Custom JSON to SVG converter.
 import json
 import math
 import pprint
+from optparse import OptionParser
 import svgwrite as sw
 
 
@@ -157,6 +158,16 @@ class CustomJSONtoSVGConverter:
 
 
 if __name__ == '__main__':
+    parser = OptionParser()
+    parser.add_option("-f", "--file", dest="input_file",
+                  help="name of the input file")
+    parser.add_option("-r", "--result", dest="output_file",
+                  help="name of the output file")
+    (options, args) = parser.parse_args()
     converter = CustomJSONtoSVGConverter()
-    converter.load("test.json")
-    converter.dump("test.svg")
+    #input_file = options.input_file
+    #output_file = options.output_file
+    input_file = "test.json"
+    output_file = "test.svg"
+    converter.load(input_file)
+    converter.dump(output_file)
