@@ -86,7 +86,7 @@ URL:
       // Reading a repository
       var repo = github().getRepo(username, pUrl.split('/').pop());
       var self = {
-                  euid: "Github",
+                  euid: repoUrl.replace("/", "-"),
                   activeBranch: "master",
                   getRepository: function() { return pUrl},
                   modifiedList: {}, // The list of modified files by sha
@@ -222,7 +222,7 @@ URL:
                             $.log("onCreate()");
                             $(span).bind('contextmenu', function(e) {
                               var node = $.ui.dynatree.getNode(e.currentTarget);
-                              dm.dm.fw.ShowContextMenu("Github", e, node);
+                              dm.dm.fw.ShowContextMenu(self.euid, e, node);
                               e.preventDefault();
                             });
                           },
@@ -242,6 +242,14 @@ URL:
                                 }
                               }); // getTree
                             }// IsFolder
+                          },
+                          onFocus: function(node) {
+                            if (node.data.isFolder) {
+                              self.active = node.getAbsolutePath();
+                            }
+                            else {
+                              // get the neares parent folder or root
+                            }
                           },
                           onActivate: function(node) {
                             $.log("onActivate()");

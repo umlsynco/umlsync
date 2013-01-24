@@ -175,9 +175,9 @@ Version:
           <div id="toolbox"><ul style="list-style:none;">\
           <li class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
           <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
-          <li title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
-          <li title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
-          <li title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
+          <li id="us-newdoc" title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
+          <li id="us-revertdoc" title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
+          <li id="us-removedoc" title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
           </ul></div>\
           <div id="treetabs"></div>\
           </div>\
@@ -198,30 +198,11 @@ Version:
 
           var $switcher = $('#switcher');
           $switcher.addClass('ui-switcher ui-widget ui-helper-reset ui-switcher-icons');
-          var SWITCH_STATE_STUB = true;
 
-          $switcher.children("H3").click(function() {
-            if (SWITCH_STATE_STUB) {
-              $switcher.children("#opened-repos").children("H3").slideUp();
-            } else {
-              $switcher.children("#opened-repos").children("H3").slideDown();
-            }
-            SWITCH_STATE_STUB = !SWITCH_STATE_STUB;
+          $("#us-newdoc").click(function() {
+            dm.dm.dialogs['Activate']("new-diagram-dialog");
           });
-
-          $switcher
-          .children("#opened-repos")
-          .mouseleave(
-              function(evt) {
-                $(this).children("H3").slideUp();
-              }
-          )
-          .mouseenter(
-              function(evt) {
-                $(this).children("H3").slideDown();
-              }
-          );
-
+          
           var $tabs = $("#tabs")
           .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
             'scrollable': true,
@@ -362,6 +343,7 @@ Version:
       bottom:"#content-bottom",
       content:"content"
     },
+    views:{},
     addRepositories: function(title, IViewsManager, descr) {
       if (dm.dm.dialogs) {
         dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
@@ -394,6 +376,18 @@ Version:
               dm.dm.dialogs['Activate']("branch-selection-dialog-"+repoId);
             }
           });
+    },
+    getActiveTreePath: function() {
+      var text = this.getActiveRepository().replace("/", "-");
+      if (!this.views[text])
+        return "/";
+      return (this.views[text]['view'].active || "" ) + "/";
+    },
+    getActiveRepository: function() {
+      var text = $("#us-repo .js-select-button").text();
+      if (text == "none" || text == null || text == undefined || text == "")
+        return "";
+      return text;
     },
     // Loading the main menu JSON description and put it as argument to callback function
     //@proexp
@@ -808,12 +802,6 @@ Version:
       }
       return id;
     },
-    getActiveView: function() {
-      if (this.views["pe"] && this.views["pe"].view) {
-        return this.views["pe"].view;
-      }
-      return null;
-    },
     //@proexp
     'checkDiagramName': function(name) {
       var foundName = false;
@@ -841,7 +829,8 @@ Version:
       dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
           , function(obj) {
         self.diagrams[tabname] = obj;
-        self.views[vid].view.save(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
+        if (vid && vid != "")
+          self.views[vid].view.save(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
       });
       this.updateFrameWork(true);
     },
