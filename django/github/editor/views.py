@@ -39,6 +39,10 @@ def error(request, name='index.html'):
         return HttpResponse(html)
 
 def export(request):
+    # Read parameters from request
+    # filename = request.GET.get('filename', 'test.svg').
+    # Process diagram and create svg file
+    # ...
     filename = "test.svg"
     wrapper = FileWrapper(file(filename))
     response = HttpResponse(wrapper, content_type='text/plain')
