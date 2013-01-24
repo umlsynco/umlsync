@@ -49,7 +49,138 @@ Version:
       // Think about field set
       $("#" + this.options.content).append('\
           <div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;">\
-          <div id="treetabs"><ul></ul></div>\
+          <div id="switcher" style="background-color:gray;">\
+          <div class="dropdown-widget" style="display:none;">\
+          <div class="select-menu">\
+          <a class="minibutton select-menu-button js-menu-target">\
+          <span class="mini-icon mini-icon-branch"></span>\
+          <i>Repository:</i>\
+          <span class="js-select-button">umlsynco/umlsync</span>\
+          </a>\
+          <div id="opened-repos" style="position:absolute;right:0px;z-index:9999;">\
+          <div class="select-menu-modal js-select-menu-pane">\
+          <div class="select-menu-header">\
+          <span class="select-menu-title">Switch branches/tags</span>\
+          <span class="mini-icon mini-icon-remove-close js-menu-close"></span>\
+          </div> <!-- /.select-menu-header -->\
+          <div class="select-menu-filters">\
+          <div class="select-menu-text-filter">\
+          <input type="text" placeholder="Find a branch…" class="js-select-menu-text-filter js-filterable-field js-navigation-enable" id="commitish-filter-field">\
+          </div> <!-- /.select-menu-text-filter -->\
+          <div class="select-menu-tabs">\
+          <ul>\
+          <li class="select-menu-tab">\
+          <a class="js-select-menu-tab selected" data-filter="branches" href="#">Branches</a>\
+          </li>\
+          <li class="select-menu-tab">\
+          <a class="js-select-menu-tab" data-filter="tags" href="#">Tags</a>\
+          </li>\
+          </ul>\
+          </div><!-- /.select-menu-tabs -->\
+          </div><!-- /.select-menu-filters -->\
+          <div data-filterable-type="substring" data-filterable-for="commitish-filter-field" class="select-menu-list js-filter-tab js-filter-branches" style="display: block;">\
+          <div class="select-menu-item js-navigation-item js-navigation-target">\
+          <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+          <a rel="nofollow" data-name="AccordionMenu" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/AccordionMenu">AccordionMenu</a>\
+          </div> <!-- /.select-menu-item -->\
+          <div class="select-menu-item js-navigation-item js-navigation-target">\
+          <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+          \
+          <a rel="nofollow" data-name="DiagramMenuToolbox" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/DiagramMenuToolbox">DiagramMenuToolbox</a>\
+          \
+          </div> <!-- /.select-menu-item -->\
+          \
+          \
+          \
+          <div class="select-menu-item js-navigation-item js-navigation-target">\
+          <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+          \
+          <a rel="nofollow" data-name="editor_repo_selection" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/editor_repo_selection">editor_repo_selection</a>\
+          \
+          </div> <!-- /.select-menu-item -->\
+          \
+          \
+          \
+          <div class="select-menu-item js-navigation-item js-navigation-target">\
+          <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+          \
+          <a rel="nofollow" data-name="github_integration" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/github_integration">github_integration</a>\
+          \
+          </div> <!-- /.select-menu-item -->\
+          \
+          \
+          \
+          <div class="select-menu-item js-navigation-item js-navigation-target">\
+          <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+          \
+          <a rel="nofollow" data-name="grid-align" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/grid-align">grid-align</a>\
+          \
+          </div> <!-- /.select-menu-item -->\
+          \
+          \
+          \
+          <div class="select-menu-item js-navigation-item js-navigation-target">\
+          <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+          \
+          <a rel="nofollow" data-name="IE9" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/IE9">IE9</a>\
+          \
+          </div> <!-- /.select-menu-item -->\
+          \
+          \
+          \
+          <div class="select-menu-item js-navigation-item js-navigation-target selected last-visible navigation-focus">\
+          <span class="select-menu-checkmark mini-icon mini-icon-confirm"></span>\
+          \
+          <a rel="nofollow" data-name="master" class="js-navigation-open select-menu-item-text js-select-button-text" href="/umlsynco/umlsync/tree/master">master</a>\
+          \
+          </div> <!-- /.select-menu-item -->\
+          \
+          \
+          <form method="post" class="js-create-branch select-menu-footer select-menu-item select-menu-new-item-form js-navigation-item js-navigation-target js-new-item-form" action="/umlsynco/umlsync/branches" accept-charset="UTF-8"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="/+3C5/PUTxi24+gIy6hmjxmh4fWwBLoH8WI59aC9Anc=" name="authenticity_token"></div>\
+          <span class="mini-icon mini-icon-branch-create"></span>\
+          <div class="select-menu-item-text">\
+          <h4>Create branch: <span class="js-new-item-name"></span></h4>\
+          <span class="description">from ‘master’</span>\
+          </div>\
+          <input type="hidden" class="js-new-item-submit" id="name" name="name">\
+          <input type="hidden" value="master" id="branch" name="branch">\
+          \
+          </form> <!-- /.select-menu-footer -->\
+          \
+          \
+          </div> <!-- /.select-menu-list -->\
+          \
+          \
+          <div style="display: none;" data-filterable-type="substring" data-filterable-for="commitish-filter-field" class="select-menu-list js-filter-tab js-filter-tags filterable-empty">\
+          \
+          \
+          <div class="select-menu-no-results js-not-filterable">Nothing to show</div>\
+          \
+          </div> <!-- /.select-menu-list -->\
+          \
+          </div>\
+          </div>\
+          </div>\
+          </div>\
+          <div class="branchnav-widget ui-state-default" style="display:none;">\
+          <div class="select-menu">\
+          <a class="minibutton select-menu-button js-menu-target">\
+          <span class="mini-icon mini-icon-branch"></span>\
+          <i>Branch:</i>\
+          <span class="js-select-button">master</span>\
+          </a>\
+          </div>\
+          </div>\
+          <div id="reponav"></div>\
+          <div id="toolbox"><ul style="list-style:none;">\
+          <li class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
+          <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
+          <li id="us-newdoc" title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
+          <li id="us-revertdoc" title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
+          <li id="us-removedoc" title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
+          </ul></div>\
+          <div id="treetabs"></div>\
+          </div>\
           </div>\
           <div id="'+ this.options.content +'-left-right-resize" style="width:6px;left:200px;height:100%;position:absolute;padding:0;margin:0;border:0px solid gray;background-color:gray;cursor: col-resize;"></div>\
           <div id="'+ this.options.content +'-right" style="width:100px;left:206px;height:100%;position:absolute;padding:0;margin:0;">\
@@ -65,6 +196,13 @@ Version:
             }
           });
 
+          var $switcher = $('#switcher');
+          $switcher.addClass('ui-switcher ui-widget ui-helper-reset ui-switcher-icons');
+
+          $("#us-newdoc").click(function() {
+            dm.dm.dialogs['Activate']("new-diagram-dialog");
+          });
+          
           var $tabs = $("#tabs")
           .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
             'scrollable': true,
@@ -133,17 +271,17 @@ Version:
             $tabs.tabs('remove', index);
           });
 
-          var $treetabs = $("#treetabs")
-          .tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
-            'scrollable': true}).css({'background-color':"#7E8380", 'background':"none"});
+          var $treetabs = $("#treetabs");
+          //.tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+          //'scrollable': true}).css({'background-color':"#7E8380", 'background':"none"});
 
 
 
-          $('#treetabs span.ui-test').live('click', function() {
+          /*          $('#treetabs span.ui-test').live('click', function() {
             var index = $('li', $treetabs).index($(this).parent());
-            $treetabs.tabs('remove', index);
+            ///$treetabs.tabs('remove', index);
           });
-
+           */
           $("#content-left-right-resize").draggable({ axis: 'x', 'drag': function(ui) {
             self.updateFrameWork(false, ui);
           },
@@ -160,6 +298,40 @@ Version:
 
           this.left_counter = 0;
           this.right_counter = 0;
+
+          this.initDropDownSelector('#switcher #reponav', "us-repo",
+              {
+            filter:true,
+            mtitle: 'Repository',
+            title: 'Open/Switch repository',
+            onSelect: function(selectedTab, selectedItem) {
+            if (selectedTab == 'Yours') {
+              // simply change repo
+            }
+            else if (selectedTab == 'Follow') {
+              // open gists
+            }
+          }
+              }
+          ); // initDropDownSelector
+          this.initDropDownSelector('#switcher #reponav', 'us-branch',
+              {
+            filter:true,
+            mtitle: 'Branch',
+            onSelect: function(selectedTab, selectedItem) {
+            if (selectedTab == 'Yours') {
+              // simply change repo
+            }
+            else if (selectedTab == 'Follow') {
+              // open gists
+            }
+            alert("SELECTED !!!");
+          }
+              }
+          ); // initDropDownSelector
+
+          // Update the sizes first time
+          this.updateFrameWork(true);
     }
 
     framework.prototype = {
@@ -170,6 +342,52 @@ Version:
       top:"#content-header",
       bottom:"#content-bottom",
       content:"content"
+    },
+    views:{},
+    addRepositories: function(title, IViewsManager, descr) {
+      if (dm.dm.dialogs) {
+        dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
+      }
+    },
+
+    // create the drop down selector with tabs
+    // param - element id to attach widget
+    // desc - JSON description of drop down selector
+    //        {filter: true/false, mtitle: MiniTitle, title: TITLE, tabs:{ name1: {id1, id2}, name2: {id3, id4}}}
+    //
+    initDropDownSelector: function(parentId, uid, desc) {
+
+      $('<div class="dropdown-widget" id="'+uid+'">\
+          <div class="select-menu">\
+          <a class="minibutton select-menu-button js-menu-target">\
+          <span class="mini-icon mini-icon-branch"></span>\
+          <i>'+desc.mtitle+':</i>\
+          <span class="js-select-button">none</span>\
+          </a>\
+          </div>\
+          </div>')
+          .appendTo(parentId)
+          .click(function() {
+            if (uid == "us-repo")
+              dm.dm.dialogs['Activate']("repo-selection-dialog");
+            if (uid == "us-branch") {
+              var text = $("#us-repo .js-select-button").text();
+              var repoId = text.replace("/", "-");
+              dm.dm.dialogs['Activate']("branch-selection-dialog-"+repoId);
+            }
+          });
+    },
+    getActiveTreePath: function() {
+      var text = this.getActiveRepository().replace("/", "-");
+      if (!this.views[text])
+        return "/";
+      return (this.views[text]['view'].active || "" ) + "/";
+    },
+    getActiveRepository: function() {
+      var text = $("#us-repo .js-select-button").text();
+      if (text == "none" || text == null || text == undefined || text == "")
+        return "";
+      return text;
     },
     // Loading the main menu JSON description and put it as argument to callback function
     //@proexp
@@ -186,6 +404,7 @@ Version:
           $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
           $("#accordion").accordion({'active': 0, autoHeight:false});
           $(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
+		  $("#diagram-menu-header a.ui-dialog-titlebar-close").click(function() { $("div.diagram-menu #accordion").slideToggle();});
       }
       if (callback) {
         callback(len); // len == index
@@ -279,6 +498,11 @@ Version:
         .children(".ui-scrollable-tabs").height(hhh - 2)    // 1px solid border defined for .ui-scrollable-tabs
         .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
 
+//      content left maximize treetabs area
+        var repoH = $("#switcher #reponav").height(),
+        toolboxH = $("#switcher #toolbox").height();
+        $("#switcher #treetabs").height(hhh - repoH - toolboxH-2);
+
         var $ch;
         if ($ch1.children(".ui-tabs-panel").length) {
           hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
@@ -335,19 +559,59 @@ Version:
       //$("#treetabs .ui-tabs-panel").height(tabsHeight-45);
 
     },
+    addBranch: function(title, repoUrl, IBranchSelectObserver, desc) {
+      var repoId = repoUrl.replace("/", "-");
+      if (dm.dm.dialogs) {
+        dm.dm.dialogs['ChangeBranchDialog'](title, desc, repoId, IBranchSelectObserver);
+      }
+    },
     //@proexp
     'addView2': function(name, IView) {
       //TODO: don't load view if name/euid is reserved yet !
       //    it could help to prevent some mess with localhost views
       var id = this.options.tabLeft+ this.left_counter;
       this.left_counter++;
+      $("#treetabs").children("DIV").hide();
       $("#treetabs").append("<div id='"+id+"'></div>");
-      id = "#" + id;
-      $("#treetabs").tabs("add", id, name);
+
+      IView.initBranches();
+
+      $("#us-repo .js-select-button").text(IView.getRepository());
+      $("#us-branch .js-select-button").text("master");
+      /*      $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
+      $("#accordion A#" + id).parent()
+        .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')
+        .click(function() {
+            //if ($(this).hasClass('ui-state-default')) {
+              var height = 0;
+              $(this).removeClass('ui-state-default').addClass('ui-state-active');
+              var id = "DIV#" + $(this).children().attr('id');
+              $("#treetabs").children("DIV").hide(); // hide all trees
+              $(id).show(); // open this one
+              $("#accordion #opened-repos").children("H3").slideUp();
+              $("#us-active-repo").text($(this).text());
+            //}
+            return false;
+          })
+          .hover(
+              function() {
+                $(this).addClass('ui-state-hover');
+              },
+              function(e) {
+                $(this).removeClass('ui-state-hover');
+              }
+          );
+       */
+      id = "DIV#" + id;
       var $treetabs = $("#treetabs");
+//    $("#treetabs " + id).addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');
 
       $(id).append("<div id='tree'></div>");
       var self = this;
+
+
+
+
 
       function initCtxMenu(vid, items, view) {
         $('<ul id="view-'+  vid +'" class="context-menu" ></ul>').hide().appendTo('body');
@@ -538,12 +802,6 @@ Version:
       }
       return id;
     },
-    getActiveView: function() {
-      if (this.views["pe"] && this.views["pe"].view) {
-        return this.views["pe"].view;
-      }
-      return null;
-    },
     //@proexp
     'checkDiagramName': function(name) {
       var foundName = false;
@@ -571,7 +829,8 @@ Version:
       dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
           , function(obj) {
         self.diagrams[tabname] = obj;
-        self.views[vid].view.save(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
+        if (vid && vid != "")
+          self.views[vid].view.save(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
       });
       this.updateFrameWork(true);
     },

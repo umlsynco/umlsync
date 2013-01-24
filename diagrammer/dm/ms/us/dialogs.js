@@ -1,19 +1,12 @@
 /*
-Class: vp
-
-Main menu for diagram loading in a Visual-Paradigm style
-
-Author:
-  Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
-
-Copyright:
-  Copyright (c) 2012 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
-
-URL:
-  http://umlsync.org
-
-Version:
-  2.0.0 (2012-07-17)
+ * Class which contain all dialogs in the framework
+ * the main purpose of this class is to avoid
+ * dialogs creation in the functional areas.
+ * 
+ * Copyright: Copyright (c) 2012-2013 UMLSync Inc. All rights reserved.
+ * URL: http://umlsync.org/about
+ * Last Modified Date: 2013-01-24
+ *
  */
 
 //@aspect
@@ -37,29 +30,38 @@ Version:
     'image': "small",
     'id': "ListDiagramMenu"
   },
+  //
+  // Activate dialog by unique id
+  // The major adia was to use some unique names for dialogs
+  // but left only HTML id of dialog class
+  // params:
+  //   name - the HTML id of dialog widget
+  //   callback - call on activate comple
+  // 
   'Activate': function(name, callback) {
     if (!name)
       return;
     this.status[name] = true; // active dialog. It is possible to activate dialog before it's creation. in that case it will be shown on creation.
     this.callback[name] = callback;
-    if (name == "new-diagram-dialog") {
-      //var vs = this.handler.getAvailableViews();
-      var av = this.handler.getActiveView();
-      if (av) {
-        $("#selectale-views input").each(function(d) { if(this.value == av.euid) this.checked = true;});
-        $("#new-diagram-dialog input#VP_inputselector").val(av.getActivePath() + "/");
-      }
-    }
 
-    $( "#" + name ).dialog( "open" );
+    if ($( "#" + name ).dialog( "isOpen" )) {
+      $( "#" + name ).dialog( "close" );
+    }
+    else {
+      $( "#" + name ).dialog( "open" );
+    }
   },
+  //
+  // Dialog which contain all available types of diagrams
+  // and input area for diagram name.
+  //
+  // Returns the control to the Framework::addDiagram with
+  // full path to the new diagram.
+  //
   'NewDiagramDialog':function(data) {
 
     var innerHtml = '<form id="us-dialog-newdiagram">\
-      <fieldset><div id="selectable-list" style="scroll:auto;height:40px;"><ul id="diagram-menu"></ul></div>\
-      <div id="selectale-views"><input style="margin-top:10px;" type="radio" name=view value="Github" checked=true>GitHub&nbsp\
-      <input style="margin-top:10px;" type="radio" name=view value="Github">GitHub Gist&nbsp\
-      <input type="radio" name=view value="pe" disabled>Eclipse</div>\
+      <fieldset><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div>\
       <p><label class="left" for="name">Name:</label><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
       </p></fieldset></form>';
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
@@ -79,21 +81,24 @@ Version:
       });
 
       $( "#new-diagram-dialog" ).dialog({
-        'autoOpen': true,
-        'minWidth': 350,
+        'autoOpen': false,
+        'minWidth': 150,
         'modal': true,
         'buttons': {
         "Create": function() {
-        var diagram_name = $("#new-diagram-dialog input#VP_inputselector").val(),
-        fullname = diagram_name;
-        if (diagram_name != '') {
-          if (!self.handler['checkDiagramName'](diagram_name)) {
+          var diagram_name = $("#new-diagram-dialog input#VP_inputselector").val(),
+          fullname = diagram_name;
+          if (diagram_name != '') {
+            if (!self.handler['checkDiagramName'](diagram_name)) {
             diagram_name += "(2)";
           }
+
           var sp = diagram_name.split("/");
+
           if (sp.length > 1)
             diagram_name = sp[sp.length-1];
-          var vid = $('#us-dialog-newdiagram #selectale-views input[name=view]:checked').val();
+//          var vid = $('#us-dialog-newdiagram #selectale-views input[name=view]:checked').val();
+          var vid = dm.dm.fw.getActiveRepository().replace("/", "-");
           self.handler['addDiagram']("base", self.selected, diagram_name, {'fullname': fullname, 'viewid': vid});
         }
         $(this).dialog("close");
@@ -102,14 +107,30 @@ Version:
         $(this).dialog("close");
       }
       },
-      //FIXME: is this needed?
+      open: function() {
+        var folder = dm.dm.fw.getActiveTreePath();
+        $("#new-diagram-dialog input").val(folder);
+        var $par = $( "#new-diagram-dialog")
+              .parent();
+        $par.offset($("#treetabs").offset());
+        $par.children("DIV.ui-dialog-titlebar").children("span.ui-dialog-title").children("span").text(dm.dm.fw.getActiveRepository() || "none");
+        
+      },
       close: function() {
         //allFields.val( "" ).removeClass( "ui-state-error" );
       }
       });
 
+      //Extending: "Creating new diagram [%repo%]"
+      $("#new-diagram-dialog")
+      .parent()
+      .children("DIV.ui-dialog-titlebar")
+      .children("span.ui-dialog-title")
+      .append("   [<span></span>]");
+      
+      // Change the default diagram name in dependency on type 
       $("#new-diagram-dialog select").change(function() {
-        var folder = handler.views[$(this).val()].active || "/";
+        var folder = dm.dm.fw.getActiveTreePath();
         var val = $("#new-diagram-dialog input").val();
         val.substr(val.lastIndexOf('/'))
         $("#new-diagram-dialog input").val(folder + val.substr(val.lastIndexOf('/')));
@@ -130,54 +151,153 @@ Version:
         $(this).removeClass('hover');
       });
   },
-  'SelectRepoDialog': function(data, callback) {
-    var items = [];
+  //
+  // Dialog to select repository from different sources.
+  // It is consists of tabs and list of repositories
+  // For example tabs could be "User repos", "Follow repos", "Stared repos" etc.
+  // 
+  // params:
+  //   title - the title of tab
+  //   ISelectObserver - object which has onRepoSelected method that
+  //                     should be called on repo selection in "titled" tab
+  //   repos - the list of objects with repositories in tab
+  //
+  'SelectRepoDialog': function(title, ISelectObserver, repos) {
     var self = this;
 
-    for (var i in data) {
-      var name = data[i]['name'],
-      pr = (data[i]['private']) ? "Private: ":"Public: ";
-      items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr +  data[i]['full_name'] + '</li>');
+    function getTabContent(data) {
+      var items = [];
+      for (var i in data) {
+        var name = data[i]['full_name'];
+        //pr = "<i>" + (data[i]['private']) ? "Private: ":"Public: </i>" ;
+        //items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr + "<span>" + data[i]['full_name'] + '</span></li>');
+        items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
+      }
+      return items.join('');
     }
 
-    var innerHtml = items.join('');
-    innerHtml = '<form>\
-      <fieldset><div id="selectable-list" style="scroll:auto;height:40px;"><ul>' + innerHtml + '</ul></div>\
-      </fieldset></form>';
-      $("<div id='repo-selection-dialog' title='Repository selection'></div>").appendTo('body');
-      $(innerHtml).appendTo("#repo-selection-dialog");
+    var
+    tabContent = '<div id="us-'+title+'"><ul>'+getTabContent(repos)+'</ul></div>';
 
-      $( "#repo-selection-dialog" ).dialog(
-	  {
-        'autoOpen': true,
-        'minWidth': 350,
-        'modal': true,
-        'buttons': {
-          "Create": function() {
-            var rep = self.selected;
-            if (callback)
-              callback(rep);
+    if ($("#repo-selection-dialog #selectable-list").length == 0) {
+      var innerHtml = '<form>\
+        <fieldset>\
+        <div id="us-search"></div>\
+        <div id="selectable-list" style="scroll:auto;">\
+        <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
+        + tabContent + 
+        '</div>\
+        </fieldset>\
+        </form>';
+        $("<div id='repo-selection-dialog' title='Repository selection'></div>").appendTo('body');
+        $(innerHtml).appendTo("#repo-selection-dialog");
 
-            $(this).dialog("close");
-          },
-          'Cancel': function() {
-            $(this).dialog("close");
-          }
-        },
-        'close': function() {
-        }
-      }
-	  );
+        $("#repo-selection-dialog #selectable-list").tabs();
 
-      $(".diagramSelector").click(function() {
-        self.selected = $(this).attr('url');
-        $(".diagramSelector").css("background-color","#eee").css("color", "#000");
-        $(this).css("background-color","#5D689A").css("color", "#fff");
-      });
+        var $dialog = $( "#repo-selection-dialog" ).dialog(
+            {
+              'autoOpen': false,
+              appendTo: '#switcher',
+              position: 'left',
+              'minWidth': 100,
+              'modal': false,
+              'minHeight': 20,
+              'close': function() {
+            },
+            open: function( event, ui ) {
+              $( "#repo-selection-dialog")
+              .parent().offset($("#us-branch").offset());
+            }
+            }
+        );
+    }
+    else {
+      $("#repo-selection-dialog #selectable-list").append(tabContent);
+      $("#repo-selection-dialog #selectable-list").tabs("add", "#us-" + title, title);
+    }
+
+    $("#us-"+title+" .diagramSelector").click(function() {
+      self.selected = $(this).attr('url');
+      var text = $(this).children("span").text();
+      $("#repo-selection-dialog" ).dialog("close");
+      ISelectObserver.onRepoSelect(title, text);
+    });
   },
+  // Create the branch select dialog for the selected repository and append tabs to it.
+  // It should append tab only if dialog already exist
+  // params:
+  //    title - the title of tab
+  //    desc  - description of tab content
+  //    repoId- the repository unique id
+  //    IBranchSelectObserver - object for callback
+  'ChangeBranchDialog': function(title, desc, repoId, IBranchSelectObserver) {
+    var self = this;
+
+    function getTabContent(data) {
+      var items = [];
+      for (var i in data) {
+        var name = data[i]['name'];
+        items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
+      }
+      return items.join('');
+    }
+
+    var tabContent = '<div id="us-'+title+'"><ul>'+getTabContent(desc)+'</ul></div>';
+
+    if ($("#branch-selection-dialog-" + repoId).length == 0) {
+      innerHtml = '<form>\
+        <fieldset>\
+        <div id="us-search"></div>\
+        <input/>\
+        <div id="selectable-list" style="scroll:auto;">\
+        <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
+        + tabContent + '\
+        </div>\
+        </fieldset>\
+        </form>';
+        $("<div id='branch-selection-dialog-"+repoId+"' title='Change/Switch branch'></div>").appendTo('body');
+        $(innerHtml).appendTo("#branch-selection-dialog-"+repoId);
+
+        $("#branch-selection-dialog-"+repoId+" #selectable-list").tabs();
+
+        var $dialog = $( "#branch-selection-dialog-"+repoId ).dialog(
+            {
+              'autoOpen': false,
+              'minWidth': 100,
+              draggable: false,
+              'modal': false,
+              'minHeight': 20,
+              "position": "left",
+              'open': function() {
+              $( "#branch-selection-dialog-"+repoId )
+              .parent().offset($("#toolbox").offset());
+            }
+            }
+        );
+    }
+    else {
+      $("#branch-selection-dialog-"+repoId + " #selectable-list").append(tabContent);
+      $("#branch-selection-dialog-"+repoId + " #selectable-list").tabs("add", "#us-" + title, title);
+    }
+
+    $("#branch-selection-dialog-"+repoId+" .diagramSelector").click(function() {
+      self.selected = $(this).attr('url');
+      var text = $(this).children("span").text();
+
+      $("#branch-selection-dialog-"+repoId).dialog("close");
+      IBranchSelectObserver.onBranchSelected(title, text);
+      $("#us-branch .js-select-button").text(text);
+    });
+  },
+  //
+  // Save diagram dialog which propose to user save change
+  //
   'SaveDiagramDialog':function(){
 
   },
+  //
+  // Create new folder dialog.
+  //
   'NewFolder': function(callback) {
     var innerHtml = '<p id="dl-validation-tip" style="color:red;"></p><form>\<fieldset>\
       <div style="display:inline;"><label for="name">Name:</label>\
@@ -214,6 +334,10 @@ Version:
       }
       });
   },
+  //
+  // Commit data selection dialog. It is provide the list of modified files
+  // and allow user to select files for commit.
+  //
   'CommitDataDialog':function(data, commit_callback){
     var items = [];
     for (var d in data) {
@@ -230,7 +354,7 @@ Version:
       "</div></div>";
 
       var self = this;
-      if ($("#commit-changes-dialog").empty()) {
+      if (!$("#commit-changes-dialog").length) {
         $('<div id="commit-changes-dialog" title="Commit data:"></div>').appendTo('body');
       } else {
         // remove the previous values

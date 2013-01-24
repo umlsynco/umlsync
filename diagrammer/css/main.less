@@ -1,0 +1,85 @@
+@active-widget-color: green;
+@default-widget-color: gray;
+
+.active-widget {
+  background: url("gray-start//images/ui-bg_inset-hard_70_97f7a1_1x100.png") repeat-x scroll 50% 50% #97F7A1;
+  border: 1px solid #BFCFBF;
+  color: #000000;
+  font-weight: normal;
+}
+
+.default-widget {
+ border: 1px solid #9AD194;
+ color: #E6FEE1;
+ font-weight: normal;
+ background: url("gray-start/images/ui-bg_inset-hard_70_222b25_1x100.png") repeat-x scroll 50% 50% #222B25;
+}
+
+.rounded-corners (@radius: 5px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+}
+
+
+// Drop down menu widget
+.dropdown-widget {
+    .default-widget;
+    display: block;
+	position: relative;
+    margin-top: 1px;
+	padding: 3px;
+    vertical-align: top;
+
+	DIV {
+	  A.select-menu-button {
+		I {
+		  opacity: 0.6;
+		}
+		SPAN.ui-text {
+		}
+		&:before {
+          .rounded-corners(none);
+          border-color: #000000 transparent transparent;
+          border-image: none;
+          border-style: solid;
+          border-width: 3px;
+          content: "";
+          display: block;
+          height: 0;
+          position: absolute;
+          right: 7px;
+          top: 10px;
+          width: 0;
+		}
+		&:after {
+          border-left: 1px solid #F9F9F9;
+          bottom: 0;
+          box-shadow: -1px 0 0 #E4E4E4;
+          content: "";
+          display: block;
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: 18px;
+		}
+	  }
+	  DIV.select-menu-modal {
+		.default-widget;
+	    position: absolute;
+		right: 0;
+	  }
+	}
+
+	&:hover {
+	  .active-widget;
+	}
+}
+
+SPAN.ui-icon-branch {
+}
+
+SPAN.ui-icon-repository {
+}

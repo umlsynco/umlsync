@@ -16,6 +16,37 @@
     // I'm not proud of this and neither should you be if you were responsible for the XMLHttpRequest spec.
 
     function _request(method, path, data, cb, raw) {
+
+       // Work-around to work without server
+	  if (options.token == null || options.token == undefined) {
+        function decodeMDContent(data) {
+          for (d in data) {
+            if (d == 'data') {
+              var splitted = data[d].content.split('\n');
+              var decoded = "";
+              for (s in splitted) {
+                decoded += $.base64.decode(splitted[s]);
+              }
+              return decoded;
+            }
+          }
+        };
+
+	    $.ajax({
+		  url: API_URL + path,
+		  type: method,
+		  dataType: "jsonp",
+		  success: function(obj) {
+                     cb(null, raw ? decodeMDContent(obj) : obj['data']);
+		           },
+		  error: function(err) {
+                   cb({request: this, error: this.status});
+		         }
+		  }
+		);
+		return;
+	  } // Work-around for local pages loading
+
       function getURL() {
         var url = API_URL + path;
         return url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
@@ -197,9 +228,19 @@
       // -------
 
       this.listBranches = function(cb) {
-        _request("GET", repoPath + "/git/refs/heads", null, function(err, heads) {
+        _request("GET", repoPath + "/branches", null, function(err, res) {
           if (err) return cb(err);
-          cb(null, _.map(heads, function(head) { return _.last(head.ref.split('/')); }));
+          cb(null, res);
+        });
+      };
+
+      // List all tags of a repository
+      // -------
+
+      this.listTags = function(cb) {
+        _request("GET", repoPath + "/tags", null, function(err, res) {
+          if (err) return cb(err);
+          cb(null, res);
         });
       };
 
