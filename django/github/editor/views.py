@@ -1,3 +1,6 @@
+import os
+from django.core.servers.basehttp import FileWrapper
+
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
@@ -34,6 +37,14 @@ def error(request, name='index.html'):
         t = get_template('500.html')
         html = t.render(Context({}))
         return HttpResponse(html)
+
+def export(request):
+    filename = "test.svg"
+    wrapper = FileWrapper(file(filename))
+    response = HttpResponse(wrapper, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=%s' % (filename)
+    response['Content-Length'] = os.path.getsize(filename)
+    return response
 
 def is_complete_authentication(request):
     return request.user.is_authenticated() and GithubBackend.__name__ in request.session.get(BACKEND_SESSION_KEY, '')
