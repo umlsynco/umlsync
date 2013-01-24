@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^$', 'editor.views.editor', name='editor.html'),
     url(r'^editor/', 'editor.views.editor2', name='editor.html'),
     url(r'^login-error/', 'editor.views.error', name='editor.html'),
+    url(r'^export/', 'editor.views.export'),
     # url(r'^github/', include('github.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
