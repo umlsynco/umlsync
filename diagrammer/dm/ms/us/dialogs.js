@@ -121,12 +121,14 @@
       }
       });
 
+      //Extending: "Creating new diagram [%repo%]"
       $("#new-diagram-dialog")
       .parent()
       .children("DIV.ui-dialog-titlebar")
       .children("span.ui-dialog-title")
       .append("   [<span></span>]");
       
+      // Change the default diagram name in dependency on type 
       $("#new-diagram-dialog select").change(function() {
         var folder = dm.dm.fw.getActiveTreePath();
         var val = $("#new-diagram-dialog input").val();
@@ -274,8 +276,8 @@
         );
     }
     else {
-      $("#repo-selection-dialog-"+repoId + " #selectable-list").append(tabContent);
-      $("#repo-selection-dialog-"+repoId + " #selectable-list").tabs("add", "#us-" + title, title);
+      $("#branch-selection-dialog-"+repoId + " #selectable-list").append(tabContent);
+      $("#branch-selection-dialog-"+repoId + " #selectable-list").tabs("add", "#us-" + title, title);
     }
 
     $("#branch-selection-dialog-"+repoId+" .diagramSelector").click(function() {

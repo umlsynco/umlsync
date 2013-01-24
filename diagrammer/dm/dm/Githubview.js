@@ -94,12 +94,11 @@ URL:
                     repo.listBranches(
                         function(err, branches) {
                           dm.dm.fw.addBranch("Branches", repoUrl, self, branches);
-//                        repo.listTags(
-//                        function(err, tags) {
-//                        dm.dm.fw.addBranch("Tags", repoUrl, self, tags);
-//                        }
-//                        );
-
+                          repo.listTags(
+                            function(err, tags) {
+                              dm.dm.fw.addBranch("Tags", repoUrl, self, tags);
+                            }
+                          );
                         }
                     );
                   },
