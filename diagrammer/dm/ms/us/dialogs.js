@@ -1,19 +1,12 @@
 /*
-Class: vp
-
-Main menu for diagram loading in a Visual-Paradigm style
-
-Author:
-  Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
-
-Copyright:
-  Copyright (c) 2012 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
-
-URL:
-  http://umlsync.org
-
-Version:
-  2.0.0 (2012-07-17)
+ * Class which contain all dialogs in the framework
+ * the main purpose of this class is to avoid
+ * dialogs creation in the functional areas.
+ * 
+ * Copyright: Copyright (c) 2012-2013 UMLSync Inc. All rights reserved.
+ * URL: http://umlsync.org/about
+ * Last Modified Date: 2013-01-24
+ *
  */
 
 //@aspect
@@ -37,6 +30,14 @@ Version:
     'image': "small",
     'id': "ListDiagramMenu"
   },
+  //
+  // Activate dialog by unique id
+  // The major adia was to use some unique names for dialogs
+  // but left only HTML id of dialog class
+  // params:
+  //   name - the HTML id of dialog widget
+  //   callback - call on activate comple
+  // 
   'Activate': function(name, callback) {
     if (!name)
       return;
@@ -58,6 +59,13 @@ Version:
       $( "#" + name ).dialog( "open" );
     }
   },
+  //
+  // Dialog which contain all available types of diagrams
+  // and input area for diagram name.
+  //
+  // Returns the control to the Framework::addDiagram with
+  // full path to the new diagram.
+  //
   'NewDiagramDialog':function(data) {
 
     var innerHtml = '<form id="us-dialog-newdiagram">\
@@ -135,70 +143,80 @@ Version:
         $(this).removeClass('hover');
       });
   },
+  //
+  // Dialog to select repository from different sources.
+  // It is consists of tabs and list of repositories
+  // For example tabs could be "User repos", "Follow repos", "Stared repos" etc.
+  // 
+  // params:
+  //   title - the title of tab
+  //   ISelectObserver - object which has onRepoSelected method that
+  //                     should be called on repo selection in "titled" tab
+  //   repos - the list of objects with repositories in tab
+  //
   'SelectRepoDialog': function(title, ISelectObserver, repos) {
     var self = this;
-//  this.titleMap = this.titleMap || {};
-//  this.titleMap[title] = ISelectObserver;
-  
-  function getTabContent(data) {
-    var items = [];
+
+    function getTabContent(data) {
+      var items = [];
       for (var i in data) {
         var name = data[i]['full_name'];
         //pr = "<i>" + (data[i]['private']) ? "Private: ":"Public: </i>" ;
         //items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr + "<span>" + data[i]['full_name'] + '</span></li>');
-    items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
+        items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
       }
       return items.join('');
-  }
-  
-  var
+    }
+
+    var
     tabContent = '<div id="us-'+title+'"><ul>'+getTabContent(repos)+'</ul></div>';
-  
-  if ($("#repo-selection-dialog #selectable-list").length == 0) {
+
+    if ($("#repo-selection-dialog #selectable-list").length == 0) {
       var innerHtml = '<form>\
-       <fieldset>\
-      <div id="us-search"></div>\
-    <div id="selectable-list" style="scroll:auto;">\
-     <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
-     + tabContent + 
-    '</div>\
-       </fieldset>\
-    </form>';
-      $("<div id='repo-selection-dialog' title='Repository selection'></div>").appendTo('body');
-      $(innerHtml).appendTo("#repo-selection-dialog");
+        <fieldset>\
+        <div id="us-search"></div>\
+        <div id="selectable-list" style="scroll:auto;">\
+        <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
+        + tabContent + 
+        '</div>\
+        </fieldset>\
+        </form>';
+        $("<div id='repo-selection-dialog' title='Repository selection'></div>").appendTo('body');
+        $(innerHtml).appendTo("#repo-selection-dialog");
 
-    $("#repo-selection-dialog #selectable-list").tabs();
+        $("#repo-selection-dialog #selectable-list").tabs();
 
-      var $dialog = $( "#repo-selection-dialog" ).dialog(
-    {
-        'autoOpen': false,
-        appendTo: '#switcher',
-        position: 'left',
-        'minWidth': 100,
-        'modal': false,
-        'minHeight': 20,
-        'close': function() {
-        },
-        open: function( event, ui ) {
-          $( "#repo-selection-dialog")
-            .parent().offset($("#us-branch").offset());
-        }
-      }
-    );
-  }
-  else {
+        var $dialog = $( "#repo-selection-dialog" ).dialog(
+            {
+              'autoOpen': false,
+              appendTo: '#switcher',
+              position: 'left',
+              'minWidth': 100,
+              'modal': false,
+              'minHeight': 20,
+              'close': function() {
+            },
+            open: function( event, ui ) {
+              $( "#repo-selection-dialog")
+              .parent().offset($("#us-branch").offset());
+            }
+            }
+        );
+    }
+    else {
       $("#repo-selection-dialog #selectable-list").append(tabContent);
       $("#repo-selection-dialog #selectable-list").tabs("add", "#us-" + title, title);
-  }
+    }
 
     $("#us-"+title+" .diagramSelector").click(function() {
       self.selected = $(this).attr('url');
       var text = $(this).children("span").text();
       $("#repo-selection-dialog" ).dialog("close");
-    ISelectObserver.onRepoSelect(title, text);
+      ISelectObserver.onRepoSelect(title, text);
     });
   },
-  // Append tab to the branch select dialog for the selected repository
+  // Create the branch select dialog for the selected repository and append tabs to it.
+  // It should append tab only if dialog already exist
   // params:
   //    title - the title of tab
   //    desc  - description of tab content
@@ -215,39 +233,39 @@ Version:
       }
       return items.join('');
     }
-  
+
     var tabContent = '<div id="us-'+title+'"><ul>'+getTabContent(desc)+'</ul></div>';
-   
+
     if ($("#branch-selection-dialog-" + repoId).length == 0) {
       innerHtml = '<form>\
-       <fieldset>\
-         <div id="us-search"></div>\
-           <input/>\
-           <div id="selectable-list" style="scroll:auto;">\
-             <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
-             + tabContent + '\
-           </div>\
-         </fieldset>\
-       </form>';
-      $("<div id='branch-selection-dialog-"+repoId+"' title='Change/Switch branch'></div>").appendTo('body');
-      $(innerHtml).appendTo("#branch-selection-dialog-"+repoId);
+        <fieldset>\
+        <div id="us-search"></div>\
+        <input/>\
+        <div id="selectable-list" style="scroll:auto;">\
+        <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
+        + tabContent + '\
+        </div>\
+        </fieldset>\
+        </form>';
+        $("<div id='branch-selection-dialog-"+repoId+"' title='Change/Switch branch'></div>").appendTo('body');
+        $(innerHtml).appendTo("#branch-selection-dialog-"+repoId);
 
-      $("#branch-selection-dialog-"+repoId+" #selectable-list").tabs();
+        $("#branch-selection-dialog-"+repoId+" #selectable-list").tabs();
 
-      var $dialog = $( "#branch-selection-dialog-"+repoId ).dialog(
-        {
-          'autoOpen': false,
-          'minWidth': 100,
-          draggable: false,
-          'modal': false,
-          'minHeight': 20,
-          "position": "left",
-          'open': function() {
-            $( "#branch-selection-dialog-"+repoId )
+        var $dialog = $( "#branch-selection-dialog-"+repoId ).dialog(
+            {
+              'autoOpen': false,
+              'minWidth': 100,
+              draggable: false,
+              'modal': false,
+              'minHeight': 20,
+              "position": "left",
+              'open': function() {
+              $( "#branch-selection-dialog-"+repoId )
               .parent().offset($("#toolbox").offset());
-          }
-        }
-      );
+            }
+            }
+        );
     }
     else {
       $("#repo-selection-dialog-"+repoId + " #selectable-list").append(tabContent);
