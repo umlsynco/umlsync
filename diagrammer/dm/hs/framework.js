@@ -410,6 +410,7 @@ Version:
           $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
           $("#accordion").accordion({'active': 0, autoHeight:false});
           $(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
+		  $("#diagram-menu-header a.ui-dialog-titlebar-close").click(function() { $("div.diagram-menu #accordion").slideToggle();});
       }
       if (callback) {
         callback(len); // len == index
