@@ -24,6 +24,8 @@ from social_auth.views import complete as social_complete
 from social_auth.utils import setting
 from social_auth.backends.contrib.github import GithubBackend
 
+from export.json_to_svg import CustomJSONtoSVGConverter
+
 def editor(request, name='index.html'):
   redirect_url = urlquote("http://localhost:8000/editor/?viewer=asdnkkl12e1inmasdnln12x123x123mm;asd000")
   return render_to_response('index.html', {'redirect_url' : redirect_url}, RequestContext(request))
@@ -39,11 +41,11 @@ def error(request, name='index.html'):
         return HttpResponse(html)
 
 def export(request):
-    # Read parameters from request
-    # filename = request.GET.get('filename', 'test.svg').
-    # Process diagram and create svg file
-    # ...
-    filename = "test.svg"
+    contents = request.GET.get('contents', '')
+    filename = "exported.svg"
+    converter = CustomJSONtoSVGConverter()
+    converter.load_data(contents)
+    converter.dump(filename)
     wrapper = FileWrapper(file(filename))
     response = HttpResponse(wrapper, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=%s' % (filename)

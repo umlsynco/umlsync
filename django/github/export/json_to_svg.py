@@ -140,6 +140,9 @@ class CustomJSONtoSVGConverter:
             self.json_data = json.load(f)
             pprint.pprint(self.json_data)
 
+    def load_data(self, contents):
+        self.json_data = json.loads(contents)
+
     def dump(self, filename):
         """Convert JSON to SVG."""
         dwg = sw.Drawing(filename=filename, debug=True)
@@ -169,5 +172,7 @@ if __name__ == '__main__':
     #output_file = options.output_file
     input_file = "test.json"
     output_file = "test.svg"
-    converter.load(input_file)
+    #converter.load(input_file)
+    contents = r"""{"type":"class","name":"classDiagram"}"""
+    converter.load_data(contents)
     converter.dump(output_file)
