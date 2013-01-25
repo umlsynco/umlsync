@@ -34,6 +34,7 @@ Version:
           if (data["tree"][j]["type"] == "blob") {
             ret[j]["isFolder"] = false;
             ret[j]["isLazy"] = false;
+            ret[j]["isLazy"] = false;
             ret[j]["title"] = data["tree"][j]["path"];
             ret[j]["sha"] = data["tree"][j]["sha"];
             ret[j]["url"] = data["tree"][j]["url"];

@@ -504,7 +504,6 @@ a {
 }
 
 #selectable-list {
-  min-height: 100px;
   height: 100%;
   overflow: auto;
   background-color: #eee;
@@ -1001,4 +1000,37 @@ span.cfolder span.dynatree-icon {
    .us-element-border {
 	 display:block !important;
    }
+}
+
+#toolbox {
+  height:20px;
+  display:block;
+}
+
+#toolbox ul {
+  margin: 0 auto; padding: 0;
+  width: 100%;
+}
+
+#toolbox ul li {
+  display: inline;
+  float: left;
+  margin: 2px;
+}
+
+#toolbox ul li.us-left {
+   float: right;
+}
+
+#toolbox ul li:hover {
+  background-color:green;
+}
+
+#treetabs > DIV {
+  height:100%;
+  overflow:auto;
+}
+
+#treetabs DIV DIV UL {
+  overflow: visible;
 }

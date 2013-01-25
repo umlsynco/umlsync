@@ -61,7 +61,7 @@ Version:
 					callback.call();
 			},
 		    'save': function(path, data, description) {
-              alert(data);
+              //alert(data);
 		    },
 			'newfolder':function(path,name,callback) {
 				if (callback) callback({'isFolder':true,'isLazy':true,'title':name, 'addClass':"package"});
