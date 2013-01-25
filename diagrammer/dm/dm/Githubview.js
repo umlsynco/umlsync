@@ -163,7 +163,6 @@ URL:
                           // get json data here
                           path = node.getAbsolutePath();
                           data = view.modifiedList[path];
-                          json = JSON.stringify(data);
                           $.ajax({
                             type: "GET",
                             url: "http://localhost:8000/export/?contents=" + data,
