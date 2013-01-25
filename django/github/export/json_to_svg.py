@@ -163,9 +163,9 @@ class CustomJSONtoSVGConverter:
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-f", "--file", dest="input_file",
-                  help="name of the input file")
+                      help="name of the input file")
     parser.add_option("-r", "--result", dest="output_file",
-                  help="name of the output file")
+                      help="name of the output file")
     (options, args) = parser.parse_args()
     converter = CustomJSONtoSVGConverter()
     #input_file = options.input_file
