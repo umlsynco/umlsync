@@ -128,10 +128,10 @@ URL:
                       });
                     }
                   },
-                  'ctx_menu': 
+                  'ctx_menu':
                     [
                      {
-                       title:"Commit...",
+                       title: "Commit...",
                        click: function(node, view) {
                        if (dm.dm.dialogs)
                          dm.dm.dialogs['CommitDataDialog'](
@@ -157,13 +157,31 @@ URL:
                      }
                      },
                      {
-                       title:"Reload",
+                        title: "Export to svg",
+                        click: function(node, view) {
+                          $.log(node.data.title);
+                          // get json data here
+                          json = JSON.stringify({"type":"class","name":"classDiagram","base_type":"base","connectors": [{"type":"composition","fromId":"0","toId":"2","epoints": [{"0" : "970.3999938964844","1" : "48.30000305175781"},{"0" : "914.3999938964844","1" : "294.3000030517578"},{"0" : "471.3999938964844","1" : "203.3000030517578"},{"0" : "468.3999938964844","1" : "332.3000030517578"}]}],"elements": [{"width":"220","height":"121","pageY":"110.39999389648438","pageX":"212.60000610351562","selected":"true","type":"class","description":"Class","menu":"vp-class-menu","ctx_menu":"class","image": ["[object Object]"],"id":"0","height_a":"46","height_o":"51","operations": ["private newmothod(int, int, void*)"],"attributes": ["private int newfield","private int newfield"]},{"nameTemplate":"Interface","width":"150","height":"117","pageY":"138.39999389648438","pageX":"712.5999755859375","selected":"true","type":"class","description":"Interface","menu":"vp-class-menu","ctx_menu":"class","image": ["[object Object]"],"id":"1","height_a":"41","height_o":"52","operations": [],"attributes": []},{"width":"150","height":"64","pageY":"317.3999938964844","pageX":"595.5999755859375","type":"class","description":"Class","menu":"vp-class-menu","ctx_menu":"class","image": ["[object Object]"],"id":"2","height_a":"20","height_o":"20","operations": [],"attributes": []}]})
+                          $.ajax({
+                            type: "GET",
+                            url: "http://localhost:8000/export/?contents=" + json,
+                            success: function(svg) {
+                              $.log("exported!");
+                              $.log(svg);
+                            },
+                            error: function(xhr) {
+                            }
+                          });
+                        }
+                     },
+                     {
+                       title: "Reload",
                        click: function(node) {
                        node.reloadChildren();
                      }
                      },
                      {
-                       title:"Open",
+                       title: "Open",
                        click: function(node) {
                        // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
                        if ((!node.data.isFolder)
@@ -178,7 +196,7 @@ URL:
                      },
                      },
                      {
-                       title:"New folder",
+                       title: "New folder",
                        click: function(node) {
                        this.newfolder(
                            node.getAbsolutePath(),
@@ -188,7 +206,7 @@ URL:
                      }
                      },
                      {
-                       title:"Remove",
+                       title: "Remove",
                        click: function(node) {
                        this.remove(
                            node.getAbsolutePath(),
@@ -212,7 +230,6 @@ URL:
                         $root.reload();
                         return;
                       }
-
                       self.$tree = $(parentSelector).dynatree(
                           {
                             persist: true,
