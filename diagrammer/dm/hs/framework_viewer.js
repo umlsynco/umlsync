@@ -48,7 +48,7 @@ Version:
       $("#" + this.options.content).append('\
           <div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;background-color:gray;">\
           <div class="ui-corner-all ui-state-default" style="background-color:white;">\
-          <img src="images/search.png" style="margin-left:10px;"/>\
+          <img src="/images/search.png" style="margin-left:10px;"/>\
           <a id="us-search" href="#" style="width:100%;height:30px;color:gray;">Search</a>\
           </div>\
           <div id="accordion" style="background-color:gray;">\
@@ -412,9 +412,9 @@ Version:
         <h2 class="title">\
         <a href="'+data[r]['owner']+'/'+data[r]['name']+'">'+data[r]['owner']+'/ '+data[r]['name']+'</a>\
         <span class="language">' + (data[r]['language'] ? '('+data[r]['language']+')': '') +'</span>\
-        <img id="us-repo-add" src="images/add-repo3.png" title="Add">\
-        <img id="us-repo-drop" src="images/drop-repo.png" title="Drop">\
-        <img id="us-repo-view" src="images/view-repo.png" title="View">\
+        <img id="us-repo-add" src="/images/add-repo3.png" title="Add">\
+        <img id="us-repo-drop" src="/images/drop-repo.png" title="Drop">\
+        <img id="us-repo-view" src="/images/view-repo.png" title="View">\
         </h2>\
         <div class="description">\
         '+data[r]['description']+'\
@@ -1128,7 +1128,7 @@ Version:
     initializeToolBox: function(Loader) {
       var fw=this;
       // Place for logo !!!
-      //$("body").append('<img src="./images/logo.png" style="position:fixed;top:0;left:0;"/>');
+      //$("body").append('<img src="/images/logo.png" style="position:fixed;top:0;left:0;"/>');
       $("body").append('<div id="context-toolbox" class="us-context-toolbox">\
           <select name="speedAa" id="speedAa" style="border: 1px solid #B3C7E1;width:60px;"></select>\
           <select name="borderWidth" id="borderWidth" style="border: 1px solid #B3C7E1;"></select>\

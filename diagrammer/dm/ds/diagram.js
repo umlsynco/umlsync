@@ -1723,6 +1723,7 @@ dm['at'] = dm.at; //automated testing
       })
       .draggable({
         'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
+        'grid': [2,2],
         'scroll': true,
         'start': function(event, ui) {
         self.operation_start = {left: ui.position.left, top: ui.position.top};
@@ -2223,7 +2224,7 @@ dm['at'] = dm.at; //automated testing
       this.labels = new Array();
       for (var i in this.options['labels']) {
         var l = this.options['labels'][i];
-        this.addLabel(l.name, parseInt(l.x), parseInt(l.y));
+                this.addLabel({text:l.name, left:parseInt(l.x), right:parseInt(l.y)});
       }
     },
     //@proexp
