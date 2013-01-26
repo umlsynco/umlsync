@@ -432,6 +432,7 @@ Version:
             }
           }
           });
+          $(".element-selector").text("");
 
           $("#"+ulid).listmenu({
             selector: "connector-selector",
@@ -449,6 +450,7 @@ Version:
             }
           }
           });
+          $(".connector-selector").text("");
         }); // CreateDiagramMenu
       } // if !ActivateDiagramMenu
     });
