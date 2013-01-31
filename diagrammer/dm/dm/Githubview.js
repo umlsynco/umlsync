@@ -128,10 +128,10 @@ URL:
                       });
                     }
                   },
-                  'ctx_menu': 
+                  'ctx_menu':
                     [
                      {
-                       title:"Commit...",
+                       title: "Commit...",
                        click: function(node, view) {
                        if (dm.dm.dialogs)
                          dm.dm.dialogs['CommitDataDialog'](
@@ -157,13 +157,32 @@ URL:
                      }
                      },
                      {
-                       title:"Reload",
+                        title: "Export to svg",
+                        click: function(node, view) {
+                          $.log(node.data.title);
+                          // get json data here
+                          path = node.getAbsolutePath();
+                          data = view.modifiedList[path];
+                          $.ajax({
+                            type: "GET",
+                            url: "http://localhost:8000/export/?contents=" + data,
+                            success: function(svg) {
+                              $.log("exported!");
+                              $.log(svg);
+                            },
+                            error: function(xhr) {
+                            }
+                          });
+                        }
+                     },
+                     {
+                       title: "Reload",
                        click: function(node) {
                        node.reloadChildren();
                      }
                      },
                      {
-                       title:"Open",
+                       title: "Open",
                        click: function(node) {
                        // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
                        if ((!node.data.isFolder)
@@ -178,7 +197,7 @@ URL:
                      },
                      },
                      {
-                       title:"New folder",
+                       title: "New folder",
                        click: function(node) {
                        this.newfolder(
                            node.getAbsolutePath(),
@@ -188,7 +207,7 @@ URL:
                      }
                      },
                      {
-                       title:"Remove",
+                       title: "Remove",
                        click: function(node) {
                        this.remove(
                            node.getAbsolutePath(),
@@ -212,7 +231,6 @@ URL:
                         $root.reload();
                         return;
                       }
-
                       self.$tree = $(parentSelector).dynatree(
                           {
                             persist: true,
