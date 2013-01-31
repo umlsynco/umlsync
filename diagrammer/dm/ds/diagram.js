@@ -2224,7 +2224,7 @@ dm['at'] = dm.at; //automated testing
       this.labels = new Array();
       for (var i in this.options['labels']) {
         var l = this.options['labels'][i];
-                this.addLabel({text:l.name, left:parseInt(l.x), right:parseInt(l.y)});
+                this.addLabel({text:l.name, left:parseInt(l.x), top:parseInt(l.y)});
       }
     },
     //@proexp

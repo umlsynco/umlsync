@@ -171,7 +171,7 @@ Version:
           </a>\
           </div>\
           </div>\
-          <div id="reponav"></div>\
+          <div id="reponav"><span id="us-github">Github</span><span style="float:right;" id="us-eclipse">Eclipse</span></div>\
           <div id="toolbox"><ul style="list-style:none;">\
           <li class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
           <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
@@ -195,6 +195,20 @@ Version:
               self.updateFrameWork(true);
             }
           });
+          
+// Switch between github and eclipse engine          
+$("#us-github").click(function(){ 
+   // Show repo&branch selection min-buttons
+   $("#reponav").children("div").show();
+   // TODO: Show the latest active tree
+});
+$("#us-eclipse").click(function(){
+  // Hide the github selection mini-buttons
+  $("#reponav").children("div").hide();
+  // Switch to eclipse tree
+  self.addView2('Eclipse', new dm.base.LocalhostView("http://localhost:8000/vm/pe"));
+});
+
 
           var $switcher = $('#switcher');
           $switcher.addClass('ui-switcher ui-widget ui-helper-reset ui-switcher-icons');
@@ -574,10 +588,12 @@ Version:
       $("#treetabs").children("DIV").hide();
       $("#treetabs").append("<div id='"+id+"'></div>");
 
-      IView.initBranches();
-
-      $("#us-repo .js-select-button").text(IView.getRepository());
-      $("#us-branch .js-select-button").text("master");
+      if (name != "Eclipse") {
+        IView.initBranches();
+        $("#us-repo .js-select-button").text(IView.getRepository());
+        $("#us-branch .js-select-button").text("master");
+      
+     }
       /*      $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
       $("#accordion A#" + id).parent()
         .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')

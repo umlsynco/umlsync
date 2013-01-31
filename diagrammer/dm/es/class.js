@@ -310,12 +310,14 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
 		 var v = parseInt(value) - parseInt(oval);
 		 
-		 var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
+         if (v != 0) {
+		   var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
 
-         $('#' + this.euid  + '_Border').css('height', inc);
+           $('#' + this.euid  + '_Border').css('height', inc);
 
-		 // Change the default height value too
-		 this.options['height'] += v;
+		   // Change the default height value too
+		   this.options['height'] += v;
+        }
 
 		 return true;
 	  }/* else if (key.indexOf('height') == 0) {

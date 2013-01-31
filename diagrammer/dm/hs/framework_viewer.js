@@ -862,7 +862,7 @@ Version:
     //@proexp
     'loadDiagram': function(viewid, repo, path, parent) {
       var self = this,
-      absPath = (path.getAbsolutePath) ? path.getAbsolutePath(): path.data.sha;
+         absPath = (path.getAbsolutePath) ? path.getAbsolutePath(): path.data.sha;
       if (self.diagrams) {
         for (var r in self.diagrams) {
           var d = self.diagrams[r];
@@ -958,13 +958,13 @@ Version:
             $(tabname + " article.markdown-body .pack-diagram").each(function() {
               //var repo = $(this).attr("repo"),
               var sum = $(this).attr("sha"),
-              path = $(this).attr("path");
+              relativePath = $(this).attr("path");
 
               $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
               //$(this).id = "asd-" + count;
               //count++;
 //            alert("ID:" + $(this).attr("id"));
-              dm.dm.fw.loadDiagram(viewid,  repo, {data:{sha:sum, path:path}}, "#" +  $(this).attr("id"));
+              dm.dm.fw.loadDiagram(viewid,  repo, {data:{sha:sum, path:relativePath, parentPath:path}}, "#" +  $(this).attr("id"));
             });
 
             self.updateFrameWork(true);

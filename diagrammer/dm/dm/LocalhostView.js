@@ -19,6 +19,7 @@ Version:
         dm.base.LocalhostView = function(urlArg) {
                 var self = {
                 euid:"lh",
+                initBranches: function() {},
                 init: function() {
                         // Check localhost availability and select port
                 },
@@ -417,36 +418,40 @@ Version:
                 },
                 }
                 },
-                tree: {
+
+                initTree: function (parentSelector) {
+                   $(parentSelector)
+                   .dynatree(
+                     {
                         title:name,
                         autoFocus: false,
                         initAjax: {
-                        url: urlArg + "/getlist",
-                        dataType: 'JSONP',
-                        data: {path: "/"}
-                },
-                onLazyRead: function(node){
-                        var key = "",
-                        separator = "",
-                        filenode = node;
+                          url: urlArg + "/getlist",
+                          dataType: 'JSONP',
+                          data: {path: "/"}
+                        },
+                        onLazyRead: function(node){
+                          var key = "",
+                          separator = "",
+                          filenode = node;
 
-                        while ((filenode.data.addClass == 'iconclass')
-                                        || (filenode.data.addClass == 'namespace')) {
-                                key = filenode.data.title + separator + key;
-                                separator = "::";
-                                filenode = filenode.parent;
-                        }
-                        if (key == "") {
-                                key = undefined;
-                        }
-                        node.appendAjax({
-                                url: urlArg + "/getlist",
-                                dataType: "JSONP",
-                                data: {path: filenode.getAbsolutePath(false), key:key}
-                        });
-                }, // onLazyRead
-                onActivate: function(node) {
-                        if (!node.data.isFolder) {
+                          while ((filenode.data.addClass == 'iconclass')
+                            || (filenode.data.addClass == 'namespace')) {
+                            key = filenode.data.title + separator + key;
+                            separator = "::";
+                            filenode = filenode.parent;
+                          }
+                          if (key == "") {
+                            key = undefined;
+                          }
+                          node.appendAjax({
+                            url: urlArg + "/getlist",
+                            dataType: "JSONP",
+                            data: {path: filenode.getAbsolutePath(false), key:key}
+                          });
+                        }, // onLazyRead
+                        onActivate: function(node) {
+                          if (!node.data.isFolder) {
                                 if ($("#tab-" + node.data.key).length == 0) {
                                         if ('diagramclass' == node.data.addClass)
                                                 dm.dm.fw.loadDiagram(self.euid, node);
@@ -454,30 +459,33 @@ Version:
                                         if ('cfile' == node.data.addClass)
                                                 dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
                                 }
-                        } else {
+                          }
+                          else {
                             self.activePath = node.getAbsolutePath();
+                          }
+                        }, // onActivate
+                        onCreate: function(node, span){
+                          $(span).bind('contextmenu',
+                            function(e) {
+                              var node = $.ui.dynatree.getNode(e.currentTarget);
+                              dm.dm.fw.ShowContextMenu(self.euid, e, node);
+                              e.preventDefault();
+                            });
+                        },
+                        dnd: {
+                          onDragStart: function(node) {
+                            node.data.viewid = self.euid;
+                            return true;
+                        },
+                          onDragStop: function(node) {
+                           //logMsg("tree.onDragStop(%o)", node);
+                          }
                         }
-                }, // onActivate
-        onCreate: function(node, span){
-          $(span).bind('contextmenu', function(e) {
-                    var node = $.ui.dynatree.getNode(e.currentTarget);
-                        dm.dm.fw.ShowContextMenu(self.euid, e, node);
-                                e.preventDefault();
-                  });
-        },
-                dnd: {
-                        onDragStart: function(node) {
-                        node.data.viewid = self.euid;
-                        return true;
-                },
-                onDragStop: function(node) {
-                        //logMsg("tree.onDragStop(%o)", node);
+                     }
+                   );
                 }
-                }
-                }, //tree
-
-                };
-                return self;
+              }; //self= {...}
+              return self;
         };
 //      @aspect
 })(jQuery, dm);

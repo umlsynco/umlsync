@@ -66,13 +66,20 @@ Version:
 			return self.activePath || "/";
 		},
 		'loadDiagram':function(node, repo, callback) {
-		   var path = node.getAbsolutePath ? node.getAbsolutePath():node.data.path;
+           var parentPath = node.data.parentPath,
+               prefix = (parentPath && parentPath.getAbsolutePath) ? parentPath.getAbsolutePath() : "",
+		       path = node.getAbsolutePath ? node.getAbsolutePath(): prefix.split("/")[1] + "/" + node.data.path;
 		
 		   $.ajax({
 		     url: urlArg + '/open?path='+ path,
 			 dataType: 'jsonp',
 			 async: false,
-			 success: callback.success,
+			 success: function(data, status) {
+                if (status == "success")
+                  callback.success(null, data)
+                else 
+                  callback.success(status)
+             },
 			 error:callback.error
 		   });
 		},
@@ -87,7 +94,7 @@ Version:
 		     url: urlArg + '/open?path='+ node.getAbsolutePath(),
 			 dataType: 'jsonp',
 			 success: function(x, y, z) {
-			    decodeMDContent(x,y,z,callback.success);
+			    decodeMDContent(x,y,z,function(data) { callback.success(null, data)});
 			 },
 			 error:callback.error
 		   });
@@ -465,9 +472,10 @@ Version:
 		},
 		}
 		},
-		tree: function(name) {
+		initTree: function(parentSelector) {
 		
-		return {
+		$(parentSelector).dynatree(
+        {
 			title:name,
 			autoFocus: false,
 			initAjax: {
@@ -532,7 +540,7 @@ Version:
 			//logMsg("tree.onDragStop(%o)", node);
 		}
 		}
-		};
+		});
 		
 		}, //tree
 
