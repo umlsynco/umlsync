@@ -1,0 +1,6 @@
+h1. Welcome to UML Sync
+
+h2. Class Diagram
+
+!../images/actor3.svg!
+!../images/index.png!
