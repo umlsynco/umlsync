@@ -113,10 +113,6 @@ URL:
                   },
                   'loadDiagram': function(node, callback) {
                     if (node && node.data && node.data.sha) {
-                      $.log("loadDiagram()");
-                      $.log(node.data);
-                      $.log(node.data.url);
-                      $.log(node.data.title);
                       repo.getBlob(node.data.sha,
                           function(err, data) {
                         json = $.parseJSON(data);

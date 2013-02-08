@@ -351,6 +351,16 @@ $("#us-eclipse").click(function(){
 
           // Update the sizes first time
           this.updateFrameWork(true);
+
+          self.wdddd = true;
+
+          $("#SUPER_BUTTON").click(function(){
+             var did = self.diagrams[self.selectedDiagramId];
+             if (did != undefined) {
+               self.wdddd = !self.wdddd;
+               did._setWidgetsOption("editable", self.wdddd);
+             }
+          });
     }
 
     framework.prototype = {
@@ -939,7 +949,7 @@ $("#us-eclipse").click(function(){
           self.counter++;
           json.multicanvas = false;
 
-          $("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
+          $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
           tabname = "#" + tabname;
           $("#" + self.options.tabs).tabs("add", tabname, json.name);
 
@@ -948,7 +958,7 @@ $("#us-eclipse").click(function(){
           //$("#" + self.options.tabs).tabs("add", tabname, json.name);
 
 
-          var innerHtml = '<div class="announce instapaper_body md" data-path="/" id="readme"><span class="name">\
+          var innerHtml = '<div class="us-diagram announce instapaper_body md" data-path="/" id="readme"><span class="name">\
             <span class="mini-icon mini-icon-readme"></span> '+absPath2+'</span>\
             <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
             '+converter.makeHtml(json)+'\

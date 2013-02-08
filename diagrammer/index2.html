@@ -3,7 +3,6 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>UML Framework: UMLSync</title>
-  <!-- link rel="stylesheet" href="css/gihub2.css" type="text/css" media="all"/-->
   <link rel="stylesheet" type="text/css" href="css/github.css"/>
   <link href="css/gray-start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css"/>
   <link rel="stylesheet" href="js/3pp/scrollabletab/css/jquery.ui.tabs.css" type="text/css" media="screen"/>
@@ -47,6 +46,9 @@
     .left { float: left; }
     .left2 { overflow: hidden; display: block; padding: 0 6px 0 5px; }
     .left2 input { width: 100%; }  
+    .ui-tabs-panel { overflow: scroll;background-color:white;}
+    .ui-tabs-panel div#readme article{background-color:white;}
+    .ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled { opacity : 1;}
   </style>
   <script src="./js/3pp/showdown.js"></script>
   <script src="./dm/ds/diagram.js"></script>
@@ -75,7 +77,8 @@
 
   $(document).ready(function() {
     var Loader = new dm.base.loader("./");
-    var fw = new dm.hs.framework({notabs:true});
+    //var fw = new dm.hs.framework({notabs:true});
+    var fw = new dm.hs.framework({});
 
     // Initialize header menu on the left
     $('#header-menu').combomenu({menu:{
@@ -165,6 +168,7 @@
 
 </head>
 <body>
+<div id="SUPER_BUTTON" style="position:fixed;top:20px;right:50px;z-index:9999;background-color:red;">CLICK ME !</div>
 <div id="body">
   <div class="header-nav ui-state-active" id="content-header">
   <div>
