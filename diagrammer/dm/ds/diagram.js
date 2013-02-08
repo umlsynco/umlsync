@@ -633,7 +633,7 @@ dm['at'] = dm.at; //automated testing
   _create: function () {
     //<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
     //this.options.multicanvas = true; ~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USES for DROP SOME NODES FROM DYNATREE
-    if (this.options.multicanvas != undefined) {
+    if (this.options.multicanvas) {
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
           <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
           <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\

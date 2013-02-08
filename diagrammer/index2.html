@@ -4,13 +4,14 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>UML Framework: UMLSync</title>
   <!-- link rel="stylesheet" href="css/gihub2.css" type="text/css" media="all"/-->
+  <link rel="stylesheet" type="text/css" href="css/github.css"/>
   <link href="css/gray-start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css"/>
   <link rel="stylesheet" href="js/3pp/scrollabletab/css/jquery.ui.tabs.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="css/main.css" type="text/css" media="all"/>
   <link rel="stylesheet/less" href="css/main.less" type="text/css" media="screen"/>
   <link rel="stylesheet" href="js/3pp/simple-color-picker/jquery.simple-color-picker.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="./js/3pp/tablesorter/themes/blue/style.css" type="text/css" media="screen"/>
-  <link rel="stylesheet" href="./js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>  
+  <link rel="stylesheet" href="./js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>
   <script src="js/jquery.js"></script>
   <script src="js/github.js"></script>
   <script src="js/jquery-ui.js"></script>
@@ -46,7 +47,8 @@
     .left { float: left; }
     .left2 { overflow: hidden; display: block; padding: 0 6px 0 5px; }
     .left2 input { width: 100%; }  
-  </style>    
+  </style>
+  <script src="./js/3pp/showdown.js"></script>
   <script src="./dm/ds/diagram.js"></script>
   <script src="./dm/ds/base.js"></script>
   <script src="dm/ms/ds/common.js"></script>
@@ -68,13 +70,12 @@
   <script src="./dm/hs/framework.js"></script>
   <script src="./dm/ms/ctx/class.js"></script>
   
-  
   <script>
   //$.log = function() {};
 
   $(document).ready(function() {
     var Loader = new dm.base.loader("./");
-    var fw = new dm.hs.framework(Loader);
+    var fw = new dm.hs.framework({notabs:true});
 
     // Initialize header menu on the left
     $('#header-menu').combomenu({menu:{
