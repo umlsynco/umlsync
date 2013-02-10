@@ -926,7 +926,7 @@ $("#us-eclipse").click(function(){
       var self = this,
       absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path)),
       absPath2 = (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.path || path.data.sha));
-      if (self.markdown) {
+/*      if (self.markdown) {
         for (var r in self.markdown) {
           var d = self.markdown[r];
           if ((d.options.viewid == viewid)
@@ -936,7 +936,7 @@ $("#us-eclipse").click(function(){
           }
         }
       }
-
+*/
       if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
         alert("View: " + viewid + " was not initialize.");
         return;
@@ -950,7 +950,9 @@ $("#us-eclipse").click(function(){
           json.multicanvas = false;
 
           $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
+          json.name = json.name || tabname;
           tabname = "#" + tabname;
+          
           $("#" + self.options.tabs).tabs("add", tabname, json.name);
 
           json['fullname'] = absPath;
