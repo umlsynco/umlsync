@@ -34,9 +34,12 @@ dm.base.diagram("es.class", dm['es']['element'], {
                              <li id="us-class-ctx-menu-remove"><a>Remove</a></li>\
                            </ul>';
           $(innerHtml).appendTo("#" + self.parrent.euid);
-          $("#" + self.parrent.euid + " #us-class-ctx-menu-edit a").click(function(e) {$("#" + diag.euid + " " + diag.classItem).click()});
-          $("#" + self.parrent.euid + " #us-class-ctx-menu-add a").click(function(e) {$("#" + diag.euid + " " + diag.classItem).click()});
-          $("#" + self.parrent.euid + " #us-class-ctx-menu-remove a").click(function(e) {$("#" + diag.euid + " " + diag.classItem).remove()});
+          $("#" + self.parrent.euid + " #us-class-ctx-menu li a").hover(function() {$(this).addClass('hover')}, function() {$(this).removeClass('hover')});
+
+          var hideMenuSelector = "#" + diag.euid + " #us-class-ctx-menu";
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-edit a").click(function(e) {$(hideMenuSelector).hide();$("#" + diag.euid + " " + diag.classItem).click()});
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-add a").click(function(e) {$(hideMenuSelector).hide();$("#" + diag.euid + " " + diag.classItem).click()});
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-remove a").click(function(e) {$(hideMenuSelector).hide();$("#" + diag.euid + " " + diag.classItem).remove()});
         }
 
         diag.classItem = selector;
