@@ -37,9 +37,64 @@ dm.base.diagram("es.class", dm['es']['element'], {
           $("#" + self.parrent.euid + " #us-class-ctx-menu li a").hover(function() {$(this).addClass('hover')}, function() {$(this).removeClass('hover')});
 
           var hideMenuSelector = "#" + diag.euid + " #us-class-ctx-menu";
+          // Edit - simple trigger of click
           $("#" + self.parrent.euid + " #us-class-ctx-menu-edit a").click(function(e) {$(hideMenuSelector).hide();$("#" + diag.euid + " " + diag.classItem).click()});
-          $("#" + self.parrent.euid + " #us-class-ctx-menu-add a").click(function(e) {$(hideMenuSelector).hide();$("#" + diag.euid + " " + diag.classItem).click()});
-          $("#" + self.parrent.euid + " #us-class-ctx-menu-remove a").click(function(e) {$(hideMenuSelector).hide();$("#" + diag.euid + " " + diag.classItem).remove()});
+          
+          // Add - should call addOperation method of selected class
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-add a")
+          .click(function(e) {
+             // hide the context menu
+             $(hideMenuSelector).hide();
+
+             // Identify class euid in secure way
+             if (diag.classItem == undefined || diag.classItem == null) {
+               return;
+             }
+
+             var ssel = diag.classItem.split(" ");
+             if (ssel.length != 2) {
+               return;
+             }
+
+             var seuid = ssel[0].substring(1);
+             var el = diag.elements[seuid];
+
+             // if element euid is wrong or wring element
+             if (el == undefined || el.addOperation == undefined)
+               return;
+
+             if (diag.classItem.indexOf("operation") !== -1) {
+               el.addOperation({text:"private newmethod(int, int, void*)"});
+             } else {
+               el.addAttribute({text:"private int newfield"});
+             }
+          });
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-remove a")
+          .click(function(e) {
+            $(hideMenuSelector).hide();
+             // Identify class euid in secure way
+             if (diag.classItem == undefined || diag.classItem == null) {
+               return;
+             }
+
+             var ssel = diag.classItem.split(" ");
+             if (ssel.length != 2) {
+               return;
+             }
+
+             var seuid = ssel[0].substring(1);
+             var el = diag.elements[seuid];
+
+             // if element euid is wrong or wring element
+             if (el == undefined || el.addOperation == undefined)
+               return;
+
+             if (diag.classItem.indexOf("operation") !== -1) {
+               el.rmOperation({selector:diag.classItem});
+             } else {
+               el.rmAttribute();
+             }
+          });
         }
 
         diag.classItem = selector;
@@ -104,7 +159,13 @@ dm.base.diagram("es.class", dm['es']['element'], {
        this.parrent.opman.stopTransaction();
     },
 	'rmOperation': function(opt) {
-       $("#"+this.euid+" .us-class-operations ul li:eq(" + opt.idx + ")").remove();
+       if (opt.selector) {
+         $(opt.selector).remove();
+       }
+       else {
+         $("#"+this.euid+" .us-class-operations ul li:eq(" + opt.idx + ")").remove();
+       }
+       // Refresh sotrable. Report operation.
 	},
 	'moveOperation': function(start, stop) {
 	  var s1 = $("#"+this.euid+" .us-class-operations ul li:eq(" + stop.idx + ")");
