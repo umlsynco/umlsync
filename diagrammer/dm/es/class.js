@@ -24,11 +24,35 @@ dm.base.diagram("es.class", dm['es']['element'], {
       return auxmap[aux] || aux;
     },
 //@ifdef EDITOR
+    showContextMenu: function(selector, e) {
+        var self = this,
+            diag = this.parrent;
+        if ($("#us-class-ctx-menu").length == 0) {
+          var innerHtml = '<ul id="us-class-ctx-menu" class="context-menu">\
+                             <li id="us-class-ctx-menu-edit"><a>Edit</a></li>\
+                             <li id="us-class-ctx-menu-add"><a>Add</a></li>\
+                             <li id="us-class-ctx-menu-remove"><a>Remove</a></li>\
+                           </ul>';
+          $(innerHtml).appendTo("#" + self.parrent.euid);
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-edit a").click(function(e) {$("#" + diag.euid + " " + diag.classItem).click()});
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-add a").click(function(e) {$("#" + diag.euid + " " + diag.classItem).click()});
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-remove a").click(function(e) {$("#" + diag.euid + " " + diag.classItem).remove()});
+        }
+
+        diag.classItem = selector;
+        $(".context-menu").hide(); // hide all context menus
+        var pos = $("#" + self.parrent.euid).offset();
+        $("#us-class-ctx-menu").css({top:e.pageY-pos.top, left:e.pageX-pos.left}).show();
+
+        e.stopPropagation(); // prevent class menu showing
+        e.preventDefault();  // prevent default context menu showing
+    },
     'addOperation': function(opt) {
 	   if (this.options['aux'] == "Enumeration")
 	     return;
 	   var self = this;
 
+       // Ctrl-Z/Y support
 	   var old_id;
 	   if (opt.id) {
 	     old_id = opt.id;
@@ -47,7 +71,11 @@ dm.base.diagram("es.class", dm['es']['element'], {
 					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
 					return true;
 	             }})
-				.height();
+                 .bind('contextmenu', function(e) {
+                    self.showContextMenu("#" + self.euid + " #" + this.id, e)
+                 })
+                 .height();
+
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-operations").height(),
 		   h3, h4;
@@ -219,8 +247,15 @@ dm.base.diagram("es.class", dm['es']['element'], {
         </div>\
       ';
       $("#" + this['parrent'].euid).append(this.innerHtmlClassInfo);
-
+      
       this.element = $("#"  + this.euid);
+
+      this.element
+      .children('#operation')
+      .children("a")
+      .bind('contextmenu', function(e) {
+        self.showContextMenu("#" + self.euid + " #" + this.id, e);
+      });
     },
     '_init': function() {
 		this._setOptions(this.options);
