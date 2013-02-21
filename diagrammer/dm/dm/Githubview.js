@@ -124,7 +124,17 @@ URL:
                       });
                     }
                   },
-                  'ctx_menu':
+                  'loadCode': function(node, repoUid, callback) {
+                    if (node && node.data && node.data.sha) {
+                      repo.getBlob(node.data.sha, callback.success);
+                    }
+                  },
+                 'loadMarkdown': function(node, repoUid, callback) {
+                   if (node && node.data && node.data.sha) {
+                     repo.getBlob(node.data.sha, callback.success);
+                   }
+                 },
+                'ctx_menu':
                     [
                      {
                        title: "Commit...",
@@ -180,12 +190,23 @@ URL:
                      {
                        title: "Open",
                        click: function(node) {
-                       // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
-                       if ((!node.data.isFolder)
-                           && (node.data.title.indexOf(".json") != -1)) {
-                         dm.dm.fw.loadDiagram(self.euid, node);
+                         // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
+                         if (!node.data.isFolder) {
+                            var tt = node.data.title.split(".");
+                            var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+                            var repo="pe";
+
+                            if (ext == "JSON" || ext == "UMLSYNC") {
+                              dm.dm.fw.loadDiagram(self.euid, node);
+                            }
+                            else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
+                              dm.dm.fw.loadMarkdown(self.euid, repo, node);
+                            }
+                            else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
+                              dm.dm.fw.loadCode(self.euid, repo, node);
+                            }
+                         }
                        }
-                     }
                      },
                      {
                        title: "Save",
@@ -266,12 +287,23 @@ URL:
                           },
                           onActivate: function(node) {
                             $.log("onActivate()");
-                            if ((!node.data.isFolder)
-                                && ((node.data.title.indexOf(".json") != -1)
-                                    || (node.data.title.indexOf(".umlsync") != -1)))
-                              dm.dm.fw.loadDiagram(self.euid, node);
+                            if (!node.data.isFolder) {
+                              var tt = node.data.title.split(".");
+                              var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+                              var repo="pe";
+
+                              if (ext == "JSON" || ext == "UMLSYNC") {
+                                dm.dm.fw.loadDiagram(self.euid, node);
+                              }
+                              else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
+                                dm.dm.fw.loadMarkdown(self.euid, repo, node);
+                              }
+                              else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
+                                dm.dm.fw.loadCode(self.euid, repo, node);
+                              }
+                           }
                           }
-                          }
+                        }
                       );
                     };
                     repo.getTree(self.activeBranch , function(err, tree) {
