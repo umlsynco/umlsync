@@ -877,12 +877,13 @@ $("#us-eclipse").click(function(){
       self.views[viewId].view.save(path, data, description);
     },
     //@proexp
-    'loadDiagram': function(viewid, path) {
+    'loadDiagram': function(viewid, path, selector) {
       $.log("VIEWID IS:" + viewid);
 
       var self = this,
-      absPath = path.getAbsolutePath();
-      if (self.diagrams) {
+        absPath = (path.getAbsolutePath) ? path.getAbsolutePath(): path.data.sha;
+
+      if (self.diagrams && selector == undefined) {
         for (var r in self.diagrams) {
           var d = self.diagrams[r];
           if ((d.options.viewid == viewid)
@@ -902,14 +903,15 @@ $("#us-eclipse").click(function(){
       if (self.views[viewid])
         self.views[viewid].view.loadDiagram(path, {
           'success': function(json) {
-          var tabname = self.options.tabRight + "-" + self.counter;
+          var tabname = selector || self.options.tabRight + "-" + self.counter;
           self.counter++;
-          json.multicanvas = false;
+          json.multicanvas = (selector != undefined);
 
+if (!json.multicanvas) {
           $("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
           tabname = "#" + tabname;
           $("#" + self.options.tabs).tabs("add", tabname, json.name);
-
+}
           json['fullname'] = absPath;
           dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname
               , function(obj) {
@@ -925,7 +927,8 @@ $("#us-eclipse").click(function(){
     'loadMarkdown': function(viewid, repo, path) {
       var self = this,
       absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path)),
-      absPath2 = (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.path || path.data.sha));
+      absPath2 = (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.path || path.data.sha))
+      title = path.data.title;
 /*      if (self.markdown) {
         for (var r in self.markdown) {
           var d = self.markdown[r];
@@ -953,7 +956,7 @@ $("#us-eclipse").click(function(){
           json.name = json.name || tabname;
           tabname = "#" + tabname;
           
-          $("#" + self.options.tabs).tabs("add", tabname, json.name);
+          $("#" + self.options.tabs).tabs("add", tabname, title);
 
           json['fullname'] = absPath;
 
@@ -971,15 +974,15 @@ $("#us-eclipse").click(function(){
 
             var count = 0;
             $(tabname + " article.markdown-body .pack-diagram").each(function() {
-              //var repo = $(this).attr("repo"),
-              var sum = $(this).attr("sha"),
+             // var repo = $(this).attr("repo"),
+              sum = $(this).attr("sha"),
               relativePath = $(this).attr("path");
 
               $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
               //$(this).id = "asd-" + count;
               //count++;
 //            alert("ID:" + $(this).attr("id"));
-//              dm.dm.fw.loadDiagram(viewid,  repo, {data:{sha:sum, path:relativePath, parentPath:path}}, "#" +  $(this).attr("id"));
+              dm.dm.fw.loadDiagram(viewid,  {data:{sha:sum, path:relativePath, parentPath:path}}, "#" +  $(this).attr("id"));
             });
 
             self.updateFrameWork(true);
@@ -989,7 +992,9 @@ $("#us-eclipse").click(function(){
     //@proexp
     'loadCode': function(viewid, repo, path) {
       var self = this,
-      absPath = path.getAbsolutePath();
+        absPath = path.getAbsolutePath(),
+        title = path.data.title;
+
       if (self.codes) {
         for (var r in self.codes) {
           var d = self.codes[r];
@@ -1014,15 +1019,14 @@ $("#us-eclipse").click(function(){
           var tabname = self.options.tabRight + "-" + self.counter;
           self.counter++;
 
-          $("#" + self.options.tabs + " ul.us-frames li.us-frame").hide();
-          $("#" + self.options.tabs + " ul.us-frames").append('<li class="us-frame" id="'+tabname+'_p" style="overflow:scroll;"><div id="'+ tabname +'" style="margin-left:30px;"></div><li>');
+          $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
           tabname = "#" + tabname;
-          //$("#" + self.options.tabs).tabs("add", tabname, json.name);
+          
+          $("#" + self.options.tabs).tabs("add", tabname, title);
 
-          //json['full_name'] = repo + "/" + absPath;
-          $(tabname).append("<pre class='prettyprint linenums:1'>" + json + "</pre>");
+          $(tabname).append("<div class='us-diagram'><pre class='prettyprint linenums:1'>" + json + "</pre></div>");
+
           prettyPrint();
-          //$(tabname + " code").chili();
 
           self.updateFrameWork(true);
         },

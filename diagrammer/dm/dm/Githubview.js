@@ -112,16 +112,27 @@ URL:
                     $.log("Saving " + data.toString() + " on " + path.toString());
                   },
                   'loadDiagram': function(node, callback) {
-                    if (node && node.data && node.data.sha) {
-                      repo.getBlob(node.data.sha,
-                          function(err, data) {
-                        json = $.parseJSON(data);
-                        path = json["fullname"];
-                        if (self.modifiedList[path]) {
-                          json = self.modifiedList[path];
-                        }
-                        callback.success(json);
-                      });
+                    if (node && node.data) {
+                      if (node.data.sha) {
+                        repo.getBlob(node.data.sha, function(err, data) {
+                           var json = $.parseJSON(data),
+                               path = json["fullname"];
+                           if (self.modifiedList[path]) {
+                             json = self.modifiedList[path];
+                           }
+                           callback.success(json);
+                         });
+                      }
+                      else if (node.data.path) {
+                        repo.contents(node.data.path,  function(err, json) {
+                           var path = json["fullname"];
+
+                           if (self.modifiedList[path]) {
+                             json = self.modifiedList[path];
+                           }
+                           callback.success(json);
+                         });
+                      }
                     }
                   },
                   'loadCode': function(node, repoUid, callback) {
