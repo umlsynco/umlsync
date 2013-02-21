@@ -159,13 +159,27 @@ dm.base.diagram("es.class", dm['es']['element'], {
        this.parrent.opman.stopTransaction();
     },
 	'rmOperation': function(opt) {
+       // selector is path to ul>li>a object
        if (opt.selector) {
-         $(opt.selector).remove();
+         var text = $(opt.selector).text();
+         var idx = $(opt.selector.split(" ")[0] + " li").index($(opt.selector).parent());
+         
+         // Report operation.
+	     this.parrent.opman.reportShort("-operation",
+	                                  this.euid,
+									  {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
+         // It is necessary to remove li object
+         // but selector refs to li>a
+         $(opt.selector).parent().remove();
        }
        else {
+         // It is not necessary to report operation
+         // because this case happen on revert operation only
          $("#"+this.euid+" .us-class-operations ul li:eq(" + opt.idx + ")").remove();
        }
-       // Refresh sotrable. Report operation.
+
+       // Refresh sortable after item removal
+       $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh");
 	},
 	'moveOperation': function(start, stop) {
 	  var s1 = $("#"+this.euid+" .us-class-operations ul li:eq(" + stop.idx + ")");
