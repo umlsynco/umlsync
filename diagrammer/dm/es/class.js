@@ -92,7 +92,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
              if (diag.classItem.indexOf("operation") !== -1) {
                el.rmOperation({selector:diag.classItem});
              } else {
-               el.rmAttribute();
+               el.rmAttribute({selector:diag.classItem});
              }
           });
         }
@@ -206,13 +206,16 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   .appendTo("#" + this.euid + " .us-class-attributes .us-sortable")
 	   .children("a")
 	   .editable({onSubmit:function(data) {
-				    if (data["current"] == data["previous"])
-					  return;
-					var id = $(this).attr("id");
-				    self.options[id] = data["current"];
-					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
-					return true;
-	             }})
+		 if (data["current"] == data["previous"])
+		  return;
+		 var id = $(this).attr("id");
+         self.options[id] = data["current"];
+		 self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+		 return true;
+	   }})
+       .bind('contextmenu', function(e) {
+         self.showContextMenu("#" + self.euid + " #" + this.id, e)
+       })
 	   .height();
 	   
 
@@ -246,7 +249,27 @@ dm.base.diagram("es.class", dm['es']['element'], {
        this.parrent.opman.stopTransaction();
     },
     'rmAttribute': function(opt) {
-	  $("#"+this.euid+" .us-class-attributes ul li:eq(" + opt.idx + ")").remove();
+       // selector is path to ul>li>a object
+       if (opt.selector) {
+         var text = $(opt.selector).text();
+         var idx = $(opt.selector.split(" ")[0] + " li").index($(opt.selector).parent());
+         
+         // Report attribute.
+	     this.parrent.opman.reportShort("-attribute",
+	                                  this.euid,
+									  {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
+         // It is necessary to remove li object
+         // but selector refs to li>a
+         $(opt.selector).parent().remove();
+       }
+       else {
+         // It is not necessary to report attribute
+         // because this case happen on revert attribute only
+         $("#"+this.euid+" .us-class-attributes ul li:eq(" + opt.idx + ")").remove();
+       }
+
+       // Refresh sortable after item removal
+       $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh");
 	},
 	'moveAttribute': function(start, stop) {
 	  var s1 = $("#"+this.euid+" .us-class-attributes ul li:eq(" + stop.idx + ")");
@@ -330,6 +353,13 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       this.element
       .children('#operation')
+      .children("a")
+      .bind('contextmenu', function(e) {
+        self.showContextMenu("#" + self.euid + " #" + this.id, e);
+      });
+      
+      this.element
+      .children('#attribute')
       .children("a")
       .bind('contextmenu', function(e) {
         self.showContextMenu("#" + self.euid + " #" + this.id, e);
