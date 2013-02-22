@@ -1034,3 +1034,31 @@ span.cfolder span.dynatree-icon {
 #treetabs DIV DIV UL {
   overflow: visible;
 }
+
+
+.us-diagram-toolbox {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  z-index:1000000;
+}
+
+.us-diagram-toolbox  a {
+  border-radius: 0 2px 2px 0;
+  min-width: 20px;
+  padding: 5px;
+  background-color: #F5F5F5;
+  background-image: -moz-linear-gradient(center top , #F5F5F5, #F1F1F1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #444444;
+  display: inline-block;
+  line-height: 20px;
+  text-decoration: none;
+  outline: medium none;
+}
+
+.us-diagram-toolbox  a span#us-getlink {
+  background-image: url("images/getlink.png");
+  width:20px;
+  height:20px;
+}

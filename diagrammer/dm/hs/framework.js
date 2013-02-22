@@ -196,18 +196,18 @@ Version:
             }
           });
           
-// Switch between github and eclipse engine          
-$("#us-github").click(function(){ 
-   // Show repo&branch selection min-buttons
-   $("#reponav").children("div").show();
-   // TODO: Show the latest active tree
-});
-$("#us-eclipse").click(function(){
-  // Hide the github selection mini-buttons
-  $("#reponav").children("div").hide();
-  // Switch to eclipse tree
-  self.addView2('Eclipse', new dm.base.LocalhostView("http://localhost:8000/vm/pe"));
-});
+         // Switch between github and eclipse engine          
+         $("#us-github").click(function(){ 
+           // Show repo&branch selection min-buttons
+           $("#reponav").children("div").show();
+           // TODO: Show the latest active tree
+         });
+         $("#us-eclipse").click(function(){
+           // Hide the github selection mini-buttons
+           $("#reponav").children("div").hide();
+           // Switch to eclipse tree
+           self.addView2('Eclipse', new dm.base.LocalhostView("http://localhost:8000/vm/pe"));
+         });
 
 
           var $switcher = $('#switcher');
@@ -258,6 +258,10 @@ $("#us-eclipse").click(function(){
 
 
           $("#tabs").append('<canvas id="SingleCanvas" class="us-canvas" style="left:18px;top:44px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
+          $("#tabs").append('<div class="us-diagram-toolbox"><a id="us-link"><span id="us-getlink">Get link</span></a><a id="us-link"><span id="us-diagram-edit">Edit</span></a></div>');
+          $("#us-diagram-edit").click(function() {
+            
+          });
 
           // AUTOMATED TEST WORK_AROUND !!!
           $("#content-right DIV.ui-scrollable-tabs").scroll(
