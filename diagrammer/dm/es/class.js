@@ -24,11 +24,93 @@ dm.base.diagram("es.class", dm['es']['element'], {
       return auxmap[aux] || aux;
     },
 //@ifdef EDITOR
+    showContextMenu: function(selector, e) {
+        var self = this,
+            diag = this.parrent;
+        if ($("#us-class-ctx-menu").length == 0) {
+          var innerHtml = '<ul id="us-class-ctx-menu" class="context-menu">\
+                             <li id="us-class-ctx-menu-edit"><a>Edit</a></li>\
+                             <li id="us-class-ctx-menu-add"><a>Add</a></li>\
+                             <li id="us-class-ctx-menu-remove"><a>Remove</a></li>\
+                           </ul>';
+          $(innerHtml).appendTo("#" + self.parrent.euid);
+          $("#" + self.parrent.euid + " #us-class-ctx-menu li a").hover(function() {$(this).addClass('hover')}, function() {$(this).removeClass('hover')});
+
+          var hideMenuSelector = "#" + diag.euid + " #us-class-ctx-menu";
+          // Edit - simple trigger of click
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-edit a").click(function(e) {$(hideMenuSelector).hide();$("#" + diag.euid + " " + diag.classItem).click()});
+          
+          // Add - should call addOperation method of selected class
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-add a")
+          .click(function(e) {
+             // hide the context menu
+             $(hideMenuSelector).hide();
+
+             // Identify class euid in secure way
+             if (diag.classItem == undefined || diag.classItem == null) {
+               return;
+             }
+
+             var ssel = diag.classItem.split(" ");
+             if (ssel.length != 2) {
+               return;
+             }
+
+             var seuid = ssel[0].substring(1);
+             var el = diag.elements[seuid];
+
+             // if element euid is wrong or wring element
+             if (el == undefined || el.addOperation == undefined)
+               return;
+
+             if (diag.classItem.indexOf("operation") !== -1) {
+               el.addOperation({text:"private newmethod(int, int, void*)"});
+             } else {
+               el.addAttribute({text:"private int newfield"});
+             }
+          });
+          $("#" + self.parrent.euid + " #us-class-ctx-menu-remove a")
+          .click(function(e) {
+            $(hideMenuSelector).hide();
+             // Identify class euid in secure way
+             if (diag.classItem == undefined || diag.classItem == null) {
+               return;
+             }
+
+             var ssel = diag.classItem.split(" ");
+             if (ssel.length != 2) {
+               return;
+             }
+
+             var seuid = ssel[0].substring(1);
+             var el = diag.elements[seuid];
+
+             // if element euid is wrong or wring element
+             if (el == undefined || el.addOperation == undefined)
+               return;
+
+             if (diag.classItem.indexOf("operation") !== -1) {
+               el.rmOperation({selector:diag.classItem});
+             } else {
+               el.rmAttribute({selector:diag.classItem});
+             }
+          });
+        }
+
+        diag.classItem = selector;
+        $(".context-menu").hide(); // hide all context menus
+        var pos = $("#" + self.parrent.euid).offset();
+        $("#us-class-ctx-menu").css({top:e.pageY-pos.top, left:e.pageX-pos.left}).show();
+
+        e.stopPropagation(); // prevent class menu showing
+        e.preventDefault();  // prevent default context menu showing
+    },
     'addOperation': function(opt) {
 	   if (this.options['aux'] == "Enumeration")
 	     return;
 	   var self = this;
 
+       // Ctrl-Z/Y support
 	   var old_id;
 	   if (opt.id) {
 	     old_id = opt.id;
@@ -47,7 +129,11 @@ dm.base.diagram("es.class", dm['es']['element'], {
 					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
 					return true;
 	             }})
-				.height();
+                 .bind('contextmenu', function(e) {
+                    self.showContextMenu("#" + self.euid + " #" + this.id, e)
+                 })
+                 .height();
+
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-operations").height(),
 		   h3, h4;
@@ -73,7 +159,27 @@ dm.base.diagram("es.class", dm['es']['element'], {
        this.parrent.opman.stopTransaction();
     },
 	'rmOperation': function(opt) {
-       $("#"+this.euid+" .us-class-operations ul li:eq(" + opt.idx + ")").remove();
+       // selector is path to ul>li>a object
+       if (opt.selector) {
+         var text = $(opt.selector).text();
+         var idx = $(opt.selector.split(" ")[0] + " li").index($(opt.selector).parent());
+         
+         // Report operation.
+	     this.parrent.opman.reportShort("-operation",
+	                                  this.euid,
+									  {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
+         // It is necessary to remove li object
+         // but selector refs to li>a
+         $(opt.selector).parent().remove();
+       }
+       else {
+         // It is not necessary to report operation
+         // because this case happen on revert operation only
+         $("#"+this.euid+" .us-class-operations ul li:eq(" + opt.idx + ")").remove();
+       }
+
+       // Refresh sortable after item removal
+       $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh");
 	},
 	'moveOperation': function(start, stop) {
 	  var s1 = $("#"+this.euid+" .us-class-operations ul li:eq(" + stop.idx + ")");
@@ -100,13 +206,16 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	   .appendTo("#" + this.euid + " .us-class-attributes .us-sortable")
 	   .children("a")
 	   .editable({onSubmit:function(data) {
-				    if (data["current"] == data["previous"])
-					  return;
-					var id = $(this).attr("id");
-				    self.options[id] = data["current"];
-					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
-					return true;
-	             }})
+		 if (data["current"] == data["previous"])
+		  return;
+		 var id = $(this).attr("id");
+         self.options[id] = data["current"];
+		 self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+		 return true;
+	   }})
+       .bind('contextmenu', function(e) {
+         self.showContextMenu("#" + self.euid + " #" + this.id, e)
+       })
 	   .height();
 	   
 
@@ -140,7 +249,27 @@ dm.base.diagram("es.class", dm['es']['element'], {
        this.parrent.opman.stopTransaction();
     },
     'rmAttribute': function(opt) {
-	  $("#"+this.euid+" .us-class-attributes ul li:eq(" + opt.idx + ")").remove();
+       // selector is path to ul>li>a object
+       if (opt.selector) {
+         var text = $(opt.selector).text();
+         var idx = $(opt.selector.split(" ")[0] + " li").index($(opt.selector).parent());
+         
+         // Report attribute.
+	     this.parrent.opman.reportShort("-attribute",
+	                                  this.euid,
+									  {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
+         // It is necessary to remove li object
+         // but selector refs to li>a
+         $(opt.selector).parent().remove();
+       }
+       else {
+         // It is not necessary to report attribute
+         // because this case happen on revert attribute only
+         $("#"+this.euid+" .us-class-attributes ul li:eq(" + opt.idx + ")").remove();
+       }
+
+       // Refresh sortable after item removal
+       $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh");
 	},
 	'moveAttribute': function(start, stop) {
 	  var s1 = $("#"+this.euid+" .us-class-attributes ul li:eq(" + stop.idx + ")");
@@ -219,8 +348,22 @@ dm.base.diagram("es.class", dm['es']['element'], {
         </div>\
       ';
       $("#" + this['parrent'].euid).append(this.innerHtmlClassInfo);
-
+      
       this.element = $("#"  + this.euid);
+
+      this.element
+      .children('#operation')
+      .children("a")
+      .bind('contextmenu', function(e) {
+        self.showContextMenu("#" + self.euid + " #" + this.id, e);
+      });
+      
+      this.element
+      .children('#attribute')
+      .children("a")
+      .bind('contextmenu', function(e) {
+        self.showContextMenu("#" + self.euid + " #" + this.id, e);
+      });
     },
     '_init': function() {
 		this._setOptions(this.options);

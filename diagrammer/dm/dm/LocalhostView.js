@@ -17,6 +17,24 @@ Version:
 (function($, dm, undefined) {
 
         dm.base.LocalhostView = function(urlArg) {
+    function decodeMDContent(data, textStatus, jqXHR, callback) {
+
+          for (d in data) {
+            if (d == 'data') {
+               var splitted = data[d].split('\n');
+               var decoded = "";
+               for (s in splitted) {
+                 decoded += $.base64.decode(splitted[s]);
+               }
+         
+         if (callback) {
+           callback(decoded);
+         }
+         
+         return;
+      }
+          }
+        };
                 var self = {
                 euid:"lh",
                 initBranches: function() {},
@@ -55,6 +73,33 @@ Version:
                          error:callback.error
                    });
                 },
+    'loadMarkdown':function(node, repo, callback) {
+       var path = node.getAbsolutePath ? node.getAbsolutePath():node.data.path;
+    
+       function markdownHandler(data) {
+          callback.success(data['data']);
+       }
+
+       $.ajax({
+         url: urlArg + '/open?path='+ node.getAbsolutePath(),
+       dataType: 'jsonp',
+       success: function(x, y, z) {
+          decodeMDContent(x,y,z,function(data) { callback.success(null, data)});
+       },
+       error:callback.error
+       });
+    },
+    'loadCode':function(node, repo, callback) {
+       var path = node.getAbsolutePath ? node.getAbsolutePath():node.data.path;
+    
+       $.ajax({
+         url: urlArg + '/open?path='+ node.getAbsolutePath(),
+       dataType: 'jsonp',
+       success: callback.success,
+       error:callback.error
+       });
+    },
+
                 save: function(path, data, description) {
                     
                         if (path.indexOf(".umlsync") <= 0) {
@@ -66,9 +111,9 @@ Version:
                 'dataType': 'jsonp',
                 'data': {'diagram':data, 'path': path, 'description':description},
                 'success': function(ddd) {
-                                        var dt = $("#view-2 #tree").dynatree("getTree");
-                                                dt.loadKeyPath(path, function(t,c,s) {}, "title");
-                                }
+                  var dt = $("#view-2 #tree").dynatree("getTree");
+                  dt.loadKeyPath(path, function(t,c,s) {}, "title");
+                }
             });
                 },
                 newfolder:function(path,callback) {
@@ -452,13 +497,21 @@ Version:
                         }, // onLazyRead
                         onActivate: function(node) {
                           if (!node.data.isFolder) {
-                                if ($("#tab-" + node.data.key).length == 0) {
-                                        if ('diagramclass' == node.data.addClass)
-                                                dm.dm.fw.loadDiagram(self.euid, node);
+                            var tt = node.data.title.split(".");
+                            var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+                            var repo="pe";
 
-                                        if ('cfile' == node.data.addClass)
-                                                dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
-                                }
+                            if (ext == "JSON" || ext == "UMLSYNC") {
+                              dm.dm.fw.loadDiagram(self.euid, node);
+                            }
+                            else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
+                              dm.dm.fw.loadMarkdown(self.euid, repo, node);
+                            }
+                            else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
+                              dm.dm.fw.loadCode(self.euid, repo, node);
+                            }
+                 if ('diagramclass' == node.data.addClass)
+                 dm.dm.fw.loadDiagram(self.euid,node);
                           }
                           else {
                             self.activePath = node.getAbsolutePath();

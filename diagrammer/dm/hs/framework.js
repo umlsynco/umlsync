@@ -23,6 +23,7 @@ Version:
   //@export:dm.hs.framework:plain
   dm.hs.framework = function(options) {
     var activeNode;
+    var converter = new Showdown.converter();
     function getInstance(options) {
       dm.dm = dm.dm || {};
       if (!dm.dm['fw']) {
@@ -39,6 +40,7 @@ Version:
       this.counter = 0;
       this.loader = dm.dm.loader;
       this.diagrams = this.diagrams || {};
+      this.markdown = this.markdown || {};
 
       this.initializeToolBox(dm.dm.loader);
       if (dm.ms['dg']) {
@@ -254,14 +256,30 @@ Version:
           });
           $("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
 
-
-
-
-          $("#tabs").append('<canvas id="SingleCanvas" class="us-canvas" style="left:18px;top:44px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
-          $("#tabs").append('<div class="us-diagram-toolbox"><a id="us-link"><span id="us-getlink">Get link</span></a><a id="us-link"><span id="us-diagram-edit">Edit</span></a></div>');
+          $("#tabs").append('<div class="us-diagram-toolbox"><a id="us-link"><span id="us-getlink">Get link</span></a><a id="us-link"><span id="us-diagram-edit">View</span></a></div>');
           $("#us-diagram-edit").click(function() {
-            
+            var text = $(this).text();
+            if (text == "Edit") {
+              $(this).text("View");
+              $(".diagram-menu").show();
+            }
+            else {
+              $(this).text("Edit");
+              $(".diagram-menu").hide();
+            }
+
+            var did = self.diagrams[self.selectedDiagramId];
+            if (did != undefined) {
+              self.wdddd = !self.wdddd;
+              did._setWidgetsOption("editable", self.wdddd);
+            }
           });
+
+          var canvasTop = (this.options.notabs) ? 13:44;
+          $("#tabs").append('<canvas id="SingleCanvas" class="us-canvas" style="left:18px;top:'+canvasTop+'px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
+          
+          if (this.options.notabs)
+            $("#tabs ul.ui-tabs-nav").hide();
 
           // AUTOMATED TEST WORK_AROUND !!!
           $("#content-right DIV.ui-scrollable-tabs").scroll(
@@ -350,6 +368,8 @@ Version:
 
           // Update the sizes first time
           this.updateFrameWork(true);
+
+          self.wdddd = true;
     }
 
     framework.prototype = {
@@ -523,7 +543,9 @@ Version:
 
         var $ch;
         if ($ch1.children(".ui-tabs-panel").length) {
-          hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
+          if (this.options.notabs == undefined || !this.options.notabs)
+            hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
+
           $ch = $ch1.children(".ui-tabs-panel").height(hhh)
           .children("div").height(hhh - 24); // Border 1px + padding 11
           hhh -= 24;
@@ -864,12 +886,13 @@ Version:
       self.views[viewId].view.save(path, data, description);
     },
     //@proexp
-    'loadDiagram': function(viewid, path) {
+    'loadDiagram': function(viewid, path, selector) {
       $.log("VIEWID IS:" + viewid);
 
       var self = this,
-      absPath = path.getAbsolutePath();
-      if (self.diagrams) {
+        absPath = (path.getAbsolutePath) ? path.getAbsolutePath(): path.data.sha;
+
+      if (self.diagrams && selector == undefined) {
         for (var r in self.diagrams) {
           var d = self.diagrams[r];
           if ((d.options.viewid == viewid)
@@ -885,16 +908,19 @@ Version:
         alert("View: " + viewid + " was not initialized.");
         return;
       }
+
       if (self.views[viewid])
         self.views[viewid].view.loadDiagram(path, {
           'success': function(json) {
-          var tabname = self.options.tabRight + "-" + self.counter;
+          var tabname = selector || self.options.tabRight + "-" + self.counter;
           self.counter++;
+          json.multicanvas = (selector != undefined);
 
+if (!json.multicanvas) {
           $("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
           tabname = "#" + tabname;
           $("#" + self.options.tabs).tabs("add", tabname, json.name);
-
+}
           json['fullname'] = absPath;
           dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname
               , function(obj) {
@@ -907,15 +933,115 @@ Version:
         'error': function() {alert("FAILED to load:" + path);}});
     },
     //@proexp
-    'loadCode': function(url, name) {
-      $.ajax({'url':url, 'dataType':'jsonp'});
-      /*
-   var tabname = "#"+ this.options.tabRight + "-" + this.counter;
-   this.counter++;
-   $("#tabs").tabs('add', tabname, name);
-   $(tabname).load({url:url, dataType:'jsonp'});
-       */
+    'loadMarkdown': function(viewid, repo, path) {
+      var self = this,
+      absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path)),
+      absPath2 = (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.path || path.data.sha))
+      title = path.data.title;
+/*      if (self.markdown) {
+        for (var r in self.markdown) {
+          var d = self.markdown[r];
+          if ((d.options.viewid == viewid)
+              && (d.options.fullname == absPath || ((d.options.fullname + ".umlsync") == absPath))) {
+            $("#tabs").tabs('select', d.parrent);
+            return;
+          }
+        }
+      }
+*/
+      if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
+        alert("View: " + viewid + " was not initialize.");
+        return;
+      }
+
+      if (self.views[viewid])
+        self.views[viewid].view.loadMarkdown(path, repo, {
+          'success': function(err, json) {
+          var tabname = self.options.tabRight + "-" + self.counter;
+          self.counter++;
+          json.multicanvas = false;
+
+          $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
+          json.name = json.name || tabname;
+          tabname = "#" + tabname;
+          
+          $("#" + self.options.tabs).tabs("add", tabname, title);
+
+          json['fullname'] = absPath;
+
+          //$("#" + self.options.tabs).tabs("add", tabname, json.name);
+
+
+          var innerHtml = '<div class="us-diagram announce instapaper_body md" data-path="/" id="readme"><span class="name">\
+            <span class="mini-icon mini-icon-readme"></span> '+absPath2+'</span>\
+            <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
+            '+converter.makeHtml(json)+'\
+            </article></div>';
+
+            $(tabname).append(innerHtml);
+            self.markdown[tabname] = self.markdown[tabname] || {repo: repo, fullname : absPath, viewid:viewid};
+
+            var count = 0;
+            $(tabname + " article.markdown-body .pack-diagram").each(function() {
+             // var repo = $(this).attr("repo"),
+              sum = $(this).attr("sha"),
+              relativePath = $(this).attr("path");
+
+              $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
+              //$(this).id = "asd-" + count;
+              //count++;
+//            alert("ID:" + $(this).attr("id"));
+              dm.dm.fw.loadDiagram(viewid,  {data:{sha:sum, path:relativePath, parentPath:path}}, "#" +  $(this).attr("id"));
+            });
+
+            self.updateFrameWork(true);
+        },
+        'error': function() {alert("FAILED to load:" + path);}});
     },
+    //@proexp
+    'loadCode': function(viewid, repo, path) {
+      var self = this,
+        absPath = path.getAbsolutePath(),
+        title = path.data.title;
+
+      if (self.codes) {
+        for (var r in self.codes) {
+          var d = self.codes[r];
+          if ((d.options.viewid == viewid)
+              && (d.options.repo == repo)
+              && (d.options.fullname == absPath || ((d.options.fullname + ".umlsync") == absPath))) {
+            $('.us-frame').slideUp();
+            $(r+'_p.us-frame').slideDown(); // _p means parrent & unique id
+            return;
+          }
+        }
+      }
+
+      if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
+        alert("View: " + viewid + " was not initialize.");
+        return;
+      }
+
+      if (self.views[viewid])
+        self.views[viewid].view.loadCode(path, repo, {
+          'success': function(err, json) {
+          var tabname = self.options.tabRight + "-" + self.counter;
+          self.counter++;
+
+          $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
+          tabname = "#" + tabname;
+          
+          $("#" + self.options.tabs).tabs("add", tabname, title);
+
+          $(tabname).append("<div class='us-diagram'><pre class='prettyprint linenums:1'>" + json + "</pre></div>");
+
+          prettyPrint();
+
+          self.updateFrameWork(true);
+        },
+        'error': function() {alert("FAILED to load:" + path);}});
+    },
+
     initializeKeyHandler: function(Loader) {
       //@ifdef EDITOR
       var fw = this;

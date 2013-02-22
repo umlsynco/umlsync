@@ -627,13 +627,14 @@ dm['at'] = dm.at; //automated testing
   dm.base.diagram("ds.diagram", {   
     'options': {
     'nameTemplate': 'diagram',
-    'type2': 'diagram' // hack while we do not have a project manager
+    'type2': 'diagram', // hack while we do not have a project manager
+    'editable':true
   },
   //@proexp
   _create: function () {
     //<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
     //this.options.multicanvas = true; ~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USES for DROP SOME NODES FROM DYNATREE
-    if (this.options.multicanvas != undefined) {
+    if (this.options.multicanvas) {
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
           <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
           <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
@@ -1028,7 +1029,12 @@ dm['at'] = dm.at; //automated testing
           }
         }
       this.max_zindex = newmax + 1;
-    } else {
+    } else if (key == "editable") {
+      this.options[key] = value;
+      for (var i in this.elements)
+        this.elements[i]._setOption(key, value);
+    }
+    else {
       var isSel = ("selected" != key);
       isSel && this.opman.startTransaction();
       for (var i in this.elements)
@@ -1600,7 +1606,8 @@ dm['at'] = dm.at; //automated testing
       'top': 200,
       'selected': false,
       'area': "none",
-      'ctx_menu':"default"
+      'ctx_menu':"default",
+      'editable':true
     },
     /*
     destroy: function() {
@@ -1927,6 +1934,13 @@ dm['at'] = dm.at; //automated testing
 
       if (this._setOption2 != undefined && this._setOption2(key, value)) {
         // redefine the base options in inherited class
+      } else if (key == "editable") {
+        $('#' + this.euid  + '_Border')
+        .resizable("option", "disabled", !value)
+        .draggable("option", "disabled", !value);
+
+        $("#" + this.euid + " .editablefield").editable(value ? "enable":"disable");
+
       } else if (key == "left") {
         $("#" + this.euid + "_Border").css(key, value);
       } else if (key == "top") {
@@ -2340,6 +2354,8 @@ dm['at'] = dm.at; //automated testing
     },
     //@proexp        
     startTransform: function(x1,y1) {
+      if (!this.parrent.options.editable)
+        return;
 
       var opman = this.parrent.opman;
       opman.startTransaction();

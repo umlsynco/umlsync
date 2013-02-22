@@ -8,7 +8,7 @@
 	 "image": [{"small": "./dm/icons/vp/es/component/InstanceSpecification.png"}]
 	},
 	{"type": "image",
-	 "image_path":"images/actor3.svg",
+	 "image_path":"/images/actor3.svg",
 	 "width":"40",
 	 "description": "Actor",
 	 "menu":"vp-component-menu",

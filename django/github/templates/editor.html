@@ -3,38 +3,43 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>UML Framework: UMLSync</title>
-  <link href="/static/css/gray-start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css"/>
+  <!-- CSS -->
+  <link rel="stylesheet" href="/static/css/github.css" type="text/css" />
+  <link rel="stylesheet" href="/static/css/gray-start/jquery-ui-1.8.17.custom.css" type="text/css"/>
   <link rel="stylesheet" href="/static/js/3pp/scrollabletab/css/base/jquery.ui.tabs.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="/static/css/main.css" type="text/css" media="all"/>
   <link rel="stylesheet/less" href="/static/css/main.less" type="text/css" media="screen"/>
   <link rel="stylesheet" href="/static/js/3pp/simple-color-picker/jquery.simple-color-picker.css" type="text/css" media="screen"/>
   <link rel="stylesheet" href="/static/js/3pp/tablesorter/themes/blue/style.css" type="text/css" media="screen"/>
-  <link rel="stylesheet" href="/static/js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>  
+  <link rel="stylesheet" href="/static/js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="/static/css/simple_menu.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/static/css/jqsimplemenu.css" type="text/css" media="screen" />
+  <link rel='stylesheet' href='/static/js/3pp/skin/ui.dynatree.css' type='text/css'/>
+  <link rel="stylesheet" href="/static/js/3pp/google-code-prettify/src/prettify.css" type="text/css"/>
+
+  <!-- jQuery & plugins -->
   <script src="/static/js/jquery.js"></script>
-  <script src="/static/js/underscore-min.js"></script>
-  <script src="/static/js/async.min.js"></script>
-  <script src="/static/js/github.js"></script>
-  
   <script src="/static/js/jquery-ui.js"></script>
-  
-  <script src="/static/css/less.js" type="text/javascript"></script>
-  <script src="/static/js/3pp/scrollabletab/js/jquery.scrollabletab.js"></script>
-  <script src="/static/js/jquery.cookie.js"></script>
-  <script src="/static/js/ui.selectmenu.js"></script>
   <script type="text/javascript" src="/static/js/3pp/simple-color-picker/jquery.simple-color-picker.js"></script>
   <script type="text/javascript" src="/static/js/jqsimplemenu.js"></script>
   <script type="text/javascript" src="/static/js/jquery.combomenu.js"></script>
-  <link rel="stylesheet" href="/static/css/simple_menu.css" type="text/css" media="screen" />
-  <link rel="stylesheet" href="/static/css/jqsimplemenu.css" type="text/css" media="screen" />
-  <link rel='stylesheet' type='text/css' href='/static/js/3pp/skin/ui.dynatree.css'>
-  <script src="/static/js/3pp/jLog/jLog.min.js"></script>
-  <script src="/static/js/3pp/editable/editable.js"></script>
-  <script src="/static/js/3pp/metadata/jquery.metadata.js"></script>
   <script src="/static/js/3pp/tablesorter/jquery.tablesorter.js"></script>
-  <script src="/static/js/3pp/jquery.tools.min.js"></script>
   <script src="/static/js/3pp/contextmenu/jquery.contextmenu.js"></script>
   <script src="/static/js/3pp/dynatree/jquery.dynatree.js" type="text/javascript"></script>
   <script src="/static/js/3pp/base64/jquery.base64.js"></script>
+  <script src="/static/js/3pp/scrollabletab/js/jquery.scrollabletab.js"></script>
+  <script src="/static/js/3pp/jLog/jLog.min.js"></script>
+  <script src="/static/js/3pp/editable/editable.js"></script>
+  <script src="/static/js/3pp/metadata/jquery.metadata.js"></script>
+  <script src="/static/js/jquery.cookie.js"></script>
+  <!-- script src="/static/js/ui.selectmenu.js"></script-->
+
+  <!-- libraries -->
+  <script src="/static/css/less.js" type="text/javascript"></script>
+  <script src="/static/js/github.js"></script>
+  <script type="text/javascript" src="/static/js/3pp/google-code-prettify/src/prettify.js"></script>
+  <script src="/static/js/3pp/showdown.js"></script>
+
   <style>
     body { font-size: 62.5%; }
     label, input { display: inline; }
@@ -48,7 +53,8 @@
     .left { float: left; }
     .left2 { overflow: hidden; display: block; padding: 0 6px 0 5px; }
     .left2 input { width: 100%; }  
-  </style>    
+  </style>
+  <!-- Diagramming framework -->
   <script src="/static/dm/ds/diagram.js"></script>
   <script src="/static/dm/ds/base.js"></script>
   <script src="/static/dm/ms/ds/common.js"></script>
@@ -80,32 +86,32 @@
 
     // Initialize header menu on the left
     $('#header-menu').combomenu({menu:{
-		'Project': {
-		  'Change repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
-		  'Change branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
-		  'New diagram': {handler:function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}},
-		  'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
-		},
-		'Actions': {
-		  'Post for review':{handler: function() {	  }}
-		},
-		'Edit':{
-		  'Un-do':{handler: function(){		  }},
-		  'Re-do':{handler: function(){		  }},
-		  'Cut':{handler: function(){		  }},
-		  'Copy':{handler: function(){		  }},
-		  'Past':{handler: function(){		  }},
-		  'Delete':{handler: function(){		  }},
-		  'Select All':{handler: function(){		  }}
-		},
-		'Views':{
-		  'Google code':{handler: function(){		  }},
-		  'Sourceforege':{handler: function(){		  }},
-		  'Github':{handler: function(){		  }},
-		  'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
-		}
-	},
-	prefix: "file-menu"});
+        'Project': {
+          'Change repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
+          'Change branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
+          'New diagram': {handler:function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}},
+          'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
+        },
+        'Actions': {
+          'Post for review':{handler: function() {      }}
+        },
+        'Edit':{
+          'Un-do':{handler: function(){          }},
+          'Re-do':{handler: function(){          }},
+          'Cut':{handler: function(){          }},
+          'Copy':{handler: function(){          }},
+          'Past':{handler: function(){          }},
+          'Delete':{handler: function(){          }},
+          'Select All':{handler: function(){          }}
+        },
+        'Views':{
+          'Google code':{handler: function(){          }},
+          'Sourceforege':{handler: function(){          }},
+          'Github':{handler: function(){          }},
+          'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
+        }
+    },
+    prefix: "file-menu"});
     
 /*
   // CSRF support for AJAX. Uses for server-side security.

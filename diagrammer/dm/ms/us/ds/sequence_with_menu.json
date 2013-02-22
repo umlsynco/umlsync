@@ -60,7 +60,7 @@
 	 "icon": "./dm/icons/us/es/common/strict.png"
 	},
 	{"type": "image",
-	 "image_path":"images/actor3.svg",
+	 "image_path":"/images/actor3.svg",
 	 "width":"40",
 	 "title": "Actor",
 	 "menu":"us-message-menu",
