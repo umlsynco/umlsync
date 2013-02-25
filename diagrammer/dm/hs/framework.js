@@ -864,8 +864,17 @@ Version:
       self.views[viewId].view.save(path, data, description);
     },
 
-    appendDiagramToolbox: function(selector) {
-      $(selector).append('<div class="us-diagram-toolbox"><a id="us-link"><span id="us-getlink">Get link</span></a><a id="us-link"><span id="us-diagram-edit">View</span></a></div>');
+    appendDiagramToolbox: function(selector, flag) {
+      if (flag == undefined) {
+        $(selector).append('<span class="us-diagram-toolbox"><a id="us-link"><span id="us-getlink">Get link</span></a><a id="us-link"><span id="us-diagram-edit">View</span></a></span>');
+      }
+      else {
+        $(selector).append('<span class="us-diagram-toolbox">\
+                              <a id="us-link"><span id="us-getlink">Get link</span></a>\
+                              <a id="us-link"><span id="us-diagram-fs">Full screen</span></a>\
+                              <a id="us-link"><span id="us-diagram-edit">Edit</span></a>\
+                            </span>');
+      }
       $(selector + " #us-diagram-edit").click(function() {
         var text = $(this).text();
         if (text == "Edit") {
@@ -908,6 +917,7 @@ Version:
       var self = this,
         absPath = params.repo + "/tree/" + params.branch + "/" + params.absPath;
 
+      // Looking for the loaded diagrams through the tabs
       if (self.diagrams && selector == undefined) {
         for (var r in self.diagrams) {
           var d = self.diagrams[r];
@@ -919,27 +929,31 @@ Version:
         }
       }
 
+      // Check that view with viewid exists (looks stuipid now because we do not support
+      // multiple views for a while)
       var self = this;
       if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
         alert("View: " + viewid + " was not initialized.");
         return;
       }
 
+      // Add gif which shows that tab is loading
+      var tabname = selector || self.options.tabRight + "-" + self.counter;
+      self.counter++;
+
+      if (selector == undefined) {
+        tabname = "#" + tabname;
+        $("#" + self.options.tabs).tabs("add", tabname, params.title);
+        $("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
+      }
+
       if (self.views[viewid])
         self.views[viewid].view.loadDiagram(params, {
           'success': function(json) {
-          var tabname = selector || self.options.tabRight + "-" + self.counter;
-          self.counter++;
           json.multicanvas = (selector != undefined);
 
-          if (!json.multicanvas) {
-            $("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
-            tabname = "#" + tabname;
-            $("#" + self.options.tabs).tabs("add", tabname, json.name);
-          }
-
           // Simple toolbox for each diagram
-          self.appendDiagramToolbox(tabname);
+          self.appendDiagramToolbox(tabname, selector);
 
           json['fullname'] = absPath;
           dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname

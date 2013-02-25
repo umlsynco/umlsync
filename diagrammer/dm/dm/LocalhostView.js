@@ -142,7 +142,7 @@ Version:
                         if (!node.data.isFolder) {
                                 if ($("#tab-" + node.data.key).length == 0) {
                                         if ('diagramclass' == node.data.addClass)
-                                                dm.dm.fw.loadDiagram(self.euid, node); // Create tab first and load content later
+                                                dm.dm.fw.loadDiagram({viewid:self.euid, node:node, title:node.data.title, absPath:node.getAbsolutePath()}); // Create tab first and load content later
 
                                         if ('cfile' == node.data.addClass)
                                                 dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);

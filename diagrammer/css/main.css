@@ -11,6 +11,7 @@ body {
   font-size: 11px;
   color: #666666; 
   line-height: 1em;
+  position:relative;
 }
 
 a.editablefield  {
@@ -1039,6 +1040,7 @@ span.cfolder span.dynatree-icon {
 
 .us-diagram-toolbox {
   position: absolute;
+  display:inline;
   left: 20px;
   top: 40px;
   z-index:1000000;
