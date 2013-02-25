@@ -58,6 +58,8 @@ a {
   position: absolute;
   z-index: 999;
   pointer-events: none;
+  left:0px;
+  top:0px;
 }
 
 .us-canvas-bg {
@@ -474,7 +476,6 @@ a {
 }
 
 .us-context-toolbox {
-  position: fixed;
   display: block;
 }
 

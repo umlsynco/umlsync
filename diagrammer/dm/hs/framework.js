@@ -4,11 +4,8 @@ Class: framework
 Views and diagrams handler.
 it is required header, content and bottom options to make it resizeable
 
-Author:
-  Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
-
 Copyright:
-  Copyright (c) 2012 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
+  Copyright (c) UMLSync Inc. All rights reserved.
 
 URL:
   http://umlsync.org
@@ -256,25 +253,6 @@ Version:
           });
           $("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
 
-          $("#tabs").append('<div class="us-diagram-toolbox"><a id="us-link"><span id="us-getlink">Get link</span></a><a id="us-link"><span id="us-diagram-edit">View</span></a></div>');
-          $("#us-diagram-edit").click(function() {
-            var text = $(this).text();
-            if (text == "Edit") {
-              $(this).text("View");
-              $(".diagram-menu").show();
-            }
-            else {
-              $(this).text("Edit");
-              $(".diagram-menu").hide();
-            }
-
-            var did = self.diagrams[self.selectedDiagramId];
-            if (did != undefined) {
-              self.wdddd = !self.wdddd;
-              did._setWidgetsOption("editable", self.wdddd);
-            }
-          });
-
           var canvasTop = (this.options.notabs) ? 13:44;
           $("#tabs").append('<canvas id="SingleCanvas" class="us-canvas" style="left:18px;top:'+canvasTop+'px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
           
@@ -373,20 +351,20 @@ Version:
     }
 
     framework.prototype = {
-                           options: {
+     options: {
       tabRight:"diag-",
       tabLeft:"view-",
       tabs:"tabs",
       top:"#content-header",
       bottom:"#content-bottom",
       content:"content"
-    },
-    views:{},
-    addRepositories: function(title, IViewsManager, descr) {
+     },
+     views:{},
+     addRepositories: function(title, IViewsManager, descr) {
       if (dm.dm.dialogs) {
         dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
       }
-    },
+     },
 
     // create the drop down selector with tabs
     // param - element id to attach widget
@@ -886,6 +864,27 @@ Version:
       self.views[viewId].view.save(path, data, description);
     },
 
+    appendDiagramToolbox: function(selector) {
+      $(selector).append('<div class="us-diagram-toolbox"><a id="us-link"><span id="us-getlink">Get link</span></a><a id="us-link"><span id="us-diagram-edit">View</span></a></div>');
+      $(selector + " #us-diagram-edit").click(function() {
+        var text = $(this).text();
+        if (text == "Edit") {
+          $(this).text("View");
+          $(".diagram-menu").show();
+        }
+        else {
+          $(this).text("Edit");
+          $(".diagram-menu").hide();
+        }
+
+        var did = self.diagrams[self.selectedDiagramId];
+        if (did != undefined) {
+          self.wdddd = !self.wdddd;
+          did._setWidgetsOption("editable", self.wdddd);
+        }
+      });
+    },
+    
     // Create layer for diagram and load diagram
     // { 
     //   viewid - IView.euid
@@ -933,11 +932,15 @@ Version:
           self.counter++;
           json.multicanvas = (selector != undefined);
 
-if (!json.multicanvas) {
-          $("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
-          tabname = "#" + tabname;
-          $("#" + self.options.tabs).tabs("add", tabname, json.name);
-}
+          if (!json.multicanvas) {
+            $("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
+            tabname = "#" + tabname;
+            $("#" + self.options.tabs).tabs("add", tabname, json.name);
+          }
+
+          // Simple toolbox for each diagram
+          self.appendDiagramToolbox(tabname);
+
           json['fullname'] = absPath;
           dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname
               , function(obj) {
