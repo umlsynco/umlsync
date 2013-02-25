@@ -111,7 +111,8 @@ URL:
                     self.modifiedList[path] = data;
                     $.log("Saving " + data.toString() + " on " + path.toString());
                   },
-                  'loadDiagram': function(node, callback) {
+                  'loadDiagram': function(params, callback) {
+                    var node = params.node;
                     if (node && node.data) {
                       if (node.data.sha) {
                         repo.getBlob(node.data.sha, function(err, data) {
@@ -304,7 +305,7 @@ URL:
                               var repo="pe";
 
                               if (ext == "JSON" || ext == "UMLSYNC") {
-                                dm.dm.fw.loadDiagram(self.euid, node);
+                                dm.dm.fw.loadDiagram({viewid:self.euid, node:node, repo:"umlsynco/umlsync", branch:"tree/master", title:node.data.title, absPath:node.getAbsolutePath()});
                               }
                               else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
                                 dm.dm.fw.loadMarkdown(self.euid, repo, node);

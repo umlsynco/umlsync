@@ -885,12 +885,29 @@ Version:
       }
       self.views[viewId].view.save(path, data, description);
     },
+
+    // Create layer for diagram and load diagram
+    // { 
+    //   viewid - IView.euid
+    //   title - the name of file
+    //   repo - file's repository
+    //   branch - file's branch 
+    //   absPath - repo + branch + absolute path
+    //   node - dynatree node
+    //   selector - jQuery selector to insert diagram
+    // }
+    // 
     //@proexp
-    'loadDiagram': function(viewid, path, selector) {
+    'loadDiagram': function(params) {
+      var viewid = params.viewid,
+        path = params.node,
+        branch = params.branch,
+        selector = params.selector;
+
       $.log("VIEWID IS:" + viewid);
 
       var self = this,
-        absPath = (path.getAbsolutePath) ? path.getAbsolutePath(): path.data.sha;
+        absPath = params.repo + "/tree/" + params.branch + "/" + params.absPath;
 
       if (self.diagrams && selector == undefined) {
         for (var r in self.diagrams) {
@@ -910,7 +927,7 @@ Version:
       }
 
       if (self.views[viewid])
-        self.views[viewid].view.loadDiagram(path, {
+        self.views[viewid].view.loadDiagram(params, {
           'success': function(json) {
           var tabname = selector || self.options.tabRight + "-" + self.counter;
           self.counter++;
@@ -991,7 +1008,9 @@ if (!json.multicanvas) {
               //$(this).id = "asd-" + count;
               //count++;
 //            alert("ID:" + $(this).attr("id"));
-              dm.dm.fw.loadDiagram(viewid,  {data:{sha:sum, path:relativePath, parentPath:path}}, "#" +  $(this).attr("id"));
+              dm.dm.fw.loadDiagram({viewid:viewid,
+                                    node:{data:{sha:sum, path:relativePath, parentPath:path}},
+                                    selector: "#" +  $(this).attr("id")});
             });
 
             self.updateFrameWork(true);
