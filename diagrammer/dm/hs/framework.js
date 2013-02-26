@@ -864,9 +864,30 @@ Version:
       self.views[viewId].view.save(path, data, description);
     },
 
-    appendDiagramToolbox: function(selector, flag) {
-      if (flag == undefined) {
-        $(selector).append('<span class="us-diagram-toolbox"><a id="us-link"><span id="us-getlink">Get link</span></a><a id="us-link"><span id="us-diagram-edit">View</span></a></span>');
+    appendDiagramToolbox: function(selector, params) {
+      var self = this;
+      if (params.selector == undefined) {
+        $(selector).append('<span class="us-diagram-toolbox">\
+                               <a id="us-link"><span id="us-getlink">Get link</span></a>\
+                               <a id="us-link"><span id="us-diagram-edit">View</span></a>\
+                            </span>');
+        $(selector + " #us-diagram-edit").click(function() {
+          var text = $(this).text();
+          if (text == "Edit") {
+            $(this).text("View");
+            $(".diagram-menu").show();
+          }
+          else {
+            $(this).text("Edit");
+            $(".diagram-menu").hide();
+          }
+
+          var did = self.diagrams[self.selectedDiagramId];
+          if (did != undefined) {
+            self.wdddd = !self.wdddd;
+            did._setWidgetsOption("editable", self.wdddd);
+          }
+        });
       }
       else {
         $(selector).append('<span class="us-diagram-toolbox">\
@@ -874,24 +895,12 @@ Version:
                               <a id="us-link"><span id="us-diagram-fs">Full screen</span></a>\
                               <a id="us-link"><span id="us-diagram-edit">Edit</span></a>\
                             </span>');
+        $(selector + " #us-diagram-edit").click(function() {
+          var clonedParams = $.extend({}, params);
+          delete clonedParams['selector'];
+          self.loadDiagram(clonedParams);
+        });
       }
-      $(selector + " #us-diagram-edit").click(function() {
-        var text = $(this).text();
-        if (text == "Edit") {
-          $(this).text("View");
-          $(".diagram-menu").show();
-        }
-        else {
-          $(this).text("Edit");
-          $(".diagram-menu").hide();
-        }
-
-        var did = self.diagrams[self.selectedDiagramId];
-        if (did != undefined) {
-          self.wdddd = !self.wdddd;
-          did._setWidgetsOption("editable", self.wdddd);
-        }
-      });
     },
     
     // Create layer for diagram and load diagram
@@ -953,14 +962,17 @@ Version:
           json.multicanvas = (selector != undefined);
 
           // Simple toolbox for each diagram
-          self.appendDiagramToolbox(tabname, selector);
+          self.appendDiagramToolbox(tabname, params);
+
+          // Remove puh after JSON load completion
+          $("#puh").remove();
 
           json['fullname'] = absPath;
           dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname
               , function(obj) {
-            self.diagrams[tabname] = obj;
+            if (!obj.options.multicanvas)
+              self.diagrams[tabname] = obj;
             obj.options['viewid'] = viewid;
-            $("#puh").remove();
           });
           self.updateFrameWork(true);
         },
@@ -1019,7 +1031,9 @@ Version:
             $(tabname + " article.markdown-body .pack-diagram").each(function() {
              // var repo = $(this).attr("repo"),
               sum = $(this).attr("sha"),
-              relativePath = $(this).attr("path");
+              relativePath = $(this).attr("path"),
+              splitted = (relativePath == undefined) ? "":relativePath.rsplit("/"),
+              title = (relativePath == undefined) ? sum : splitted[splitted.length -1];
 
               $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
               //$(this).id = "asd-" + count;
@@ -1027,6 +1041,8 @@ Version:
 //            alert("ID:" + $(this).attr("id"));
               dm.dm.fw.loadDiagram({viewid:viewid,
                                     node:{data:{sha:sum, path:relativePath, parentPath:path}},
+                                    absPath: relativePath,
+                                    title: title,
                                     selector: "#" +  $(this).attr("id")});
             });
 

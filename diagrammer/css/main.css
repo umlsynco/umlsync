@@ -1041,9 +1041,10 @@ span.cfolder span.dynatree-icon {
 .us-diagram-toolbox {
   position: absolute;
   display:inline;
-  left: 20px;
+  right: 40px;
   top: 40px;
   z-index:1000000;
+  cursor:pointer;
 }
 
 .us-diagram-toolbox  a {
