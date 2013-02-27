@@ -212,7 +212,7 @@ URL:
                               dm.dm.fw.loadDiagram(self.euid, node);
                             }
                             else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-                              dm.dm.fw.loadMarkdown(self.euid, repo, node);
+                              dm.dm.fw.loadMarkdown({viewid:self.euid, repo:repo, node:node});
                             }
                             else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
                               dm.dm.fw.loadCode(self.euid, repo, node);

@@ -864,29 +864,36 @@ Version:
       self.views[viewId].view.save(path, data, description);
     },
 
-    appendDiagramToolbox: function(selector, params) {
+    appendDiagramToolbox: function(selector, params, isMarkdown) {
       var self = this;
       if (params.selector == undefined) {
+       
         $(selector).append('<span class="us-diagram-toolbox">\
                                <a id="us-link"><span id="us-getlink">Get link</span></a>\
                                <a id="us-link"><span id="us-diagram-edit">View</span></a>\
                             </span>');
         $(selector + " #us-diagram-edit").click(function() {
-          var text = $(this).text();
-          if (text == "Edit") {
-            $(this).text("View");
-            $(".diagram-menu").show();
-          }
-          else {
-            $(this).text("Edit");
-            $(".diagram-menu").hide();
-          }
+          
+            var text = $(this).text();
+            if (text == "Edit") {
+              $(this).text("View");
+              $(".diagram-menu").show();
+            }
+            else {
+              $(this).text("Edit");
+              $(".diagram-menu").hide();
+            }
 
-          var did = self.diagrams[self.selectedDiagramId];
-          if (did != undefined) {
-            self.wdddd = !self.wdddd;
-            did._setWidgetsOption("editable", self.wdddd);
-          }
+            if (isMarkdown == undefined) {
+              var did = self.diagrams[self.selectedDiagramId];
+              if (did != undefined) {
+                self.wdddd = !self.wdddd;
+                did._setWidgetsOption("editable", self.wdddd);
+              }
+            }
+            else {
+              self.editMarkdown(selector, params);
+            }
         });
       }
       else {
@@ -896,9 +903,10 @@ Version:
                               <a id="us-link"><span id="us-diagram-edit">Edit</span></a>\
                             </span>');
         $(selector + " #us-diagram-edit").click(function() {
-          var clonedParams = $.extend({}, params);
-          delete clonedParams['selector'];
-          self.loadDiagram(clonedParams);
+
+            var clonedParams = $.extend({}, params);
+            delete clonedParams['selector'];
+            self.loadDiagram(clonedParams);
         });
       }
     },
@@ -978,8 +986,40 @@ Version:
         },
         'error': function() {alert("FAILED to load:" + path);}});
     },
+    // Switch markdown to edit mode
+    editMarkdown: function(selector, params) {
+      // toolbox
+      var rrrr = '<span class="us-toolbox-header" style="position:absolute;top:0px;left:0px;z-index:1000000;"><ul style="list-style:none outside none;">\
+                        <li class="us-toolbox-button us-toolbox-h1"><a title="First Level Heading [Ctrl+1]" accesskey="1" href="">First Level Heading</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h2"><a title="Second Level Heading [Ctrl+2]" accesskey="2" href="">Second Level Heading</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h3"><a title="Heading 3 [Ctrl+3]" accesskey="3" href="">Heading 3</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h4"><a title="Heading 4 [Ctrl+4]" accesskey="4" href="">Heading 4</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h5"><a title="Heading 5 [Ctrl+5]" accesskey="5" href="">Heading 5</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h6"><a title="Heading 6 [Ctrl+6]" accesskey="6" href="">Heading 6</a>\
+                        </li><li class="us-toolbox-separator">&nbsp</li>\
+                        <li class="us-toolbox-button us-toolbox-bold"><a title="Bold [Ctrl+B]" accesskey="B" href="">Bold</a></li>\
+                        <li class="us-toolbox-button us-toolbox-italic"><a title="Italic [Ctrl+I]" accesskey="I" href="">Italic</a></li>\
+                        <li class="us-toolbox-separator">&nbsp</li>\
+                        <li class="us-toolbox-button us-toolbox-bullet "><a title="Bulleted List" href="">Bulleted List</a></li>\
+                        <li class="us-toolbox-button us-toolbox-numlist"><a title="Numeric List" href="">Numeric List</a></li>\
+                        <li class="us-toolbox-separator">&nbsp</li>\
+                        <li class="us-toolbox-button us-toolbox-pic"><a title="Picture [Ctrl+P]" accesskey="P" href="">Picture</a></li>\
+                        <li class="us-toolbox-button us-toolbox-link"><a title="Link [Ctrl+L]" accesskey="L" href="">Link</a></li>\
+                        <li class="us-toolbox-separator">---------------</li>\
+                        <li class="us-toolbox-button us-toolbox-quotes"><a title="Quotes" href="">Quotes</a></li>\
+                        <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" href="">Code Block / Code</a></li>\
+                        <li class="us-toolbox-separator">---------------</li>\
+                        <li class="us-toolbox-button us-toolbox-preview"><a title="Preview" href="">Preview</a></li>\
+                      </ul></span>';
+      $(selector).empty();
+      $(rrrr).appendTo(selector);
+    },
     //@proexp
-    'loadMarkdown': function(viewid, repo, path) {
+    'loadMarkdown': function(params) {
+      var viewid = params.viewid,
+          repo = params.repo,
+          path = params.node;
+
       var self = this,
       absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path)),
       absPath2 = (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.path || path.data.sha))
@@ -1008,9 +1048,10 @@ Version:
           json.multicanvas = false;
 
           $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
+
           json.name = json.name || tabname;
           tabname = "#" + tabname;
-          
+
           $("#" + self.options.tabs).tabs("add", tabname, title);
 
           json['fullname'] = absPath;
@@ -1026,6 +1067,9 @@ Version:
 
             $(tabname).append(innerHtml);
             self.markdown[tabname] = self.markdown[tabname] || {repo: repo, fullname : absPath, viewid:viewid};
+            
+            // Simple toolbox for each diagram
+            self.appendDiagramToolbox(tabname, params, "md");
 
             var count = 0;
             $(tabname + " article.markdown-body .pack-diagram").each(function() {

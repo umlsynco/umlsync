@@ -1066,3 +1066,76 @@ span.cfolder span.dynatree-icon {
   width:20px;
   height:20px;
 }
+
+
+.us-toolbox-button {
+  float: left;
+  list-style: none outside none;
+  position: relative;
+}
+
+.us-toolbox-h1 a {
+    background-image: url("images/h1.png");
+}
+.us-toolbox-h2 a {
+    background-image: url("images/h2.png");
+}
+.us-toolbox-h3 a {
+    background-image: url("images/h3.png");
+}
+.us-toolbox-h4 a {
+    background-image: url("images/h4.png");
+}
+.us-toolbox-h5 a {
+    background-image: url("images/h5.png");
+}
+.us-toolbox-h6 a {
+    background-image: url("images/h6.png");
+}
+.us-toolbox-bold a {
+    background-image: url("images/bold.png");
+}
+.us-toolbox-italic a {
+    background-image: url("images/italic.png");
+}
+.us-toolbox-bullet a {
+    background-image: url("images/list-bullet.png");
+}
+.us-toolbox-numlist a {
+    background-image: url("images/list-numeric.png");
+}
+.us-toolbox-pic a {
+    background-image: url("images/picture.png");
+}
+.us-toolbox-link a {
+    background-image: url("images/link.png");
+}
+.us-toolbox-quotes a {
+    background-image: url("images/quotes.png");
+}
+.us-toolbox-code a {
+    background-image: url("images/code.png");
+}
+.us-toolbox-preview a {
+    background-image: url("images/preview.png");
+}
+
+.us-toolbox-header ul a {
+    background-repeat: no-repeat;
+    display: block;
+    height: 16px;
+    margin: 0;
+    padding: 3px;
+    text-indent: -1000px;
+    width: 16px;
+}
+
+
+.us-toolbox-separator {
+  background-color: #CCCCCC;
+  height: 16px;
+  margin: 0 10px;
+  overflow: hidden;
+  width: 1px;
+  float:left;
+}
