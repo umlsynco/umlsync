@@ -989,7 +989,7 @@ Version:
     // Switch markdown to edit mode
     editMarkdown: function(selector, params) {
       // toolbox
-      var rrrr = '<span class="us-toolbox-header" style="position:absolute;top:0px;left:0px;z-index:1000000;"><ul style="list-style:none outside none;">\
+      var rrrr = '<span class="us-toolbox-header" style="z-index:1000000;"><ul style="list-style:none outside none;">\
                         <li class="us-toolbox-button us-toolbox-h1"><a title="First Level Heading [Ctrl+1]" accesskey="1" href="">First Level Heading</a></li>\
                         <li class="us-toolbox-button us-toolbox-h2"><a title="Second Level Heading [Ctrl+2]" accesskey="2" href="">Second Level Heading</a></li>\
                         <li class="us-toolbox-button us-toolbox-h3"><a title="Heading 3 [Ctrl+3]" accesskey="3" href="">Heading 3</a></li>\
@@ -1010,9 +1010,22 @@ Version:
                         <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" href="">Code Block / Code</a></li>\
                         <li class="us-toolbox-separator">---------------</li>\
                         <li class="us-toolbox-button us-toolbox-preview"><a title="Preview" href="">Preview</a></li>\
-                      </ul></span>';
+                      </ul></span><br><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
       $(selector).empty();
       $(rrrr).appendTo(selector);
+
+      var viewid = params.viewid,
+          repo = params.repo,
+          path = params.node,
+          self = this;
+
+      self.views[viewid].view.loadMarkdown(path, repo, {
+          'success': function(err, json) {
+            $(selector + " #markdown").text(json);
+          },
+          'error': function() {
+          }
+      });
     },
     //@proexp
     'loadMarkdown': function(params) {

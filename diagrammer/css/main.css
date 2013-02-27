@@ -1139,3 +1139,13 @@ span.cfolder span.dynatree-icon {
   width: 1px;
   float:left;
 }
+
+.us-markdown-editor {
+    border: 3px solid green;
+    clear: both;
+    font: 12px/18px 'Courier New',Courier,monospace;
+    height: 320px;
+    overflow: auto;
+    padding: 5px 5px 5px 35px;
+    width: 100%;
+}
