@@ -41,6 +41,7 @@ Version:
       this.contents = this.contents || {};
 
       this.initializeToolBox(dm.dm.loader);
+
       if (dm.ms['dg']) {
         dm.dm['dialogs'] = new dm.ms['dg'](this);
         this.initMainMenu();
@@ -248,9 +249,6 @@ Version:
               }
             }
           }
-          /*                    'remove': function(event, ui) { // it is too late to save diagram at this moment
-                        self.updateFrameWork(true);
-                    }*/
           });
           $("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
 
@@ -599,42 +597,14 @@ Version:
         $("#us-branch .js-select-button").text("master");
       
      }
-      /*      $("#accordion #opened-repos").append('<h3><a href="#" id="'+id+'">'+name+'</a></h3>');
-      $("#accordion A#" + id).parent()
-        .addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-top')
-        .click(function() {
-            //if ($(this).hasClass('ui-state-default')) {
-              var height = 0;
-              $(this).removeClass('ui-state-default').addClass('ui-state-active');
-              var id = "DIV#" + $(this).children().attr('id');
-              $("#treetabs").children("DIV").hide(); // hide all trees
-              $(id).show(); // open this one
-              $("#accordion #opened-repos").children("H3").slideUp();
-              $("#us-active-repo").text($(this).text());
-            //}
-            return false;
-          })
-          .hover(
-              function() {
-                $(this).addClass('ui-state-hover');
-              },
-              function(e) {
-                $(this).removeClass('ui-state-hover');
-              }
-          );
-       */
-      id = "DIV#" + id;
-      var $treetabs = $("#treetabs");
-//    $("#treetabs " + id).addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active');
 
-      $(id).append("<div id='tree'></div>");
-      var self = this;
+     id = "DIV#" + id;
+     var $treetabs = $("#treetabs");
 
+     $(id).append("<div id='tree'></div>");
+     var self = this;
 
-
-
-
-      function initCtxMenu(vid, items, view) {
+     function initCtxMenu(vid, items, view) {
         $('<ul id="view-'+  vid +'" class="context-menu" ></ul>').hide().appendTo('body');
         $("#view-"+vid).listmenu({
           selector: "menu-item",
@@ -671,100 +641,9 @@ Version:
           }
         }
       }
-      // TODO: Create common context menu manager which could handle
-      //     diagram, element, trees etc !!!
-      /*
-            IView.info(function(json) {
-                if (!json)
-                    return;
-                self.views = self.views || {};
-                self.views[IView.euid] = self.views[IView.euid] || {};
-                self.views[IView.euid].info = json || {};
-                self.views[IView.euid].ctxmenu =
-                    $('<ul id="view-'+IView.euid +'" class="context-menu" >\
-                            <li class="menu-item-1"><a id="newfolder">New Folder</a></li>\
-                            <li class="menu-item-1"><a id="vp_main_menu_ref">New Diagram</a></li>\
-                            <li class="menu-item-1"><a href="#">Cut</a></li>\
-                            <li class="menu-item-1"><a href="#">Copy</a></li>\
-                            <li class="menu-item-1"><a href="#">Past</a></li>\
-                            <li class="menu-item-1"><a id="Delete" href="#">Delete</a></li>\
-                            </ul>').hide().appendTo(id);
 
-                self.views[IView.euid].ctxmenunode = undefined;
-                $("#view-" + IView.euid + " #Delete").click(function(){
-                    var node = self.views[IView.euid].ctxmenunode;
-                    var path = node.getAbsolutePath();
-                  IView.remove(path, function() { node.remove()});
-                });
-
-                self.views[IView.euid].ctxmenunode = undefined;
-                self.views[IView.euid].ctxmenu.hide();
-
-                $("#view-" + IView.euid + " #vp_main_menu_ref").click(function(){
-                    $( "#vp_main_menu" ).dialog( "open" );
-                    self.views[IView.euid].ctxmenunode = undefined;
-                    self.views[IView.euid].ctxmenu.hide();
-
-                });
-
-                $("#view-" + IView.euid + " #newfolder").click(function(){
-                    if (self.views[IView.euid].ctxmenunode) {
-                        var node = self.views[IView.euid].ctxmenunode;
-                        $.log("PPPPPPPPPPPPPPPPPPATH: " + node.getAbsolutePath() + "  ISFOLDER  " + node.data.isFolder);
-                        var path = node.data.isFolder ? node.getAbsolutePath() : node.parent.getAbsolutePath();
-                        var innerHtml = "<div id='vp_main_menu2'><div>" +
-                            "<p><label>Add folder to " + path + ": </label><input type='text' maxlength='30' pattern='[a-zA-Z ]{5,}' name='name'></p>" +
-                            "<p style='margin: 10px 0; align: middle;'><button class='finish' type='submit' style='background-color:#7FAEFF;cursor:default;'>Finish</button>&nbsp;&nbsp;&nbsp;" +
-                            "<button type='submit' class='close'>Cancel</button></p>" +
-                            "</div></div>";
-
-
-
-                        $('body').append(innerHtml);
-                        $("#vp_main_menu2").draggable({'cancel': '.scrollable,:input,:button'});
-                        $("#vp_main_menu2").overlay({
-                                    // custom top position
-                                    top: 150,
-                                    // some mask tweaks suitable for facebox-looking dialogs
-                                    mask: {
-                                        // you might also consider a "transparent" color for the mask
-                                        color: '#',
-                                        // load mask a little faster
-                                        loadSpeed: 200,
-                                        // very transparent
-                                        opacity: 0.5
-                                    },
-                                    // disable this for modal dialog-type of overlayoverlays
-                                    closeOnClick: true,
-                                    // load it immediately after the construction
-                                    load: true
-                        });
-                        $("#vp_main_menu2 .finish").click(function() {
-                            if (path != "") {
-                                path = 'path=' + path + '&';
-                            }
-
-                            var name = $("#vp_main_menu2 input").val();
-                            if (name != "") {
-                                //$.ajax(
-                                IView.newfolder(path, name, function(data){
-                                    node.append(data);
-                                });
-                            }
-
-                            $("#vp_main_menu2").remove();
-                        });
-
-                        $("#vp_main_menu2 .close").click(function() { $("#vp_main_menu2").remove();});
-                    }
-                        self.views[IView.euid].ctxmenunode = undefined;
-                        self.views[IView.euid].ctxmenu.hide();
-                });
-            });
-       */
       IView.initTree(id + " #tree");
-      // Get capabilities
-      // Create context menu
+
       return id;
     },
     'ShowContextMenu': function(name, event, node) {
@@ -909,82 +788,11 @@ Version:
 
             var clonedParams = $.extend({}, params);
             delete clonedParams['selector'];
-            self.loadDiagram(clonedParams);
+            alert("WRONG INTERFACE CALL");
+            return;
+            //self.loadDiagram(clonedParams);
         });
       }
-    },
-    //    
-    // Load diagram from data:
-    //
-    // tabname: tab selector
-    // 
-    // params: { 
-    //   viewid - IView.euid
-    //   title - the name of file
-    //   repo - file's repository
-    //   branch - file's branch 
-    //   absPath - repo + branch + absolute path
-    //   node - dynatree node
-    //   selector - jQuery selector to insert diagram
-    // }
-    // 
-    // data: diagram data
-    //
-    loadDiagram: function(tabname, params, data) {
-      var jsonData = $.parseJSON(data),
-          viewid = params.viewid,
-          self = this;
-
-      jsonData.multicanvas = (params.selector != undefined);
-
-      jsonData['fullname'] = params.absPath;
-      dm.dm.loader.Diagram(
-        jsonData.type,
-        jsonData.base_type || "base",
-        jsonData,
-        tabname,
-        function(obj) {
-          if (!obj.options.multicanvas)
-            self.diagrams[tabname] = obj;
-          obj.options['viewid'] = viewid;
-        });
-    },
-    //
-    // Load markdown
-    //
-    loadMarkdown: function(tabname, params, data) {
-      var innerHtml = '<div class="us-diagram announce instapaper_body md" data-path="/" id="readme"><span class="name">\
-        <span class="mini-icon mini-icon-readme"></span> '+params.absPath+'</span>\
-        <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
-        '+converter.makeHtml(data)+'\
-        </article></div>';
-
-      $(tabname).append(innerHtml);
-
-      var count = 0;
-      $(tabname + " article.markdown-body .pack-diagram").each(function() {
-        // var repo = $(this).attr("repo"),
-        var sum = $(this).attr("sha"),
-          relativePath = $(this).attr("path"),
-          splitted = (relativePath == undefined) ? "":relativePath.rsplit("/"),
-          title = (relativePath == undefined) ? sum : splitted[splitted.length -1];
-
-        // TODO: What is this string for ?
-        $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
-
-        // all this stuff should be embedded
-        // diagrams
-        dm.dm.fw.loadContent(
-          {
-            viewid:params.viewid,
-            node:{data:{sha:sum, path:relativePath, parentPath:params.absPath}},
-            sha:sum,
-            absPath:relativePath,
-            title:title,
-            contentType:"dm", // means diagram
-            selector:tabname + " #" +  $(this).attr("id")});
-          }
-        );
     },
     // Switch markdown to edit mode
     editMarkdown: function(selector, params, editMode) {
@@ -1061,7 +869,9 @@ Version:
 
       // Check if content was loaded before
       // and select corresponding tab
-      if (self.contents) {
+      // But if diagram should be embedded into markdown
+      // then skip this step
+      if (self.contents && params.selector == undefined) {
         for (var r in self.contents) {
           var d = self.contents[r];
           if ((d.viewid == params.viewid)  // Github 
@@ -1075,7 +885,9 @@ Version:
           } // end if
         }
       }
-      
+
+      // Check if view is really exists: fox example if some diagram contain
+      //                                 reference on sourceforge or googlecode
       if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
         alert("View: " + viewid + " was not initialize.");
         return;
@@ -1130,130 +942,94 @@ Version:
         });
       }
     },
-    
-    //@proexp
-    'loadMarkdown3': function(params) {
-      var viewid = params.viewid,
-          repo = params.repo,
-          path = params.node;
+    //    
+    // Load diagram from data:
+    //
+    // tabname: tab selector
+    // 
+    // params: { 
+    //   viewid - IView.euid
+    //   title - the name of file
+    //   repo - file's repository
+    //   branch - file's branch 
+    //   absPath - repo + branch + absolute path
+    //   node - dynatree node
+    //   selector - jQuery selector to insert diagram
+    // }
+    // 
+    // data: diagram data
+    //
+    loadDiagram: function(tabname, params, data) {
+      var jsonData = $.parseJSON(data),
+          viewid = params.viewid,
+          self = this;
 
-      var self = this,
-      absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path)),
-      absPath2 = (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.path || path.data.sha))
-      title = path.data.title;
+      jsonData.multicanvas = (params.selector != undefined);
 
-/*      if (self.markdown) {
-        for (var r in self.markdown) {
-          var d = self.markdown[r];
-          if ((d.options.viewid == viewid)
-              && (d.options.fullname == absPath || ((d.options.fullname + ".umlsync") == absPath))) {
-            $("#tabs").tabs('select', d.parrent);
-            return;
-          }
-        }
-      }
-*/
-      if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
-        alert("View: " + viewid + " was not initialize.");
-        return;
-      }
-
-      if (self.views[viewid])
-        self.views[viewid].view.loadMarkdown(path, repo, {
-          'success': function(err, json) {
-          var tabname = self.options.tabRight + "-" + self.counter;
-          self.counter++;
-          json.multicanvas = false;
-
-          $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
-
-          json.name = json.name || tabname;
-          tabname = "#" + tabname;
-
-          $("#" + self.options.tabs).tabs("add", tabname, title);
-
-          json['fullname'] = absPath;
-
-          //$("#" + self.options.tabs).tabs("add", tabname, json.name);
-
-
-          var innerHtml = '<div class="us-diagram announce instapaper_body md" data-path="/" id="readme"><span class="name">\
-            <span class="mini-icon mini-icon-readme"></span> '+absPath2+'</span>\
-            <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
-            '+converter.makeHtml(json)+'\
-            </article></div>';
-
-            $(tabname).append(innerHtml);
-            self.markdown[tabname] = self.markdown[tabname] || {repo: repo, fullname : absPath, viewid:viewid};
-            
-            // Simple toolbox for each diagram
-            self.appendDiagramToolbox(tabname, params, "md");
-
-            var count = 0;
-            $(tabname + " article.markdown-body .pack-diagram").each(function() {
-             // var repo = $(this).attr("repo"),
-              sum = $(this).attr("sha"),
-              relativePath = $(this).attr("path"),
-              splitted = (relativePath == undefined) ? "":relativePath.rsplit("/"),
-              title = (relativePath == undefined) ? sum : splitted[splitted.length -1];
-
-              $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
-
-              dm.dm.fw.loadDiagram({viewid:viewid,
-                                    node:{data:{sha:sum, path:relativePath, parentPath:path}},
-                                    absPath: relativePath,
-                                    title: title,
-                                    selector: tabname + " #" +  $(this).attr("id")});
-            });
-
-            self.updateFrameWork(true);
-        },
-        'error': function() {alert("FAILED to load:" + path);}});
+      jsonData['fullname'] = params.absPath;
+      dm.dm.loader.Diagram(
+        jsonData.type,
+        jsonData.base_type || "base",
+        jsonData,
+        tabname,
+        function(obj) {
+          if (!obj.options.multicanvas)
+            self.diagrams[tabname] = obj;
+          obj.options['viewid'] = viewid;
+        });
     },
-    //@proexp
-    'loadCode': function(viewid, repo, path) {
-      var self = this,
-        absPath = path.getAbsolutePath(),
-        title = path.data.title;
+    //
+    // Load markdown
+    //
+    loadMarkdown: function(tabname, params, data) {
+      var innerHtml = '<div class="us-diagram announce instapaper_body md" data-path="/" id="readme"><span class="name">\
+        <span class="mini-icon mini-icon-readme"></span> '+params.absPath+'</span>\
+        <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
+        '+converter.makeHtml(data)+'\
+        </article></div>';
 
-      if (self.codes) {
-        for (var r in self.codes) {
-          var d = self.codes[r];
-          if ((d.options.viewid == viewid)
-              && (d.options.repo == repo)
-              && (d.options.fullname == absPath || ((d.options.fullname + ".umlsync") == absPath))) {
-            $('.us-frame').slideUp();
-            $(r+'_p.us-frame').slideDown(); // _p means parrent & unique id
-            return;
+      $(tabname).append(innerHtml); // Markdown loaded
+
+      // Load an embedded diagrams
+      var count = 0;
+      $(tabname + " article.markdown-body .pack-diagram").each(function() {
+        // var repo = $(this).attr("repo"),
+        var sum = $(this).attr("sha"),
+          relativePath = $(this).attr("path"),
+          splitted = (relativePath == undefined) ? "":relativePath.rsplit("/"),
+          title = (relativePath == undefined) ? sum : splitted[splitted.length -1];
+
+        // TODO: What is this string for ?
+        $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
+
+        // all these contents should be embedded
+        // diagrams
+        dm.dm.fw.loadContent(
+          {
+            viewid:params.viewid,
+            node:{data:{sha:sum, path:relativePath, parentPath:params.absPath}},
+            sha:sum,
+            absPath:relativePath,
+            title:title,
+            contentType:"dm", // means diagram
+            selector:tabname + " #" +  $(this).attr("id")});
           }
-        }
-      }
+        );
+    },
+    //
+    // Load source code and run google prettify on it
+    //
+    loadCode: function(tabname, params, data) {
+      $(tabname).append("<div class='us-diagram'><pre class='prettyprint linenums:1'>" + data + "</pre></div>");
 
-      if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
-        alert("View: " + viewid + " was not initialize.");
-        return;
-      }
-
-      if (self.views[viewid])
-        self.views[viewid].view.loadCode(path, repo, {
-          'success': function(err, json) {
-          var tabname = self.options.tabRight + "-" + self.counter;
-          self.counter++;
-
-          $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
-          tabname = "#" + tabname;
-          
-          $("#" + self.options.tabs).tabs("add", tabname, title);
-
-          $(tabname).append("<div class='us-diagram'><pre class='prettyprint linenums:1'>" + json + "</pre></div>");
-
-          prettyPrint();
-
-          self.updateFrameWork(true);
-        },
-        'error': function() {alert("FAILED to load:" + path);}});
+      prettyPrint();
+ 
+      self.updateFrameWork(true);
     },
 
+    //
+    // Initialize key handler
+    //
     initializeKeyHandler: function(Loader) {
       //@ifdef EDITOR
       var fw = this;
@@ -1367,6 +1143,9 @@ Version:
       );
       //@endif
     },
+    //
+    // Initialize toolbox for context menu
+    //
     initializeToolBox: function(Loader) {
       var fw=this;
       // Place for logo !!!

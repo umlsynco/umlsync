@@ -74,6 +74,7 @@ URL:
       }
       else {
         showRepos([{full_name:'umlsynco/diagrams'},
+                   {full_name:'umlsynco/websync'},
                    {full_name:'umlsynco/umlsync'},
                    {full_name:'kalaidin/octotest'},
                    {full_name:'umlsynco/GIST'}]);
