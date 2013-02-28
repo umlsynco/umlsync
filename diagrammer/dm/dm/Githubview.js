@@ -80,6 +80,18 @@ URL:
       }
     };
 
+    function decodeContent(data) {
+      if (data.encoding == "base64") {
+        var splitted = data.content.split('\n');
+        var decoded = "";
+        for (s in splitted) {
+          decoded += $.base64.decode(splitted[s]);
+        }
+        return decoded;
+      }
+      return null;
+    };
+    
     var IGithubView = function (repoUrl) {
       var pUrl = repoUrl;
 
@@ -110,6 +122,38 @@ URL:
                   'save': function(path, data, description) {
                     self.modifiedList[path] = data;
                     $.log("Saving " + data.toString() + " on " + path.toString());
+                  },
+                  //
+                  // Load content or get it from chache:
+                  //
+                  'loadContent': function(params, callback) {
+                    // Get repository by params.repo
+                    // right now we suppose that we are working in the same repository, BUT it is not alway true
+                    if (params.sha) {
+                        repo.getBlob(params.sha, function(err, data) {
+                           if (data == null) {
+                             callback.error(err);
+                             return;
+                           }
+                           callback.success(err, data);
+                        });
+                    }
+                    else if (params.absPath) {
+                        var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
+                        repo.contents(cPath,  function(err, data) {
+                           if (data.message)
+                             callback.error(data.message);
+
+                           var decodedData = decodeContent(data);
+
+                           if (!decodedData)
+                             callback.error("No data found in: " + cPath);
+
+                           callback.success(err, decodedData);
+                         });
+                    } else {
+                      callback.error("Not enough information about content.");
+                    }
                   },
                   'loadDiagram': function(params, callback) {
                     var node = params.node;
@@ -208,15 +252,27 @@ URL:
                             var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
                             var repo="pe";
 
+                            var params =
+                              {
+                                viewid:self.euid,
+                                node:node,
+                                title:node.data.title,
+                                absPath:node.getAbsolutePath(),
+                                branch:"master",
+                                repo:"umlsynco/umlsync"
+                              };
+
                             if (ext == "JSON" || ext == "UMLSYNC") {
-                              dm.dm.fw.loadDiagram(self.euid, node);
+                                params.contentType = "dm";
                             }
                             else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-                              dm.dm.fw.loadMarkdown({viewid:self.euid, repo:repo, node:node});
+                                params.contentType = "md";
                             }
                             else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
-                              dm.dm.fw.loadCode(self.euid, repo, node);
+                                params.contentType = "code";
                             }
+                            if (params.contentType != undefined)
+                              dm.dm.fw.loadContent(params);
                          }
                        }
                      },
@@ -304,16 +360,28 @@ URL:
                               var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
                               var repo="pe";
 
+                              var params =
+                                {
+                                  viewid:self.euid,
+                                  node:node,
+                                  title:node.data.title,
+                                  absPath:node.getAbsolutePath(),
+                                  branch:"master",
+                                  repo:"umlsynco/umlsync"
+                                };
+
                               if (ext == "JSON" || ext == "UMLSYNC") {
-                                dm.dm.fw.loadDiagram({viewid:self.euid, node:node, repo:"umlsynco/umlsync", branch:"tree/master", title:node.data.title, absPath:node.getAbsolutePath()});
+                                params.contentType = "dm";
                               }
                               else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-                                dm.dm.fw.loadMarkdown(self.euid, repo, node);
+                                params.contentType = "md";
                               }
                               else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
-                                dm.dm.fw.loadCode(self.euid, repo, node);
+                                params.contentType = "code";
                               }
-                           }
+                              if (params.contentType != undefined)
+                                dm.dm.fw.loadContent(params);
+                            }
                           }
                         }
                       );

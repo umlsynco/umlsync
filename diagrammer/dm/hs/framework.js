@@ -38,6 +38,7 @@ Version:
       this.loader = dm.dm.loader;
       this.diagrams = this.diagrams || {};
       this.markdown = this.markdown || {};
+      this.contents = this.contents || {};
 
       this.initializeToolBox(dm.dm.loader);
       if (dm.ms['dg']) {
@@ -923,7 +924,7 @@ Version:
     // }
     // 
     //@proexp
-    'loadDiagram': function(params) {
+    'loadDiagram3': function(params) {
       var viewid = params.viewid,
         path = params.node,
         branch = params.branch,
@@ -986,8 +987,65 @@ Version:
         },
         'error': function() {alert("FAILED to load:" + path);}});
     },
+    //
+    // Load diagram from data:
+    //
+    loadDiagram: function(tabname, params, data) {
+      var jsonData = $.parseJSON(data),
+          viewid = params.viewid,
+          self = this;
+
+      jsonData.multicanvas = (params.selector != undefined);
+
+      jsonData['fullname'] = params.absPath;
+      dm.dm.loader.Diagram(
+        jsonData.type,
+        jsonData.base_type || "base",
+        jsonData,
+        tabname,
+        function(obj) {
+          if (!obj.options.multicanvas)
+            self.diagrams[tabname] = obj;
+          obj.options['viewid'] = viewid;
+        });
+    },
+    //
+    // Load markdown
+    //
+    loadMarkdown: function(tabname, params, data) {
+      var innerHtml = '<div class="us-diagram announce instapaper_body md" data-path="/" id="readme"><span class="name">\
+        <span class="mini-icon mini-icon-readme"></span> '+params.absPath+'</span>\
+        <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
+        '+converter.makeHtml(data)+'\
+        </article></div>';
+
+      $(tabname).append(innerHtml);
+
+      var count = 0;
+      $(tabname + " article.markdown-body .pack-diagram").each(function() {
+        // var repo = $(this).attr("repo"),
+        var sum = $(this).attr("sha"),
+          relativePath = $(this).attr("path"),
+          splitted = (relativePath == undefined) ? "":relativePath.rsplit("/"),
+          title = (relativePath == undefined) ? sum : splitted[splitted.length -1];
+
+        // TODO: What is this string for ?
+        $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
+
+        dm.dm.fw.loadContent(
+          {
+            viewid:params.viewid,
+            node:{data:{sha:sum, path:relativePath, parentPath:params.absPath}},
+            sha:sum,
+            absPath:relativePath,
+            title:title,
+            contentType:"dm",
+            selector:tabname + " #" +  $(this).attr("id")});
+          }
+        );
+    },
     // Switch markdown to edit mode
-    editMarkdown: function(selector, params) {
+    editMarkdown: function(selector, params, mode) {
       // toolbox
       var rrrr = '<span class="us-toolbox-header" style="z-index:1000000;"><ul style="list-style:none outside none;">\
                         <li class="us-toolbox-button us-toolbox-h1"><a title="First Level Heading [Ctrl+1]" accesskey="1" href="">First Level Heading</a></li>\
@@ -1011,7 +1069,7 @@ Version:
                         <li class="us-toolbox-separator">---------------</li>\
                         <li class="us-toolbox-button us-toolbox-preview"><a title="Preview" href="">Preview</a></li>\
                       </ul></span><br><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
-      $(selector).empty();
+      $(selector + " div#readme").remove();
       $(rrrr).appendTo(selector);
 
       var viewid = params.viewid,
@@ -1027,8 +1085,94 @@ Version:
           }
       });
     },
+    //
+    // Universal method to load diagram, code or markdown
+    // Unique content id: {ViewId, repository, branch, path from root}.
+    // It is not possible to restore path by blob therefore we can't use blobs for wiki-like solutions
+    //
+    loadContent: function(params) {
+      var uniqueContentId =  params.viewid + "/" + params.repo + "/" + params.branch + "/" + params.absPath,
+          viewid = params.viewid,
+          self = this;
+      params.cuid = uniqueContentId;
+
+      // Check if content was loaded before
+      // and select corresponding tab
+      if (self.contents) {
+        for (var r in self.contents) {
+          var d = self.contents[r];
+          if ((d.viewid == params.viewid)  // Github 
+              && (d.repo == params.repo)   // userid/repo
+              && (d.branch == params.branch) // tree/master
+              && (d.absPath == params.absPath) // path from root
+              )
+          { // if
+              $("#tabs").tabs('select', r);
+              return;
+          } // end if
+        }
+      }
+      
+      if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
+        alert("View: " + viewid + " was not initialize.");
+        return;
+      }
+
+      // Create tab or use an existing selector
+      var tabname = params.selector || self.options.tabRight + "-" + self.counter;
+      self.counter++;
+
+      // create new tab
+      if (params.selector == undefined) {
+        tabname = "#" + tabname;
+        $("#" + self.options.tabs).tabs("add", tabname, params.title);
+        $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
+      }
+      
+      // Add gif which shows that content is loading
+      $('<img id="puh" src="images/Puh.gif"/>').appendTo(tabname);
+      
+      // Simple toolbox for each diagram or markdown
+      self.appendDiagramToolbox(tabname, params);
+
+      if (self.views[viewid]) {
+        self.views[viewid].view.loadContent(params, {
+          'success': function(msg, data) {
+            self.contents[tabname] = params;
+
+            // Simple toolbox for each diagram
+            self.appendDiagramToolbox(tabname, params);
+
+            // Remove puh after JSON load completion
+            $(tabname + " #puh").remove();
+
+            var ct = params.contentType;
+
+            if (params.contentType == "dm") {
+              self.loadDiagram(tabname, params, data);
+            }
+            else if (params.contentType == "md") {
+              self.loadMarkdown(tabname, params, data);
+            }
+            else if (params.contentType == "code") {
+              self.loadCode(tabname, params, data);
+            }
+            else {
+              alert("Unknown content type: " + params.contentType);
+            }
+
+            // Update the framework sizes
+            self.updateFrameWork(true);
+          },
+          'error': function(msg) {
+            alert("Failed to load: " + params.absPath + ":\n" + msg);
+          }
+        });
+      }
+    },
+    
     //@proexp
-    'loadMarkdown': function(params) {
+    'loadMarkdown3': function(params) {
       var viewid = params.viewid,
           repo = params.repo,
           path = params.node;
@@ -1037,6 +1181,7 @@ Version:
       absPath = repo + "/" + (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.sha || path.data.path)),
       absPath2 = (path.getAbsolutePath ? path.getAbsolutePath() :(path.data.path || path.data.sha))
       title = path.data.title;
+
 /*      if (self.markdown) {
         for (var r in self.markdown) {
           var d = self.markdown[r];
@@ -1093,14 +1238,12 @@ Version:
               title = (relativePath == undefined) ? sum : splitted[splitted.length -1];
 
               $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
-              //$(this).id = "asd-" + count;
-              //count++;
-//            alert("ID:" + $(this).attr("id"));
+
               dm.dm.fw.loadDiagram({viewid:viewid,
                                     node:{data:{sha:sum, path:relativePath, parentPath:path}},
                                     absPath: relativePath,
                                     title: title,
-                                    selector: "#" +  $(this).attr("id")});
+                                    selector: tabname + " #" +  $(this).attr("id")});
             });
 
             self.updateFrameWork(true);
