@@ -865,7 +865,7 @@ Version:
       self.views[viewId].view.save(path, data, description);
     },
 
-    appendDiagramToolbox: function(selector, params, isMarkdown) {
+    appendDiagramToolbox: function(selector, params) {
       var self = this;
       if (params.selector == undefined) {
        
@@ -874,7 +874,7 @@ Version:
                                <a id="us-link"><span id="us-diagram-edit">View</span></a>\
                             </span>');
         $(selector + " #us-diagram-edit").click(function() {
-          
+            // switch from editable to static and back
             var text = $(this).text();
             if (text == "Edit") {
               $(this).text("View");
@@ -885,14 +885,16 @@ Version:
               $(".diagram-menu").hide();
             }
 
-            if (isMarkdown == undefined) {
+            // If content is diagram
+            if (params.contentType == "dm") { 
               var did = self.diagrams[self.selectedDiagramId];
               if (did != undefined) {
                 self.wdddd = !self.wdddd;
                 did._setWidgetsOption("editable", self.wdddd);
               }
             }
-            else {
+            // if content is markdown code
+            else if (params.contentType == "md") { 
               self.editMarkdown(selector, params);
             }
         });
@@ -911,9 +913,12 @@ Version:
         });
       }
     },
-    
-    // Create layer for diagram and load diagram
-    // { 
+    //    
+    // Load diagram from data:
+    //
+    // tabname: tab selector
+    // 
+    // params: { 
     //   viewid - IView.euid
     //   title - the name of file
     //   repo - file's repository
@@ -923,72 +928,7 @@ Version:
     //   selector - jQuery selector to insert diagram
     // }
     // 
-    //@proexp
-    'loadDiagram3': function(params) {
-      var viewid = params.viewid,
-        path = params.node,
-        branch = params.branch,
-        selector = params.selector;
-
-      $.log("VIEWID IS:" + viewid);
-
-      var self = this,
-        absPath = params.repo + "/tree/" + params.branch + "/" + params.absPath;
-
-      // Looking for the loaded diagrams through the tabs
-      if (self.diagrams && selector == undefined) {
-        for (var r in self.diagrams) {
-          var d = self.diagrams[r];
-          if ((d.options.viewid == viewid)
-              && (d.options.fullname == absPath || ((d.options.fullname + ".umlsync") == absPath))) {
-            $("#tabs").tabs('select', d.parrent);
-            return;
-          }
-        }
-      }
-
-      // Check that view with viewid exists (looks stuipid now because we do not support
-      // multiple views for a while)
-      var self = this;
-      if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
-        alert("View: " + viewid + " was not initialized.");
-        return;
-      }
-
-      // Add gif which shows that tab is loading
-      var tabname = selector || self.options.tabRight + "-" + self.counter;
-      self.counter++;
-
-      if (selector == undefined) {
-        tabname = "#" + tabname;
-        $("#" + self.options.tabs).tabs("add", tabname, params.title);
-        $("#" + self.options.tabs).append('<div id="'+ tabname +'"><img id="puh" src="images/Puh.gif"/></div>');
-      }
-
-      if (self.views[viewid])
-        self.views[viewid].view.loadDiagram(params, {
-          'success': function(json) {
-          json.multicanvas = (selector != undefined);
-
-          // Simple toolbox for each diagram
-          self.appendDiagramToolbox(tabname, params);
-
-          // Remove puh after JSON load completion
-          $("#puh").remove();
-
-          json['fullname'] = absPath;
-          dm.dm.loader.Diagram(json.type, json.base_type || "base", json, tabname
-              , function(obj) {
-            if (!obj.options.multicanvas)
-              self.diagrams[tabname] = obj;
-            obj.options['viewid'] = viewid;
-          });
-          self.updateFrameWork(true);
-        },
-        'error': function() {alert("FAILED to load:" + path);}});
-    },
-    //
-    // Load diagram from data:
+    // data: diagram data
     //
     loadDiagram: function(tabname, params, data) {
       var jsonData = $.parseJSON(data),
@@ -1032,6 +972,8 @@ Version:
         // TODO: What is this string for ?
         $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
 
+        // all this stuff should be embedded
+        // diagrams
         dm.dm.fw.loadContent(
           {
             viewid:params.viewid,
@@ -1039,15 +981,32 @@ Version:
             sha:sum,
             absPath:relativePath,
             title:title,
-            contentType:"dm",
+            contentType:"dm", // means diagram
             selector:tabname + " #" +  $(this).attr("id")});
           }
         );
     },
     // Switch markdown to edit mode
-    editMarkdown: function(selector, params, mode) {
-      // toolbox
-      var rrrr = '<span class="us-toolbox-header" style="z-index:1000000;"><ul style="list-style:none outside none;">\
+    editMarkdown: function(selector, params, editMode) {
+      var isEditMode = ($(selector + " div#readme").length == 0);
+
+      if (isEditMode == editMode)
+        return;
+     
+      if (isEditMode) {
+        // get entered text
+        var data = $(selector + " #markdown").val();
+
+        // remove edit UI elements
+        $(selector + " #markdown").remove();
+        $(selector + " span.us-toolbox-header").remove();
+        
+        // Load an updated markdown
+        this.loadMarkdown(selector, params, data);
+      }
+      else {
+        // toolbox descriptor
+        var rrrr = '<span class="us-toolbox-header" style="z-index:1000000;"><ul style="list-style:none outside none;">\
                         <li class="us-toolbox-button us-toolbox-h1"><a title="First Level Heading [Ctrl+1]" accesskey="1" href="">First Level Heading</a></li>\
                         <li class="us-toolbox-button us-toolbox-h2"><a title="Second Level Heading [Ctrl+2]" accesskey="2" href="">Second Level Heading</a></li>\
                         <li class="us-toolbox-button us-toolbox-h3"><a title="Heading 3 [Ctrl+3]" accesskey="3" href="">Heading 3</a></li>\
@@ -1069,21 +1028,25 @@ Version:
                         <li class="us-toolbox-separator">---------------</li>\
                         <li class="us-toolbox-button us-toolbox-preview"><a title="Preview" href="">Preview</a></li>\
                       </ul></span><br><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
-      $(selector + " div#readme").remove();
-      $(rrrr).appendTo(selector);
+        $(selector + " div#readme").remove();
+        $(rrrr).appendTo(selector);
 
-      var viewid = params.viewid,
-          repo = params.repo,
-          path = params.node,
-          self = this;
+        var viewid = params.viewid,
+            repo = params.repo,
+            path = params.node,
+            self = this;
 
-      self.views[viewid].view.loadMarkdown(path, repo, {
-          'success': function(err, json) {
-            $(selector + " #markdown").text(json);
-          },
-          'error': function() {
-          }
-      });
+        self.views[viewid].view.loadContent(params, {
+            'success': function(err, data) {
+              $(selector + " #markdown").text(data);
+
+              // Update the framework sizes
+              self.updateFrameWork(true);
+            },
+            'error': function() {
+            }
+        });
+     }
     },
     //
     // Universal method to load diagram, code or markdown
@@ -1132,9 +1095,6 @@ Version:
       // Add gif which shows that content is loading
       $('<img id="puh" src="images/Puh.gif"/>').appendTo(tabname);
       
-      // Simple toolbox for each diagram or markdown
-      self.appendDiagramToolbox(tabname, params);
-
       if (self.views[viewid]) {
         self.views[viewid].view.loadContent(params, {
           'success': function(msg, data) {
