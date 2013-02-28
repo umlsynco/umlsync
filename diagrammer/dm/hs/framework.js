@@ -730,7 +730,7 @@ Version:
           , function(obj) {
         self.diagrams[tabname] = obj;
         if (vid && vid != "")
-          self.views[vid].view.save(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
+          self.views[vid].view.saveContent(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
       });
       this.updateFrameWork(true);
     },
@@ -741,7 +741,7 @@ Version:
         alert("View: " + viewId + " was not initialize.");
         return;
       }
-      self.views[viewId].view.save(path, data, description);
+      self.views[viewId].view.saveContent(path, data, description);
     },
 
     appendDiagramToolbox: function(selector, params) {
@@ -959,7 +959,7 @@ Version:
     // data: diagram data
     //
     loadDiagram: function(tabname, params, data) {
-      var jsonData = $.parseJSON(data),
+      var jsonData = (typeof data === "string") ? $.parseJSON(data) : data,
           viewid = params.viewid,
           self = this;
 
@@ -990,12 +990,16 @@ Version:
       $(tabname).append(innerHtml); // Markdown loaded
 
       // Load an embedded diagrams
-      var count = 0;
+      var count = 0,
+        liof = params.absPath.lastIndexOf("/"),
+        parentPath = (liof == -1) ? "/":params.absPath.substring(0, liof);
+
       $(tabname + " article.markdown-body .pack-diagram").each(function() {
         // var repo = $(this).attr("repo"),
+        
         var sum = $(this).attr("sha"),
           relativePath = $(this).attr("path"),
-          splitted = (relativePath == undefined) ? "":relativePath.rsplit("/"),
+          splitted = (relativePath == undefined) ? "":relativePath.split("/"),
           title = (relativePath == undefined) ? sum : splitted[splitted.length -1];
 
         // TODO: What is this string for ?
@@ -1009,6 +1013,7 @@ Version:
             node:{data:{sha:sum, path:relativePath, parentPath:params.absPath}},
             sha:sum,
             absPath:relativePath,
+            parentPath:parentPath,
             title:title,
             contentType:"dm", // means diagram
             selector:tabname + " #" +  $(this).attr("id")});
