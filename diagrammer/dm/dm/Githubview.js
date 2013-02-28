@@ -102,6 +102,7 @@ URL:
       {
         euid: repoUrl.replace("/", "-"),
         activeBranch: "master",
+        getRepository: function() { return pUrl},
         modifiedList: {}, // The list of modified files by sha
         initBranches: function() {
           repo.listBranches(
@@ -127,7 +128,7 @@ URL:
         //
         // Load content or get it from cache:
         //
-        'loadContent': function(params, callback) {
+        loadContent: function(params, callback) {
           // Get repository by params.repo
           // right now we suppose that we are working in the same repository, BUT it is not alway true
           if (params.sha) {

@@ -788,9 +788,7 @@ Version:
 
             var clonedParams = $.extend({}, params);
             delete clonedParams['selector'];
-            alert("WRONG INTERFACE CALL");
-            return;
-            //self.loadDiagram(clonedParams);
+            self.loadContent(clonedParams);
         });
       }
     },
@@ -910,7 +908,8 @@ Version:
       if (self.views[viewid]) {
         self.views[viewid].view.loadContent(params, {
           'success': function(msg, data) {
-            self.contents[tabname] = params;
+            if (params.selector == undefined)
+              self.contents[tabname] = params;
 
             // Simple toolbox for each diagram
             self.appendDiagramToolbox(tabname, params);
