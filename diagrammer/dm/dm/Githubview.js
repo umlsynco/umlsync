@@ -98,100 +98,66 @@ URL:
 
       // Reading a repository
       var repo = github().getRepo(username, pUrl.split('/').pop());
-      var self = {
-                  euid: repoUrl.replace("/", "-"),
-                  activeBranch: "master",
-                  getRepository: function() { return pUrl},
-                  modifiedList: {}, // The list of modified files by sha
-                  initBranches: function() {
-                    repo.listBranches(
-                        function(err, branches) {
-                          dm.dm.fw.addBranch("Branches", repoUrl, self, branches);
-                          repo.listTags(
-                            function(err, tags) {
-                              dm.dm.fw.addBranch("Tags", repoUrl, self, tags);
-                            }
-                          );
-                        }
-                    );
-                  },
-                  onBranchSelected: function(tab, branch) {
-                    self.activeBranch = branch;
-                    //$(self.treeParentSelector).children().empty();
-                    self.initTree(self.treeParentSelector);
-                  },
-                  'save': function(path, data, description) {
-                    self.modifiedList[path] = data;
-                    $.log("Saving " + data.toString() + " on " + path.toString());
-                  },
-                  //
-                  // Load content or get it from chache:
-                  //
-                  'loadContent': function(params, callback) {
-                    // Get repository by params.repo
-                    // right now we suppose that we are working in the same repository, BUT it is not alway true
-                    if (params.sha) {
-                        repo.getBlob(params.sha, function(err, data) {
-                           if (data == null) {
-                             callback.error(err);
-                             return;
-                           }
-                           callback.success(err, data);
-                        });
-                    }
-                    else if (params.absPath) {
-                        var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
-                        repo.contents(cPath,  function(err, data) {
-                           if (data.message)
-                             callback.error(data.message);
+      var self =
+      {
+        euid: repoUrl.replace("/", "-"),
+        activeBranch: "master",
+        modifiedList: {}, // The list of modified files by sha
+        initBranches: function() {
+          repo.listBranches(
+            function(err, branches) {
+              dm.dm.fw.addBranch("Branches", repoUrl, self, branches);
+              repo.listTags(
+                function(err, tags) {
+                  dm.dm.fw.addBranch("Tags", repoUrl, self, tags);
+                }
+              );
+            }
+          );
+        },
+        onBranchSelected: function(tab, branch) {
+          self.activeBranch = branch;
+          //$(self.treeParentSelector).children().empty();
+          self.initTree(self.treeParentSelector);
+        },
+        saveContent: function(path, data, description) {
+          self.modifiedList[path] = data;
+          $.log("Saving " + data.toString() + " on " + path.toString());
+        },
+        //
+        // Load content or get it from cache:
+        //
+        'loadContent': function(params, callback) {
+          // Get repository by params.repo
+          // right now we suppose that we are working in the same repository, BUT it is not alway true
+          if (params.sha) {
+            repo.getBlob(params.sha, function(err, data) {
+              if (data == null) {
+                callback.error(err);
+                return;
+              }
+              callback.success(err, data);
+            });
+          }
+          else if (params.absPath) {
+            var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
+            repo.contents(cPath,  function(err, data) {
+              if (data.message)
+                callback.error(data.message);
 
-                           var decodedData = decodeContent(data);
+              var decodedData = decodeContent(data);
 
-                           if (!decodedData)
-                             callback.error("No data found in: " + cPath);
+              if (!decodedData)
+                callback.error("No data found in: " + cPath);
 
-                           callback.success(err, decodedData);
-                         });
-                    } else {
-                      callback.error("Not enough information about content.");
-                    }
-                  },
-                  'loadDiagram': function(params, callback) {
-                    var node = params.node;
-                    if (node && node.data) {
-                      if (node.data.sha) {
-                        repo.getBlob(node.data.sha, function(err, data) {
-                           var json = $.parseJSON(data),
-                               path = json["fullname"];
-                           if (self.modifiedList[path]) {
-                             json = self.modifiedList[path];
-                           }
-                           callback.success(json);
-                         });
-                      }
-                      else if (node.data.path) {
-                        repo.contents(node.data.path,  function(err, json) {
-                           var path = json["fullname"];
-
-                           if (self.modifiedList[path]) {
-                             json = self.modifiedList[path];
-                           }
-                           callback.success(json);
-                         });
-                      }
-                    }
-                  },
-                  'loadCode': function(node, repoUid, callback) {
-                    if (node && node.data && node.data.sha) {
-                      repo.getBlob(node.data.sha, callback.success);
-                    }
-                  },
-                 'loadMarkdown': function(node, repoUid, callback) {
-                   if (node && node.data && node.data.sha) {
-                     repo.getBlob(node.data.sha, callback.success);
-                   }
-                 },
-                'ctx_menu':
+              callback.success(err, decodedData);
+            });
+          }
+          else {
+            callback.error("Not enough information about content.");
+          }
+        },
+        'ctx_menu':
                     [
                      {
                        title: "Commit...",
@@ -302,7 +268,7 @@ URL:
                      }
                      }
                      ],
-                     initTree: function (parentSelector) {
+        initTree: function (parentSelector) {
                     var isReload = (self.treeParentSelector == parentSelector);
                     self.treeParentSelector = parentSelector;
                     function updateTree(tree) {
