@@ -778,10 +778,10 @@ Version:
     appendDiagramToolbox: function(selector, params) {
       var self = this;
       if (params.selector == undefined) {
-       
+        var edit = (params.editable == true) || (params.editable == "true");
         $(selector).append('<span class="us-diagram-toolbox">\
                                <a id="us-link"><span id="us-getlink">Get link</span></a>\
-                               <a id="us-link"><span id="us-diagram-edit">View</span></a>\
+                               <a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>\
                             </span>');
         $(selector + " #us-diagram-edit").click(function() {
             // switch from editable to static and back
@@ -818,14 +818,13 @@ Version:
       else {
         $(selector).append('<span class="us-diagram-toolbox">\
                               <a id="us-link"><span id="us-getlink">Get link</span></a>\
-                              <a id="us-link"><span id="us-diagram-fs">Full screen</span></a>\
-                              <a id="us-link"><span id="us-diagram-edit">Edit</span></a>\
+                              <a id="us-link"><span class="us-diagram-edit" edm="false">Full screen</span></a>\
+                              <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
                             </span>');
-        $(selector + " #us-diagram-edit").click(function() {
-
+        $(selector + " .us-diagram-edit").click(function() {
             var clonedParams = $.extend({}, params);
             delete clonedParams['selector'];
-            clonedParams.editable = true;
+            clonedParams.editable = $(this).attr("edm") || true;
             self.loadContent(clonedParams);
         });
       }
@@ -963,10 +962,10 @@ Version:
         $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
 
         // Hide diagram menu
-        if (!params.editable) {
-          $(".diagram-menu").hide();
-        } else {
+        if (params.editable == true || params.editable == "true" ) {
           $(".diagram-menu").show();
+        } else {
+          $(".diagram-menu").hide();
         }
       }
       
