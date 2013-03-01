@@ -231,17 +231,17 @@ Version:
           'select': function(event, ui) {
             if (self.diagrams) {
               self.selectedDiagramId = "#" + ui.panel.id;
-              var did = self.diagrams[self.selectedDiagramId];
-              if (did) {
-                //@ifdef EDITOR
-                self['ActivateDiagramMenu'](did.options['type']);
-                //@endif
-                did.draw();
-              }
 
               // Show/hide diagram menu to tabs change
               if ($(self.selectedDiagramId).attr('edm') == "true") {
                 $(".diagram-menu").show();
+                var did = self.diagrams[self.selectedDiagramId];
+                if (did) {
+                  //@ifdef EDITOR
+                  self['ActivateDiagramMenu'](did.options['type']);
+                  //@endif
+                  did.draw();
+                }
               } else {
                 $(".diagram-menu").hide();
               }
@@ -417,7 +417,7 @@ Version:
     'CreateDiagramMenu':function(type, innerHtml, callback) {
       var len = $("#accordion").length;
       if (len) {
-        $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({'active': len, autoHeight:false});
+        $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({'active': len, autoHeight:false, clearStyle: true});
       } else {
         var header = '<div id="diagram-menu-header" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">\
           <span id="ui-dialog-title-vp_main_menu" class="ui-dialog-title">Toolbox</span>\
@@ -425,12 +425,17 @@ Version:
           <span class="ui-icon ui-icon-closethick">close</span></a></div>';
 
           $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
-          $("#accordion").accordion({'active': 0, autoHeight:false});
+          
           $(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
+          
+          $("#accordion").accordion({'active': 0, autoHeight:false, clearStyle: true});
+
           if (!this.openDiagramMenuOnFirstInit) {
             $(".diagram-menu").hide();
           }
-		  $("#diagram-menu-header a.ui-dialog-titlebar-close").click(function() { $("div.diagram-menu #accordion").slideToggle();});
+		  $("#diagram-menu-header a.ui-dialog-titlebar-close").click(function() { 
+                $("div.diagram-menu #accordion").slideToggle();
+          });
       }
       if (callback) {
         callback(len); // len == index
@@ -455,6 +460,7 @@ Version:
           $("#accordion").accordion({'active': idx});
         }
       }
+      $("#accordion").children("DIV").css("width", "");
       return menuIsActive;
     },
     initMainMenu:function() {
@@ -766,6 +772,9 @@ Version:
         self.diagrams[tabname] = obj;
         if (vid && vid != "")
           self.views[vid].view.saveContent(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
+
+        // Show the diagram menu
+        self['ActivateDiagramMenu'](obj.options['type']);
       });
       this.updateFrameWork(true);
     },
@@ -808,6 +817,7 @@ Version:
                 $(selector).attr("edm", editFlag);
                 if (editFlag) {
                   $(".diagram-menu").show();
+                  self['ActivateDiagramMenu'](did.options['type']);
                 } else {
                   $(".diagram-menu").hide();
                 }
@@ -1052,9 +1062,15 @@ Version:
         jsonData,
         tabname,
         function(obj) {
-          if (!obj.options.multicanvas)
+          if (!obj.options.multicanvas) {
             self.diagrams[tabname] = obj;
-            obj.options['viewid'] = viewid;
+          }
+          else {
+            //@ifdef EDITOR
+            self['ActivateDiagramMenu'](obj.options['type']);
+            obj.draw();
+          }
+          obj.options['viewid'] = viewid;
         });
     },
     //
