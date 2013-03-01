@@ -813,31 +813,51 @@ Version:
         this.loadMarkdown(selector, params, data);
       }
       else {
+        function getSelection() {
+          return (!!document.getSelection) ? document.getSelection() :
+            (!!window.getSelection) ? window.getSelection() :
+            document.selection.createRange().text;
+        }
+
         // toolbox descriptor
         var rrrr = '<span class="us-toolbox-header" style="z-index:1000000;"><ul style="list-style:none outside none;">\
-                        <li class="us-toolbox-button us-toolbox-h1"><a title="First Level Heading [Ctrl+1]" accesskey="1" href="">First Level Heading</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h2"><a title="Second Level Heading [Ctrl+2]" accesskey="2" href="">Second Level Heading</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h3"><a title="Heading 3 [Ctrl+3]" accesskey="3" href="">Heading 3</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h4"><a title="Heading 4 [Ctrl+4]" accesskey="4" href="">Heading 4</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h5"><a title="Heading 5 [Ctrl+5]" accesskey="5" href="">Heading 5</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h6"><a title="Heading 6 [Ctrl+6]" accesskey="6" href="">Heading 6</a>\
+                        <li class="us-toolbox-button us-toolbox-h1"><a title="Heading 1 [Ctrl+1]" accesskey="1" postfix="\n========\n">First Level Heading</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h2"><a title="Heading 2 [Ctrl+2]" accesskey="2" postfix="\n--------\n" href="">Second Level Heading</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h3"><a title="Heading 3 [Ctrl+3]" accesskey="3" prefix="### " href="">Heading 3</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h4"><a title="Heading 4 [Ctrl+4]" accesskey="4" prefix="#### " href="">Heading 4</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h5"><a title="Heading 5 [Ctrl+5]" accesskey="5" prefix="##### " href="">Heading 5</a></li>\
+                        <li class="us-toolbox-button us-toolbox-h6"><a title="Heading 6 [Ctrl+6]" accesskey="6" prefix="###### " href="">Heading 6</a>\
                         </li><li class="us-toolbox-separator">&nbsp</li>\
-                        <li class="us-toolbox-button us-toolbox-bold"><a title="Bold [Ctrl+B]" accesskey="B" href="">Bold</a></li>\
-                        <li class="us-toolbox-button us-toolbox-italic"><a title="Italic [Ctrl+I]" accesskey="I" href="">Italic</a></li>\
+                        <li class="us-toolbox-button us-toolbox-bold"><a title="Bold [Ctrl+B]" accesskey="B" prefix="**" postfix="**">Bold</a></li>\
+                        <li class="us-toolbox-button us-toolbox-italic"><a title="Italic [Ctrl+I]" accesskey="I" prefix="_" postfix="_">Italic</a></li>\
                         <li class="us-toolbox-separator">&nbsp</li>\
-                        <li class="us-toolbox-button us-toolbox-bullet "><a title="Bulleted List" href="">Bulleted List</a></li>\
-                        <li class="us-toolbox-button us-toolbox-numlist"><a title="Numeric List" href="">Numeric List</a></li>\
+                        <li class="us-toolbox-button us-toolbox-bullet "><a title="Bulleted List" prefix="- ">Bulleted List</a></li>\
+                        <li class="us-toolbox-button us-toolbox-numlist"><a title="Numeric List" prefix="1. ">Numeric List</a></li>\
                         <li class="us-toolbox-separator">&nbsp</li>\
-                        <li class="us-toolbox-button us-toolbox-pic"><a title="Picture [Ctrl+P]" accesskey="P" href="">Picture</a></li>\
-                        <li class="us-toolbox-button us-toolbox-link"><a title="Link [Ctrl+L]" accesskey="L" href="">Link</a></li>\
+                        <li class="us-toolbox-button us-toolbox-pic"><a title="Picture [Ctrl+P]" accesskey="P" prefix="">Picture</a></li>\
+                        <li class="us-toolbox-button us-toolbox-link"><a title="Link [Ctrl+L]" accesskey="L" prefix="">Link</a></li>\
                         <li class="us-toolbox-separator">---------------</li>\
-                        <li class="us-toolbox-button us-toolbox-quotes"><a title="Quotes" href="">Quotes</a></li>\
-                        <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" href="">Code Block / Code</a></li>\
+                        <li class="us-toolbox-button us-toolbox-quotes"><a title="Quotes" prefix="> ">Quotes</a></li>\
+                        <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" prefix="<code>" postfix="</code>">Code Block / Code</a></li>\
                         <li class="us-toolbox-separator">---------------</li>\
-                        <li class="us-toolbox-button us-toolbox-preview"><a title="Preview" href="">Preview</a></li>\
                       </ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
         $(selector + " div#readme").remove();
         $(rrrr).appendTo(selector);
+
+        $(selector + " span.us-toolbox-header ul li.us-toolbox-button a")
+        .click(function(e) {
+           
+           var sel = $(selector + " #markdown").getSelection();
+           //$(selector + " #markdown").getSelection();
+           //alert("CLICKED !!! " + sel.text);
+           var prefix = $(this).attr("prefix") || "",
+             postfix = $(this).attr("postfix") || "";
+           $(selector + " #markdown").wrapSelection(prefix, postfix);
+           //alert("add prefix !!! " + $(this).attr("prefix"));
+
+           e.preventDefault();
+           e.stopPropagation();
+        });
 
         var viewid = params.viewid,
             repo = params.repo,
