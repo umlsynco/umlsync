@@ -54,7 +54,7 @@ a {
 }
 
 .us-canvas {
-  border: 1px solid grey;
+  border: 0px solid grey;
   background-color: none;
   position: absolute;
   z-index: 999;
@@ -1120,6 +1120,10 @@ span.cfolder span.dynatree-icon {
     background-image: url("images/preview.png");
 }
 
+.us-toolbox-header {
+  z-index:1000000;
+}
+
 .us-toolbox-header ul a {
     background-repeat: no-repeat;
     display: block;
@@ -1142,10 +1146,15 @@ span.cfolder span.dynatree-icon {
 
 .us-markdown-editor {
     border: 3px solid #97F7A1;
-    clear: both;
     font: 12px/18px 'Courier New',Courier,monospace;
-    height: 320px;
-    overflow: auto;
     padding: 5px 5px 5px 35px;
     width: 100%;
+    display:block;
+    position:ralative;
+    overflow:visible;
+}
+
+
+.ui-tabs-panel {
+  overflow:hidden;
 }

@@ -500,7 +500,6 @@ Version:
       }
     },
     updateFrameWork: function(resizeAll, ui) {
-      $.log("updateFrameWork " + resizeAll);
       if (resizeAll) {
         // setup height for content and left - resize -right conent DIV's
         // header border 1px => total 2px (border top, border-bottom)
@@ -513,12 +512,12 @@ Version:
         .children(".ui-scrollable-tabs").height(hhh - 2)    // 1px solid border defined for .ui-scrollable-tabs
         .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
 
-//      content left maximize treetabs area
+        // content left maximize treetabs area
         var repoH = $("#switcher #reponav").height(),
         toolboxH = $("#switcher #toolbox").height();
         $("#switcher #treetabs").height(hhh - repoH - toolboxH-2);
 
-        var $ch;
+        var $ch, $md;
         if ($ch1.children(".ui-tabs-panel").length) {
           if (this.options.notabs == undefined || !this.options.notabs)
             hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
@@ -526,12 +525,23 @@ Version:
           $ch = $ch1.children(".ui-tabs-panel").height(hhh)
           .children("div").height(hhh - 24); // Border 1px + padding 11
           hhh -= 24;
+
+          // Update the markdown text area
+          $md = $(".us-markdown-editor");
+          if ($md.length != 0) {
+            $md.height(hhh-$("span.us-toolbox-header ul li a").height()-35);
+          }
         }
 
         // recalculate the content
         var wd = $("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 6;
         $("#" + this.options.content + "-right").width(wd);
 
+        // Update the markdown text area
+        if ($md && $md.length != 0) {
+          $md.width(wd-37*2);
+        }
+        
         var canvas = window.document.getElementById('SingleCanvas');
         if (canvas) {
           if ($ch) {
@@ -567,6 +577,13 @@ Version:
             canvas.width = wd - 40 - 12;
           }
         }
+
+        // Update the markdown text area
+        var $md = $(".us-markdown-editor");
+        if ($md.length !=0) {
+          $md.width(wd-37*2);
+        }
+        
       }
       var tabsHeight = $(window).height() - $(this.options.top).outerHeight(true) - 8 - $(this.options.bottom).outerHeight(true);
 
@@ -796,7 +813,8 @@ Version:
     },
     // Switch markdown to edit mode
     editMarkdown: function(selector, params, editMode) {
-      var isEditMode = ($(selector + " div#readme").length == 0);
+      var isEditMode = ($(selector + " div#readme").length == 0),
+          self = this;
 
       if (isEditMode == editMode)
         return;
@@ -820,7 +838,7 @@ Version:
         }
 
         // toolbox descriptor
-        var rrrr = '<span class="us-toolbox-header" style="z-index:1000000;"><ul style="list-style:none outside none;">\
+        var rrrr = '<span class="us-toolbox-header"><ul style="list-style:none outside none;">\
                         <li class="us-toolbox-button us-toolbox-h1"><a title="Heading 1 [Ctrl+1]" accesskey="1" postfix="\n========\n">First Level Heading</a></li>\
                         <li class="us-toolbox-button us-toolbox-h2"><a title="Heading 2 [Ctrl+2]" accesskey="2" postfix="\n--------\n" href="">Second Level Heading</a></li>\
                         <li class="us-toolbox-button us-toolbox-h3"><a title="Heading 3 [Ctrl+3]" accesskey="3" prefix="### " href="">Heading 3</a></li>\
@@ -844,6 +862,8 @@ Version:
         $(selector + " div#readme").remove();
         $(rrrr).appendTo(selector);
 
+        self.updateFrameWork(true); // Make text area to fit size of content
+
         $(selector + " span.us-toolbox-header ul li.us-toolbox-button a")
         .click(function(e) {
            
@@ -861,8 +881,8 @@ Version:
 
         var viewid = params.viewid,
             repo = params.repo,
-            path = params.node,
-            self = this;
+            path = params.node;
+
 
         self.views[viewid].view.loadContent(params, {
             'success': function(err, data) {
