@@ -227,7 +227,8 @@ URL:
                                 title:node.data.title,
                                 absPath:node.getAbsolutePath(),
                                 branch:"master",
-                                repo:"umlsynco/umlsync"
+                                repo:"umlsynco/umlsync",
+                                editable:false
                               };
 
                             if (ext == "JSON" || ext == "UMLSYNC") {
@@ -335,7 +336,8 @@ URL:
                                   title:node.data.title,
                                   absPath:node.getAbsolutePath(),
                                   branch:"master",
-                                  repo:"umlsynco/umlsync"
+                                  repo:"umlsynco/umlsync",
+                                  editable:false
                                 };
 
                               if (ext == "JSON" || ext == "UMLSYNC") {

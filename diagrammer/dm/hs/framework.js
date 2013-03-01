@@ -237,6 +237,13 @@ Version:
                 //@endif
                 did.draw();
               }
+
+              // Show/hide diagram menu to tabs change
+              if ($(self.selectedDiagramId).attr('edm') == "true") {
+                $(".diagram-menu").show();
+              } else {
+                $(".diagram-menu").hide();
+              }
             }
             self.updateFrameWork(true);
           },
@@ -789,6 +796,7 @@ Version:
               if (did != undefined) {
                 self.wdddd = !self.wdddd;
                 did._setWidgetsOption("editable", self.wdddd);
+                $(selector).attr("edm", self.wdddd);
               }
             }
             // if content is markdown code
@@ -807,6 +815,7 @@ Version:
 
             var clonedParams = $.extend({}, params);
             delete clonedParams['selector'];
+            clonedParams.editable = true;
             self.loadContent(clonedParams);
         });
       }
@@ -942,6 +951,13 @@ Version:
         tabname = "#" + tabname;
         $("#" + self.options.tabs).tabs("add", tabname, params.title);
         $("#" + self.options.tabs).append('<div id="'+ tabname +'"></div>');
+
+        // Hide diagram menu
+        if (!params.editable) {
+          $(".diagram-menu").hide();
+        } else {
+          $(".diagram-menu").show();
+        }
       }
       
       // Add gif which shows that content is loading
@@ -1007,7 +1023,12 @@ Version:
 
       jsonData.multicanvas = (params.selector != undefined);
 
+      // enable diagram menu
+      if (params.selector == undefined)
+        $(tabname).attr("edm", params.editable);
+
       jsonData['fullname'] = params.absPath;
+
       dm.dm.loader.Diagram(
         jsonData.type,
         jsonData.base_type || "base",
@@ -1016,7 +1037,8 @@ Version:
         function(obj) {
           if (!obj.options.multicanvas)
             self.diagrams[tabname] = obj;
-          obj.options['viewid'] = viewid;
+            obj.options['viewid'] = viewid;
+            //obj._setWidgetsOption("editable", params.editable);
         });
     },
     //
@@ -1030,6 +1052,7 @@ Version:
         </article></div>';
 
       $(tabname).append(innerHtml); // Markdown loaded
+      $(tabname).attr("edm", false);//enable diagram menu is always false for markdown
 
       // Load an embedded diagrams
       var count = 0,
@@ -1058,6 +1081,7 @@ Version:
             parentPath:parentPath,
             title:title,
             contentType:"dm", // means diagram
+            editable:false,
             selector:tabname + " #" +  $(this).attr("id")});
           }
         );
@@ -1067,6 +1091,7 @@ Version:
     //
     loadCode: function(tabname, params, data) {
       $(tabname).append("<div class='us-diagram'><pre class='prettyprint linenums:1'>" + data + "</pre></div>");
+      $(tabname).attr("edm", false);//enable diagram menu is always false for code
 
       prettyPrint();
  
