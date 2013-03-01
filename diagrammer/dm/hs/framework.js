@@ -536,8 +536,10 @@ Version:
         if (canvas) {
           if ($ch) {
             var s = $ch.offset();
-            canvas.left = s.x;
-            canvas.top = s.y;
+            if (s) {
+              canvas.left = s.x;
+              canvas.top = s.y;
+            }
           }
           canvas.height = hhh - 11; // 11-is scroll element size
           if ($(".us-diagram").length) {
@@ -833,7 +835,7 @@ Version:
                         <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" href="">Code Block / Code</a></li>\
                         <li class="us-toolbox-separator">---------------</li>\
                         <li class="us-toolbox-button us-toolbox-preview"><a title="Preview" href="">Preview</a></li>\
-                      </ul></span><br><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
+                      </ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
         $(selector + " div#readme").remove();
         $(rrrr).appendTo(selector);
 
