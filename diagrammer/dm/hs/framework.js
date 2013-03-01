@@ -39,6 +39,7 @@ Version:
       this.diagrams = this.diagrams || {};
       this.markdown = this.markdown || {};
       this.contents = this.contents || {};
+      this.openDiagramMenuOnFirstInit = false;
 
       this.initializeToolBox(dm.dm.loader);
 
@@ -426,6 +427,9 @@ Version:
           $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
           $("#accordion").accordion({'active': 0, autoHeight:false});
           $(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
+          if (!this.openDiagramMenuOnFirstInit) {
+            $(".diagram-menu").hide();
+          }
 		  $("#diagram-menu-header a.ui-dialog-titlebar-close").click(function() { $("div.diagram-menu #accordion").slideToggle();});
       }
       if (callback) {
@@ -925,6 +929,10 @@ Version:
           self = this;
       params.cuid = uniqueContentId;
 
+      // work-around for the first content load
+      // to prevent diagram menu open over markdown
+      this.openDiagramMenuOnFirstInit = params.editable;
+
       // Check if content was loaded before
       // and select corresponding tab
       // But if diagram should be embedded into markdown
@@ -1047,7 +1055,6 @@ Version:
           if (!obj.options.multicanvas)
             self.diagrams[tabname] = obj;
             obj.options['viewid'] = viewid;
-            //obj._setWidgetsOption("editable", params.editable);
         });
     },
     //

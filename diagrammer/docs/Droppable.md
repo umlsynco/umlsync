@@ -44,7 +44,7 @@ dm.base.diagram("es.note", dm.es.element, {
 Droppable functionality do not use jQuery droppable. Instead it is use jQuery.draggable events to handle drop: 
 
 <br>
-<div id="DroppableSequence" class="pack-diagram" repo="umlsynco/umlsync" path="diagrammer/docs/dm-diagrams/DroppableSequence.umlsync">
+<div id="DroppableSequence" class="pack-diagram" repo="umlsynco/umlsync" branch="master" path="/diagrammer/docs/dm-diagrams/DroppableSequence.umlsync">
 Droppable handling sequence. 
 </div>
 <br>

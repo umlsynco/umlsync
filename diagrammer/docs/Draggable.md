@@ -26,7 +26,7 @@ Draggable functionality based on jQuery UI draggable but multiple elements dragg
  
 
 <br>
-<div id="DraggableSequence" class="pack-diagram" repo="umlsynco/umlsync" path="diagrammer/docs/dm-diagrams/DraggableSequence.umlsync">
+<div id="DraggableSequence" class="pack-diagram" repo="umlsynco/umlsync" branch="master" path="/diagrammer/docs/dm-diagrams/DraggableSequence.umlsync">
 Draggable handling sequence: 
 </div>
 <br>

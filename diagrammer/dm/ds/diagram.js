@@ -982,15 +982,18 @@ dm['at'] = dm.at; //automated testing
   _setWidgetsOption: function( key, value ) {
     if (key == "selected") {
       this.multipleSelection = value;
-      for (var i in this.elements)
+      for (var i in this.elements) {
         this.elements[i]._setOption( key, value );
-      for (var i in this.connectors)
+      }
+      for (var i in this.connectors) {
         this.connectors[i]._setOption( key, value );
+      }
 
       this.selectedElement = undefined;
       this.selectedConnector = undefined;
 
-    } if (key == "z-index") { // Z-index supported by elements only (not applicable for connectors)
+    }
+    else if (key == "z-index") { // Z-index supported by elements only (not applicable for connectors)
       var newmax = this.max_zindex,
       min_z = undefined,
       max_z = undefined,
@@ -1029,10 +1032,12 @@ dm['at'] = dm.at; //automated testing
           }
         }
       this.max_zindex = newmax + 1;
-    } else if (key == "editable") {
+    }
+    else if (key == "editable") {
       this.options[key] = value;
-      for (var i in this.elements)
+      for (var i in this.elements) {
         this.elements[i]._setOption(key, value);
+      }
     }
     else {
       var isSel = ("selected" != key);
@@ -1939,7 +1944,9 @@ dm['at'] = dm.at; //automated testing
         .resizable("option", "disabled", !value)
         .draggable("option", "disabled", !value);
 
-        $("#" + this.euid + " .editablefield").editable(value ? "enable":"disable");
+        // Work-around for elements without editable fields
+        if ($("#" + this.euid + " .editablefield").length)
+          $("#" + this.euid + " .editablefield").editable(value ? "enable":"disable");
 
       } else if (key == "left") {
         $("#" + this.euid + "_Border").css(key, value);
