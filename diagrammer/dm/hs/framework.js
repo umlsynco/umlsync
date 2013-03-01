@@ -746,6 +746,11 @@ Version:
       .append('<div id="'+tabname+'"></div>')
       .tabs('add','#'+tabname,name);
       tabname = "#" + tabname;
+
+      // Enable diagram menu
+      $(tabname).attr("edm", true);
+      $(".diagram-menu").show();
+
       //tabs("add", tabname, name);
       this.counter++;
       if (type == "sequence")
@@ -780,23 +785,28 @@ Version:
                             </span>');
         $(selector + " #us-diagram-edit").click(function() {
             // switch from editable to static and back
-            var text = $(this).text();
+            var text = $(this).text(),
+                editFlag = false;
             if (text == "Edit") {
               $(this).text("View");
-              $(".diagram-menu").show();
+              editFlag = true
             }
             else {
               $(this).text("Edit");
-              $(".diagram-menu").hide();
             }
 
             // If content is diagram
             if (params.contentType == "dm") { 
               var did = self.diagrams[self.selectedDiagramId];
               if (did != undefined) {
-                self.wdddd = !self.wdddd;
-                did._setWidgetsOption("editable", self.wdddd);
-                $(selector).attr("edm", self.wdddd);
+                did._setWidgetsOption("editable", editFlag);
+                // Handle the diagram menu status
+                $(selector).attr("edm", editFlag);
+                if (editFlag) {
+                  $(".diagram-menu").show();
+                } else {
+                  $(".diagram-menu").hide();
+                }
               }
             }
             // if content is markdown code
