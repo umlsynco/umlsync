@@ -767,6 +767,9 @@ Version:
         baseType = "sequence";
       var self = this;
       var vid = options.viewid;
+
+      this.openDiagramMenuOnFirstInit = true;
+
       dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
           , function(obj) {
         self.diagrams[tabname] = obj;
