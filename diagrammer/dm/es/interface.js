@@ -85,6 +85,14 @@ dm.base.diagram("es.interface", dm.es.element, {
 					return true;
 			}})
       }
+    },
+    _setOption2: function(key, value) {
+       if (key == "editable") {
+         $("#" + this.euid + " #name")
+         .draggable("option", "disabled", !value)
+         .editable(value ? "enable":"disable");
+       }
+       return false;
     }
 });
 

@@ -463,7 +463,13 @@ dm.base.diagram("es.class", dm['es']['element'], {
         }
 
 		 return true;
-	  }/* else if (key.indexOf('height') == 0) {
+	  }
+      else if (key == "editable") {
+        // do not return true because it is only part of 
+        // transition to none-editable
+        $("#" + this.euid + " .us-sortable").sortable({ disabled: (value == true) ? false:true });
+      }
+      /* else if (key.indexOf('height') == 0) {
 	     var diff = parseInt(value) - parseInt(this.options['height_a']) - $('#' + this.euid + ' .us-class-header').height();
 		 if (diff > 0)
            $('#' + this.euid  + '_Border .us-class-operations').css('height', diff);
