@@ -1042,6 +1042,12 @@ dm['at'] = dm.at; //automated testing
         for (var i in this.connectors) {
           this.connectors[i]._setOption( key, value );
         }
+        if (!value) {
+           if (this.menuIcon != undefined)
+             this.menuIcon['Disable']();
+           if (this.menuCtx != undefined)
+             this.menuCtx['HideAll']();
+        }
       }
     }
     else {
@@ -1572,7 +1578,7 @@ dm['at'] = dm.at; //automated testing
         if (this.selectedElement != undefined)
           this.menuIcon['Disable'](this.selectedElement);
 
-        if (refElement != undefined) {
+        if (refElement != undefined && this.options.editable) {
           // Enable menu for the newely selected element
           if (mtype != undefined) {
             this.menuIcon['Enable'](refElement.euid, mtype, refElement);
@@ -1845,7 +1851,10 @@ dm['at'] = dm.at; //automated testing
         var poz = $("#" + self.euid).position();
         if (self.parrent.menuCtx) {
           self.parrent.menuCtx['HideAll']();
-          self.parrent.menuCtx['visit'](self, e.pageX , e.pageY );
+
+          // Prevent the context menu usage
+          if (self.parrent && self.parrent.options.editable)
+            self.parrent.menuCtx['visit'](self, e.pageX , e.pageY );
         }
       })
 //    @endif
@@ -1889,7 +1898,9 @@ dm['at'] = dm.at; //automated testing
         }
 //      @ifdef EDITOR
         // Show the  menu if element was selected
-        if (element.parrent.menuIcon && element.options.selected) {
+        if (element.parrent.menuIcon
+          && element.options.selected
+          && element.parrent.options.editable) {
           element.parrent.menuIcon['Show'](this.id, element);
         }
 //      @endif
@@ -1905,7 +1916,8 @@ dm['at'] = dm.at; //automated testing
         }
 
         //Check if this.euid is the same as selected
-        if (element.parrent.menuIcon) {
+        if (element.parrent.menuIcon
+          && element.parrent.options.editable) {
           element.parrent.menuIcon['Hide'](this.id);
         }
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
