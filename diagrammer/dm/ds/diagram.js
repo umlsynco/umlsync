@@ -1038,6 +1038,9 @@ dm['at'] = dm.at; //automated testing
       for (var i in this.elements) {
         this.elements[i]._setOption(key, value);
       }
+      for (var i in this.connectors) {
+        this.connectors[i]._setOption( key, value );
+      }
     }
     else {
       var isSel = ("selected" != key);
@@ -2202,7 +2205,15 @@ dm['at'] = dm.at; //automated testing
         for (var i in value) {
           this.labels[i].css({left:value[i][0], top: value[i][1]});
         }       
-      } else {
+      }
+      else if (key == "editable") {
+         for (var i in this.labels) {
+           this.labels[i]
+           .draggable("option", "disabled", !value)
+           .editable(value ? "enable":"disable");
+         }
+      }
+      else {
         this.options[ key ] = value;
       }
     },
