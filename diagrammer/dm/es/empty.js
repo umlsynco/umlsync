@@ -42,7 +42,9 @@ dm.base.diagram("es.empty", dm.es.element, {
          $(self + " img"+self +"img").width(m).height(m);
       });
 
+
       if (this.options.name) {
+          var self = this;
           $("<div id='name' style=\"position:absolute;top:100%;z-index:99999;top:"+this.options.nameY+"px;left:"+this.options.nameX+"px;\">" + this.options.name + "</div>")
 		  .appendTo("#" + this.euid)
 		  .draggable({
@@ -64,6 +66,14 @@ dm.base.diagram("es.empty", dm.es.element, {
 					return true;
 			}});
       }
+    },
+    _setOption2: function(key, value) {
+       if (key == "editable") {
+         $("#" + this.euid + " #name")
+         .draggable("option", "disabled", !value)
+         .editable(value ? "enable":"disable");
+       }
+       return false;
     }
 });
 
