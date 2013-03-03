@@ -1034,12 +1034,14 @@ dm['at'] = dm.at; //automated testing
       this.max_zindex = newmax + 1;
     }
     else if (key == "editable") {
-      this.options[key] = value;
-      for (var i in this.elements) {
-        this.elements[i]._setOption(key, value);
-      }
-      for (var i in this.connectors) {
-        this.connectors[i]._setOption( key, value );
+      if (this.options[key] != value) {
+        this.options[key] = value;
+        for (var i in this.elements) {
+          this.elements[i]._setOption(key, value);
+        }
+        for (var i in this.connectors) {
+          this.connectors[i]._setOption( key, value );
+        }
       }
     }
     else {

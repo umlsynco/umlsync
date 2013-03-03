@@ -25,16 +25,29 @@ $.fn.editable = function(options){
 
 	this.attr("tabindex", 1);
 	
-	if(options=='disable')
+	if(options=='disable') {
+        var opt = this.data('editable.options');
+        opt.enabled = false;
+        this.data('editable.options', opt);
 		return this.unbind(this.data('editable.options').editBy,this.data('editable.options').toEditable);
-	if(options=='enable')
+    }
+        
+	if(options=='enable' && !this.data('editable.options').enabled) {
+        var opt = this.data('editable.options');
+        opt.enabled = true;
+        this.data('editable.options', opt);
 		return this.bind(this.data('editable.options').editBy,this.data('editable.options').toEditable);
+    }
 	if(options=='destroy')
 		return  this.unbind(this.data('editable.options').editBy,this.data('editable.options').toEditable)
 					.data('editable.previous',null)
 					.data('editable.current',null)
 					.data('editable.options',null);
 	
+    // do not apply editable twice
+    if (this.data('editable.options'))
+      return;
+
 	var options = $.extend(defaults, options);
 	
 	options.toEditable = function(){
@@ -111,6 +124,7 @@ $.fn.editable = function(options){
 						}]
 					);
 	}
+    options.enabled = true;
 	this.data('editable.options',options);
 	return  this.one(options.editBy,options.toEditable);
 }

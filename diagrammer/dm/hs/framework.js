@@ -1069,7 +1069,7 @@ Version:
           if (!obj.options.multicanvas) {
             self.diagrams[tabname] = obj;
           }
-          else {
+          else {    
             //@ifdef EDITOR
             self['ActivateDiagramMenu'](obj.options['type']);
             obj.draw();
