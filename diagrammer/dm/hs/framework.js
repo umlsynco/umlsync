@@ -1058,6 +1058,7 @@ Version:
         $(tabname).attr("edm", params.editable);
 
       jsonData['fullname'] = params.absPath;
+      jsonData['editable'] = true;
 
       dm.dm.loader.Diagram(
         jsonData.type,
@@ -1074,6 +1075,11 @@ Version:
             obj.draw();
           }
           obj.options['viewid'] = viewid;
+          dm.dm.loader.OnLoadComplete(
+            function() {
+              obj._setWidgetsOption("editable", params.editable);
+            }
+          );
         });
     },
     //
