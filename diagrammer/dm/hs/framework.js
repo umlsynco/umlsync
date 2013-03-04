@@ -20,7 +20,9 @@ Version:
   //@export:dm.hs.framework:plain
   dm.hs.framework = function(options) {
     var activeNode;
-    var converter = new Showdown.converter();
+    //var Showdown = require('showdown');
+    var converter = new Showdown.converter({ extensions: ['umlsync'] });
+
     function getInstance(options) {
       dm.dm = dm.dm || {};
       if (!dm.dm['fw']) {
@@ -359,7 +361,8 @@ Version:
 
     framework.prototype = {
      options: {
-      tabRight:"diag-",
+      tabRight:"diag",
+      embedded:"embedded",
       tabLeft:"view-",
       tabs:"tabs",
       top:"#content-header",
@@ -1100,8 +1103,11 @@ Version:
         liof = params.absPath.lastIndexOf("/"),
         parentPath = (liof == -1) ? "/":params.absPath.substring(0, liof);
 
+      var self = this;
       $(tabname + " article.markdown-body .pack-diagram").each(function() {
         // var repo = $(this).attr("repo"),
+        var newId = self.options.embedded + "-" + self.counter;
+        self.counter++;
         
         var sum = $(this).attr("sha"),
           relativePath = $(this).attr("path"),
@@ -1110,6 +1116,8 @@ Version:
 
         // TODO: What is this string for ?
         $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
+
+        $(this).attr("id", newId);
 
         // all these contents should be embedded
         // diagrams
@@ -1123,7 +1131,7 @@ Version:
             title:title,
             contentType:"dm", // means diagram
             editable:false,
-            selector:tabname + " #" +  $(this).attr("id")});
+            selector:tabname + " #" +  newId});
           }
         );
     },

@@ -8,9 +8,7 @@ But for another hand it is extend the default behavior of  element in a very sim
 So, first of all dm.es.class instance inherited from dm.es.element like any element and follow to element initialization sequence.    
  
 <br>
-<div id="ClassInheritanceExample" class="pack-diagram" branch="master" source="github" repo="umlsynco/umlsync" path="/diagrammer/docs/dm-diagrams/ClassInheritanceExample.umlsync">
-UMLSync package structure diagram. 
-</div>
+![Diagram:](http://umlsync.org/github?path=./dm-diagrams/ClassInheritanceExample.umlsync "Class.")
 <br>
 
 
@@ -33,8 +31,8 @@ dm [ namespace ][ name ] = function( options, parrent ) {
 
 The element creation process affect all hierarchy of classes:
 
-<div id="ElementClassInit" class="pack-diagram" branch="master" source="github" repo="umlsynco/umlsync" path="./dm-diagrams/ElementClassInit.umlsync">
-Sequence of initialization of class
-</div>
+
+![Diagram:](http://umlsync.org/github?path=./dm-diagrams/ElementClassInit.umlsync "Element.")
+
 
 

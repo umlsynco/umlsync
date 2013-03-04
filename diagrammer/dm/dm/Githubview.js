@@ -98,10 +98,13 @@ URL:
 
       // Reading a repository
       var repo = github().getRepo(username, pUrl.split('/').pop());
+      var repositories = {}, repoid = username + "/" + pUrl.split('/').pop();
+
       var self =
       {
         euid: repoUrl.replace("/", "-"),
         activeBranch: "master",
+        repositories:repositories,
         getRepository: function() { return pUrl},
         modifiedList: {}, // The list of modified files by sha
         initBranches: function() {
