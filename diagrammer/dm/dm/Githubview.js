@@ -9,11 +9,13 @@ URL:
  */
 //@aspect
 (function($, dm, undefined) {
+////////////////////////////////////////////////////////////////////// VIEW MANAGER
   dm.base.GithubViewsManager = function(username, access_token, url) {
     // local web site mode
     var isLocal = (url != undefined);
     var ISelectionObserver = this;
     var viewsMap = {};
+    var githubView = null;
 
     function github() {
       // create singletone object. It is not possible to have two access tokens
@@ -54,12 +56,15 @@ URL:
 
     this.onRepoSelect = function(title, repo) {
       if (title == 'Yours') {
-        if (viewsMap[repo] == undefined) {
-          dm.dm.fw.addView2(repo, new IGithubView(repo));
+        if (githubView != null) {
+          githubView.openRepository(repo, true);
         }
         else {
-          dm.dm.fw.activateView(repo);
+          githubView = new IGithubView(repo, true);
+          dm.dm.fw.addView2('github', githubView); // repoid + view
         }
+
+        dm.dm.fw.onRepoSelect(githubView, repo);
       }
     };
 
@@ -93,53 +98,150 @@ URL:
       return null;
     };
     
-    var IGithubView = function (repoUrl) {
-      var pUrl = repoUrl;
-
+    var IGithubView = function (repoId, isEditable) {
       // Reading a repository
-      var repo = github().getRepo(username, pUrl.split('/').pop());
-      var repositories = {}, repoid = username + "/" + pUrl.split('/').pop();
-
+      //var repo = github().getRepo(username, repoId.split('/').pop());
+     
       var self =
       {
-        euid: repoUrl.replace("/", "-"),
-        activeBranch: "master",
-        repositories:repositories,
-        getRepository: function() { return pUrl},
+        euid: "github",
         modifiedList: {}, // The list of modified files by sha
-        initBranches: function() {
+////////////////////////////////////////////////////////////////////// REPOSITORIES AND BRANCHES
+        //
+        // Active branch of repository
+        //
+        activeBranch: null,
+        //
+        // Active repository "user/repository"
+        //
+        activeRepo: null,
+        //
+        // The list of loaded repositories and loaded contents of these repositories:
+        //
+        // repositories[repoid="user/repo"] {
+        //    contents[sha] = {path: %ABS PATH%, content: data}, - cache of loaded contents
+        //    updated[path] = {sha:sum, content:data, orig: data}, - cache of modified contents 
+        //    repo: repo,  - github.js repo instance
+        //    activeBranch: "master", - latest active branch
+        // }
+        //
+        repositories: {},
+        //
+        // Return the active repository
+        //
+        getActiveRepository: function() { return self.activeRepo;},
+        //
+        // Open repository
+        //
+        openRepository: function(repoId, isEditable) {
+          // Do nothing if it is the same repo
+          if (repoId == self.activeRepo) {
+            return;
+          }
+
+          var newRepo = self.repositories[repoId],
+              activeRepo = self.repositories[self.activeRepo];
+
+          if (activeRepo != null && Object.keys(activeRepo.updated).length > 0) {
+            alert("All modified files will be lost !!!");
+          }
+
+          // Open a new repository
+          if (newRepo == null) {
+            newRepo = self.repositories[repoId] = {
+              contents: {},
+              updated: {},
+              repo: github().getRepo(repoId.split('/')[0], repoId.split('/')[1]),
+              activeBranch: "master"
+            };
+          }
+          self.activeRepo = repoId;
+          self.activeBranch = newRepo.activeBranch;
+          repo = newRepo.repo;
+          // Update tree
+          self.initTree(self.treeParentSelector);
+          self.initBranches(repoId);
+        },
+        //
+        // Get branches and tabs of repository and add them to dialog
+        //
+        initBranches: function(repoId) {
+          var repo = self.repositories[repoId].repo;
           repo.listBranches(
             function(err, branches) {
-              dm.dm.fw.addBranch("Branches", repoUrl, self, branches);
+              dm.dm.fw.addBranch("Branches", repoId, self, branches);
               repo.listTags(
                 function(err, tags) {
-                  dm.dm.fw.addBranch("Tags", repoUrl, self, tags);
+                  dm.dm.fw.addBranch("Tags", repoId, self, tags);
                 }
               );
             }
           );
         },
+        //
+        // Callback from dialog that some branch was selected
+        //
         onBranchSelected: function(tab, branch) {
           self.activeBranch = branch;
-          //$(self.treeParentSelector).children().empty();
+          //$(self.treeParentSelector).children().empty(); // Remove the previous tree content. It is important to hide previous tree to provide feedback to user ASAP
+
+          // Init tree
           self.initTree(self.treeParentSelector);
         },
-        saveContent: function(path, data, description) {
-          self.modifiedList[path] = data;
+////////////////////////////////////////////////////////////////////// CONTENT MANAGMENT
+        //
+        // Save content if it is belog to the active branch and repository
+        // otherwise throw an exception
+        //
+        saveContent: function(params, data, description) {
+          if (params.repoId != self.activeRepo
+          || params.branch != self.activeBranch) {
+            alert("Attemption to commit on not active repository or branch.");
+            return;
+          }
+
+          if (self.repositories[params.repoId] == undefined) {
+            alert("Can not identify repository:" + params.repoId);
+            return;
+          }
+
+          // was not modified before
+          if (params.sha != undefined && self.repositories[params.repoId].contents[params.sha]) {
+            var tmp = self.repositories[params.repoId].contents[params.sha];
+            if (self.repositories[params.repoId].updated[params.absPath]) {
+              self.repositories[params.repoId].updated[params.absPath].modified = data;
+              return;
+            }
+
+            self.repositories[params.repoId].updated[params.absPath] = {
+              sha: params.sha,
+              modified:data,
+              orig:tmp.content
+            };
+
+            // remove part from content
+            delete self.repositories[params.repoId].contents[params.sha];
+          }
           $.log("Saving " + data.toString() + " on " + path.toString());
         },
         //
         // Load content or get it from cache:
         //
         loadContent: function(params, callback) {
-          // Get repository by params.repo
-          // right now we suppose that we are working in the same repository, BUT it is not alway true
+          // Active or inactive repository:
+          var repo = self.repositories[params.repoId].repo,
+           // Editable if only data located on the active repo and branch
+            isEditable = (params.repoId == self.activeRepo && params.branch == self.activeBranch);
+
           if (params.sha) {
             repo.getBlob(params.sha, function(err, data) {
               if (data == null) {
                 callback.error(err);
                 return;
               }
+
+              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true};
+
               callback.success(err, data);
             });
           }
@@ -153,6 +255,8 @@ URL:
 
               if (!decodedData)
                 callback.error("No data found in: " + cPath);
+              
+              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true};
 
               callback.success(err, decodedData);
             });
@@ -161,6 +265,26 @@ URL:
             callback.error("Not enough information about content.");
           }
         },
+        //
+        // Indicates that content is not active and could be removed
+        // from cache by request
+        //
+        closeContent: function(params) {
+          // Empty stub for future
+        },
+        getContentPath: function(params, parent) {
+          var relPath = params.relativePath;
+          // Actually it is an absolute path
+          if (relPath[0] == "/") {
+            return relPath;
+          }
+          // Load an embedded diagrams
+          var count = 0,
+              liof = parent.absPath.lastIndexOf("/"), // if slash not found than it is root
+              parentPath = (liof == -1) ? "/":parent.absPath.substring(0, liof);
+          return parentPath + relPath;
+        },
+////////////////////////////////////////////////////////////////////// CONTEXT MENU
         'ctx_menu':
                     [
                      {
@@ -230,7 +354,7 @@ URL:
                                 title:node.data.title,
                                 absPath:node.getAbsolutePath(),
                                 branch:"master",
-                                repo:"umlsynco/umlsync",
+                                repoId:self.activeRepo,
                                 editable:false
                               };
 
@@ -273,8 +397,9 @@ URL:
                      }
                      }
                      ],
-        initTree: function (parentSelector) {
-                    var isReload = (self.treeParentSelector == parentSelector);
+////////////////////////////////////////////////////////////////////// REPOSITORY TREE
+        initTree: function (parentSelector, isReload) {
+          var repo = self.repositories[self.activeRepo].repo;
                     self.treeParentSelector = parentSelector;
                     function updateTree(tree) {
                       $.log("updateTree()");
@@ -330,7 +455,6 @@ URL:
                             if (!node.data.isFolder) {
                               var tt = node.data.title.split(".");
                               var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
-                              var repo="pe";
 
                               var params =
                                 {
@@ -338,8 +462,8 @@ URL:
                                   node:node,
                                   title:node.data.title,
                                   absPath:node.getAbsolutePath(),
-                                  branch:"master",
-                                  repo:"umlsynco/umlsync",
+                                  branch:self.activeBranch,
+                                  repoId:self.activeRepo,
                                   editable:false
                                 };
 
@@ -359,6 +483,7 @@ URL:
                         }
                       );
                     };
+
                     repo.getTree(self.activeBranch , function(err, tree) {
                       if (err) {
                         $.log("Failed to load a git repo: " + err);
@@ -369,6 +494,9 @@ URL:
                     });
                   }
       };
+////////////////////////////////////////////////////////////////////// INITIALIZATION
+      // Open the first repository
+      self.openRepository(repoId, isEditable);
       return self;
     };
   };

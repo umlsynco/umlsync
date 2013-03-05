@@ -375,6 +375,14 @@ Version:
         dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
       }
      },
+     // Work-around to change text of
+     // selected repository
+     onRepoSelect: function(view, text) {
+       if (view.euid == "github") {
+        $("#us-repo .js-select-button").text(view.getActiveRepository());
+        $("#us-branch .js-select-button").text(view.activeBranch);
+       }
+     },
 
     // create the drop down selector with tabs
     // param - element id to attach widget
@@ -631,8 +639,7 @@ Version:
       $("#treetabs").append("<div id='"+id+"'></div>");
 
       if (name != "Eclipse") {
-        IView.initBranches();
-        $("#us-repo .js-select-button").text(IView.getRepository());
+        $("#us-repo .js-select-button").text(IView.getActiveRepository());
         $("#us-branch .js-select-button").text("master");
       
      }
@@ -892,10 +899,10 @@ Version:
                         <li class="us-toolbox-separator">&nbsp</li>\
                         <li class="us-toolbox-button us-toolbox-pic"><a title="Picture [Ctrl+P]" accesskey="P" prefix="">Picture</a></li>\
                         <li class="us-toolbox-button us-toolbox-link"><a title="Link [Ctrl+L]" accesskey="L" prefix="">Link</a></li>\
-                        <li class="us-toolbox-separator">---------------</li>\
+                        <li class="us-toolbox-separator">&nbsp</li>\
                         <li class="us-toolbox-button us-toolbox-quotes"><a title="Quotes" prefix="> ">Quotes</a></li>\
                         <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" prefix="<code>" postfix="</code>">Code Block / Code</a></li>\
-                        <li class="us-toolbox-separator">---------------</li>\
+                        <li class="us-toolbox-separator">&nbsp</li>\
                       </ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
         $(selector + " div#readme").remove();
         $(rrrr).appendTo(selector);
@@ -917,10 +924,7 @@ Version:
            e.stopPropagation();
         });
 
-        var viewid = params.viewid,
-            repo = params.repo,
-            path = params.node;
-
+        var viewid = params.viewid;
 
         self.views[viewid].view.loadContent(params, {
             'success': function(err, data) {
@@ -939,11 +943,23 @@ Version:
     // Unique content id: {ViewId, repository, branch, path from root}.
     // It is not possible to restore path by blob therefore we can't use blobs for wiki-like solutions
     //
-    loadContent: function(params) {
-      var uniqueContentId =  params.viewid + "/" + params.repo + "/" + params.branch + "/" + params.absPath,
+    loadContent: function(params, parentParams) {
+      var uniqueContentId =  params.viewid + "/" + params.repoId + "/" + params.branch + "/" + params.absPath,
           viewid = params.viewid,
           self = this;
       params.cuid = uniqueContentId;
+
+      // Check if view is really exists: fox example if some diagram contain
+      //                                 reference on sourceforge or googlecode
+      if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
+        alert("View: " + viewid + " was not initialize.");
+        return;
+      }
+
+      // Handle the relative path use-case:
+      if (parentParams != undefined && params.absPath == undefined) {
+        params.absPath = self.views[viewid].view.getContentPath(params, parentParams);
+      }
 
       // work-around for the first content load
       // to prevent diagram menu open over markdown
@@ -957,7 +973,7 @@ Version:
         for (var r in self.contents) {
           var d = self.contents[r];
           if ((d.viewid == params.viewid)  // Github 
-              && (d.repo == params.repo)   // userid/repo
+              && (d.repoId == params.repoId)   // userid/repo
               && (d.branch == params.branch) // tree/master
               && (d.absPath == params.absPath) // path from root
               )
@@ -966,13 +982,6 @@ Version:
               return;
           } // end if
         }
-      }
-
-      // Check if view is really exists: fox example if some diagram contain
-      //                                 reference on sourceforge or googlecode
-      if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
-        alert("View: " + viewid + " was not initialize.");
-        return;
       }
 
       // Create tab or use an existing selector
@@ -1098,42 +1107,39 @@ Version:
       $(tabname).append(innerHtml); // Markdown loaded
       $(tabname).attr("edm", false);//enable diagram menu is always false for markdown
 
-      // Load an embedded diagrams
-      var count = 0,
-        liof = params.absPath.lastIndexOf("/"),
-        parentPath = (liof == -1) ? "/":params.absPath.substring(0, liof);
-
       var self = this;
       $(tabname + " article.markdown-body .pack-diagram").each(function() {
-        // var repo = $(this).attr("repo"),
         var newId = self.options.embedded + "-" + self.counter;
         self.counter++;
         
-        var sum = $(this).attr("sha"),
-          relativePath = $(this).attr("path"),
-          splitted = (relativePath == undefined) ? "":relativePath.split("/"),
-          title = (relativePath == undefined) ? sum : splitted[splitted.length -1];
+        var relativePath = $(this).attr("path"),
+            sum = $(this).attr("sha"),
+            loadParams;
+       
+        // Initialize load parameter from content or inherit them from parent document
+        loadParams = {
+          sha:sum,
+          relativePath:relativePath,
+          repoId:$(this).attr("repo") || params.repoId,
+          branch:$(this).attr("branch") || params.branch,
+          viewid:$(this).attr("source") || params.viewid,
+          title: (relativePath == undefined) ? sum : relativePath.split("/").pop(), // title is the last word separated by slash
+
+          // extra options for content handler
+          contentType:"dm", // means diagram
+          editable:false,
+          selector:tabname + " #" +  newId
+        };
 
         // TODO: What is this string for ?
-        $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");;
-
+        $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");
+        // replace the default id by unique ID
         $(this).attr("id", newId);
 
         // all these contents should be embedded
         // diagrams
-        dm.dm.fw.loadContent(
-          {
-            viewid:params.viewid,
-            node:{data:{sha:sum, path:relativePath, parentPath:params.absPath}},
-            sha:sum,
-            absPath:relativePath,
-            parentPath:parentPath,
-            title:title,
-            contentType:"dm", // means diagram
-            editable:false,
-            selector:tabname + " #" +  newId});
-          }
-        );
+        dm.dm.fw.loadContent(loadParams, params);
+      }); // jQuery.each
     },
     //
     // Load source code and run google prettify on it
