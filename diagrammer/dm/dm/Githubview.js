@@ -230,11 +230,13 @@ URL:
           // Check modified cache:
           if (params.absPath && self.repositories[params.repoId].updated[params.absPath]) {
             callback.success(null, self.repositories[params.repoId].updated[params.absPath].content);
+            return;
           }
 
           // Check cache:
           if (params.sha && self.repositories[params.repoId].contents[params.sha]) {
             callback.success(null, self.repositories[params.repoId].contents[params.sha].content);
+            return;
           }
         
           // Active or inactive repository:
@@ -252,26 +254,33 @@ URL:
               self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true};
 
               callback.success(err, data);
+              return;
             });
           }
           else if (params.absPath) {
             var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
             repo.contents(cPath,  function(err, data) {
-              if (data.message)
+              if (data.message) {
                 callback.error(data.message);
+                return;
+              }
 
               var decodedData = decodeContent(data);
 
-              if (!decodedData)
+              if (!decodedData) {
                 callback.error("No data found in: " + cPath);
+                return;
+              }
               
               self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true};
 
               callback.success(err, decodedData);
+              return;
             });
           }
           else {
             callback.error("Not enough information about content.");
+            return;
           }
         },
         //

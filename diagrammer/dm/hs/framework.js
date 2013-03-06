@@ -283,11 +283,15 @@ Version:
 
             ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
 
+            // Hide the diagram menu
+            $(".diagram-menu").hide();
+
             if (self.contents && self.contents[ahref]) {
                 self.saveContent(ahref);
                 delete self.contents[ahref];
             }
             $tabs.tabs('remove', index);
+            $(ahref).remove();
           });
 
           var $treetabs = $("#treetabs");
