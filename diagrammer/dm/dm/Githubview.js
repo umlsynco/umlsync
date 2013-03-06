@@ -190,6 +190,14 @@ URL:
         },
 ////////////////////////////////////////////////////////////////////// CONTENT MANAGMENT
         //
+        // defines the cached content data limit
+        //
+        contentCacheLimit:40,
+        //
+        // The number of cached contents
+        //
+        contentCachedNum:0,
+        //
         // Save content if it is belog to the active branch and repository
         // otherwise throw an exception
         //
@@ -202,6 +210,12 @@ URL:
 
           if (self.repositories[params.repoId] == undefined) {
             alert("Can not identify repository:" + params.repoId);
+            return;
+          }
+
+          // Modified before
+          if (self.repositories[params.repoId].updated[params.absPath]) {
+            self.repositories[params.repoId].updated[params.absPath].content = data;
             return;
           }
 
@@ -221,6 +235,8 @@ URL:
 
             // remove part from content
             delete self.repositories[params.repoId].contents[params.sha];
+            // Reduced the cached number because now it is in modified list
+            self.contentCachedNum--;
           }
         },
         //
@@ -236,7 +252,20 @@ URL:
           // Check cache:
           if (params.sha && self.repositories[params.repoId].contents[params.sha]) {
             callback.success(null, self.repositories[params.repoId].contents[params.sha].content);
+            self.repositories[params.repoId].contents[params.sha].refCount++;
             return;
+          }
+          
+          // Try to get by path:
+          if (params.sha == undefined) {
+            for (var g in self.repositories[params.repoId].contents) {
+              if (self.repositories[params.repoId].contents[g].path == params.absPath) {
+                self.repositories[params.repoId].contents[g].refCount++;
+                params.sha = g;
+                callback.success(null, self.repositories[params.repoId].contents[g].content);
+                return;
+              }
+            }
           }
         
           // Active or inactive repository:
@@ -251,7 +280,8 @@ URL:
                 return;
               }
 
-              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true};
+              self.contentCachedNum++;
+              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true, refCount:1};
 
               callback.success(err, data);
               return;
@@ -271,8 +301,9 @@ URL:
                 callback.error("No data found in: " + cPath);
                 return;
               }
-              
-              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true};
+              self.contentCachedNum++;
+              params.sha = data.sha;
+              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:decodedData, isOpen:true, refCount:1};
 
               callback.success(err, decodedData);
               return;
@@ -282,13 +313,23 @@ URL:
             callback.error("Not enough information about content.");
             return;
           }
+          
+          //
+          // Reduce cache size on 5 useless contents
+          //
+          if (self.contentCachedNum > self.contentCachedLimit) {
+            alert("Limit reached, think how to free not used cache content !");
+          }
         },
         //
-        // Indicates that content is not active and could be removed
-        // from cache by request
+        // Release the reference count on content
         //
-        closeContent: function(params) {
-          // Empty stub for future
+        releaseContent: function(params) {
+          if (params.sha != undefined
+            && self.repositories[params.repoId] != undefined
+            && self.repositories[params.repoId].contents[params.sha]) {
+            self.repositories[params.repoId].contents[params.sha].refCount--;
+          }
         },
         getContentPath: function(params, parent) {
           var relPath = params.relativePath;
@@ -302,8 +343,31 @@ URL:
           // Load an embedded diagrams
           var count = 0,
               liof = parent.absPath.lastIndexOf("/"), // if slash not found than it is root
-              parentPath = (liof == -1) ? "/":parent.absPath.substring(0, liof);
-          return parentPath + relPath;
+              parentPath = (liof == -1) ? "/":parent.absPath.substring(0, liof+1);
+
+          var full_path = parentPath + relPath;
+          // Relative path doesn't contain dotted links
+          if (full_path.indexOf("./") == -1) {
+            return full_path;
+          }
+          var sfp = full_path.split("/"),
+            valid_path_array = new Array();
+          for (var t in sfp) {
+            if (sfp[t] == "." || sfp[t] == "") { // Stay on the same position
+              continue;
+            }
+            else if (sfp[t] == "..") { // Folder up
+              var isEmpty = valid_path_array.pop();
+              if (isEmpty == undefined) {
+                alert("Wrong path: " + full_path);
+              }
+            }
+            else { // next folder/item
+              valid_path_array.push(sfp[t]);
+            }
+          }
+          return "/" + valid_path_array.join("/");
+          
         },
 ////////////////////////////////////////////////////////////////////// CONTEXT MENU
         'ctx_menu':

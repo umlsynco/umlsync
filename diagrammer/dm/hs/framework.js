@@ -287,7 +287,7 @@ Version:
             $(".diagram-menu").hide();
 
             if (self.contents && self.contents[ahref]) {
-                self.saveContent(ahref);
+                self.saveContent(ahref, true);
                 delete self.contents[ahref];
             }
             $tabs.tabs('remove', index);
@@ -805,10 +805,13 @@ Version:
       }
 
       // Saved the diagram description:
-      if (self.contents[tabid].contentType == "dm") {
+      if (self.contents[tabid].contentType == "dm") { // Diagram
         if (!self.diagrams[tabid])
           return;
         var data = self.diagrams[tabid].getDescription();
+        self.views[params.viewid].view.saveContent(params, data);
+      }
+      else if (self.contents[tabid].contentType == "md") { // Markdown
         self.views[params.viewid].view.saveContent(params, data);
       }
     },
@@ -879,6 +882,9 @@ Version:
       if (isEditMode) {
         // get entered text
         var data = $(selector + " #markdown").val();
+
+        // Save content in storage cache
+        self.views[params.viewid].view.saveContent(params, data);
 
         // remove edit UI elements
         $(selector + " #markdown").remove();
