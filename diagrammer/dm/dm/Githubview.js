@@ -193,7 +193,7 @@ URL:
         // Save content if it is belog to the active branch and repository
         // otherwise throw an exception
         //
-        saveContent: function(params, data, description) {
+        saveContent: function(params, data) {
           if (params.repoId != self.activeRepo
           || params.branch != self.activeBranch) {
             alert("Attemption to commit on not active repository or branch.");
@@ -209,25 +209,34 @@ URL:
           if (params.sha != undefined && self.repositories[params.repoId].contents[params.sha]) {
             var tmp = self.repositories[params.repoId].contents[params.sha];
             if (self.repositories[params.repoId].updated[params.absPath]) {
-              self.repositories[params.repoId].updated[params.absPath].modified = data;
+              self.repositories[params.repoId].updated[params.absPath].content = data;
               return;
             }
 
             self.repositories[params.repoId].updated[params.absPath] = {
               sha: params.sha,
-              modified:data,
+              content:data,
               orig:tmp.content
             };
 
             // remove part from content
             delete self.repositories[params.repoId].contents[params.sha];
           }
-          $.log("Saving " + data.toString() + " on " + path.toString());
         },
         //
         // Load content or get it from cache:
         //
         loadContent: function(params, callback) {
+          // Check modified cache:
+          if (params.absPath && self.repositories[params.repoId].updated[params.absPath]) {
+            callback.success(null, self.repositories[params.repoId].updated[params.absPath].content);
+          }
+
+          // Check cache:
+          if (params.sha && self.repositories[params.repoId].contents[params.sha]) {
+            callback.success(null, self.repositories[params.repoId].contents[params.sha].content);
+          }
+        
           // Active or inactive repository:
           var repo = self.repositories[params.repoId].repo,
            // Editable if only data located on the active repo and branch
@@ -353,6 +362,7 @@ URL:
                               {
                                 viewid:self.euid,
                                 node:node,
+                                sha:node.data.sha,
                                 title:node.data.title,
                                 absPath:node.getAbsolutePath(),
                                 branch:"master",
@@ -462,6 +472,7 @@ URL:
                                 {
                                   viewid:self.euid,
                                   node:node,
+                                  sha:node.data.sha,
                                   title:node.data.title,
                                   absPath:node.getAbsolutePath(),
                                   branch:self.activeBranch,

@@ -280,18 +280,12 @@ Version:
 
           $('#tabs span.ui-test').live('click', function() {
             var index = $('li', $tabs).index($(this).parent().parent()),
+
             ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
-            // TODO: Add dialog "Would you like to store diagram ?"
-            if (self.diagrams && self.diagrams[ahref]) {
-              //@ifdef EDITOR
-              if (self.diagrams[ahref].isModified()) {
-                $.log("Saving...");
-                var diagram = self.diagrams[ahref];
-                var data = diagram.getDescription();
-                self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
-              }
-              //@endif
-              delete self.diagrams[ahref];
+
+            if (self.contents && self.contents[ahref]) {
+                self.saveContent(ahref);
+                delete self.contents[ahref];
             }
             $tabs.tabs('remove', index);
           });
@@ -785,8 +779,8 @@ Version:
       dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
           , function(obj) {
         self.diagrams[tabname] = obj;
-        if (vid && vid != "")
-          self.views[vid].view.saveContent(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
+//        if (vid && vid != "")
+//          self.views[vid].view.saveContent({title: options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
 
         // Show the diagram menu
         self['ActivateDiagramMenu'](obj.options['type']);
@@ -794,13 +788,25 @@ Version:
       this.updateFrameWork(true);
     },
     //@proexp
-    'saveDiagram': function(viewId, path, data, description) {
+    saveContent: function(tabid) {
       var self = this;
-      if (!self.views || !self.views[viewId] || !self.views[viewId].view) {
+      if (!self.contents[tabid]) {
+        return;
+      }
+      var params = self.contents[tabid];
+      
+      if (!self.views || !self.views[params.viewid] || !self.views[params.viewid].view) {
         alert("View: " + viewId + " was not initialize.");
         return;
       }
-      self.views[viewId].view.saveContent(path, data, description);
+
+      // Saved the diagram description:
+      if (self.contents[tabid].contentType == "dm") {
+        if (!self.diagrams[tabid])
+          return;
+        var data = self.diagrams[tabid].getDescription();
+        self.views[params.viewid].view.saveContent(params, data);
+      }
     },
 
     appendDiagramToolbox: function(selector, params) {
