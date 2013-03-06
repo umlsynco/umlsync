@@ -26,20 +26,26 @@ from social_auth.backends.contrib.github import GithubBackend
 
 from export.json_to_svg import CustomJSONtoSVGConverter
 
+
 def editor(request, name='index.html'):
     # FIXME: remove hardcoded urls
     redirect_url = urlquote("http://localhost:8000/editor/?viewer=asdnkkl12e1inmasdnln12x123x123mm;asd000")
-    return render_to_response('index.html', {'redirect_url' : redirect_url}, RequestContext(request))
+    return render_to_response('index.html',
+                              {'redirect_url': redirect_url},
+                              RequestContext(request))
+
 
 def editor22(request, name='index.html'):
     t = get_template('editor.html')
     html = t.render(Context({}))
     return HttpResponse(html)
 
+
 def error(request, name='index.html'):
     t = get_template('500.html')
     html = t.render(Context({}))
     return HttpResponse(html)
+
 
 def export(request):
     contents = request.GET.get('contents', '')
@@ -53,8 +59,11 @@ def export(request):
     response['Content-Length'] = os.path.getsize(filename)
     return response
 
+
 def is_complete_authentication(request):
-    return request.user.is_authenticated() and GithubBackend.__name__ in request.session.get(BACKEND_SESSION_KEY, '')
+    return request.user.is_authenticated() and \
+        GithubBackend.__name__ in request.session.get(BACKEND_SESSION_KEY, '')
+
 
 def get_access_token(user):
     key = str(user.id)
@@ -64,7 +73,8 @@ def get_access_token(user):
     if access_token is None:
         try:
             social_user = user.social_user if hasattr(user, 'social_user') \
-                                           else UserSocialAuth.objects.get(user=user.id, provider=GithubBackend.name)
+                else UserSocialAuth.objects.get(user=user.id,
+                                                provider=GithubBackend.name)
         except UserSocialAuth.DoesNotExist:
             return None
 
@@ -72,23 +82,26 @@ def get_access_token(user):
             access_token = social_user.extra_data.get('access_token')
             expires = social_user.extra_data.get('expires')
 
-            cache.set(key, access_token, int(expires) if expires is not None else 0)
+            cache.set(key, access_token,
+                      int(expires) if expires is not None else 0)
 
     return access_token
+
 
 # Facebook decorator to setup environment
 def facebook_decorator(func):
     def wrapper(request, *args, **kwargs):
         user = request.user
 
-        # User must me logged via FB backend in order to ensure we talk about the same person
+        # User must me logged via FB backend in order to ensure
+        # we talk about the same person
         if not is_complete_authentication(request):
             try:
                 user = social_complete(request, GithubBackend.name)
             except ValueError:
-                pass # no matter if failed
+                pass  # no matter if failed
 
-        # Not recommended way for FB, but still something we need to be aware of
+        # Not recommended way for FB, but something we need to be aware of
         if isinstance(user, HttpResponse):
             kwargs.update({'auth_response': user})
         # Need to re-check the completion
@@ -102,16 +115,24 @@ def facebook_decorator(func):
 
     return wrapper
 
+
 @login_required
 @csrf_exempt
 @facebook_decorator
 def editor2(request, *args, **kwargs):
     # If there is a ready response just return it. Not recommended though.
-    auth_response =  kwargs.get('auth_response')
+    auth_response = kwargs.get('auth_response')
     if auth_response:
         return auth_response
 
     if request.GET.get('viewer'):
-        return render_to_response('viewer.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))
+        return render_to_response('viewer.html',
+                                  {'warning': request.method == 'GET',
+                                   'access_token':
+                                   get_access_token(request.user)},
+                                  RequestContext(request))
 
-    return render_to_response('editor.html', {'warning': request.method == 'GET', 'access_token': get_access_token(request.user)}, RequestContext(request))
+    return render_to_response('editor.html',
+                              {'warning': request.method == 'GET',
+                               'access_token': get_access_token(request.user)},
+                              RequestContext(request))
