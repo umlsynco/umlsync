@@ -35,7 +35,9 @@ Version:
     }
 
     var framework = function(options) {
-      $.extend(true, this.options, options);
+      var tmp_opt = $.extend(true, {}, this.options, options);
+      this.options = tmp_opt;
+
       this.counter = 0;
       this.loader = dm.dm.loader;
       this.diagrams = this.diagrams || {};
@@ -849,7 +851,7 @@ Version:
                               <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
                             </span>');
         $(selector + " .us-diagram-edit").click(function() {
-            var clonedParams = $.extend({}, params);
+            var clonedParams = $.extend(true, {}, params);
             delete clonedParams['selector'];
             clonedParams.editable = $(this).attr("edm") || true;
             self.loadContent(clonedParams);
@@ -956,8 +958,13 @@ Version:
         return;
       }
 
+      if (params.absPath == undefined && params.relativePath == undefined && params.sha == undefined) {
+        alert("Not enough information about loadble content.");
+        return;
+      }
+      
       // Handle the relative path use-case:
-      if (parentParams != undefined && params.absPath == undefined) {
+      if (parentParams != undefined && params.absPath == undefined && params.relativePath != undefined ) {
         params.absPath = self.views[viewid].view.getContentPath(params, parentParams);
       }
 

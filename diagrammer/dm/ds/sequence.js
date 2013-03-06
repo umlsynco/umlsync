@@ -156,7 +156,7 @@ dm.base.diagram("ds.sequence", dm.ds.base, {
 	  
 	  var diag = this;
 	  // Perform function on diagram load completion
-	  this.options.loader.OnLoadComplete(function() {
+	  dm.dm.loader.OnLoadComplete(function() {
 		  for (i in diag.elements) {
 			if (diag.elements[i].sortDropedElements)
 			  diag.elements[i].sortDropedElements();

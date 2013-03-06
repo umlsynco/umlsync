@@ -275,7 +275,10 @@ URL:
         getContentPath: function(params, parent) {
           var relPath = params.relativePath;
           // Actually it is an absolute path
-          if (relPath[0] == "/") {
+          if (relPath == undefined)
+            return "";
+
+          if(relPath[0] == "/") {
             return relPath;
           }
           // Load an embedded diagrams
@@ -345,7 +348,6 @@ URL:
                          if (!node.data.isFolder) {
                             var tt = node.data.title.split(".");
                             var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
-                            var repo="pe";
 
                             var params =
                               {
