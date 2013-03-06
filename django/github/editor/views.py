@@ -27,18 +27,19 @@ from social_auth.backends.contrib.github import GithubBackend
 from export.json_to_svg import CustomJSONtoSVGConverter
 
 def editor(request, name='index.html'):
-  redirect_url = urlquote("http://localhost:8000/editor/?viewer=asdnkkl12e1inmasdnln12x123x123mm;asd000")
-  return render_to_response('index.html', {'redirect_url' : redirect_url}, RequestContext(request))
+    # FIXME: remove hardcoded urls
+    redirect_url = urlquote("http://localhost:8000/editor/?viewer=asdnkkl12e1inmasdnln12x123x123mm;asd000")
+    return render_to_response('index.html', {'redirect_url' : redirect_url}, RequestContext(request))
 
 def editor22(request, name='index.html'):
-        t = get_template('editor.html')
-        html = t.render(Context({}))
-        return HttpResponse(html)
+    t = get_template('editor.html')
+    html = t.render(Context({}))
+    return HttpResponse(html)
 
 def error(request, name='index.html'):
-        t = get_template('500.html')
-        html = t.render(Context({}))
-        return HttpResponse(html)
+    t = get_template('500.html')
+    html = t.render(Context({}))
+    return HttpResponse(html)
 
 def export(request):
     contents = request.GET.get('contents', '')
