@@ -295,7 +295,7 @@ URL:
                 return;
               }
 
-              var decodedData = decodeContent(data);
+              var decodedData = data; // decodeContent(data);
 
               if (!decodedData) {
                 callback.error("No data found in: " + cPath);

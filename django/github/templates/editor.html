@@ -76,38 +76,38 @@
   //$.log = function() {};
 
   $(document).ready(function() {
-    var Loader = new dm.base.loader("./");
-    //var fw = new dm.hs.framework({notabs:true});
+    var Loader = new dm.base.loader("http://localhost:8000/static/");
+    //var fw = new dm.hs.framework({notabs:true}); // No tabs view
     var fw = new dm.hs.framework({});
 
     // Initialize header menu on the left
     $('#header-menu').combomenu({menu:{
-		'Project': {
-		  'Change repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
-		  'Change branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
-		  'New diagram': {handler:function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}},
-		  'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
-		},
-		'Actions': {
-		  'Post for review':{handler: function() {	  }}
-		},
-		'Edit':{
-		  'Un-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;	e.keyCode = 90; $(window).trigger(e); }},
-		  'Re-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 89; $(window).trigger(e); }},
-		  'Cut':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 88; $(window).trigger(e); }},
-		  'Copy':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 67; $(window).trigger(e); }},
-		  'Past':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 86; $(window).trigger(e); }},
-		  'Delete':{handler: function(){var e = $.Event('keydown');	e.keyCode = 46; $(window).trigger(e); }},
-		  'Select All':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 65; $(window).trigger(e); }},
-		},
-		'Views':{
-		  'Google code':{handler: function(){		  }},
-		  'Sourceforege':{handler: function(){		  }},
-		  'Github':{handler: function(){		  }},
-		  'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
-		}
-	},
-	prefix: "file-menu"});
+        'Project': {
+          'Change repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
+          'Change branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
+          'New diagram': {handler:function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}},
+          'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
+        },
+        'Actions': {
+          'Post for review':{handler: function() {      }}
+        },
+        'Edit':{
+          'Un-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;    e.keyCode = 90; $(window).trigger(e); }},
+          'Re-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 89; $(window).trigger(e); }},
+          'Cut':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 88; $(window).trigger(e); }},
+          'Copy':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 67; $(window).trigger(e); }},
+          'Past':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 86; $(window).trigger(e); }},
+          'Delete':{handler: function(){var e = $.Event('keydown');    e.keyCode = 46; $(window).trigger(e); }},
+          'Select All':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 65; $(window).trigger(e); }},
+        },
+        'Views':{
+          'Google code':{handler: function(){          }},
+          'Sourceforege':{handler: function(){          }},
+          'Github':{handler: function(){          }},
+          'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
+        }
+    },
+    prefix: "file-menu"});
 
 /*
   // CSRF support for AJAX. Uses for server-side security.
@@ -149,18 +149,13 @@
   });
 */
 
+    // Pre-initialize workspace
     dm.dm = dm.dm || {};
-	dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager('umlsynco', null, "https://api.github.com/repos/umlsynco/diagrams/");
-	//fw.addViewManager('Github', dm.dm.IGithubViewsManager);
+    // Register GitHub as storage service
+    var username = "{{ user }}",
+        token = "{{ access_token }}";
+    dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username, token);
     dm.dm.IGithubViewsManager.init();
-
-//    dm.dm.IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
-//	dm.dm.IFilesView.euid = 'Github';
-//	fw.addView2('SelfView', dm.dm.IFilesView);
-
-//		$("li").live("mouseenter", function() {
-//			$(this).attr( {"title": this.id});
-//		});
   });
   
 </script>
