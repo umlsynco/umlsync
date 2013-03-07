@@ -783,8 +783,6 @@ Version:
       dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
           , function(obj) {
         self.diagrams[tabname] = obj;
-//        if (vid && vid != "")
-//          self.views[vid].view.saveContent({title: options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
 
         // Show the diagram menu
         self['ActivateDiagramMenu'](obj.options['type']);
@@ -792,7 +790,7 @@ Version:
       this.updateFrameWork(true);
     },
     //@proexp
-    saveContent: function(tabid) {
+    saveContent: function(tabid, isTabClosed) {
       var self = this;
       if (!self.contents[tabid]) {
         return;
@@ -1101,11 +1099,14 @@ Version:
         jsonData,
         tabname,
         function(obj) {
-          if (!obj.options.multicanvas) {
-            self.diagrams[tabname] = obj;
-          }
-          else {    
-            //@ifdef EDITOR
+          self.diagrams[tabname] = obj; // Keep diagram name
+
+          obj.onDestroy(function() {
+            self.views[params.viewid].view.releaseContent(params);
+            delete self.diagrams[tabname];
+          });
+
+          if (obj.options.multicanvas) {
             self['ActivateDiagramMenu'](obj.options['type']);
             obj.draw();
           }

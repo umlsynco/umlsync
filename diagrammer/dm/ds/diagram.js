@@ -932,7 +932,14 @@ dm['at'] = dm.at; //automated testing
     // It is necessary to init mouse over listener
     // to detect connections types
   },
-
+  _destroy: function(){
+    if (this.onDestroyObserver) {
+      this.onDestroyObserver();
+    }
+  },
+  onDestroy: function(func) {
+    this.onDestroyObserver = func;
+  },
   /**
    * \class Function.
    * Create an element with \eid and unique name.

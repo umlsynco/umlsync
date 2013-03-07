@@ -317,9 +317,25 @@ URL:
           //
           // Reduce cache size on 5 useless contents
           //
-          if (self.contentCachedNum > self.contentCachedLimit) {
-            alert("Limit reached, think how to free not used cache content !");
-          }
+          var mRepo, mSha, mTime = new Date();
+          if (self.contentCachedNum > self.contentCacheLimit) {
+            for (var re in self.repositories) {
+              for (var fl in self.repositories[re].contents) {
+                if (self.repositories[re].contents[fl].refCount == 0
+                  && mTime > self.repositories[re].contents[fl].closeTime) {
+                  mTime = self.repositories[re].contents[fl].closeTime;
+                  mRepo = re;
+                  mSha = fl;
+                }
+              }
+            }
+
+            // Remove found content in repository
+            if (mRepo && mSha) {
+              self.contentCachedNum--;
+              delete self.repositories[mRepo].contents[mSha];
+            }
+          } // If got cache limit
         },
         //
         // Release the reference count on content
@@ -329,6 +345,7 @@ URL:
             && self.repositories[params.repoId] != undefined
             && self.repositories[params.repoId].contents[params.sha]) {
             self.repositories[params.repoId].contents[params.sha].refCount--;
+            self.repositories[params.repoId].contents[params.sha].closeTime = new Date();
           }
         },
         getContentPath: function(params, parent) {
@@ -377,7 +394,7 @@ URL:
                        click: function(node, view) {
                        if (dm.dm.dialogs)
                          dm.dm.dialogs['CommitDataDialog'](
-                             view.modifiedList,
+                             self.repositories[self.activeRepo].updated,
                              function(message, items) {
                                var path;
                                $.log("Commiting...");
@@ -387,10 +404,10 @@ URL:
                                  $.log(path);
                                  contents.push({
                                    'path': path.toString().substring(1),
-                                   'content': items[path].toString()
+                                   'content': items[path].content
                                  });
                                  // Remove from updated list
-                                 delete self.modifiedList[path];
+                                 delete self.repositories[self.activeRepo].updated[path];
                                };
 
                                // second call won't work as we need to update the tree
@@ -487,10 +504,9 @@ URL:
           var repo = self.repositories[self.activeRepo].repo;
                     self.treeParentSelector = parentSelector;
                     function updateTree(tree) {
-                      $.log("updateTree()");
-                      datax = {};
+                      var datax = {};
                       datax["tree"] = tree;
-                      real_tree = {}
+                      var real_tree = {}
                       real_tree = processTree(datax);
                       if (isReload) {
                         var $root = $(parentSelector).dynatree("getTree");
