@@ -60,7 +60,7 @@ URL:
           githubView.openRepository(repo, true);
         }
         else {
-          githubView = new IGithubView(repo, true);
+          githubView = new IGithubView(repo, false);
           dm.dm.fw.addView2('github', githubView); // repoid + view
         }
 
@@ -68,9 +68,13 @@ URL:
       }
     };
 
+    var userRepositories = new Array();
     this.init = function() {
       function showRepos(repos) {
         dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
+        for (var r in repos) {
+          userRepositories.push(repos[r]['full_name']);
+        }
       };
 
       if (!isLocal) {
@@ -98,7 +102,7 @@ URL:
       return null;
     };
     
-    var IGithubView = function (repoId, isEditable) {
+    var IGithubView = function (repoId, isOwner) {
       // Reading a repository
       //var repo = github().getRepo(username, repoId.split('/').pop());
      
@@ -133,7 +137,7 @@ URL:
         //
         // Open repository
         //
-        openRepository: function(repoId, isEditable) {
+        openRepository: function(repoId, isOwner) {
           // Do nothing if it is the same repo
           if (repoId == self.activeRepo) {
             return;
@@ -152,7 +156,8 @@ URL:
               contents: {},
               updated: {},
               repo: github().getRepo(repoId.split('/')[0], repoId.split('/')[1]),
-              activeBranch: "master"
+              activeBranch: "master",
+              owner:isOwner
             };
           }
           self.activeRepo = repoId;
@@ -267,7 +272,11 @@ URL:
               }
             }
           }
-        
+
+          // Setup ownership parameter to indicate that
+          // it is possible to modify cotent
+          params.isOwner = (userRepositories.indexOf(params.repoId) >= 0);
+
           // Active or inactive repository:
           var repo = self.repositories[params.repoId].repo,
            // Editable if only data located on the active repo and branch
@@ -514,9 +523,10 @@ URL:
                         $root.reload();
                         return;
                       }
+                      $(parentSelector).dynatree('destroy').empty();
                       self.$tree = $(parentSelector).dynatree(
                           {
-                            persist: true,
+                            persist: false,
                             children: real_tree,
                             onCreate: function(node, span) {
                             $.log("onCreate()");
@@ -598,7 +608,7 @@ URL:
       };
 ////////////////////////////////////////////////////////////////////// INITIALIZATION
       // Open the first repository
-      self.openRepository(repoId, isEditable);
+      self.openRepository(repoId, isOwner);
       return self;
     };
   };
