@@ -60,6 +60,12 @@ def export(request):
     return response
 
 
+def open_path(request, path):
+    t = get_template('editor.html')
+    html = t.render(Context({"path": path}))
+    return HttpResponse(html)
+
+
 def is_complete_authentication(request):
     return request.user.is_authenticated() and \
         GithubBackend.__name__ in request.session.get(BACKEND_SESSION_KEY, '')

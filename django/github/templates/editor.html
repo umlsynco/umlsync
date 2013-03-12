@@ -76,7 +76,7 @@
   //$.log = function() {};
 
   $(document).ready(function() {
-    var Loader = new dm.base.loader("./");
+    var Loader = new dm.base.loader("http://localhost:8000/static/");
     //var fw = new dm.hs.framework({notabs:true});
     var fw = new dm.hs.framework({});
 
@@ -148,9 +148,19 @@
     }
   });
 */
-
-    dm.dm = dm.dm || {};
-	dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager('umlsynco', null, "https://api.github.com/repos/umlsynco/diagrams/");
+  username = "{{ user }}";
+  token = "{{ access_token }}";
+  $.log(username);
+  $.log(token);
+  path = "{{ path }}";
+  $.log(path);
+  dm.dm = dm.dm || {};
+  if (path != "") {
+    dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username, token, "https://api.github.com/repos/kalaidin/{{path}}/");
+  }
+  else {
+    dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username, token);
+  }
 	//fw.addViewManager('Github', dm.dm.IGithubViewsManager);
     dm.dm.IGithubViewsManager.init();
 
@@ -162,7 +172,7 @@
 //			$(this).attr( {"title": this.id});
 //		});
   });
-  
+
 </script>
 
 
@@ -171,7 +181,7 @@
 <div id="body">
   <div class="header-nav ui-state-active" id="content-header">
   <div>
-    <ul id="header-menu" class="header-menu-left"></ul>
+  <ul id="header-menu" class="header-menu-left"></ul>
   </div>
   <div>
     <ul class="header-menu-right">
