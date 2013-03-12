@@ -35,7 +35,9 @@ Version:
     }
 
     var framework = function(options) {
-      $.extend(true, this.options, options);
+      var tmp_opt = $.extend(true, {}, this.options, options);
+      this.options = tmp_opt;
+
       this.counter = 0;
       this.loader = dm.dm.loader;
       this.diagrams = this.diagrams || {};
@@ -278,20 +280,18 @@ Version:
 
           $('#tabs span.ui-test').live('click', function() {
             var index = $('li', $tabs).index($(this).parent().parent()),
+
             ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
-            // TODO: Add dialog "Would you like to store diagram ?"
-            if (self.diagrams && self.diagrams[ahref]) {
-              //@ifdef EDITOR
-              if (self.diagrams[ahref].isModified()) {
-                $.log("Saving...");
-                var diagram = self.diagrams[ahref];
-                var data = diagram.getDescription();
-                self['saveDiagram'](diagram.options['viewid'], diagram.options['fullname'], data, "Test save/restore !!!");
-              }
-              //@endif
-              delete self.diagrams[ahref];
+
+            // Hide the diagram menu
+            $(".diagram-menu").hide();
+
+            if (self.contents && self.contents[ahref]) {
+                self.saveContent(ahref, true);
+                delete self.contents[ahref];
             }
             $tabs.tabs('remove', index);
+            $(ahref).remove();
           });
 
           var $treetabs = $("#treetabs");
@@ -783,8 +783,6 @@ Version:
       dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
           , function(obj) {
         self.diagrams[tabname] = obj;
-        if (vid && vid != "")
-          self.views[vid].view.saveContent(options.fullname, '{type:"'+type+'",name:"'+name+'"}', "new diagram");
 
         // Show the diagram menu
         self['ActivateDiagramMenu'](obj.options['type']);
@@ -792,24 +790,45 @@ Version:
       this.updateFrameWork(true);
     },
     //@proexp
-    'saveDiagram': function(viewId, path, data, description) {
+    saveContent: function(tabid, isTabClosed) {
       var self = this;
-      if (!self.views || !self.views[viewId] || !self.views[viewId].view) {
+      if (!self.contents[tabid]) {
+        return;
+      }
+      var params = self.contents[tabid];
+      
+      if (!self.views || !self.views[params.viewid] || !self.views[params.viewid].view) {
         alert("View: " + viewId + " was not initialize.");
         return;
       }
-      self.views[viewId].view.saveContent(path, data, description);
+
+      // Saved the diagram description:
+      if (self.contents[tabid].contentType == "dm") { // Diagram
+        if (!self.diagrams[tabid])
+          return;
+        var data = self.diagrams[tabid].getDescription();
+        self.views[params.viewid].view.saveContent(params, data);
+      }
+      else if (self.contents[tabid].contentType == "md") { // Markdown
+        self.views[params.viewid].view.saveContent(params, data);
+      }
     },
 
-    appendDiagramToolbox: function(selector, params) {
+    appendContentToolbox: function(selector, params) {
       var self = this;
       if (params.selector == undefined) {
-        var edit = (params.editable == true) || (params.editable == "true");
+        var edit = (params.editable == true) || (params.editable == "true"),
+        // It is not possible to edit file if it is defined by sha (and path unknown)
+        // or if user is not owner of repository
+        editBullet = (!params.isOwner || params.absPath == undefined) ? "": '<a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>';
+
         $(selector).append('<span class="us-diagram-toolbox">\
                                <a id="us-link"><span id="us-getlink">Get link</span></a>\
-                               <a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>\
+                               '+ editBullet +'\
                             </span>');
-        $(selector + " #us-diagram-edit").click(function() {
+        // Handle edit if user is owner of the content
+        if (params.isOwner) {
+          $(selector + " #us-diagram-edit").click(function() {
             // switch from editable to static and back
             var text = $(this).text(),
                 editFlag = false;
@@ -840,18 +859,25 @@ Version:
             else if (params.contentType == "md") { 
               self.editMarkdown(selector, params);
             }
-        });
+          });
+        }
       }
       else {
+        // It is not possible to edit file if it is defined by sha (and path unknown)
+        // or if user is not owner of repository
+        var editBullet = (!params.isOwner || params.absPath == undefined) ? "": '<a id="us-link"><span class="us-diagram-edit">Edit</span></a>';
         $(selector).append('<span class="us-diagram-toolbox">\
                               <a id="us-link"><span id="us-getlink">Get link</span></a>\
                               <a id="us-link"><span class="us-diagram-edit" edm="false">Full screen</span></a>\
-                              <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
+                              '+ editBullet +'\
                             </span>');
+
+
         $(selector + " .us-diagram-edit").click(function() {
-            var clonedParams = $.extend({}, params);
+            var clonedParams = $.extend(true, {}, params);
             delete clonedParams['selector'];
-            clonedParams.editable = $(this).attr("edm") || true;
+            // jquery return string for attibute "edm" therefore we have to compare it with 'false'
+            clonedParams.editable = params.isOwner ? ($(this).attr("edm") != 'false') : false;
             self.loadContent(clonedParams);
         });
       }
@@ -867,6 +893,9 @@ Version:
       if (isEditMode) {
         // get entered text
         var data = $(selector + " #markdown").val();
+
+        // Save content in storage cache
+        self.views[params.viewid].view.saveContent(params, data);
 
         // remove edit UI elements
         $(selector + " #markdown").remove();
@@ -956,8 +985,13 @@ Version:
         return;
       }
 
+      if (params.absPath == undefined && params.relativePath == undefined && params.sha == undefined) {
+        alert("Not enough information about loadble content.");
+        return;
+      }
+      
       // Handle the relative path use-case:
-      if (parentParams != undefined && params.absPath == undefined) {
+      if (parentParams != undefined && params.absPath == undefined && params.relativePath != undefined ) {
         params.absPath = self.views[viewid].view.getContentPath(params, parentParams);
       }
 
@@ -1012,7 +1046,7 @@ Version:
               self.contents[tabname] = params;
 
             // Simple toolbox for each diagram
-            self.appendDiagramToolbox(tabname, params);
+            self.appendContentToolbox(tabname, params);
 
             // Remove puh after JSON load completion
             $(tabname + " #puh").remove();
@@ -1078,11 +1112,14 @@ Version:
         jsonData,
         tabname,
         function(obj) {
-          if (!obj.options.multicanvas) {
-            self.diagrams[tabname] = obj;
-          }
-          else {    
-            //@ifdef EDITOR
+          self.diagrams[tabname] = obj; // Keep diagram name
+
+          obj.onDestroy(function() {
+            self.views[params.viewid].view.releaseContent(params);
+            delete self.diagrams[tabname];
+          });
+
+          if (obj.options.multicanvas) {
             self['ActivateDiagramMenu'](obj.options['type']);
             obj.draw();
           }

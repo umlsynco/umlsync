@@ -60,7 +60,7 @@ URL:
           githubView.openRepository(repo, true);
         }
         else {
-          githubView = new IGithubView(repo, true);
+          githubView = new IGithubView(repo, false);
           dm.dm.fw.addView2('github', githubView); // repoid + view
         }
 
@@ -68,9 +68,13 @@ URL:
       }
     };
 
+    var userRepositories = new Array();
     this.init = function() {
       function showRepos(repos) {
         dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
+        for (var r in repos) {
+          userRepositories.push(repos[r]['full_name']);
+        }
       };
 
       if (!isLocal) {
@@ -98,7 +102,7 @@ URL:
       return null;
     };
     
-    var IGithubView = function (repoId, isEditable) {
+    var IGithubView = function (repoId, isOwner) {
       // Reading a repository
       //var repo = github().getRepo(username, repoId.split('/').pop());
      
@@ -133,7 +137,7 @@ URL:
         //
         // Open repository
         //
-        openRepository: function(repoId, isEditable) {
+        openRepository: function(repoId, isOwner) {
           // Do nothing if it is the same repo
           if (repoId == self.activeRepo) {
             return;
@@ -152,7 +156,8 @@ URL:
               contents: {},
               updated: {},
               repo: github().getRepo(repoId.split('/')[0], repoId.split('/')[1]),
-              activeBranch: "master"
+              activeBranch: "master",
+              owner:isOwner
             };
           }
           self.activeRepo = repoId;
@@ -190,10 +195,18 @@ URL:
         },
 ////////////////////////////////////////////////////////////////////// CONTENT MANAGMENT
         //
+        // defines the cached content data limit
+        //
+        contentCacheLimit:40,
+        //
+        // The number of cached contents
+        //
+        contentCachedNum:0,
+        //
         // Save content if it is belog to the active branch and repository
         // otherwise throw an exception
         //
-        saveContent: function(params, data, description) {
+        saveContent: function(params, data) {
           if (params.repoId != self.activeRepo
           || params.branch != self.activeBranch) {
             alert("Attemption to commit on not active repository or branch.");
@@ -205,29 +218,65 @@ URL:
             return;
           }
 
+          // Modified before
+          if (self.repositories[params.repoId].updated[params.absPath]) {
+            self.repositories[params.repoId].updated[params.absPath].content = data;
+            return;
+          }
+
           // was not modified before
           if (params.sha != undefined && self.repositories[params.repoId].contents[params.sha]) {
             var tmp = self.repositories[params.repoId].contents[params.sha];
             if (self.repositories[params.repoId].updated[params.absPath]) {
-              self.repositories[params.repoId].updated[params.absPath].modified = data;
+              self.repositories[params.repoId].updated[params.absPath].content = data;
               return;
             }
 
             self.repositories[params.repoId].updated[params.absPath] = {
               sha: params.sha,
-              modified:data,
+              content:data,
               orig:tmp.content
             };
 
             // remove part from content
             delete self.repositories[params.repoId].contents[params.sha];
+            // Reduced the cached number because now it is in modified list
+            self.contentCachedNum--;
           }
-          $.log("Saving " + data.toString() + " on " + path.toString());
         },
         //
         // Load content or get it from cache:
         //
         loadContent: function(params, callback) {
+          // Check modified cache:
+          if (params.absPath && self.repositories[params.repoId].updated[params.absPath]) {
+            callback.success(null, self.repositories[params.repoId].updated[params.absPath].content);
+            return;
+          }
+
+          // Check cache:
+          if (params.sha && self.repositories[params.repoId].contents[params.sha]) {
+            callback.success(null, self.repositories[params.repoId].contents[params.sha].content);
+            self.repositories[params.repoId].contents[params.sha].refCount++;
+            return;
+          }
+          
+          // Try to get by path:
+          if (params.sha == undefined) {
+            for (var g in self.repositories[params.repoId].contents) {
+              if (self.repositories[params.repoId].contents[g].path == params.absPath) {
+                self.repositories[params.repoId].contents[g].refCount++;
+                params.sha = g;
+                callback.success(null, self.repositories[params.repoId].contents[g].content);
+                return;
+              }
+            }
+          }
+
+          // Setup ownership parameter to indicate that
+          // it is possible to modify cotent
+          params.isOwner = (userRepositories.indexOf(params.repoId) >= 0);
+
           // Active or inactive repository:
           var repo = self.repositories[params.repoId].repo,
            // Editable if only data located on the active repo and branch
@@ -240,49 +289,111 @@ URL:
                 return;
               }
 
-              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true};
+              self.contentCachedNum++;
+              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true, refCount:1};
 
               callback.success(err, data);
+              return;
             });
           }
           else if (params.absPath) {
             var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
             repo.contents(cPath,  function(err, data) {
-              if (data.message)
+              if (data.message) {
                 callback.error(data.message);
+                return;
+              }
 
-              var decodedData = decodeContent(data);
+              var decodedData = data; // decodeContent(data);
 
-              if (!decodedData)
+              if (!decodedData) {
                 callback.error("No data found in: " + cPath);
-              
-              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true};
+                return;
+              }
+              self.contentCachedNum++;
+              params.sha = data.sha;
+              self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:decodedData, isOpen:true, refCount:1};
 
               callback.success(err, decodedData);
+              return;
             });
           }
           else {
             callback.error("Not enough information about content.");
+            return;
           }
+          
+          //
+          // Reduce cache size on 5 useless contents
+          //
+          var mRepo, mSha, mTime = new Date();
+          if (self.contentCachedNum > self.contentCacheLimit) {
+            for (var re in self.repositories) {
+              for (var fl in self.repositories[re].contents) {
+                if (self.repositories[re].contents[fl].refCount == 0
+                  && mTime > self.repositories[re].contents[fl].closeTime) {
+                  mTime = self.repositories[re].contents[fl].closeTime;
+                  mRepo = re;
+                  mSha = fl;
+                }
+              }
+            }
+
+            // Remove found content in repository
+            if (mRepo && mSha) {
+              self.contentCachedNum--;
+              delete self.repositories[mRepo].contents[mSha];
+            }
+          } // If got cache limit
         },
         //
-        // Indicates that content is not active and could be removed
-        // from cache by request
+        // Release the reference count on content
         //
-        closeContent: function(params) {
-          // Empty stub for future
+        releaseContent: function(params) {
+          if (params.sha != undefined
+            && self.repositories[params.repoId] != undefined
+            && self.repositories[params.repoId].contents[params.sha]) {
+            self.repositories[params.repoId].contents[params.sha].refCount--;
+            self.repositories[params.repoId].contents[params.sha].closeTime = new Date();
+          }
         },
         getContentPath: function(params, parent) {
           var relPath = params.relativePath;
           // Actually it is an absolute path
-          if (relPath[0] == "/") {
+          if (relPath == undefined)
+            return "";
+
+          if(relPath[0] == "/") {
             return relPath;
           }
           // Load an embedded diagrams
           var count = 0,
               liof = parent.absPath.lastIndexOf("/"), // if slash not found than it is root
-              parentPath = (liof == -1) ? "/":parent.absPath.substring(0, liof);
-          return parentPath + relPath;
+              parentPath = (liof == -1) ? "/":parent.absPath.substring(0, liof+1);
+
+          var full_path = parentPath + relPath;
+          // Relative path doesn't contain dotted links
+          if (full_path.indexOf("./") == -1) {
+            return full_path;
+          }
+          var sfp = full_path.split("/"),
+            valid_path_array = new Array();
+          for (var t in sfp) {
+            if (sfp[t] == "." || sfp[t] == "") { // Stay on the same position
+              continue;
+            }
+            else if (sfp[t] == "..") { // Folder up
+              var isEmpty = valid_path_array.pop();
+              if (isEmpty == undefined) {
+                alert("Wrong path: " + full_path);
+              }
+            }
+            else { // next folder/item
+              valid_path_array.push(sfp[t]);
+            }
+          }
+          return "/" + valid_path_array.join("/");
+          
         },
 ////////////////////////////////////////////////////////////////////// CONTEXT MENU
         'ctx_menu':
@@ -292,7 +403,7 @@ URL:
                        click: function(node, view) {
                        if (dm.dm.dialogs)
                          dm.dm.dialogs['CommitDataDialog'](
-                             view.modifiedList,
+                             self.repositories[self.activeRepo].updated,
                              function(message, items) {
                                var path;
                                $.log("Commiting...");
@@ -302,10 +413,10 @@ URL:
                                  $.log(path);
                                  contents.push({
                                    'path': path.toString().substring(1),
-                                   'content': items[path].toString()
+                                   'content': items[path].content
                                  });
                                  // Remove from updated list
-                                 delete self.modifiedList[path];
+                                 delete self.repositories[self.activeRepo].updated[path];
                                };
 
                                // second call won't work as we need to update the tree
@@ -345,12 +456,12 @@ URL:
                          if (!node.data.isFolder) {
                             var tt = node.data.title.split(".");
                             var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
-                            var repo="pe";
 
                             var params =
                               {
                                 viewid:self.euid,
                                 node:node,
+                                sha:node.data.sha,
                                 title:node.data.title,
                                 absPath:node.getAbsolutePath(),
                                 branch:"master",
@@ -402,10 +513,9 @@ URL:
           var repo = self.repositories[self.activeRepo].repo;
                     self.treeParentSelector = parentSelector;
                     function updateTree(tree) {
-                      $.log("updateTree()");
-                      datax = {};
+                      var datax = {};
                       datax["tree"] = tree;
-                      real_tree = {}
+                      var real_tree = {}
                       real_tree = processTree(datax);
                       if (isReload) {
                         var $root = $(parentSelector).dynatree("getTree");
@@ -413,9 +523,10 @@ URL:
                         $root.reload();
                         return;
                       }
+                      $(parentSelector).dynatree('destroy').empty();
                       self.$tree = $(parentSelector).dynatree(
                           {
-                            persist: true,
+                            persist: false,
                             children: real_tree,
                             onCreate: function(node, span) {
                             $.log("onCreate()");
@@ -460,6 +571,7 @@ URL:
                                 {
                                   viewid:self.euid,
                                   node:node,
+                                  sha:node.data.sha,
                                   title:node.data.title,
                                   absPath:node.getAbsolutePath(),
                                   branch:self.activeBranch,
@@ -496,7 +608,7 @@ URL:
       };
 ////////////////////////////////////////////////////////////////////// INITIALIZATION
       // Open the first repository
-      self.openRepository(repoId, isEditable);
+      self.openRepository(repoId, isOwner);
       return self;
     };
   };

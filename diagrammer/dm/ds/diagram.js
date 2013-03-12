@@ -416,8 +416,10 @@ dm['at'] = dm.at; //automated testing
     var basePrototype = new base();
 
     // TODO: the same options cloning happen in _CreateDiagram method
-    basePrototype.options = $.extend( true, {}, basePrototype.options );
-    dm [ namespace ][ name ].prototype = $.extend( true, basePrototype, {
+    var tmp_opt = $.extend( true, {}, basePrototype.options );
+    basePrototype.options = tmp_opt;
+
+    dm [ namespace ][ name ].prototype = $.extend( true, {}, basePrototype, {
       'namespace': namespace,
       diagramName: name,
       diagramEventPrefix: dm[ namespace ][ name ].prototype.diagramEventPrefix || name,
@@ -443,7 +445,8 @@ dm['at'] = dm.at; //automated testing
   diagramBaseClass: 'dm.base.DiagramElement',
   _createDiagram: function( options, parent) {
     // extend the basic options
-    this.options = $.extend(true, {}, this.options, options);
+    var tmp_opt = $.extend(true, {}, this.options, options);
+    this.options = tmp_opt;
     //this._setOptions(options); // Extended class could re-define some options setup
 
     //@proexp
@@ -929,7 +932,14 @@ dm['at'] = dm.at; //automated testing
     // It is necessary to init mouse over listener
     // to detect connections types
   },
-
+  _destroy: function(){
+    if (this.onDestroyObserver) {
+      this.onDestroyObserver();
+    }
+  },
+  onDestroy: function(func) {
+    this.onDestroyObserver = func;
+  },
   /**
    * \class Function.
    * Create an element with \eid and unique name.
@@ -952,7 +962,7 @@ dm['at'] = dm.at; //automated testing
     self.max_zindex++;
     options["z-index"] = self.max_zindex; //options["z-index"] || ();
     options["ctx_menu"] = options["ctx_menu"] || "default"; //options["z-index"] || ();
-    $.log("this.options.loader.Element !!!");
+
     dm['dm']['loader']['Element'](type, options, this, function(obj) {
       if (obj != undefined)
         self.elements[obj.euid] = obj;

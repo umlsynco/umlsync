@@ -222,7 +222,6 @@ Version:
         }
 
         var self = this;
-        options.loader = this;
         var opt = {},
         option = options || {};
         option['type'] = dName;
