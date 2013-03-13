@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^editor/', 'editor.views.editor2', name='editor.html'),
     url(r'^login-error/', 'editor.views.error', name='editor.html'),
     url(r'^export/', 'editor.views.export'),
-    # url(r'^github/', include('github.foo.urls')),
+    url(r'^github/(?P<path>.*)$', 'editor.views.open_path'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -148,16 +148,22 @@
     }
   });
 */
-
     // Pre-initialize workspace
     dm.dm = dm.dm || {};
     // Register GitHub as storage service
     var username = "{{ user }}",
-        token = "{{ access_token }}";
-    dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username, token);
+    token = "{{ access_token }}";
+    path = "{{ path }}";
+    $.log(path);
+    if (path != "") {
+      dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username, token, "https://api.github.com/repos/kalaidin/{{path}}/");
+    }
+    else {
+      dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username, token);
+    }
     dm.dm.IGithubViewsManager.init();
   });
-  
+
 </script>
 
 
@@ -166,7 +172,7 @@
 <div id="body">
   <div class="header-nav ui-state-active" id="content-header">
   <div>
-    <ul id="header-menu" class="header-menu-left"></ul>
+  <ul id="header-menu" class="header-menu-left"></ul>
   </div>
   <div>
     <ul class="header-menu-right">
