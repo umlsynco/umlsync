@@ -1493,10 +1493,25 @@ DynaTreeNode.prototype = {
 			var child = this.childList[i];
 			if( child.data[field] === seg ){
 				if(segList.length === 0) {
-					// Found the end node
-					callback.call(tree, child, "ok");
+                    // Load sub-folders
+                    if (child.data.isFolder && child.data.isLazy && (child.childList === null || child.childList === undefined)) {
+  				      child.reloadChildren(function(node, isOk){
+						// After loading, look for direct child with that key
+						if(isOk){
+							tree.logDebug("%s._loadKeyPath(%s) -> reloaded %s.", node, keyPath, node);
+							callback.call(tree, child, "ok");
+						}else{
+							tree.logWarning("%s._loadKeyPath(%s) -> reloadChildren() failed.", self, keyPath);
+							callback.call(tree, child, "error");
+						}
+                      });
+                    }
+                    else {
+					  // Found the end node
+					  callback.call(tree, child, "ok");
+                    }
 
-				}else if(segList.length === 1 && child.data.isLazy && field == "title"){
+				}else if(segList.length === 1 && child.data.isLazy && field == "title" && (child.childList === null || child.childList === undefined)){
 				    child.reloadChildren(function(node, isOk){
 						// After loading, look for direct child with that key
 						if(isOk){
@@ -1718,7 +1733,10 @@ DynaTreeNode.prototype = {
 
 	append: function(obj) {
 		this.tree.logWarning("node.append() is deprecated (use node.addChild() instead).");
-		return this.addChild(obj, null);
+        var eventType = "nodeLoaded.dynatree." + this.tree.$tree.attr("id") + "." + this.data.key;
+        var $tmp = this.addChild(obj, null);
+        this.tree.$tree.trigger(eventType, [this, true]);
+		return $tmp;
 	},
 
 	appendAjax: function(ajaxOptions) {
