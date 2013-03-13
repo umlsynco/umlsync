@@ -395,6 +395,28 @@ URL:
           return "/" + valid_path_array.join("/");
           
         },
+        //
+        // return the list of subfolders for a given path
+        //
+        getSubPaths: function(path, sp_callback) {
+
+          var $tree = $(self.treeParentSelector).dynatree("getTree");
+
+          $tree.loadKeyPath(path, function(node, result) {
+            if (result == "ok") {
+              var tmp = node.getChildren();
+              var res = new Array();
+              for (var r in tmp) {
+                if (tmp[r].data.isFolder)
+                  res.push(path + "/" + tmp[r].data.title + "/");
+              }
+              if (sp_callback) {
+                sp_callback(res);
+              }
+            }
+          },
+          "title");
+        },
 ////////////////////////////////////////////////////////////////////// CONTEXT MENU
         'ctx_menu':
                     [

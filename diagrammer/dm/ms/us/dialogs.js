@@ -67,6 +67,29 @@
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
       $(innerHtml).appendTo("#new-diagram-dialog");
 
+      var currentStatus = "", currentList = {};
+      $("#VP_inputselector")
+      .autocomplete(
+        {
+          source:function(request, response) {
+            if (response) {
+              var val = $("#new-diagram-dialog input#VP_inputselector").val();
+              var newStatus = val.substr(0, val.lastIndexOf('/'));
+
+              // Prevent multiple request of the same paths
+              if (currentStatus != newStatus) {
+                currentStatus = newStatus;
+                dm.dm.fw.getSubPaths(newStatus, function(data) {
+                  currentList = data;
+                  response(data);
+                });
+              }
+              response(currentList);
+            }
+          }
+        }
+      );
+      
       var self = this;
       $("#diagram-menu").listmenu({
         selector: "diagram-selector",

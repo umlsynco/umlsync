@@ -417,11 +417,19 @@ Version:
         return "/";
       return (this.views[text]['view'].active || "" ) + "/";
     },
+    //
+    // Return the available folders for the concrete folder
+    getSubPaths: function(path, sp_callback) {
+      var text = this.getActiveRepository().replace("/", "-");
+      if (!this.views[text])
+        return null;
+      return this.views[text]['view'].getSubPaths(path, sp_callback);
+    },
     getActiveRepository: function() {
       var text = $("#us-repo .js-select-button").text();
       if (text == "none" || text == null || text == undefined || text == "")
         return "";
-      return text;
+      return "github";
     },
     // Loading the main menu JSON description and put it as argument to callback function
     //@proexp
@@ -810,7 +818,14 @@ Version:
         self.views[params.viewid].view.saveContent(params, data);
       }
       else if (self.contents[tabid].contentType == "md") { // Markdown
+        // Save the markdown content
         self.views[params.viewid].view.saveContent(params, data);
+
+        // Diagram has listener on destroy,
+        // but there is no destroy listener for markdown
+        if (isTabClosed) {
+          self.views[params.viewid].view.releaseContent(params);
+        }
       }
     },
 
