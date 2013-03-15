@@ -62,11 +62,21 @@
 
     var innerHtml = '<form id="us-dialog-newdiagram">\
       <fieldset><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div>\
-      <p><label class="left" for="name">Name:</label><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
+      <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p><br><p><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
       </p></fieldset></form>';
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
       $(innerHtml).appendTo("#new-diagram-dialog");
 
+      $("#us-new-diagram-dialog-input").click(function() {
+        if ($(this).is(":checked")) {
+          $("#VP_inputselector").attr("disabled", null);
+        }
+        else {
+          $("#VP_inputselector").attr("disabled", "disabled");
+        }
+      });
+
+      
       var currentStatus = "", currentList = {};
       $("#VP_inputselector")
       .autocomplete(
@@ -96,11 +106,12 @@
         selectable: true,
         urlPrefix: dm.dm.loader.getUrl(),
         data:data,
-        onSelect: function(item) {
-        self.selected = item.id;
-        var val = $("#new-diagram-dialog input#VP_inputselector").val();
-        $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
-      }
+        onSelect: function(item)
+          {
+            self.selected = item.id;
+            var val = $("#new-diagram-dialog input#VP_inputselector").val();
+            $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
+          }
       });
 
       $( "#new-diagram-dialog" ).dialog({
@@ -109,21 +120,43 @@
         'modal': true,
         'buttons': {
         "Create": function() {
-          var diagram_name = $("#new-diagram-dialog input#VP_inputselector").val(),
-          fullname = diagram_name;
-          if (diagram_name != '') {
-            if (!self.handler['checkDiagramName'](diagram_name)) {
-            diagram_name += "(2)";
+          var isNamed = $("#us-new-diagram-dialog-input").is(":checked"),
+            diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
+         
+         // Add file extension for diagram files
+         if (diagram_name.lastIndexOf(".umlsync") != diagram_name.length - 8) {
+           diagram_name = diagram_name + ".umlsync";
+         }
+            
+          var fullname = diagram_name;
+          if (isNamed) {
+            // check the name of diagram
+            var msg = dm.dm.fw.checkContentName(diagram_name);
+            if (msg != "ok") {
+              // Can't close the dialog if user has entered wrong name
+              alert(msg);
+              return;
+            }
+          }
+          else {
+            // The default name
+            diagram_name = "new " + self.selected;
           }
 
-          var sp = diagram_name.split("/");
+          var params =
+          {
+            title:isNamed ? diagram_name.split("/").pop() : diagram_name,
+            repoId:dm.dm.fw.getActiveRepository(),
+            viewid:dm.dm.fw.getActiveView(),
+            branch:dm.dm.fw.getActiveBranch(),
+            editable:true,
+            isNewOne: isNamed
+          };
 
-          if (sp.length > 1)
-            diagram_name = sp[sp.length-1];
-//          var vid = $('#us-dialog-newdiagram #selectale-views input[name=view]:checked').val();
-          var vid = dm.dm.fw.getActiveRepository().replace("/", "-");
-          self.handler['addDiagram']("base", self.selected, diagram_name, {'fullname': fullname, 'viewid': vid});
-        }
+          if (isNamed)
+            params.absPath = diagram_name;
+
+        dm.dm.fw['addDiagram']("base", self.selected, params);
         $(this).dialog("close");
       },
       'Cancel': function() {
@@ -131,13 +164,14 @@
       }
       },
       open: function() {
-        var folder = dm.dm.fw.getActiveTreePath();
-        $("#new-diagram-dialog input").val(folder);
+        if ($("#us-new-diagram-dialog-input").is(":checked")) {
+          var folder = dm.dm.fw.getActiveTreePath();
+          $("#new-diagram-dialog input#VP_inputselector").val(folder);
+        }
         var $par = $( "#new-diagram-dialog")
               .parent();
         $par.offset($("#treetabs").offset());
         $par.children("DIV.ui-dialog-titlebar").children("span.ui-dialog-title").children("span").text(dm.dm.fw.getActiveRepository() || "none");
-        
       },
       close: function() {
         //allFields.val( "" ).removeClass( "ui-state-error" );

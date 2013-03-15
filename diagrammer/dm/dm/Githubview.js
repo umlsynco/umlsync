@@ -135,6 +135,10 @@ URL:
         //
         getActiveRepository: function() { return self.activeRepo;},
         //
+        // Return the active repository
+        //
+        getActiveBranch: function() { return self.activeBranch;},
+        //
         // Open repository
         //
         openRepository: function(repoId, isOwner) {
@@ -206,7 +210,7 @@ URL:
         // Save content if it is belog to the active branch and repository
         // otherwise throw an exception
         //
-        saveContent: function(params, data) {
+        saveContent: function(params, data, isNewContent) {
           if (params.repoId != self.activeRepo
           || params.branch != self.activeBranch) {
             alert("Attemption to commit on not active repository or branch.");
@@ -216,6 +220,16 @@ URL:
           if (self.repositories[params.repoId] == undefined) {
             alert("Can not identify repository:" + params.repoId);
             return;
+          }
+
+          // Save new content
+          if (isNewContent) {
+            // Check that user has selected the location of content
+            if (!params.absPath) {
+              alert("Location not defined !");
+              return;
+            }
+            self.repositories[params.repoId].updated[params.absPath] = {content: data};
           }
 
           // Modified before
@@ -399,11 +413,13 @@ URL:
         // return the list of subfolders for a given path
         //
         getSubPaths: function(path, sp_callback) {
+          self.activeStorageNode = null;
 
           var $tree = $(self.treeParentSelector).dynatree("getTree");
 
           $tree.loadKeyPath(path, function(node, result) {
             if (result == "ok") {
+              self.activeStorageNode = node;
               var tmp = node.getChildren();
               var res = new Array();
               for (var r in tmp) {
@@ -416,6 +432,30 @@ URL:
             }
           },
           "title");
+        },
+        //
+        // Check the content name:
+        //
+        checkContentName: function(name) {
+          if (!self.activeStorageNode) {
+            return "Wrong path or path was not loaded yet: " + name;
+          }
+          
+          if (self.activeStorageNode.getAbsolutePath() != name.substring(0, name.lastIndexOf("/"))) {
+            return "Wrong path, expected: " + self.activeStorageNode.getAbsolutePath();
+          }
+          
+          var filename = name.split("/").pop();
+          var tmp = self.activeStorageNode.getChildren();
+          for (var b in tmp) {
+            if (!tmp[b].data.isFolder && tmp[b].data.title == filename) {
+              return "File already exist";
+            }
+          }
+          
+          self.activeStorageNode.addChild({title:filename});
+          
+          return "ok";
         },
 ////////////////////////////////////////////////////////////////////// CONTEXT MENU
         'ctx_menu':

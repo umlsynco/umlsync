@@ -412,24 +412,51 @@ Version:
           });
     },
     getActiveTreePath: function() {
-      var text = this.getActiveRepository().replace("/", "-");
+      var text = this.getActiveView();
       if (!this.views[text])
         return "/";
       return (this.views[text]['view'].active || "" ) + "/";
     },
     //
     // Return the available folders for the concrete folder
+    //
     getSubPaths: function(path, sp_callback) {
-      var text = this.getActiveRepository().replace("/", "-");
+      var text = this.getActiveView();
       if (!this.views[text])
         return null;
       return this.views[text]['view'].getSubPaths(path, sp_callback);
     },
+    //
+    //  Return the active view unique id
+    //  see addView2 for more details
+    //
+    getActiveView: function() {
+      return this.activeView;
+    },
+    //
+    // Return an active repository under the current active view
+    //
     getActiveRepository: function() {
-      var text = $("#us-repo .js-select-button").text();
-      if (text == "none" || text == null || text == undefined || text == "")
-        return "";
-      return "github";
+      var text = this.getActiveView();
+      if (!this.views[text])
+        return "none";
+      return (this.views[text].view.getActiveRepository() || "none" );
+    },
+    getActiveBranch: function() {
+      var text = this.getActiveView();
+      if (!this.views[text])
+        return "none";
+      return (this.views[text].view.getActiveBranch() || "none" );
+    },
+    //
+    // Check that content with such name do not exist
+    //
+    checkContentName: function(name) {
+      var text = this.getActiveView();
+      if (!this.views[text])
+        return null;
+      return this.views[text]['view'].checkContentName(name);
+
     },
     // Loading the main menu JSON description and put it as argument to callback function
     //@proexp
@@ -698,6 +725,8 @@ Version:
 
       IView.initTree(id + " #tree");
 
+      this.activeView = IView.euid; // only 'github'
+      
       return id;
     },
     'ShowContextMenu': function(name, event, node) {
@@ -757,22 +786,12 @@ Version:
       return id;
     },
     //@proexp
-    'checkDiagramName': function(name) {
-      var foundName = false;
-      $('#' + this.options.tabs + ' ul li a').each(function(i) {
-        if (this.text == name) {
-          foundName = true;
-        }
-      });
-      return !foundName;
-    },
-    //@proexp
-    'addDiagram': function(baseType, type, name, options) {
+    'addDiagram': function(baseType, type, params) {
       var tabname = this.options.tabRight + this.counter;
 
       $("#" + this.options.tabs)
       .append('<div id="'+tabname+'"></div>')
-      .tabs('add','#'+tabname,name);
+      .tabs('add','#'+tabname,params.title);
       tabname = "#" + tabname;
 
       // Enable diagram menu
@@ -784,17 +803,16 @@ Version:
       if (type == "sequence")
         baseType = "sequence";
       var self = this;
-      var vid = options.viewid;
 
       this.openDiagramMenuOnFirstInit = true;
 
-      dm.dm.loader.Diagram(type, baseType, $.extend({}, {'editable':true, 'name': name}, options), tabname
-          , function(obj) {
-        self.diagrams[tabname] = obj;
+      if (params.absPath) {
+        // Save an empty diagram. It could be new diagram or 
+        self.views[params.viewid].view.saveContent(params, {}, true);
+      }
 
-        // Show the diagram menu
-        self['ActivateDiagramMenu'](obj.options['type']);
-      });
+      self.loadDiagram(tabname, params, {type:type});
+
       this.updateFrameWork(true);
     },
     //@proexp
