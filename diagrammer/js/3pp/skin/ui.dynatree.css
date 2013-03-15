@@ -229,6 +229,26 @@ span.dynatree-icon /* Default icon */
 	background-position: 0px 0px;
 }
 
+.dynatree-ico-added  span.dynatree-icon /* Added file */
+{
+	background-position: -16px 0px;
+}
+
+.dynatree-ico-removed  span.dynatree-icon /* Removed file */
+{
+	background-position: -32px 0px;
+}
+
+.dynatree-ico-cached  span.dynatree-icon /* Cached file */
+{
+	background-position: -48px 0px;
+}
+
+.dynatree-ico-modified  span.dynatree-icon /* Cached file */
+{
+	background-position: -64px 0px;
+}
+
 .dynatree-ico-cf span.dynatree-icon  /* Collapsed Folder */
 {
 	background-position: 0px -16px;

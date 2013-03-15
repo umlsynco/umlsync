@@ -809,9 +809,11 @@ Version:
       if (params.absPath) {
         // Save an empty diagram. It could be new diagram or 
         self.views[params.viewid].view.saveContent(params, {}, true);
+        // Add content to cache
+        self.contents[tabname] = params;
       }
 
-      self.loadDiagram(tabname, params, {type:type});
+      self.loadDiagram(tabname, params, {type:type, base_type:baseType});
 
       this.updateFrameWork(true);
     },

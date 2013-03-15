@@ -252,6 +252,8 @@ URL:
               orig:tmp.content
             };
 
+            params.absPath
+
             // remove part from content
             delete self.repositories[params.repoId].contents[params.sha];
             // Reduced the cached number because now it is in modified list
@@ -370,6 +372,14 @@ URL:
             self.repositories[params.repoId].contents[params.sha].refCount--;
             self.repositories[params.repoId].contents[params.sha].closeTime = new Date();
           }
+          var $tree = $(self.treeParentSelector).dynatree("getTree");
+
+          $tree.loadKeyPath(params.absPath, function(node, result) {
+            if (result == "ok") {
+              $(node.span).addClass("dynatree-ico-modified");
+            }
+          },
+          "title");
         },
         getContentPath: function(params, parent) {
           var relPath = params.relativePath;
@@ -453,7 +463,7 @@ URL:
             }
           }
           
-          self.activeStorageNode.addChild({title:filename});
+          self.activeStorageNode.addChild({title:filename, addClass:"dynatree-ico-added"});
           
           return "ok";
         },
@@ -546,14 +556,9 @@ URL:
                        }
                      },
                      {
-                       title: "Save",
-                       click:function(node) {
-                     },
-                     },
-                     {
                        title: "New folder",
                        click: function(node) {
-                       this.newfolder(
+                       self.newfolder(
                            node.getAbsolutePath(),
                            "newFolder",
                            function(desc) { node.addChild(desc); }
@@ -563,11 +568,22 @@ URL:
                      {
                        title: "Remove",
                        click: function(node) {
-                       this.remove(
+                         $(node.span).addClass("dynatree-ico-removed");
+                       /*self.remove(
                            node.getAbsolutePath(),
                            function() {node.remove(); }
-                       );
-                     }
+                       );*/
+                       }
+                     },
+                     {
+                       title: "Revert",
+                       click: function(node) {
+                         $(node.span).removeClass("dynatree-ico-removed");
+                       /*self.remove(
+                           node.getAbsolutePath(),
+                           function() {node.remove(); }
+                       );*/
+                       }
                      }
                      ],
 ////////////////////////////////////////////////////////////////////// REPOSITORY TREE
@@ -650,8 +666,10 @@ URL:
                               else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
                                 params.contentType = "code";
                               }
-                              if (params.contentType != undefined)
+                              if (params.contentType != undefined) {
+                                $(node.span).addClass("dynatree-ico-cached");
                                 dm.dm.fw.loadContent(params);
+                              }
                             }
                           }
                         }
