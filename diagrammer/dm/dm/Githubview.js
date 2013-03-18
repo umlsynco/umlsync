@@ -320,7 +320,7 @@ URL:
                 return;
               }
 
-              var decodedData = data; // decodeContent(data);
+              var decodedData = (data.encoding == "base64") ? decodeContent(data) : data;
 
               if (!decodedData) {
                 callback.error("No data found in: " + cPath);
