@@ -314,28 +314,87 @@
       };
 
       this.multipleUpdateTree = function(baseTree, blobs, cb) {
-        var p;
-        var data = {
-          "base_tree": baseTree,
-          "tree": [
-          ]
-        };
-        
+        var p, data, hasRemove = false;
+
         for (p in blobs) {
-            data["tree"].push(
-            {
-              "path": p,
-              "mode": "100644",
-              "type": "blob",
-              "sha": blobs[p]
+            if (blobs[p] == null) {
+                hasRemove = true;
+                break;
             }
-            );
         }
         
-        _request("POST", repoPath + "/git/trees", data, function(err, res) {
-          if (err) return cb(err);
-          cb(null, res.sha);
-        });
+        if (hasRemove) {
+            // Extrac all tree recursibly and remove blob(s) from it
+            that.getTree(baseTree+"?recursive=true", function(err, tree) {
+              var iter;
+              var newTree = tree;
+              // Update Tree
+              for (iter=0; iter<newTree.length; ++iter) {
+                // update tree
+                if (newTree[iter].type == "tree") {
+                  delete newTree[iter]["sha"];
+                  continue;
+                }
+                // remove file
+                if (blobs[newTree[iter].path] === null) {
+                  delete newTree.splice(iter, 1);
+                  --iter;
+                  continue;
+                }
+                if (blobs[newTree[iter].path] != undefined) {
+                  newTree[iter].sha = blobs[newTree[iter].path];
+                }
+              }
+              that.postTree(newTree, function(err, res) {
+                if (err) return cb(err);
+                cb(null, res);
+              });
+            });
+        }
+        else {
+          data = {
+            "base_tree": baseTree,
+            "tree": [
+            ]
+          };
+
+          for (p in blobs) {
+            var item;
+            // Remove item if content is empty
+            if (blobs[p] != null) {
+              item = {
+                "path": p,
+                "mode": "100644",
+                "type": "blob",
+                "sha": blobs[p]
+              };
+            }
+            else {
+              var subspl = p.split("/");
+              if (subspl.length > 1) {
+               item = {
+                "path": subspl[0],
+                "type": "tree",
+                "mode": "040000",
+                "sha":null
+                };
+                data["tree"].push(item);
+              }
+              item = {
+                "path": p,
+                "type": "blob",
+                "mode": "100644",
+                "content":null,
+                "sha":null
+              };
+            }
+            data["tree"].push(item);
+          }
+          _request("POST", repoPath + "/git/trees", data, function(err, res) {
+            if (err) return cb(err);
+            cb(null, res.sha);
+          });
+        }
       };
 
 
@@ -429,8 +488,8 @@
         updateTree(branch, function(err, latestCommit) {
           that.getTree(latestCommit+"?recursive=true", function(err, tree) {
             // Update Tree
-            var newTree = _.reject(tree, function(ref) { return ref.path === path; });
-            _.each(newTree, function(ref) {
+            var newTree = jQuery.reject(tree, function(ref) { return ref.path === path; });
+            jQuery.each(newTree, function(ref) {
               if (ref.type === "tree") delete ref.sha;
             });
 
@@ -490,7 +549,7 @@
       // Write multiple file contents to a given branch and path
       // -------
 
-      this.multipleWrite = function(branch, mapPathContent, message, cb) {
+      this.multipleCommit = function(branch, mapPathContent, message, cb) {
         updateTree(branch, function(err, latestCommit) {
           if (err) return cb(err);
           var blobContentList = mapPathContent;
@@ -506,7 +565,13 @@
               
               nextBlob =  blobContentList.shift();
               if (nextBlob) {
-                  that.postBlob(nextBlob.content, nextBlobOrTree);
+                  if (nextBlob.content) {
+                    that.postBlob(nextBlob.content, nextBlobOrTree);
+                  }
+                  else {
+                    // remove item if content is empty
+                    nextBlobOrTree(null, null);
+                  }
               }
               else {
                   that.multipleUpdateTree(latestCommit, blobShaList, function(err, tree) {
