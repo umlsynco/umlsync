@@ -149,6 +149,7 @@
             repoId:dm.dm.fw.getActiveRepository(),
             viewid:dm.dm.fw.getActiveView(),
             branch:dm.dm.fw.getActiveBranch(),
+            contentType:"dm",
             editable:true,
             isNewOne: isNamed
           };

@@ -159,6 +159,7 @@ URL:
             newRepo = self.repositories[repoId] = {
               contents: {},
               updated: {},
+              removed: {},
               repo: github().getRepo(repoId.split('/')[0], repoId.split('/')[1]),
               activeBranch: "master",
               owner:isOwner
@@ -264,6 +265,11 @@ URL:
         // Load content or get it from cache:
         //
         loadContent: function(params, callback) {
+
+          // Setup ownership parameter to indicate that
+          // it is possible to modify cotent
+          params.isOwner = (userRepositories.indexOf(params.repoId) >= 0);
+
           // Check modified cache:
           if (params.absPath && self.repositories[params.repoId].updated[params.absPath]) {
             callback.success(null, self.repositories[params.repoId].updated[params.absPath].content);
@@ -288,10 +294,6 @@ URL:
               }
             }
           }
-
-          // Setup ownership parameter to indicate that
-          // it is possible to modify cotent
-          params.isOwner = (userRepositories.indexOf(params.repoId) >= 0);
 
           // Active or inactive repository:
           var repo = self.repositories[params.repoId].repo,
@@ -376,7 +378,7 @@ URL:
 
           $tree.loadKeyPath(params.absPath, function(node, result) {
             if (result == "ok") {
-              $(node.span).addClass("dynatree-ico-modified");
+              self.addNodeStatus(node, "modified");
             }
           },
           "title");
@@ -466,6 +468,52 @@ URL:
           self.activeStorageNode.addChild({title:filename, addClass:"dynatree-ico-added"});
           
           return "ok";
+        },
+        //
+        // remove content
+        //
+        removeContentByNode: function(node) {
+          var absPath,
+            flag = self.hasNodeStatus(node, "added");
+
+          absPath = node.getAbsolutePath();
+          if (self.repositories[self.activeRepo].updated[absPath]) {
+            alert(flag ? "Content is not recoverable":"You are trying to remove modified content !");
+            delete self.repositories[self.activeRepo].updated[absPath];
+          }
+
+          if (flag) {
+            node.remove();
+          }
+          else {
+            self.rmNodeStatus(node, "removed");
+            self.repositories[self.activeRepo].removed[absPath] = true;
+          }
+        },
+        //
+        // revert content
+        //
+        revertContentByNode: function(node) {
+          var absPath,
+            flag = self.hasNodeStatus(node, "added");
+          var bbb = self;
+
+          absPath = node.getAbsolutePath();
+          if (self.repositories[self.activeRepo].updated[absPath]) {
+            alert(flag ? "File will  be removed":"Content will be removed");
+
+            var tmp = self.repositories[self.activeRepo].updated[absPath];
+            if (tmp.sha && tmp.orig)
+              self.repositories[self.activeRepo].contents[tmp.sha] = {path: absPath, content:tmp.orig, isOpen:false, refCount:0}; // Reverted
+            delete self.repositories[self.activeRepo].updated[absPath];
+          }
+
+          if (flag) {
+            node.remove();
+          }
+          else {
+            self.rmNodeStatus(node, "modified");
+          }
         },
 ////////////////////////////////////////////////////////////////////// CONTEXT MENU
         'ctx_menu':
@@ -568,25 +616,35 @@ URL:
                      {
                        title: "Remove",
                        click: function(node) {
-                         $(node.span).addClass("dynatree-ico-removed");
-                       /*self.remove(
-                           node.getAbsolutePath(),
-                           function() {node.remove(); }
-                       );*/
+                         self.removeContentByNode(node);
                        }
                      },
                      {
                        title: "Revert",
                        click: function(node) {
-                         $(node.span).removeClass("dynatree-ico-removed");
-                       /*self.remove(
-                           node.getAbsolutePath(),
-                           function() {node.remove(); }
-                       );*/
+                         if (!self.hasNodeStatus(node, "modified")) {
+                           alert("Nothing to revert");
+                         }
+                         else {
+                           self.revertContentByNode(node);
+                         }
                        }
                      }
                      ],
 ////////////////////////////////////////////////////////////////////// REPOSITORY TREE
+        addNodeStatus: function(node, status) {
+            // Can't change state for new node
+            if ((status == "cached" || status == "modified") && node.data.sha == undefined) {
+              return;
+            }
+            $(node.span).addClass("dynatree-ico-" + status);
+        },
+        rmNodeStatus: function(node, status) {
+            $(node.span).removeClass("dynatree-ico-" + status);
+        },
+        hasNodeStatus: function(node, status) {
+            return $(node.span).hasClass("dynatree-ico-" + status);
+        },
         initTree: function (parentSelector, isReload) {
           var repo = self.repositories[self.activeRepo].repo;
                     self.treeParentSelector = parentSelector;
@@ -653,6 +711,7 @@ URL:
                                   title:node.data.title,
                                   absPath:node.getAbsolutePath(),
                                   branch:self.activeBranch,
+                                  isOwner:true,
                                   repoId:self.activeRepo,
                                   editable:false
                                 };
@@ -667,7 +726,7 @@ URL:
                                 params.contentType = "code";
                               }
                               if (params.contentType != undefined) {
-                                $(node.span).addClass("dynatree-ico-cached");
+                                self.addNodeStatus(node, "cached");
                                 dm.dm.fw.loadContent(params);
                               }
                             }
