@@ -869,7 +869,7 @@ Version:
       }
       else if (self.contents[tabid].contentType == "md") { // Markdown
         // Save the markdown content
-        self.views[params.viewid].view.saveContent(params, data);
+        // self.views[params.viewid].view.saveContent(params, data);
 
         // Diagram has listener on destroy,
         // but there is no destroy listener for markdown

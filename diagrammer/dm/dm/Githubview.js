@@ -527,7 +527,8 @@ URL:
                                var path;
                                $.log("Commiting...");
 
-                               var contents = [];
+                               var contents = [],
+                               repo = self.repositories[self.activeRepo].repo;
                                for (path in items) {
                                  $.log(path);
                                  contents.push({
