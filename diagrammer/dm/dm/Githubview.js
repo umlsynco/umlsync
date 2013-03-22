@@ -159,7 +159,6 @@ URL:
             newRepo = self.repositories[repoId] = {
               contents: {},
               updated: {},
-              removed: {},
               repo: github().getRepo(repoId.split('/')[0], repoId.split('/')[1]),
               activeBranch: "master",
               owner:isOwner
@@ -487,7 +486,7 @@ URL:
           }
           else {
             self.rmNodeStatus(node, "removed");
-            self.repositories[self.activeRepo].removed[absPath] = true;
+            self.repositories[self.activeRepo].updated[absPath] = null;
           }
         },
         //
@@ -533,14 +532,17 @@ URL:
                                  $.log(path);
                                  contents.push({
                                    'path': path.toString().substring(1),
-                                   'content': items[path].content
+                                   'content': (items[path] == null) ? undefined :items[path].content
                                  });
                                  // Remove from updated list
                                  delete self.repositories[self.activeRepo].updated[path];
                                };
 
+//for (var t in contents) {
+//repo.remove(self.activeBranch, contents[t].path, function(err) { if (err) alert("FALIED TO REMOVE");});
+//}
                                // second call won't work as we need to update the tree
-                               repo.multipleWrite('master', contents, message, function(err) {});
+                               repo.multipleCommit(self.activeBranch, contents, message, function(err) {});
                              });
                      }
                      },
@@ -574,6 +576,10 @@ URL:
                        click: function(node) {
                          // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
                          if (!node.data.isFolder) {
+                            if (self.hasNodeStatus(node, "removed")) {
+                              alert("You can not open removed content!");
+                              return;
+                            }
                             var tt = node.data.title.split(".");
                             var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
 
