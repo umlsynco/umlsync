@@ -8,7 +8,7 @@ Author:
   Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
 
 Copyright:
-  Copyright (c) 2012 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
+  Copyright (c) 2012-2013 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
 
 URL:
   http://umlsync.org/about

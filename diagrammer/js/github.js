@@ -338,13 +338,27 @@
                 // remove file
                 if (blobs[newTree[iter].path] === null) {
                   delete newTree.splice(iter, 1);
+                  delete blobs[newTree[iter].path];
                   --iter;
                   continue;
                 }
                 if (blobs[newTree[iter].path] != undefined) {
                   newTree[iter].sha = blobs[newTree[iter].path];
+                  delete blobs[newTree[iter].path];
                 }
               }
+              
+              // Expand tree with newly created
+              // context blobs
+              for (iter in blobs) {
+                  newTree.push({
+                    "path": iter,
+                    "mode": "100644",
+                    "type": "blob",
+                    "sha": blobs[iter]
+                  });
+              }
+
               that.postTree(newTree, function(err, res) {
                 if (err) return cb(err);
                 cb(null, res);

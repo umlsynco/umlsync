@@ -85,16 +85,28 @@
             if (response) {
               var val = $("#new-diagram-dialog input#VP_inputselector").val();
               var newStatus = val.substr(0, val.lastIndexOf('/'));
+              var match = val.split("/").pop();
+
+              function getMatch(descr) {
+                var retList = new Array();
+                for (var t in currentList) {
+                    if (currentList[t].indexOf(descr) !== -1) {
+                        retList.push(currentStatus + "/" + currentList[t] + "/");
+                    }
+                }
+                return retList;
+              }
 
               // Prevent multiple request of the same paths
               if (currentStatus != newStatus) {
                 currentStatus = newStatus;
                 dm.dm.fw.getSubPaths(newStatus, function(data) {
                   currentList = data;
-                  response(data);
+                  response(getMatch(match)); // Update search result
                 });
+              } else {
+                response(getMatch(match));
               }
-              response(currentList);
             }
           }
         }

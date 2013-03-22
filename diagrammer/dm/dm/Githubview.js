@@ -435,7 +435,7 @@ URL:
               var res = new Array();
               for (var r in tmp) {
                 if (tmp[r].data.isFolder)
-                  res.push(path + "/" + tmp[r].data.title + "/");
+                  res.push(tmp[r].data.title);
               }
               if (sp_callback) {
                 sp_callback(res);
@@ -538,9 +538,6 @@ URL:
                                  delete self.repositories[self.activeRepo].updated[path];
                                };
 
-//for (var t in contents) {
-//repo.remove(self.activeBranch, contents[t].path, function(err) { if (err) alert("FALIED TO REMOVE");});
-//}
                                // second call won't work as we need to update the tree
                                repo.multipleCommit(self.activeBranch, contents, message, function(err) {});
                              });
