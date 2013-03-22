@@ -129,10 +129,14 @@
             diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
          
          // Add file extension for diagram files
-         if (diagram_name.lastIndexOf(".umlsync") != diagram_name.length - 8) {
+         if ((diagram_name.lastIndexOf(".umlsync") != diagram_name.length - 8) && (self.selected != "markdown")) {
            diagram_name = diagram_name + ".umlsync";
          }
-            
+
+         if ((diagram_name.lastIndexOf(".md") != diagram_name.length - 3) && (self.selected == "markdown")) {
+           diagram_name = diagram_name + ".md";
+         }
+
           var fullname = diagram_name;
           if (isNamed) {
             // check the name of diagram
@@ -165,7 +169,7 @@
           dm.dm.fw['addDiagram']("base", self.selected, params);
         }
         else {
-          alert("Create Markdown ");
+          dm.dm.fw['addMarkdown'](params);
         }
         $(this).dialog("close");
       },
