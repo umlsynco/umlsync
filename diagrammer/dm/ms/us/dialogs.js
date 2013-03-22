@@ -122,7 +122,12 @@
           {
             self.selected = item.id;
             var val = $("#new-diagram-dialog input#VP_inputselector").val();
-            $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
+            if (item.id != "markdown") {
+              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
+            }
+            else {
+              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + "Document.md");
+            }
           }
       });
 
@@ -136,10 +141,14 @@
             diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
          
          // Add file extension for diagram files
-         if (diagram_name.lastIndexOf(".umlsync") != diagram_name.length - 8) {
+         if ((diagram_name.lastIndexOf(".umlsync") != diagram_name.length - 8) && (self.selected != "markdown")) {
            diagram_name = diagram_name + ".umlsync";
          }
-            
+
+         if ((diagram_name.lastIndexOf(".md") != diagram_name.length - 3) && (self.selected == "markdown")) {
+           diagram_name = diagram_name + ".md";
+         }
+
           var fullname = diagram_name;
           if (isNamed) {
             // check the name of diagram
@@ -168,8 +177,12 @@
 
           if (isNamed)
             params.absPath = diagram_name;
-
-        dm.dm.fw['addDiagram']("base", self.selected, params);
+        if (self.selected != "markdown") {
+          dm.dm.fw['addDiagram']("base", self.selected, params);
+        }
+        else {
+          dm.dm.fw['addMarkdown'](params);
+        }
         $(this).dialog("close");
       },
       'Cancel': function() {

@@ -786,6 +786,36 @@ Version:
       return id;
     },
     //@proexp
+    'addMarkdown': function(params) {
+      var tabname = this.options.tabRight + this.counter;
+      var defaultMarkdownData = "Goodby Word!";
+
+      $("#" + this.options.tabs)
+      .append('<div id="'+tabname+'"></div>')
+      .tabs('add','#'+tabname,params.title);
+      tabname = "#" + tabname;
+
+      // Enable diagram menu
+      $(tabname).attr("edm", true);
+      $(".diagram-menu").hide();
+
+      //tabs("add", tabname, name);
+      this.counter++;
+
+      var self = this;
+
+      if (params.absPath) {
+        // Save an empty diagram. It could be new diagram or 
+        self.views[params.viewid].view.saveContent(params, defaultMarkdownData, true);
+        // Add content to cache
+        self.contents[tabname] = params;
+      }
+
+      self.loadMarkdown(tabname, params, defaultMarkdownData);
+
+      this.updateFrameWork(true);
+    },
+    //@proexp
     'addDiagram': function(baseType, type, params) {
       var tabname = this.options.tabRight + this.counter;
 

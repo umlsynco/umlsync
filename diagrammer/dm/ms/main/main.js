@@ -37,7 +37,7 @@ dm.ms.main = function(options) {
    // self options
    var so = this.options;
 
-    // 1. Load JSON from url
+    /*/ 1. Load JSON from url
     $.ajax({
       url: this.options.url,
       dataType: 'json',
@@ -93,7 +93,7 @@ dm.ms.main = function(options) {
       }
     });
     
-    
+   */ 
 };
 
 dm.ms.main.prototype = {

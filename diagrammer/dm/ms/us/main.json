@@ -20,10 +20,8 @@
    "title": "UML sequence diagram",
    "icon": "./dm/icons/us/dss/sequenceDiagram.png"
   },
-  {"id": "common",
-   "type": "base",
-   "base_type":"base",
-   "title": "Common objects diagram",
-   "icon": "./dm/icons/us/dss/classDiagram.png"
+  {"id": "markdown",
+   "title": "Markdown text document",
+   "icon": "./dm/icons/us/dss/markDown.png"
   }
 ]
