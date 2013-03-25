@@ -856,7 +856,7 @@ Version:
       var params = self.contents[tabid];
       
       if (!self.views || !self.views[params.viewid] || !self.views[params.viewid].view) {
-        alert("View: " + viewId + " was not initialize.");
+        alert("View: " + params.viewid + " was not initialize.");
         return;
       }
 
@@ -1032,16 +1032,26 @@ Version:
         });
      }
     },
+    loadContent2: function(ahref, path) {
+        var params = this.contents[ahref],
+          clone = {
+             relativePath:path,
+             viewid:params.viewid,
+             repoId:params.repoId,
+             branch:params.branch,
+             contentType:"dm",
+             title:path.split("/").pop()
+          };
+        this.loadContent(clone, params);
+    },
     //
     // Universal method to load diagram, code or markdown
     // Unique content id: {ViewId, repository, branch, path from root}.
     // It is not possible to restore path by blob therefore we can't use blobs for wiki-like solutions
     //
     loadContent: function(params, parentParams) {
-      var uniqueContentId =  params.viewid + "/" + params.repoId + "/" + params.branch + "/" + params.absPath,
-          viewid = params.viewid,
-          self = this;
-      params.cuid = uniqueContentId;
+      var viewid = params.viewid,
+        self = this;
 
       // Check if view is really exists: fox example if some diagram contain
       //                                 reference on sourceforge or googlecode
@@ -1059,6 +1069,9 @@ Version:
       if (parentParams != undefined && params.absPath == undefined && params.relativePath != undefined ) {
         params.absPath = self.views[viewid].view.getContentPath(params, parentParams);
       }
+      
+      var uniqueContentId =  params.viewid + "/" + params.repoId + "/" + params.branch + "/" + params.absPath;
+      params.cuid = uniqueContentId;
 
       // work-around for the first content load
       // to prevent diagram menu open over markdown

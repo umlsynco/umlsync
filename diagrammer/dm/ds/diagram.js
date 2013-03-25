@@ -1325,8 +1325,10 @@ dm['at'] = dm.at; //automated testing
 
       var self = this;
       $("img#" + d.euid + "_REF").attr('title', path).click(function() {
-        if (path != "")
+        var path = $(this).attr("title");
+        if (path != "") {
           dm.dm.fw['loadDiagram'](self.options['viewid'], {getAbsolutePath:function() {return path;}});
+        }
       });
     }
   },
@@ -1933,17 +1935,40 @@ dm['at'] = dm.at; //automated testing
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
       })
-      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.jpg' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>");
+      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='/images/reference.jpg' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>");
 
 //    Feat size no longer supported, potential collizion with another Software Copyrights :(
 //    .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='us-element-min' style='z-index:99999;visibility:hidden;'></img>");
+
 
       if (this.options['subdiagram']) {
         $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(self, function(event) {
           var element = event.data;
           var path = element.options['subdiagram'];
-          if (path != "")
-            dm.dm.fw['loadDiagram'](element.options['viewid'], {getAbsolutePath:function() {return path;}});
+          
+          if (path != "") {
+            if (element.parrent.options.editable) {
+              var pos = $(this).position();
+              
+              var $added = $("<div class='us-reference'><a>" + path+"</a></div>")
+              .appendTo("#" + element.euid + "_Border")
+              .css({top:pos.top, left:pos.left})
+              .draggable();
+              
+              $added.children("A").editable({
+                onSubmit : function(data) {
+                  if (data["current"] != data["previous"]) {
+                    element.options.subdiagram = data["current"];
+                  }
+                  $added.remove();
+                  $added.empty();
+                }
+              });
+            }
+            else {
+              dm.dm.fw['loadContent2'](element.parrent.parrent, path);
+            }
+          }
         });
       }
 

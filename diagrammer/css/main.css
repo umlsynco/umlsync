@@ -1158,3 +1158,13 @@ span.cfolder span.dynatree-icon {
 .ui-tabs-panel {
   overflow:hidden;
 }
+
+
+.us-reference {
+   background-color: #EEEEEE;
+   border: 1px solid black;
+   position: absolute;
+   z-index: 2147483647;
+}
+
+
