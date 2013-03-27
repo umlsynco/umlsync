@@ -133,7 +133,7 @@ Version:
     };
 
     var pUrl = url;
-    var self = 
+    var self =
     {
      'euid': "Github",
      'init': function() {

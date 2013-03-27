@@ -16,6 +16,7 @@ URL:
     var ISelectionObserver = this;
     var viewsMap = {};
     var githubView = null;
+    var path = url
 
     function github() {
       // create singletone object. It is not possible to have two access tokens
@@ -68,7 +69,13 @@ URL:
       }
     };
 
+    this.loadRightAway = function(path) {
+      //$.log("loadRightAway()");
+      //$.log($(githubView.treeParentSelector).dynatree("getTree").children());
+    }
+
     var userRepositories = new Array();
+
     this.init = function() {
       function showRepos(repos) {
         dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
@@ -78,15 +85,18 @@ URL:
       };
 
       if (!isLocal) {
+        $.log("not locals");
         var user = github().getUser();
         user.repos(function(err, repos){ showRepos(repos) });
       }
       else {
-        showRepos([{full_name:'umlsynco/diagrams'},
-                   {full_name:'umlsynco/websync'},
-                   {full_name:'umlsynco/umlsync'},
-                   {full_name:'kalaidin/octotest'},
-                   {full_name:'umlsynco/GIST'}]);
+        $.log("locals");
+        showRepos([{full_name: path},
+                   {full_name: 'umlsynco/diagrams'},
+                   {full_name: 'umlsynco/websync'},
+                   {full_name: 'umlsynco/umlsync'},
+                   {full_name: 'kalaidin/octotest'},
+                   {full_name: 'umlsynco/GIST'}]);
       }
     };
 
@@ -719,6 +729,7 @@ URL:
                                   repoId:self.activeRepo,
                                   editable:false
                                 };
+                              $.log(params);
 
                               if (ext == "JSON" || ext == "UMLSYNC") {
                                 params.contentType = "dm";
@@ -751,6 +762,7 @@ URL:
       };
 ////////////////////////////////////////////////////////////////////// INITIALIZATION
       // Open the first repository
+      $.log("opening the first repo");
       self.openRepository(repoId, isOwner);
       return self;
     };

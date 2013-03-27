@@ -148,20 +148,28 @@
     }
   });
 */
-    // Pre-initialize workspace
-    dm.dm = dm.dm || {};
-    // Register GitHub as storage service
+    // Tokens
     var username = "{{ user }}",
     token = "{{ access_token }}";
     path = "{{ path }}";
+    // Pre-initialize workspace
+    dm.dm = dm.dm || {};
+    // Register GitHub as storage service
     $.log(path);
+    // path is: https://github.com/kalaidin/octo-diagrams/blob/master/diagrams/Diagram1/Diagram1/ElementInitialization.umlsync
     if (path != "") {
-      dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username, token, "https://api.github.com/repos/kalaidin/{{path}}/");
+      dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(
+        username,
+        token,
+        path);
     }
     else {
-      dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username, token);
+      dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username,
+                                                                 token);
     }
     dm.dm.IGithubViewsManager.init();
+    dm.dm.IGithubViewsManager.onRepoSelect("Yours", path);
+    //dm.dm.IGithubViewsManager.loadRightAway();
   });
 
 </script>
