@@ -1401,7 +1401,8 @@ Version:
           <button id="vabottom" title="Bring Back" class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>\
           <button class="ui-button"><span class="ui-icon ui-icon-font-underline"/></button>\
           <button class="ui-button"><span class="ui-icon ui-icon-font-underline"/></button>\
-          <button id="color5" title="Color Picker"><span class="color5"/></button></div>');
+          <button id="color5" title="Color Picker"><span class="color5"/></button>\
+          <button id="color6" title="Color Picker Fonts"><span class="color5"/></button></div>');
 
           /*
   There are two menus required for editable:
@@ -1432,7 +1433,14 @@ Version:
             if (fw.diagrams[fw.selectedDiagramId])  {
               fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("color", color);
             }
-          } });
+          } }).click(function() { $(".context-menu").hide();});
+
+          $('button#color6').simpleColorPicker({ 'onChangeColor': function(color) {
+            if (fw.diagrams[fw.selectedDiagramId])  {
+              fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("font-color", color);
+            }
+          } }).click(function() { $(".context-menu").hide();});
+          
           $('button#vatop').click(function() {
             if (fw.diagrams[fw.selectedDiagramId])  {
               fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("z-index", "front");

@@ -16,31 +16,10 @@ body {
 
 a.editablefield  {
   text-decoration: none;
-  color: Black; 
 }
 
 a {
   text-decoration: none;
-}
-
-.us-element-ref {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border: 0px;
-  bottom: 10px;
-  left: 10px;
-  cursor: sw-resize;
-}
-
-.us-element-min {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border: 0px;
-  bottom: 4px;
-  right: 14px;
-  cursor: sw-resize;
 }
 
 .us-diagram {
@@ -1160,6 +1139,26 @@ span.cfolder span.dynatree-icon {
 }
 
 
+.us-element-ref {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 0px;
+  bottom: 10px;
+  left: 10px;
+  cursor: pointer;
+}
+
+.us-element-min {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0px;
+  bottom: 4px;
+  right: 14px;
+  cursor: sw-resize;
+}
+
 .us-reference {
    background-color: #EEEEEE;
    border: 1px solid black;
@@ -1168,3 +1167,36 @@ span.cfolder span.dynatree-icon {
 }
 
 
+
+.context-menu-3 {
+  border: 1px solid #555555;
+  background-color: #eee;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+  display: hidden;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 1003;
+}
+
+.context-menu-3 LI {
+  list-style: none outside none;
+  margin: 0;
+  padding: 0;
+}
+
+.context-menu-3 LI A {
+  background-position: 6px center;
+  background-repeat: no-repeat;
+  color: #333333;
+  display: block;
+  height: 20px;
+  line-height: 20px;
+  outline: medium none;
+  padding: 1px 5px 1px 28px;
+  text-decoration: none;
+}
+
+div.color-picker {
+  z-index:1000000000000;
+}
