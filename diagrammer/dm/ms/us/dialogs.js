@@ -178,10 +178,10 @@
           if (isNamed)
             params.absPath = diagram_name;
         if (self.selected != "markdown") {
-          dm.dm.fw['addDiagram']("base", self.selected, params);
+          dm.dm.fw['addDiagramContent']("base", self.selected, params);
         }
         else {
-          dm.dm.fw['addMarkdown'](params);
+          dm.dm.fw['addMarkdownContent'](params);
         }
         $(this).dialog("close");
       },

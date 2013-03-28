@@ -418,7 +418,7 @@ Version:
             self.ec++;
             var menus = [];
             var fw = dm.dm.fw;
-            var diagram = fw.activeDiagram();
+            var diagram = fw.getActiveDiagram();
             if (diagram) {
               diagram.setDropHelper();
             }
@@ -442,7 +442,7 @@ Version:
             onSelect: function(item) {
             var selConn = item["connector"];
             var fw = dm.dm.fw;
-            var diagram = fw.activeDiagram();
+            var diagram = fw.getActiveDiagram();
 
             if (diagram) {
               diagram.setDropHelper(selConn);

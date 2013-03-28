@@ -14,19 +14,18 @@ Version:
   1.0.0 (2012-03-21)
  */
 
-//@aspect
 (function($, dm, undefined) {
 
   //@export:dm.hs.framework:plain
   dm.hs.framework = function(options) {
     var activeNode;
-    //var Showdown = require('showdown');
     var converter = new Showdown.converter({ extensions: ['umlsync'] });
 
+    // Uses to implement singleton
     function getInstance(options) {
       dm.dm = dm.dm || {};
       if (!dm.dm['fw']) {
-        // create a instance
+        // create a new instance
         dm.dm['fw'] = new framework(options);
       }
 
@@ -322,7 +321,7 @@ Version:
           this.left_counter = 0;
           this.right_counter = 0;
 
-          this.initDropDownSelector('#switcher #reponav', "us-repo",
+          this._helperInitDropDownSelector('#switcher #reponav', "us-repo",
               {
             filter:true,
             mtitle: 'Repository',
@@ -336,8 +335,8 @@ Version:
             }
           }
               }
-          ); // initDropDownSelector
-          this.initDropDownSelector('#switcher #reponav', 'us-branch',
+          ); // _helperInitDropDownSelector
+          this._helperInitDropDownSelector('#switcher #reponav', 'us-branch',
               {
             filter:true,
             mtitle: 'Branch',
@@ -351,7 +350,7 @@ Version:
             alert("SELECTED !!!");
           }
               }
-          ); // initDropDownSelector
+          ); // _helperInitDropDownSelector
 
           // Update the sizes first time
           this.updateFrameWork(true);
@@ -369,161 +368,15 @@ Version:
       bottom:"#content-bottom",
       content:"content"
      },
-     views:{},
-     addRepositories: function(title, IViewsManager, descr) {
-      if (dm.dm.dialogs) {
-        dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
-      }
-     },
-     // Work-around to change text of
-     // selected repository
-     onRepoSelect: function(view, text) {
-       if (view.euid == "github") {
-        $("#us-repo .js-select-button").text(view.getActiveRepository());
-        $("#us-branch .js-select-button").text(view.activeBranch);
-       }
-     },
-
-    // create the drop down selector with tabs
-    // param - element id to attach widget
-    // desc - JSON description of drop down selector
-    //        {filter: true/false, mtitle: MiniTitle, title: TITLE, tabs:{ name1: {id1, id2}, name2: {id3, id4}}}
+//////////////////////////////////////////////////////////////
+//           ViewManager and Views 
+//////////////////////////////////////////////////////////////
+    // an array with views
+    views:{},
     //
-    initDropDownSelector: function(parentId, uid, desc) {
-
-      $('<div class="dropdown-widget" id="'+uid+'">\
-          <div class="select-menu">\
-          <a class="minibutton select-menu-button js-menu-target">\
-          <span class="mini-icon mini-icon-branch"></span>\
-          <i>'+desc.mtitle+':</i>\
-          <span class="js-select-button">none</span>\
-          </a>\
-          </div>\
-          </div>')
-          .appendTo(parentId)
-          .click(function() {
-            if (uid == "us-repo")
-              dm.dm.dialogs['Activate']("repo-selection-dialog");
-            if (uid == "us-branch") {
-              var text = $("#us-repo .js-select-button").text();
-              var repoId = text.replace("/", "-");
-              dm.dm.dialogs['Activate']("branch-selection-dialog-"+repoId);
-            }
-          });
-    },
-    getActiveTreePath: function() {
-      var text = this.getActiveView();
-      if (!this.views[text])
-        return "/";
-      return (this.views[text]['view'].active || "" ) + "/";
-    },
+    // Register IViewManager
     //
-    // Return the available folders for the concrete folder
-    //
-    getSubPaths: function(path, sp_callback) {
-      var text = this.getActiveView();
-      if (!this.views[text])
-        return null;
-      return this.views[text]['view'].getSubPaths(path, sp_callback);
-    },
-    //
-    //  Return the active view unique id
-    //  see addView2 for more details
-    //
-    getActiveView: function() {
-      return this.activeView;
-    },
-    //
-    // Return an active repository under the current active view
-    //
-    getActiveRepository: function() {
-      var text = this.getActiveView();
-      if (!this.views[text])
-        return "none";
-      return (this.views[text].view.getActiveRepository() || "none" );
-    },
-    getActiveBranch: function() {
-      var text = this.getActiveView();
-      if (!this.views[text])
-        return "none";
-      return (this.views[text].view.getActiveBranch() || "none" );
-    },
-    //
-    // Check that content with such name do not exist
-    //
-    checkContentName: function(name) {
-      var text = this.getActiveView();
-      if (!this.views[text])
-        return null;
-      return this.views[text]['view'].checkContentName(name);
-
-    },
-    // Loading the main menu JSON description and put it as argument to callback function
-    //@proexp
-    'CreateDiagramMenu':function(type, innerHtml, callback) {
-      var len = $("#accordion").length;
-      if (len) {
-        $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({'active': len, autoHeight:false, clearStyle: true});
-      } else {
-        var header = '<div id="diagram-menu-header" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">\
-          <span id="ui-dialog-title-vp_main_menu" class="ui-dialog-title">Toolbox</span>\
-          <a class="ui-dialog-titlebar-close ui-corner-all" href="#" role="button">\
-          <span class="ui-icon ui-icon-closethick">close</span></a></div>';
-
-          $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
-          
-          $(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
-          
-          $("#accordion").accordion({'active': 0, autoHeight:false, clearStyle: true});
-
-          if (!this.openDiagramMenuOnFirstInit) {
-            $(".diagram-menu").hide();
-          }
-		  $("#diagram-menu-header a.ui-dialog-titlebar-close").click(function() { 
-                $("div.diagram-menu #accordion").slideToggle();
-          });
-      }
-      if (callback) {
-        callback(len); // len == index
-      }
-    },
-    //@proexp
-    'ActivateDiagramMenu':function(type) {
-      var menuIsActive = false;
-      var len = $("#accordion").length;
-      if (len) {
-        var idx = -1;
-        len = 0; // Wrong length earlier, have to re-calculate it again
-        $("#accordion").find("h3").each(function(index) {
-          ++len;
-          if ($(this).attr("aux") == type) {
-            idx = index;
-            menuIsActive = true;
-          }
-        });
-
-        if (idx >=0) {
-          $("#accordion").accordion({'active': idx});
-        }
-      }
-      $("#accordion").children("DIV").css("width", "");
-      return menuIsActive;
-    },
-    initMainMenu:function() {
-      dm.dm.loader.LoadMainMenuData(function(data) {
-        dm.dm.dialogs['NewDiagramDialog'](data);
-      });
-      dm.dm.dialogs['NewFolder']();
-    },
-    //@proexp
-    'activeDiagram':function() {
-      if (this.diagrams && this.selectedDiagramId) {
-        return this.diagrams[this.selectedDiagramId];
-      }
-      return null;
-    },
-    //@proexp
-    'registerViewManager': function(viewmanager, type) {
+    registerViewManager: function(viewmanager, type) {
       var json_type = type || "json";
       if (viewmanager) {
         this.options.viewmanager = viewmanager;
@@ -562,110 +415,7 @@ Version:
         });
       }
     },
-    updateFrameWork: function(resizeAll, ui) {
-      if (resizeAll) {
-        // setup height for content and left - resize -right conent DIV's
-        // header border 1px => total 2px (border top, border-bottom)
-        // content border 1px => total 2px (border top, border-bottom)
-        // and -1 to get real height
-        var hhh = $(window).height() - $(this.options.top).outerHeight(true) - 5 - $("#"+this.options.content+"-bottom").outerHeight(true);
-
-        var $ch1 = $("#" + this.options.content).height(hhh)  // set height of middle:  #content
-        .children("DIV").height(hhh)              // #content-left; #content-right; #content-left-right-resize;  No border for this items available
-        .children(".ui-scrollable-tabs").height(hhh - 2)    // 1px solid border defined for .ui-scrollable-tabs
-        .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
-
-        // content left maximize treetabs area
-        var repoH = $("#switcher #reponav").height(),
-        toolboxH = $("#switcher #toolbox").height();
-        $("#switcher #treetabs").height(hhh - repoH - toolboxH-2);
-
-        var $ch, $md;
-        if ($ch1.children(".ui-tabs-panel").length) {
-          if (this.options.notabs == undefined || !this.options.notabs)
-            hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
-
-          $ch = $ch1.children(".ui-tabs-panel").height(hhh)
-          .children("div").height(hhh - 24); // Border 1px + padding 11
-          hhh -= 24;
-
-          // Update the markdown text area
-          $md = $(".us-markdown-editor");
-          if ($md.length != 0) {
-            $md.height(hhh-$("span.us-toolbox-header ul li a").height()-35);
-          }
-        }
-
-        // recalculate the content
-        var wd = $("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 6;
-        $("#" + this.options.content + "-right").width(wd);
-
-        // Update the markdown text area
-        if ($md && $md.length != 0) {
-          $md.width(wd-37*2);
-        }
-        
-        var canvas = window.document.getElementById('SingleCanvas');
-        if (canvas) {
-          if ($ch) {
-            var s = $ch.offset();
-            if (s) {
-              canvas.left = s.x;
-              canvas.top = s.y;
-            }
-          }
-          canvas.height = hhh - 11; // 11-is scroll element size
-          if ($(".us-diagram").length) {
-            canvas.width = ($(".us-diagram").width() - 12);
-          } else {
-            canvas.width = wd - 40 - 12;
-          }
-        }
-      }
-
-      // change width on drag the resize div
-      else if (ui != undefined) {
-        $("#content-left-right-resize").css("left", ui.pageX);
-        $("#content-left").css("width", ui.pageX);
-
-        var wd = $("#content").width() - $("#content-left").width() - 6;
-        $("#content-right").css("left", ui.pageX + 7).width(wd);
-
-        var canvas = window.document.getElementById('SingleCanvas');
-        if (canvas) {
-          canvas.width = $("#content").width() - $("#content-left").width() - 40;
-          if ($(".us-diagram").length) {
-            canvas.width = ($(".us-diagram").width() - 12);
-          } else {
-            canvas.width = wd - 40 - 12;
-          }
-        }
-
-        // Update the markdown text area
-        var $md = $(".us-markdown-editor");
-        if ($md.length !=0) {
-          $md.width(wd-37*2);
-        }
-        
-      }
-      var tabsHeight = $(window).height() - $(this.options.top).outerHeight(true) - 8 - $(this.options.bottom).outerHeight(true);
-
-      $("#tabs").width($("#content").width() - $("#content-left").width() - 13);//.height(tabsHeight);
-      $("#tabs .ui-tabs-panel") //.height(tabsHeight-45)
-      .children("DIV")
-      .width($("#content").width() - $("#content-left").width() - 32);
-      //.height($(window).height() - $("#content").position().top - 55 -  $(this.options.bottom).height());
-      //$("#treetabs .ui-tabs-panel").height(tabsHeight-45);
-
-    },
-    addBranch: function(title, repoUrl, IBranchSelectObserver, desc) {
-      var repoId = repoUrl.replace("/", "-");
-      if (dm.dm.dialogs) {
-        dm.dm.dialogs['ChangeBranchDialog'](title, desc, repoId, IBranchSelectObserver);
-      }
-    },
-    //@proexp
-    'addView2': function(name, IView) {
+    addView2: function(name, IView) {
       //TODO: don't load view if name/euid is reserved yet !
       //    it could help to prevent some mess with localhost views
       var id = this.options.tabLeft+ this.left_counter;
@@ -729,6 +479,225 @@ Version:
       
       return id;
     },
+    addView: function(name, options, toolbox) {
+      var id = "#" + this.options.tabLeft+ this.left_counter;
+      this.left_counter++;
+      $("#treetabs").tabs("add", id, name);
+      $(id).append("<div id='tree'></div>");
+      var dt = $(id + " #tree").dynatree(options).dynatree("getTree");
+
+
+      // Create toolbox
+      if (toolbox != undefined) {
+        var tb = toolbox;
+        var innerHtml = "<div style=\"position:absolute;right:10px;top:37px;\">";
+        for (i in toolbox.items) {
+          innerHtml += "<button id=\"toolboxitem" + i+ "\" class=\"ui-button\" title=\"" + (toolbox.items[i]).title +"\"><span class=\"ui-icon " + (toolbox.items[i]).button+ "\"/></button>";
+        }
+        innerHtml += "</div>";
+
+        $(innerHtml).appendTo(id);
+        for (i in toolbox.items) {
+          $("#toolboxitem" + i).click(i, function(e) {
+            if (tb.items[e.data] && tb.items[e.data].method)
+              tb.items[e.data].method(dt.getActiveNode());}
+          );
+        }
+      }
+      return id;
+    },
+    //
+    //  Return the active view unique id
+    //  see addView2 for more details
+    //
+    getActiveView: function() {
+      return this.activeView;
+    },
+//////////////////////////////////////////////////////////////
+//           Repositories and branches
+//////////////////////////////////////////////////////////////
+    //
+    // Add the number of repositories into the repo selection dialog
+    // @param title - the title of tab in dialog
+    // @param IViewsManager - view manager object
+    // @param descr - repositories description object
+    //
+    addRepositories: function(title, IViewsManager, descr) {
+      if (dm.dm.dialogs) {
+        dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
+      }
+    },
+    //
+    // Add the number of repositories into the repo selection dialog
+    // @param title - the title of tab in dialog
+    // @param repoUrl - url of repository
+    // @param IBranchSelectObserver - on branch select observer object
+    // @param desc - branches description object
+    //
+    addBranch: function(title, repoUrl, IBranchSelectObserver, desc) {
+      var repoId = repoUrl.replace("/", "-");
+      if (dm.dm.dialogs) {
+        dm.dm.dialogs['ChangeBranchDialog'](title, desc, repoId, IBranchSelectObserver);
+      }
+    },
+    //
+    // Callback method to setup parameter of repo and branch
+    // Work-around to change text of
+    // selected repository
+    // 
+    onRepoSelect: function(view, text) {
+      if (view.euid == "github") {
+        $("#us-repo .js-select-button").text(view.getActiveRepository());
+        $("#us-branch .js-select-button").text(view.activeBranch);
+      }
+    },
+    //
+    // Helper method to create the drop down selector with tabs
+    // param - element id to attach widget
+    // desc - JSON description of drop down selector
+    //        {filter: true/false, mtitle: MiniTitle, title: TITLE, tabs:{ name1: {id1, id2}, name2: {id3, id4}}}
+    //
+    _helperInitDropDownSelector: function(parentId, uid, desc) {
+
+      $('<div class="dropdown-widget" id="'+uid+'">\
+          <div class="select-menu">\
+          <a class="minibutton select-menu-button js-menu-target">\
+          <span class="mini-icon mini-icon-branch"></span>\
+          <i>'+desc.mtitle+':</i>\
+          <span class="js-select-button">none</span>\
+          </a>\
+          </div>\
+          </div>')
+          .appendTo(parentId)
+          .click(function() {
+            if (uid == "us-repo")
+              dm.dm.dialogs['Activate']("repo-selection-dialog");
+            if (uid == "us-branch") {
+              var text = $("#us-repo .js-select-button").text();
+              var repoId = text.replace("/", "-");
+              dm.dm.dialogs['Activate']("branch-selection-dialog-"+repoId);
+            }
+          });
+    },
+    //
+    // Return an active repository under the current active view
+    //
+    getActiveRepository: function() {
+      var text = this.getActiveView();
+      if (!this.views[text])
+        return "none";
+      return (this.views[text].view.getActiveRepository() || "none" );
+    },
+    //
+    // Return an active branch under the current active view
+    //
+    getActiveBranch: function() {
+      var text = this.getActiveView();
+      if (!this.views[text])
+        return "none";
+      return (this.views[text].view.getActiveBranch() || "none" );
+    },
+//////////////////////////////////////////////////////////////
+//           Trees and paths
+//////////////////////////////////////////////////////////////
+    //
+    // Get an absolute path of active node or "/"
+    //
+    getActiveTreePath: function() {
+      var text = this.getActiveView();
+      if (!this.views[text])
+        return "/";
+      return (this.views[text]['view'].active || "" ) + "/";
+    },
+    //
+    // Return the available folders for the concrete folder
+    // Uses for autocomplete functionality
+    //
+    getSubPaths: function(path, sp_callback) {
+      var text = this.getActiveView();
+      if (!this.views[text])
+        return null;
+      return this.views[text]['view'].getSubPaths(path, sp_callback);
+    },
+    //
+    // Check that content with such name do not exist
+    // Uses for autocomplete functionality
+    //
+    checkContentName: function(name) {
+      var text = this.getActiveView();
+      if (!this.views[text])
+        return null;
+      return this.views[text]['view'].checkContentName(name);
+
+    },
+//////////////////////////////////////////////////////////////
+//           Menus main, diagram, context
+//////////////////////////////////////////////////////////////
+    //
+    // Loading the main menu JSON description and put it as argument
+    // to callback function
+    //
+    CreateDiagramMenu:function(type, innerHtml, callback) {
+      var len = $("#accordion").length;
+      if (len) {
+        $("#accordion").accordion('destroy').append("<h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml).accordion({'active': len, autoHeight:false, clearStyle: true});
+      } else {
+        var header = '<div id="diagram-menu-header" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">\
+          <span id="ui-dialog-title-vp_main_menu" class="ui-dialog-title">Toolbox</span>\
+          <a class="ui-dialog-titlebar-close ui-corner-all" href="#" role="button">\
+          <span class="ui-icon ui-icon-closethick">close</span></a></div>';
+
+          $("#tabs").append("<div class='diagram-menu ui-dialog ui-widget ui-widget-content ui-corner-all'>"+header+"<div id='accordion'><h3 aux='"+type+"'><a href='#'>"+type+" diagram</a></h3>"+innerHtml+"</div></div>");
+          
+          $(".diagram-menu").draggable({'containment': '#tabs', 'cancel':'div#accordion'});
+          
+          $("#accordion").accordion({'active': 0, autoHeight:false, clearStyle: true});
+
+          if (!this.openDiagramMenuOnFirstInit) {
+            $(".diagram-menu").hide();
+          }
+		  $("#diagram-menu-header a.ui-dialog-titlebar-close").click(function() { 
+                $("div.diagram-menu #accordion").slideToggle();
+          });
+      }
+      if (callback) {
+        callback(len); // len == index
+      }
+    },
+    //
+    //  Switch to the corresponding
+    //  menu item
+    //
+    ActivateDiagramMenu:function(type) {
+      var menuIsActive = false;
+      var len = $("#accordion").length;
+      if (len) {
+        var idx = -1;
+        len = 0; // Wrong length earlier, have to re-calculate it again
+        $("#accordion").find("h3").each(function(index) {
+          ++len;
+          if ($(this).attr("aux") == type) {
+            idx = index;
+            menuIsActive = true;
+          }
+        });
+
+        if (idx >=0) {
+          $("#accordion").accordion({'active': idx});
+        }
+      }
+      $("#accordion").children("DIV").css("width", "");
+      return menuIsActive;
+    },
+    //
+    // Initialize the diagram creation menu
+    //
+    initMainMenu:function() {
+      dm.dm.loader.LoadMainMenuData(function(data) {
+        dm.dm.dialogs['NewDiagramDialog'](data);
+      });
+      dm.dm.dialogs['NewFolder']();
+    },
     'ShowContextMenu': function(name, event, node) {
       $.log("SHOW: " + name);
       $(".context-menu").hide();
@@ -757,36 +726,14 @@ Version:
         }
       }
     },
-    //@proexp
-    addView: function(name, options, toolbox) {
-      var id = "#" + this.options.tabLeft+ this.left_counter;
-      this.left_counter++;
-      $("#treetabs").tabs("add", id, name);
-      $(id).append("<div id='tree'></div>");
-      var dt = $(id + " #tree").dynatree(options).dynatree("getTree");
-
-
-      // Create toolbox
-      if (toolbox != undefined) {
-        var tb = toolbox;
-        var innerHtml = "<div style=\"position:absolute;right:10px;top:37px;\">";
-        for (i in toolbox.items) {
-          innerHtml += "<button id=\"toolboxitem" + i+ "\" class=\"ui-button\" title=\"" + (toolbox.items[i]).title +"\"><span class=\"ui-icon " + (toolbox.items[i]).button+ "\"/></button>";
-        }
-        innerHtml += "</div>";
-
-        $(innerHtml).appendTo(id);
-        for (i in toolbox.items) {
-          $("#toolboxitem" + i).click(i, function(e) {
-            if (tb.items[e.data] && tb.items[e.data].method)
-              tb.items[e.data].method(dt.getActiveNode());}
-          );
-        }
-      }
-      return id;
-    },
-    //@proexp
-    'addMarkdown': function(params) {
+//////////////////////////////////////////////////////////////
+//                Content managment
+//////////////////////////////////////////////////////////////
+    //
+    // add new markdown content
+    // @param params - the description of content
+    //
+    addMarkdownContent: function(params) {
       var tabname = this.options.tabRight + this.counter;
       var defaultMarkdownData = "Goodby Word!";
 
@@ -815,8 +762,13 @@ Version:
 
       this.updateFrameWork(true);
     },
-    //@proexp
-    'addDiagram': function(baseType, type, params) {
+    //
+    // add new diagram content
+    // @param baseType - base type of diagram (important for sequence diagrams)
+    // @param type - type of diagram
+    // @param params - the content description params
+    //
+    addDiagramContent: function(baseType, type, params) {
       var tabname = this.options.tabRight + this.counter;
 
       $("#" + this.options.tabs)
@@ -882,7 +834,6 @@ Version:
         }
       }
     },
-
     //
     // Toolbox for each content type: markdown or diagram.
     // Contains edit/view, getLink and full-screen optional
@@ -1291,7 +1242,119 @@ Version:
  
       self.updateFrameWork(true);
     },
+    //
+    // Return an active diagram
+    // Diagrams could be embedded into markdown
+    // therefore we have two arrays: contents & diagrams
+    //
+    getActiveDiagram:function() {
+      if (this.diagrams && this.selectedDiagramId) {
+        return this.diagrams[this.selectedDiagramId];
+      }
+      return null;
+    },
+//////////////////////////////////////////////////////////////
+//      Framework: keys, toolbox, re-size
+//////////////////////////////////////////////////////////////
+    //
+    // update framework sizes
+    //
+    updateFrameWork: function(resizeAll, ui) {
+      if (resizeAll) {
+        // setup height for content and left - resize -right conent DIV's
+        // header border 1px => total 2px (border top, border-bottom)
+        // content border 1px => total 2px (border top, border-bottom)
+        // and -1 to get real height
+        var hhh = $(window).height() - $(this.options.top).outerHeight(true) - 5 - $("#"+this.options.content+"-bottom").outerHeight(true);
 
+        var $ch1 = $("#" + this.options.content).height(hhh)  // set height of middle:  #content
+        .children("DIV").height(hhh)              // #content-left; #content-right; #content-left-right-resize;  No border for this items available
+        .children(".ui-scrollable-tabs").height(hhh - 2)    // 1px solid border defined for .ui-scrollable-tabs
+        .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
+
+        // content left maximize treetabs area
+        var repoH = $("#switcher #reponav").height(),
+        toolboxH = $("#switcher #toolbox").height();
+        $("#switcher #treetabs").height(hhh - repoH - toolboxH-2);
+
+        var $ch, $md;
+        if ($ch1.children(".ui-tabs-panel").length) {
+          if (this.options.notabs == undefined || !this.options.notabs)
+            hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
+
+          $ch = $ch1.children(".ui-tabs-panel").height(hhh)
+          .children("div").height(hhh - 24); // Border 1px + padding 11
+          hhh -= 24;
+
+          // Update the markdown text area
+          $md = $(".us-markdown-editor");
+          if ($md.length != 0) {
+            $md.height(hhh-$("span.us-toolbox-header ul li a").height()-35);
+          }
+        }
+
+        // recalculate the content
+        var wd = $("#" + this.options.content).width() - $("#"+ this.options.content+"-left").width() - 6;
+        $("#" + this.options.content + "-right").width(wd);
+
+        // Update the markdown text area
+        if ($md && $md.length != 0) {
+          $md.width(wd-37*2);
+        }
+        
+        var canvas = window.document.getElementById('SingleCanvas');
+        if (canvas) {
+          if ($ch) {
+            var s = $ch.offset();
+            if (s) {
+              canvas.left = s.x;
+              canvas.top = s.y;
+            }
+          }
+          canvas.height = hhh - 11; // 11-is scroll element size
+          if ($(".us-diagram").length) {
+            canvas.width = ($(".us-diagram").width() - 12);
+          } else {
+            canvas.width = wd - 40 - 12;
+          }
+        }
+      }
+
+      // change width on drag the resize div
+      else if (ui != undefined) {
+        $("#content-left-right-resize").css("left", ui.pageX);
+        $("#content-left").css("width", ui.pageX);
+
+        var wd = $("#content").width() - $("#content-left").width() - 6;
+        $("#content-right").css("left", ui.pageX + 7).width(wd);
+
+        var canvas = window.document.getElementById('SingleCanvas');
+        if (canvas) {
+          canvas.width = $("#content").width() - $("#content-left").width() - 40;
+          if ($(".us-diagram").length) {
+            canvas.width = ($(".us-diagram").width() - 12);
+          } else {
+            canvas.width = wd - 40 - 12;
+          }
+        }
+
+        // Update the markdown text area
+        var $md = $(".us-markdown-editor");
+        if ($md.length !=0) {
+          $md.width(wd-37*2);
+        }
+        
+      }
+      var tabsHeight = $(window).height() - $(this.options.top).outerHeight(true) - 8 - $(this.options.bottom).outerHeight(true);
+
+      $("#tabs").width($("#content").width() - $("#content-left").width() - 13);//.height(tabsHeight);
+      $("#tabs .ui-tabs-panel") //.height(tabsHeight-45)
+      .children("DIV")
+      .width($("#content").width() - $("#content-left").width() - 32);
+      //.height($(window).height() - $("#content").position().top - 55 -  $(this.options.bottom).height());
+      //$("#treetabs .ui-tabs-panel").height(tabsHeight-45);
+
+    },
     //
     // Initialize key handler
     //
@@ -1492,12 +1555,7 @@ Version:
 
 
     }
-    };
-
-    return getInstance(options);
-
+   };
+   return getInstance(options);
   };
-  //@print
-
-  //@aspect
 })(jQuery, dm);
