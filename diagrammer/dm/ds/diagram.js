@@ -1319,12 +1319,12 @@ dm['at'] = dm.at; //automated testing
     }
 
     if (d != undefined) {
-      if (d.options['subdiagram'] != undefined) {
-        d.options['subdiagram'] = path;
+      if (d.options['subdiagrams'] != undefined) {
+        d.options['subdiagrams'] = path;
         $("img#" + d.euid + "_REF").attr('title', path);
         return;
       }
-      d.options['subdiagram'] = path;
+      d.options['subdiagrams'].push(path);
 
       var self = this;
       $("img#" + d.euid + "_REF").attr('title', path).click(function() {
@@ -1720,8 +1720,8 @@ dm['at'] = dm.at; //automated testing
       var self = this;
       self.highlighted = false;
 
-      var subDiagramPaths = (self.options['subdiagram'] || "").split("|");
-      var subDiagramRefs =  "<div class='us-reference'><ul class='context-menu-3'><li><a id='reference-new' class='editablefield'>new reference</a></li>";
+      var subDiagramPaths = self.options['subdiagrams'] || {};
+      var subDiagramRefs =  "<div class='us-reference'><ul class='context-menu-3'><li id='reference-new'><a>new reference</a></li>";
       for (var g in subDiagramPaths) {
          subDiagramRefs+= "<li><a id='reference-"+g+"' class='editablefield'>" + subDiagramPaths[g] + "</a></li>";
       }
@@ -1911,7 +1911,7 @@ dm['at'] = dm.at; //automated testing
 
         // Show "REFERENCE" in editable mode only
         if (!element.parrent.options.editable
-          && element.options.subdiagram) {
+          && element.options.subdiagrams) {
           $('#' + this.id +'_REF').css({'visibility':'visible'});
         }
 //      @ifdef EDITOR
@@ -1953,6 +1953,30 @@ dm['at'] = dm.at; //automated testing
         e.stopPropagation();
       });
       
+      $('#' + this.euid + " #reference-new a").editable({onSubmit:function(data){
+         if (data["current"] == data["previous"])
+            return;
+
+         $(this).text("new reference");
+         if (data["current"] == "")
+             return;
+
+          self.options.subdiagrams = self.options.subdiagrams || new Array();
+          self.options.subdiagrams.push(data["current"]);
+          
+          $("<li><a id='reference-x' class='editablefield'>" + data["current"] + "</a></li>")
+            .appendTo("#" + self.euid + " div.us-reference ul")
+            .children("A")
+            .bind("click", self, function(event) {
+              var element = event.data;
+              if (!element.parrent.options.editable) {
+                dm.dm.fw.loadContent2(element.parrent.parrent, $(this).text());
+              }
+            });
+          return true;
+        }
+      });
+      
       $('#' + this.euid  + '_Border .us-reference ul li a').bind("click", self, function(event) {
         var element = event.data;
         if (!element.parrent.options.editable) {
@@ -1962,7 +1986,7 @@ dm['at'] = dm.at; //automated testing
 
       //if (this.options['subdiagram'])
        {
-        $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(self, function(event) {
+        $("img#" + this.euid + "_REF").attr('title', this.options['subdiagrams']).click(self, function(event) {
           var element = event.data;
           var notShown = $("#" + element.euid + " .us-reference").css('display') == "none";
 
@@ -2019,8 +2043,10 @@ dm['at'] = dm.at; //automated testing
         .draggable("option", "disabled", !value);
 
         // Work-around for elements without editable fields
-        if ($("#" + this.euid + " .editablefield").length)
+        if ($("#" + this.euid + " .editablefield").length) {
           $("#" + this.euid + " .editablefield").editable(value ? "enable":"disable");
+          $("#" + this.euid + " #reference-new").css("display", value ? "block":"none");//css("visibility", value ?  "visible":"hidden");
+        }
 
       } else if (key == "font-color") {
         $("#" + this.euid + "_Border.us-element-border a").css("color", value);

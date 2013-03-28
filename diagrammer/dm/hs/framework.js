@@ -1026,12 +1026,14 @@ Version:
     // TODO: How to load handle reference on diagram inside markdown ?
     //
     loadContent2: function(ahref, path) {
+        var ahref = ahref.split(" ")[0];
         var title = path.split("/").pop();
         var contentType = this.getContentType(title);
         // Nothing to load
         if (contentType == undefined) {
             return;
         }
+        
         var params = this.contents[ahref],
           clone = {
              relativePath:path,
