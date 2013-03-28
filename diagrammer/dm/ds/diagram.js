@@ -1721,9 +1721,9 @@ dm['at'] = dm.at; //automated testing
       self.highlighted = false;
 
       var subDiagramPaths = (self.options['subdiagram'] || "").split("|");
-      var subDiagramRefs =  "<div class='us-reference'><ul class='context-menu-3'><li><a>new reference</a></li>";
+      var subDiagramRefs =  "<div class='us-reference'><ul class='context-menu-3'><li><a id='reference-new' class='editablefield'>new reference</a></li>";
       for (var g in subDiagramPaths) {
-         subDiagramRefs+= "<li><a>" + subDiagramPaths[g] + "</a></li>";
+         subDiagramRefs+= "<li><a id='reference-"+g+"' class='editablefield'>" + subDiagramPaths[g] + "</a></li>";
       }
       subDiagramRefs+="</ul></div>";
       
@@ -1889,18 +1889,6 @@ dm['at'] = dm.at; //automated testing
       // added on the previous step
       $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
 
-      // enable editable fields
-      // if this diagram is editable
-      if (this.parrent.options['editable']) {
-        $("#" + this.euid + " .editablefield").editable({onSubmit:function(data) {
-          if (data["current"] == data["previous"])
-            return;
-          var id = $(this).attr("id");
-          self.options[id] = data["current"];
-          self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
-          return true;
-        }});
-      }
 //    @endif
       // You need to select element to start DND
       $('#'+this.euid)
@@ -1954,28 +1942,58 @@ dm['at'] = dm.at; //automated testing
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
       })
-      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='/images/reference.jpg' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
+      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
       .append(subDiagramRefs);
 
-      $('#' + this.euid  + '_Border .us-reference ul li a').editable();
-      $('#' + this.euid  + '_Border .us-reference').hide().click(function(e) { e.stopPropagation();});
+      // Hide references by default and
+      // prevent propagation of click event
+      $('#' + this.euid  + '_Border .us-reference')
+      .hide()
+      .click(function(e) {
+        e.stopPropagation();
+      });
+      
+      $('#' + this.euid  + '_Border .us-reference ul li a').bind("click", self, function(event) {
+        var element = event.data;
+        if (!element.parrent.options.editable) {
+          dm.dm.fw.loadContent2(element.parrent.parrent, $(this).text());
+        }
+      });
 
       //if (this.options['subdiagram'])
        {
         $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(self, function(event) {
           var element = event.data;
+          var notShown = $("#" + element.euid + " .us-reference").css('display') == "none";
 
-          // Hide previous references
+          // Hide all references on diagram
           $("#" + element.parrent.euid + " .us-reference").hide();
 
-          var pos = $(this).position();
-          $('#' + element.euid  + '_Border .us-reference')
-          .show()
-          .css({top:pos.top+20, left:pos.left});
+          // open item if it was closed
+          if (notShown) {
+            var pos = $(this).position();
+            $('#' + element.euid  + '_Border .us-reference')
+            .show()
+            .css({top:pos.top+20, left:pos.left});
+          }
           event.stopPropagation();
         });
       }
 
+      // enable editable fields
+      // if this diagram is editable
+      $("#" + this.euid + " .editablefield").editable({onSubmit:function(data) {
+          if (data["current"] == data["previous"])
+            return;
+          var id = $(this).attr("id");
+          self.options[id] = data["current"];
+          self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+          return true;
+      }});
+      // 
+      if (!this.parrent.options['editable']) {
+        $("#" + this.euid + " .editablefield").editable("disable");
+      }
 
       if (this.options['color']) 
         this._setOption("color", this.options['color']);
