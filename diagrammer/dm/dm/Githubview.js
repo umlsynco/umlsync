@@ -84,16 +84,24 @@
     //
     this.loadRightAway = function(repoId, branch, path) {
       $.log("loadRightAway()");
+      var title = path.split("/").pop();
+      var contentType = dm.dm.fw.getContentType(title);
+
+      if (contentType == undefined) {
+          alert("TODO: Not supported content type. Redirect on some page !!!");
+          return;
+      }
+
       var params =
-      {
-        viewid: "github",
-        absPath: path,
-        title: path.split("/").pop(),
-        branch: branch,
-        repoId: repoId,
-        editable: false,
-        contentType: "dm"
-      };
+        {
+          viewid: "github",
+          absPath: path,
+          title: title,
+          branch: branch,
+          repoId: repoId,
+          editable: false,
+          contentType: contentType
+        };
       $.log(params);
       dm.dm.fw.loadContent(params);
     };
@@ -735,11 +743,15 @@
                             }
                           },
                           onActivate: function(node) {
-                            $.log("onActivate()");
-                            if (!node.data.isFolder) {
-                              var tt = node.data.title.split(".");
-                              var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+                            // Nothing to load for folder
+                            if (node.data.isFolder) {
+                                return;
+                            }
 
+                            var title = node.data.title;
+                            var contentType = dm.dm.fw.getContentType(title);
+
+                            if (contentType != undefined) {
                               var params =
                                 {
                                   viewid:self.euid,
@@ -750,24 +762,12 @@
                                   branch:self.activeBranch,
                                   isOwner:true,
                                   repoId:self.activeRepo,
+                                  contentType:contentType,
                                   editable:false
                                 };
-                              $.log(params);
 
-                              if (ext == "JSON" || ext == "UMLSYNC") {
-                                params.contentType = "dm";
-                              }
-                              else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-                                params.contentType = "md";
-                              }
-                              else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
-                                params.contentType = "code";
-                              }
-                              if (params.contentType != undefined) {
-                                self.addNodeStatus(node, "cached");
-                                $.log(params);
-                                dm.dm.fw.loadContent(params);
-                              }
+                              self.addNodeStatus(node, "cached");
+                              dm.dm.fw.loadContent(params);
                             }
                           }
                         }

@@ -1000,6 +1000,24 @@ Version:
      }
     },
     //
+    // Get the content type by title
+    // Return undefined if content not supported
+    //
+    getContentType: function(title) {
+        var tt = title.split(".");
+        var ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+        if (ext == "JSON" || ext == "UMLSYNC") {
+          return "dm";
+        }
+        else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
+          return "md";
+        }
+        else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
+          return "code";
+        }
+        return undefined;
+    },
+    //
     // Load content by internal reference
     // Uses to navigate through the diagrams and markdown
     // @param ahref - jquery.ui.tabs reference on content
@@ -1008,14 +1026,20 @@ Version:
     // TODO: How to load handle reference on diagram inside markdown ?
     //
     loadContent2: function(ahref, path) {
+        var title = path.split("/").pop();
+        var contentType = this.getContentType(title);
+        // Nothing to load
+        if (contentType == undefined) {
+            return;
+        }
         var params = this.contents[ahref],
           clone = {
              relativePath:path,
              viewid:params.viewid,
              repoId:params.repoId,
              branch:params.branch,
-             contentType:"dm",
-             title:path.split("/").pop()
+             contentType:contentType,
+             title:title
           };
         this.loadContent(clone, params);
     },
