@@ -771,6 +771,9 @@ dm['at'] = dm.at; //automated testing
       // it could be undefined !!!
       //$("#tabs #us-editable").hide();
       diag._setWidgetsOption("selected", false);
+      
+      // Work-around for references
+      $("#" + diag.euid + " .us-reference").hide();
       /*            
            // Hide elements selectors on click
            //$(".ui-resizable-handle").css({'visibility':'hidden'});
@@ -1717,6 +1720,13 @@ dm['at'] = dm.at; //automated testing
       var self = this;
       self.highlighted = false;
 
+      var subDiagramPaths = (self.options['subdiagram'] || "").split("|");
+      var subDiagramRefs =  "<div class='us-reference'><ul class='context-menu-3'><li><a>new reference</a></li>";
+      for (var g in subDiagramPaths) {
+         subDiagramRefs+= "<li><a>" + subDiagramPaths[g] + "</a></li>";
+      }
+      subDiagramRefs+="</ul></div>";
+      
       var axis111 = this.options['axis'] || false;
       var elmt = $('#' + this.euid  + '_Border')
 //    @ifdef EDITOR
@@ -1898,6 +1908,8 @@ dm['at'] = dm.at; //automated testing
         var element = event.data;
         element.parrent._mouseClick(element, element.options['menu']);
         event.stopPropagation();
+        // Hide previous references
+         $("#" + element.parrent.euid + " .us-reference").hide();
       })       
       .mouseenter(self, function (event){
         var element = event.data;
@@ -1906,6 +1918,12 @@ dm['at'] = dm.at; //automated testing
           var $bw = $('#' + this.id +'_Border').css({'border-width':'3px'});
           var bw = $bw.css('border-left-width');
           $bw.css({left:'-=' + bw, top:'-='+bw});
+        }
+
+
+        // Show "REFERENCE" in editable mode only
+        if (!element.parrent.options.editable
+          && element.options.subdiagram) {
           $('#' + this.id +'_REF').css({'visibility':'visible'});
         }
 //      @ifdef EDITOR
@@ -1914,6 +1932,7 @@ dm['at'] = dm.at; //automated testing
           && element.options.selected
           && element.parrent.options.editable) {
           element.parrent.menuIcon['Show'](this.id, element);
+          $('#' + this.id +'_REF').css({'visibility':'visible'});
         }
 //      @endif
         //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
@@ -1935,40 +1954,25 @@ dm['at'] = dm.at; //automated testing
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
       })
-      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='/images/reference.jpg' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>");
+      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='/images/reference.jpg' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
+      .append(subDiagramRefs);
 
-//    Feat size no longer supported, potential collizion with another Software Copyrights :(
-//    .append("<img id='" + this.euid + "_FS' src='./images/fitsize.jpg' class='us-element-min' style='z-index:99999;visibility:hidden;'></img>");
+      $('#' + this.euid  + '_Border .us-reference ul li a').editable();
+      $('#' + this.euid  + '_Border .us-reference').hide().click(function(e) { e.stopPropagation();});
 
-
-      if (this.options['subdiagram']) {
+      //if (this.options['subdiagram'])
+       {
         $("img#" + this.euid + "_REF").attr('title', this.options['subdiagram']).click(self, function(event) {
           var element = event.data;
-          var path = element.options['subdiagram'];
-          
-          if (path != "") {
-            if (element.parrent.options.editable) {
-              var pos = $(this).position();
-              
-              var $added = $("<div class='us-reference'><a>" + path+"</a></div>")
-              .appendTo("#" + element.euid + "_Border")
-              .css({top:pos.top, left:pos.left})
-              .draggable();
-              
-              $added.children("A").editable({
-                onSubmit : function(data) {
-                  if (data["current"] != data["previous"]) {
-                    element.options.subdiagram = data["current"];
-                  }
-                  $added.remove();
-                  $added.empty();
-                }
-              });
-            }
-            else {
-              dm.dm.fw['loadContent2'](element.parrent.parrent, path);
-            }
-          }
+
+          // Hide previous references
+          $("#" + element.parrent.euid + " .us-reference").hide();
+
+          var pos = $(this).position();
+          $('#' + element.euid  + '_Border .us-reference')
+          .show()
+          .css({top:pos.top+20, left:pos.left});
+          event.stopPropagation();
         });
       }
 
@@ -2000,6 +2004,8 @@ dm['at'] = dm.at; //automated testing
         if ($("#" + this.euid + " .editablefield").length)
           $("#" + this.euid + " .editablefield").editable(value ? "enable":"disable");
 
+      } else if (key == "font-color") {
+        $("#" + this.euid + "_Border.us-element-border a").css("color", value);
       } else if (key == "left") {
         $("#" + this.euid + "_Border").css(key, value);
       } else if (key == "top") {
