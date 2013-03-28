@@ -42,6 +42,7 @@ Version:
       this.diagrams = this.diagrams || {};
       this.markdown = this.markdown || {};
       this.contents = this.contents || {};
+      this.embeddedContents = this.embeddedContents || {};
       this.openDiagramMenuOnFirstInit = false;
 
       this._helperInitializeToolBox(dm.dm.loader);
@@ -1026,7 +1027,6 @@ Version:
     // TODO: How to load handle reference on diagram inside markdown ?
     //
     loadContent2: function(ahref, path) {
-        var ahref = ahref.split(" ")[0];
         var title = path.split("/").pop();
         var contentType = this.getContentType(title);
         // Nothing to load
@@ -1034,7 +1034,7 @@ Version:
             return;
         }
         
-        var params = this.contents[ahref],
+        var params = this.contents[ahref] || this.embeddedContents[ahref],
           clone = {
              relativePath:path,
              viewid:params.viewid,
@@ -1179,8 +1179,12 @@ Version:
       jsonData.multicanvas = (params.selector != undefined);
 
       // enable diagram menu
-      if (params.selector == undefined)
-        $(tabname).attr("edm", params.editable);
+      if (params.selector == undefined) {
+        $(tabname).attr("edm", params.editable)
+      }
+      else {
+        self.embeddedContents[tabname] = params;
+      }
 
       jsonData['fullname'] = params.absPath;
       jsonData['editable'] = true;
