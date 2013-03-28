@@ -109,45 +109,6 @@
     },
     prefix: "file-menu"});
 
-/*
-  // CSRF support for AJAX. Uses for server-side security.
-  $(document).ajaxSend(function(event, xhr, settings) {
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    function sameOrigin(url) {
-        // url could be relative or scheme relative or absolute
-        var host = document.location.host; // host + port
-        var protocol = document.location.protocol;
-        var sr_origin = '//' + host;
-        var origin = protocol + sr_origin;
-        // Allow absolute or scheme relative URLs to same origin
-        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-            // or any other URL that isn't scheme relative or absolute i.e relative.
-            !(/^(\/\/|http:|https:).* /.test(url));
-    }
-    function safeMethod(method) {
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-    }
-  });
-*/
     // Tokens
     var username = "{{ user }}",
     token = "{{ access_token }}";
@@ -155,23 +116,21 @@
     // Pre-initialize workspace
     dm.dm = dm.dm || {};
     // Register GitHub as storage service
-    $.log(path);
-    // path is: https://github.com/kalaidin/octo-diagrams/blob/master/diagrams/Diagram1/Diagram1/ElementInitialization.umlsync
-    if (path != "") {
-      dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(
-        "kalaidin",
-        "8bed5dc3a2e6805bbbbf7f38e542ad1b398ac030",
-        //username,
-        //token,
-        path);
-    }
-    else {
-      dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(username,
-                                                                 token);
-    }
+    dm.dm.IGithubViewsManager =
+      new dm.base.GithubViewsManager(username, token);
+
     dm.dm.IGithubViewsManager.init();
-    dm.dm.IGithubViewsManager.onRepoSelect("Yours", path);
-    dm.dm.IGithubViewsManager.loadRightAway("diagrams/ElkaClass.json");
+
+    if (path != "") {
+      $.log(path);
+      // path is: https://github.com/kalaidin/octo-diagrams/blob/master/diagrams/Diagram1/Diagram1/ElementInitialization.umlsync
+
+      // Extract repoId from path ? 
+      dm.dm.IGithubViewsManager.onRepoSelect("Yours", "umlsynco/diagrams");
+      // Extract repoId, branch and path from path ?
+      dm.dm.IGithubViewsManager.loadRightAway("umlsynco/diagrams", "master", "diagrams/ElkaClass.json");
+    }
+
   });
 
 </script>

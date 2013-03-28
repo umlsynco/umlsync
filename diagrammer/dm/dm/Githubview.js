@@ -10,13 +10,21 @@ URL:
 //@aspect
 (function($, dm, undefined) {
 ////////////////////////////////////////////////////////////////////// VIEW MANAGER
+  //
+  // Github view manager is an abstraction which allow
+  // to extract information about user's repositories (own, followed, starred etc..)
+  // and switch between them
+  // 
+  //  @param username - log-in user name
+  //  @param access_token - secure access token
+  //  @param url - optional param which allow to run service locally without SERVER !!!
+  // 
   dm.base.GithubViewsManager = function(username, access_token, url) {
     // local web site mode
     var isLocal = (url != undefined);
     var ISelectionObserver = this;
     var viewsMap = {};
     var githubView = null;
-    var path = url
 
     function github() {
       // create singletone object. It is not possible to have two access tokens
@@ -69,16 +77,21 @@ URL:
       }
     };
 
-    this.loadRightAway = function(path) {
-      //viewid, repo, branch, absPath
+    //
+    // Load content directly, without tree loading 
+    // @param repoId - github repo id (user/repo)
+    // @param branch - content branch
+    // @param path - absolute path from repository root
+    //
+    this.loadRightAway = function(repoId, branch, path) {
       $.log("loadRightAway()");
       var params =
       {
         viewid: "github",
         absPath: path,
-        title: "Diagram",
-        branch: "master",
-        repoId: githubView.activeRepo,
+        title: path.split("/").pop(),
+        branch: branch,
+        repoId: repoId,
         editable: false,
         contentType: "dm"
       };
@@ -86,8 +99,15 @@ URL:
       dm.dm.fw.loadContent(params);
     };
 
+    //
+    //  List of user repositories
+    //
     var userRepositories = new Array();
 
+    //
+    // Initialize the list of repositories
+    // for loged-in user
+    //
     this.init = function() {
       function showRepos(repos) {
         dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
@@ -97,14 +117,13 @@ URL:
       };
 
       if (!isLocal) {
-        $.log("not locals");
+        // Server-based use-case
         var user = github().getUser();
         user.repos(function(err, repos){ showRepos(repos) });
       }
       else {
-        $.log("locals");
-        showRepos([{full_name: path},
-                   {full_name: 'umlsynco/diagrams'},
+        // Local files access without service ON
+        showRepos([{full_name: 'umlsynco/diagrams'},
                    {full_name: 'umlsynco/websync'},
                    {full_name: 'umlsynco/umlsync'},
                    {full_name: 'kalaidin/octotest'},
@@ -112,6 +131,10 @@ URL:
       }
     };
 
+    //
+    // Decode the "base64" content
+    // @param data - data to decode
+    //
     function decodeContent(data) {
       if (data.encoding == "base64") {
         var splitted = data.content.split('\n');
