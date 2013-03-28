@@ -847,7 +847,11 @@ Version:
 
       this.updateFrameWork(true);
     },
-    //@proexp
+    //
+    // Save content in the concreate view cache
+    // @param tabid - jquery.ui.tabs id
+    // @param isTabClosed - indicate if tab was closed
+    //
     saveContent: function(tabid, isTabClosed) {
       var self = this;
       if (!self.contents[tabid]) {
@@ -879,6 +883,12 @@ Version:
       }
     },
 
+    //
+    // Toolbox for each content type: markdown or diagram.
+    // Contains edit/view, getLink and full-screen optional
+    // @param selector - CSS selector of content area
+    // @param params - content description params
+    //
     appendContentToolbox: function(selector, params) {
       var self = this;
       if (params.selector == undefined) {
@@ -947,7 +957,13 @@ Version:
         });
       }
     },
+    //
+    // Simple editor of markdown,
     // Switch markdown to edit mode
+    // @param selector - CSS content selector
+    // @param params - content description params
+    // @param editMode - the direction of edit OR view
+    //
     editMarkdown: function(selector, params, editMode) {
       var isEditMode = ($(selector + " div#readme").length == 0),
           self = this;
@@ -1032,6 +1048,14 @@ Version:
         });
      }
     },
+    //
+    // Load content by internal reference
+    // Uses to navigate through the diagrams and markdown
+    // @param ahref - jquery.ui.tabs reference on content
+    // @param path - path to load
+    //
+    // TODO: How to load handle reference on diagram inside markdown ?
+    //
     loadContent2: function(ahref, path) {
         var params = this.contents[ahref],
           clone = {
