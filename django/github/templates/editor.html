@@ -159,8 +159,10 @@
     // path is: https://github.com/kalaidin/octo-diagrams/blob/master/diagrams/Diagram1/Diagram1/ElementInitialization.umlsync
     if (path != "") {
       dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager(
-        username,
-        token,
+        "kalaidin",
+        "8bed5dc3a2e6805bbbbf7f38e542ad1b398ac030",
+        //username,
+        //token,
         path);
     }
     else {
@@ -169,7 +171,7 @@
     }
     dm.dm.IGithubViewsManager.init();
     dm.dm.IGithubViewsManager.onRepoSelect("Yours", path);
-    //dm.dm.IGithubViewsManager.loadRightAway();
+    dm.dm.IGithubViewsManager.loadRightAway("diagrams/ElkaClass.json");
   });
 
 </script>

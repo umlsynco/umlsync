@@ -60,6 +60,7 @@ def export(request):
     return response
 
 
+@login_required
 def open_path(request, path):
     t = get_template('editor.html')
     html = t.render(Context({"path": path}))

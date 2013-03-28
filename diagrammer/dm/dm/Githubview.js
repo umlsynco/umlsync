@@ -70,9 +70,21 @@ URL:
     };
 
     this.loadRightAway = function(path) {
-      //$.log("loadRightAway()");
-      //$.log($(githubView.treeParentSelector).dynatree("getTree").children());
-    }
+      //viewid, repo, branch, absPath
+      $.log("loadRightAway()");
+      var params =
+      {
+        viewid: "github",
+        absPath: path,
+        title: "Diagram",
+        branch: "master",
+        repoId: githubView.activeRepo,
+        editable: false,
+        contentType: "dm"
+      };
+      $.log(params);
+      dm.dm.fw.loadContent(params);
+    };
 
     var userRepositories = new Array();
 
@@ -742,6 +754,7 @@ URL:
                               }
                               if (params.contentType != undefined) {
                                 self.addNodeStatus(node, "cached");
+                                $.log(params);
                                 dm.dm.fw.loadContent(params);
                               }
                             }
