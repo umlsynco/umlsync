@@ -1,15 +1,14 @@
-/**
-Class: GithubView
-
-Copyright (c) 2012-2013 UMLSync. All rights reserved.
-
-URL:
-  umlsync.org/about
-
- */
-//@aspect
+//
+// Class: GithubView
+//
+// Copyright (c) 2012-2013 UMLSync. All rights reserved.
+//
+// URL: umlsync.org/about
+//
 (function($, dm, undefined) {
-////////////////////////////////////////////////////////////////////// VIEW MANAGER
+//////////////////////////////////////////////////////////////
+//           ViewManager
+//////////////////////////////////////////////////////////////
   //
   // Github view manager is an abstraction which allow
   // to extract information about user's repositories (own, followed, starred etc..)
@@ -155,7 +154,9 @@ URL:
       {
         euid: "github",
         modifiedList: {}, // The list of modified files by sha
-////////////////////////////////////////////////////////////////////// REPOSITORIES AND BRANCHES
+//////////////////////////////////////////////////////////////
+//           Repositories and branches
+//////////////////////////////////////////////////////////////
         //
         // Active branch of repository
         //
@@ -242,7 +243,9 @@ URL:
           // Init tree
           self.initTree(self.treeParentSelector);
         },
-////////////////////////////////////////////////////////////////////// CONTENT MANAGMENT
+//////////////////////////////////////////////////////////////
+//           Content managment
+//////////////////////////////////////////////////////////////
         //
         // defines the cached content data limit
         //
@@ -559,7 +562,9 @@ URL:
             self.rmNodeStatus(node, "modified");
           }
         },
-////////////////////////////////////////////////////////////////////// CONTEXT MENU
+//////////////////////////////////////////////////////////////
+//           Context menu extention
+//////////////////////////////////////////////////////////////
         'ctx_menu':
                     [
                      {
@@ -588,25 +593,6 @@ URL:
                                repo.multipleCommit(self.activeBranch, contents, message, function(err) {});
                              });
                      }
-                     },
-                     {
-                        title: "Export to svg",
-                        click: function(node, view) {
-                          $.log(node.data.title);
-                          // get json data here
-                          path = node.getAbsolutePath();
-                          data = view.modifiedList[path];
-                          $.ajax({
-                            type: "GET",
-                            url: "http://localhost:8000/export/?contents=" + data,
-                            success: function(svg) {
-                              $.log("exported!");
-                              $.log(svg);
-                            },
-                            error: function(xhr) {
-                            }
-                          });
-                        }
                      },
                      {
                        title: "Reload",
@@ -680,7 +666,9 @@ URL:
                        }
                      }
                      ],
-////////////////////////////////////////////////////////////////////// REPOSITORY TREE
+//////////////////////////////////////////////////////////////
+//           Tree and nodes
+//////////////////////////////////////////////////////////////
         addNodeStatus: function(node, status) {
             // Can't change state for new node
             if ((status == "cached" || status == "modified") && node.data.sha == undefined) {
@@ -796,12 +784,13 @@ URL:
                     });
                   }
       };
-////////////////////////////////////////////////////////////////////// INITIALIZATION
+//////////////////////////////////////////////////////////////
+//           Initialization
+//////////////////////////////////////////////////////////////
       // Open the first repository
       $.log("opening the first repo");
       self.openRepository(repoId, isOwner);
       return self;
     };
   };
-  //@aspect
 })(jQuery, dm);
