@@ -44,11 +44,11 @@ Version:
       this.contents = this.contents || {};
       this.openDiagramMenuOnFirstInit = false;
 
-      this.initializeToolBox(dm.dm.loader);
+      this._helperInitializeToolBox(dm.dm.loader);
 
       if (dm.ms['dg']) {
         dm.dm['dialogs'] = new dm.ms['dg'](this);
-        this.initMainMenu();
+        this._helperInitMainMenu();
       }
 
       // Think about field set
@@ -194,10 +194,10 @@ Version:
           // #9 #10 # 55 are based on margin and padding of element
           // they should be replaced on valid values
           var self = this;
-          self.updateFrameWork(true); // $(window).trigger("resize");
+          self._helperUpdateFrameWork(true); // $(window).trigger("resize");
           $(window).resize(function(e) {
             if ((e.target === window) || (e.target == window)) {
-              self.updateFrameWork(true);
+              self._helperUpdateFrameWork(true);
             }
           });
           
@@ -249,7 +249,7 @@ Version:
                 $(".diagram-menu").hide();
               }
             }
-            self.updateFrameWork(true);
+            self._helperUpdateFrameWork(true);
           },
           'show': function(event, ui) {
             if (self.diagrams) {
@@ -305,15 +305,15 @@ Version:
           });
            */
           $("#content-left-right-resize").draggable({ axis: 'x', 'drag': function(ui) {
-            self.updateFrameWork(false, ui);
+            self._helperUpdateFrameWork(false, ui);
           },
           stop: function(ui) {
-            self.updateFrameWork(false, ui, true);
+            self._helperUpdateFrameWork(false, ui, true);
           }
           });
 
           // Initialize the key handler
-          this.initializeKeyHandler(dm.dm.loader);
+          this._helperInitializeKeyHandler(dm.dm.loader);
           if (this.options.viewmanager) {
             this.registerViewManager(this.options.viewmanager);
           }
@@ -353,7 +353,7 @@ Version:
           ); // _helperInitDropDownSelector
 
           // Update the sizes first time
-          this.updateFrameWork(true);
+          this._helperUpdateFrameWork(true);
 
           self.wdddd = true;
     }
@@ -692,7 +692,7 @@ Version:
     //
     // Initialize the diagram creation menu
     //
-    initMainMenu:function() {
+    _helperInitMainMenu:function() {
       dm.dm.loader.LoadMainMenuData(function(data) {
         dm.dm.dialogs['NewDiagramDialog'](data);
       });
@@ -760,7 +760,7 @@ Version:
 
       self.loadMarkdown(tabname, params, defaultMarkdownData);
 
-      this.updateFrameWork(true);
+      this._helperUpdateFrameWork(true);
     },
     //
     // add new diagram content
@@ -797,7 +797,7 @@ Version:
 
       self.loadDiagram(tabname, params, {type:type, base_type:baseType});
 
-      this.updateFrameWork(true);
+      this._helperUpdateFrameWork(true);
     },
     //
     // Save content in the concreate view cache
@@ -968,7 +968,7 @@ Version:
         $(selector + " div#readme").remove();
         $(rrrr).appendTo(selector);
 
-        self.updateFrameWork(true); // Make text area to fit size of content
+        self._helperUpdateFrameWork(true); // Make text area to fit size of content
 
         $(selector + " span.us-toolbox-header ul li.us-toolbox-button a")
         .click(function(e) {
@@ -992,7 +992,7 @@ Version:
               $(selector + " #markdown").text(data);
 
               // Update the framework sizes
-              self.updateFrameWork(true);
+              self._helperUpdateFrameWork(true);
             },
             'error': function() {
             }
@@ -1120,7 +1120,7 @@ Version:
             }
 
             // Update the framework sizes
-            self.updateFrameWork(true);
+            self._helperUpdateFrameWork(true);
           },
           'error': function(msg) {
             alert("Failed to load: " + params.absPath + ":\n" + msg);
@@ -1240,7 +1240,7 @@ Version:
 
       prettyPrint();
  
-      self.updateFrameWork(true);
+      self._helperUpdateFrameWork(true);
     },
     //
     // Return an active diagram
@@ -1259,7 +1259,7 @@ Version:
     //
     // update framework sizes
     //
-    updateFrameWork: function(resizeAll, ui) {
+    _helperUpdateFrameWork: function(resizeAll, ui) {
       if (resizeAll) {
         // setup height for content and left - resize -right conent DIV's
         // header border 1px => total 2px (border top, border-bottom)
@@ -1358,7 +1358,7 @@ Version:
     //
     // Initialize key handler
     //
-    initializeKeyHandler: function(Loader) {
+    _helperInitializeKeyHandler: function(Loader) {
       //@ifdef EDITOR
       var fw = this;
       $(window).keydown(function(e) {
@@ -1474,7 +1474,7 @@ Version:
     //
     // Initialize toolbox for context menu
     //
-    initializeToolBox: function(Loader) {
+    _helperInitializeToolBox: function(Loader) {
       var fw=this;
       // Place for logo !!!
       //$("body").append('<img src="./images/logo.png" style="position:fixed;top:0;left:0;"/>');
