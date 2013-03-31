@@ -113,6 +113,9 @@
     var username = "{{ user }}",
     token = "{{ access_token }}";
     path = "{{ path }}";
+    $.log("credentials");
+    $.log(username);
+    $.log(token);
     // Pre-initialize workspace
     dm.dm = dm.dm || {};
     // Register GitHub as storage service
