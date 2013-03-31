@@ -77,12 +77,12 @@
     };
 
     //
-    // Load content directly, without tree loading 
+    // Load content directly, without tree loading
     // @param repoId - github repo id (user/repo)
     // @param branch - content branch
     // @param path - absolute path from repository root
     //
-    this.loadRightAway = function(repoId, branch, path) {
+    this.loadRightAway = function(repo, branch, path) {
       $.log("loadRightAway()");
       var title = path.split("/").pop();
       var contentType = dm.dm.fw.getContentType(title);
@@ -91,14 +91,14 @@
           alert("TODO: Not supported content type. Redirect on some page !!!");
           return;
       }
-
+      $.log(repo);
       var params =
         {
           viewid: "github",
           absPath: path,
           title: title,
           branch: branch,
-          repoId: repoId,
+          repoId: repo,
           editable: false,
           contentType: contentType
         };

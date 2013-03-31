@@ -113,6 +113,9 @@
     var username = "{{ user }}",
     token = "{{ access_token }}";
     path = "{{ path }}";
+    $.log("credentials");
+    $.log(username);
+    $.log(token);
     // Pre-initialize workspace
     dm.dm = dm.dm || {};
     // Register GitHub as storage service
@@ -125,11 +128,12 @@
       $.log(path);
       // expected path is: /kalaidin/octo-diagrams/master/diagrams/ElkaClass.json
       splitted_path = path.split("/");
-      repo = splitted_path.slice(0, 2).join("/")
+      repo_path = splitted_path.slice(0, 2).join("/")
       branch = splitted_path[2];
       diagram = splitted_path.slice(3).join("/");
+      repo = repo_path
       dm.dm.IGithubViewsManager.onRepoSelect("Yours", repo);
-      dm.dm.IGithubViewsManager.loadRightAway(repo, branch, diagram);
+      dm.dm.IGithubViewsManager.loadRightAway(repo_path, branch, diagram);
     }
 
   });
