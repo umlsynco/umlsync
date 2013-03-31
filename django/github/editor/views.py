@@ -27,6 +27,7 @@ from social_auth.backends.contrib.github import GithubBackend
 from export.json_to_svg import CustomJSONtoSVGConverter
 
 
+@login_required
 def editor(request, name='index.html'):
     # FIXME: remove hardcoded urls
     redirect_url = urlquote("http://localhost:8000/editor/?viewer=asdnkkl12e1inmasdnln12x123x123mm;asd000")
