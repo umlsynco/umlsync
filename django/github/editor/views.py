@@ -35,7 +35,7 @@ def editor(request, name='index.html'):
                               {'redirect_url': redirect_url},
                               RequestContext(request))
 
-
+@login_required
 def editor22(request, name='index.html'):
     t = get_template('editor.html')
     html = t.render(Context({}))
@@ -62,10 +62,16 @@ def export(request):
 
 
 @login_required
-def open_path(request, path):
-    t = get_template('editor.html')
-    html = t.render(Context({"path": path}))
-    return HttpResponse(html)
+def open_path(request, *args, **kwargs):
+    auth_response = kwargs.get('auth_response')
+    path = kwargs.get('path')
+    if auth_response:
+        return auth_response
+    return render_to_response('editor.html',
+                              {"path": path,
+                              'warning': request.method == 'GET',
+                               'access_token': get_access_token(request.user)},
+                              RequestContext(request))
 
 
 def is_complete_authentication(request):
