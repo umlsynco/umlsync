@@ -123,12 +123,13 @@
 
     if (path != "") {
       $.log(path);
-      // path is: https://github.com/kalaidin/octo-diagrams/blob/master/diagrams/Diagram1/Diagram1/ElementInitialization.umlsync
-
-      // Extract repoId from path ? 
-      dm.dm.IGithubViewsManager.onRepoSelect("Yours", "umlsynco/diagrams");
-      // Extract repoId, branch and path from path ?
-      dm.dm.IGithubViewsManager.loadRightAway("umlsynco/diagrams", "master", "diagrams/ElkaClass.json");
+      // expected path is: /kalaidin/octo-diagrams/master/diagrams/ElkaClass.json
+      splitted_path = path.split("/");
+      repo = splitted_path.slice(0, 2).join("/")
+      branch = splitted_path[2];
+      diagram = splitted_path.slice(3).join("/");
+      dm.dm.IGithubViewsManager.onRepoSelect("Yours", repo);
+      dm.dm.IGithubViewsManager.loadRightAway(repo, branch, diagram);
     }
 
   });
