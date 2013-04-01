@@ -109,24 +109,26 @@
     },
     prefix: "file-menu"});
 
-    // Tokens
+    // User data
     var username = "{{ user }}",
     token = "{{ access_token }}";
     path = "{{ path }}";
     $.log("credentials");
     $.log(username);
     $.log(token);
+
     // Pre-initialize workspace
     dm.dm = dm.dm || {};
-    // Register GitHub as storage service
+
+    // Register GitHub as a storage service
     dm.dm.IGithubViewsManager =
       new dm.base.GithubViewsManager(username, token);
-
     dm.dm.IGithubViewsManager.init();
 
     if (path != "") {
-      $.log(path);
-      // expected path is: /kalaidin/octo-diagrams/master/diagrams/ElkaClass.json
+      $.log("Opening " + path);
+      // expected path is like this:
+      // kalaidin/octo-diagrams/master/diagrams/ElkaClass.json
       splitted_path = path.split("/");
       repo_path = splitted_path.slice(0, 2).join("/")
       branch = splitted_path[2];
@@ -134,8 +136,8 @@
       repo = repo_path
       dm.dm.IGithubViewsManager.onRepoSelect("Yours", repo);
       dm.dm.IGithubViewsManager.loadRightAway(repo_path, branch, diagram);
-    }
 
+    }
   });
 
 </script>
