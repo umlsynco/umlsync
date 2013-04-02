@@ -1200,3 +1200,12 @@ span.cfolder span.dynatree-icon {
 div.color-picker {
   z-index:1000000000000;
 }
+
+#us-getlink-content {
+  position:absolute;
+  top:40px;
+  right:40px;
+  background-color:#EEEEEE;
+  border:1px solid black;
+  display: none;
+}

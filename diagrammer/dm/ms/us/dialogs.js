@@ -475,7 +475,27 @@
       }
       });
 
-  }
+  },
+  //
+  // Modal dialog.
+  //
+  'ConfirmationDialog': function(descr, callback) {
+    var innerHtml = '<div id="us-dialog-confirm" title="'+descr.title+'">\
+                     <p>\
+                       <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;">\
+                       </span>\
+                       '+descr.description+'</p>\
+                    </div>';
+    var self = this;
+    $(innerHtml).appendTo('body');
+
+    $( "#us-dialog-confirm" ).dialog({
+      resizable: false,
+      height:140,
+      modal: true,
+      buttons: descr.buttons
+    });
+  },
   };
 //@aspect
 })(jQuery, dm);

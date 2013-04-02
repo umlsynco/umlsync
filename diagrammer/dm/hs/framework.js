@@ -843,19 +843,23 @@ Version:
     //
     appendContentToolbox: function(selector, params) {
       var self = this;
+      // FULL SCREEN CONTENT
       if (params.selector == undefined) {
         var edit = (params.editable == true) || (params.editable == "true"),
-        // It is not possible to edit file if it is defined by sha (and path unknown)
-        // or if user is not owner of repository
-        editBullet = (!params.isOwner || params.absPath == undefined) ? "": '<a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>';
+        editBullet = '<a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>';
 
         $(selector).append('<span class="us-diagram-toolbox">\
                                <a id="us-link"><span id="us-getlink">Get link</span></a>\
                                '+ editBullet +'\
                             </span>');
-        // Handle edit if user is owner of the content
-        if (params.isOwner) {
-          $(selector + " #us-diagram-edit").click(function() {
+
+        // It is not possible to edit file if it is defined by sha (and path unknown)
+        // or if user is not owner/commiter of repository
+        if (!params.isOwner || params.absPath == undefined) {
+          $(selector + " #us-diagram-edit").hide();
+        }
+
+        $(selector + " #us-diagram-edit").click(function() {
             // switch from editable to static and back
             var text = $(this).text(),
                 editFlag = false;
@@ -886,21 +890,25 @@ Version:
             else if (params.contentType == "md") { 
               self.editMarkdown(selector, params);
             }
-          });
-        }
+        });
+
       }
+      // EMBEDDED CONTENT
       else {
-        // It is not possible to edit file if it is defined by sha (and path unknown)
-        // or if user is not owner of repository
-        var editBullet = (!params.isOwner || params.absPath == undefined) ? "": '<a id="us-link"><span class="us-diagram-edit">Edit</span></a>';
         $(selector).append('<span class="us-diagram-toolbox">\
                               <a id="us-link"><span id="us-getlink">Get link</span></a>\
                               <a id="us-link"><span class="us-diagram-edit" edm="false">Full screen</span></a>\
-                              '+ editBullet +'\
+                              <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
                             </span>');
 
+        // It is not possible to edit file if it is defined by sha (and path unknown)
+        // or if user is not owner/commiter of repository
+        if (!params.isOwner || params.absPath == undefined) {
+          $(selector + " #us-diagram-edit").hide();
+        }
 
-        $(selector + " .us-diagram-edit").click(function() {
+        $(selector + " .us-diagram-edit").click(params, function(event) {
+            var params = event.data;
             var clonedParams = $.extend(true, {}, params);
             delete clonedParams['selector'];
             // jquery return string for attibute "edm" therefore we have to compare it with 'false'
@@ -908,6 +916,13 @@ Version:
             self.loadContent(clonedParams);
         });
       }
+    
+      if ($("#us-getlink-content").length == 0)
+        $("#tabs").append("<div id='us-getlink-content'><label>Absolute path:</label><p><input value='absolute path'/></p>\
+                          <label>Relative path:</label><p><input value='Relative path'/></p></div>");
+      $(selector + " #us-getlink").click(function() {
+        $("#us-getlink-content").toggle();
+      });
     },
     //
     // Simple editor of markdown,

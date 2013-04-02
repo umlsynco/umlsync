@@ -23,7 +23,7 @@
     var isLocal = (url != undefined);
     var ISelectionObserver = this;
     var viewsMap = {};
-    var githubView = null;
+    this.githubView = null;
 
     function github() {
       // create singletone object. It is not possible to have two access tokens
@@ -63,16 +63,29 @@
     };
 
     this.onRepoSelect = function(title, repo) {
+      var githubView = this.githubView;
       if (title == 'Yours') {
         if (githubView != null) {
-          githubView.openRepository(repo, true);
+          dm.dm.dialogs['ConfirmationDialog'](
+            {
+              title:"Change repository ?",
+              description: "Modified files will be removed on repository change.",
+              buttons:
+                {
+                  "ok": function() {
+                    githubView.openRepository(repo, true);
+                    dm.dm.fw.onRepoSelect(githubView, repo);
+                    $( this ).dialog( "close" );
+                  },
+                  "cancel": function() {
+                    $( this ).dialog( "close" );
+                  },
+                  "commit...":function() {
+                    $( this ).dialog( "close" );
+                  }
+                }
+            });
         }
-        else {
-          githubView = new IGithubView(repo, false);
-          dm.dm.fw.addView2('github', githubView); // repoid + view
-        }
-
-        dm.dm.fw.onRepoSelect(githubView, repo);
       }
     };
 
@@ -136,6 +149,8 @@
                    {full_name: 'kalaidin/octotest'},
                    {full_name: 'umlsynco/GIST'}]);
       }
+      this.githubView = new IGithubView(null, false);
+      dm.dm.fw.addView2('github', this.githubView); // repoid + view
     };
 
     //
@@ -691,6 +706,11 @@
             return $(node.span).hasClass("dynatree-ico-" + status);
         },
         initTree: function (parentSelector, isReload) {
+          if (!self.activeRepo) {
+            self.treeParentSelector = parentSelector;
+            return;
+          }
+
           var repo = self.repositories[self.activeRepo].repo;
                     self.treeParentSelector = parentSelector;
                     function updateTree(tree) {
@@ -789,7 +809,9 @@
 //////////////////////////////////////////////////////////////
       // Open the first repository
       $.log("opening the first repo");
-      self.openRepository(repoId, isOwner);
+      if (repoId != null) {
+        self.openRepository(repoId, isOwner);
+      }
       return self;
     };
   };
