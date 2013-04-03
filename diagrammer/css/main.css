@@ -1213,3 +1213,7 @@ div.color-picker {
   border: 1px solid rgba(0, 0, 0, 0.1);
   color: #444444;
 }
+
+#us-modified-content {
+  display:none;
+}
