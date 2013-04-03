@@ -66,7 +66,22 @@
       var githubView = this.githubView;
       if (title == 'Yours') {
         if (githubView != null) {
-          dm.dm.dialogs['ConfirmationDialog'](
+
+          // First activation of repository
+          if (githubView.activeRepo == null) {
+            githubView.openRepository(repo, true);
+            dm.dm.fw.onRepoSelect(githubView, repo);
+            return;
+          }
+
+          // Skiped repo change during modified content
+          // save dialog opening
+          dm.dm.fw.handleModifiedContentOnRepoChange(githubView.activeRepo, function(isAccepted) {
+            if (!isAccepted) {
+              return;
+            }
+
+            dm.dm.dialogs['ConfirmationDialog'](
             {
               title:"Change repository ?",
               description: "Modified files will be removed on repository change.",
@@ -85,6 +100,7 @@
                   }
                 }
             });
+          });
         }
       }
     };
@@ -176,7 +192,6 @@
       var self =
       {
         euid: "github",
-        modifiedList: {}, // The list of modified files by sha
 //////////////////////////////////////////////////////////////
 //           Repositories and branches
 //////////////////////////////////////////////////////////////

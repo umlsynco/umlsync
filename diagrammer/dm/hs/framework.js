@@ -842,7 +842,10 @@ Version:
     // @param params - content description params
     //
     appendContentToolbox: function(selector, params) {
-      var self = this;
+      var self = this,
+      absPath = "http://umlsync.org/github/" + params.repoId + "/" + params.branch + "/" + params.absPath,
+      relPath = "http://umlsync.org/github?path=/" + params.absPath;
+
       // FULL SCREEN CONTENT
       if (params.selector == undefined) {
         var edit = (params.editable == true) || (params.editable == "true"),
@@ -851,6 +854,9 @@ Version:
         $(selector).append('<span class="us-diagram-toolbox">\
                                <a id="us-link"><span id="us-getlink">Get link</span></a>\
                                '+ editBullet +'\
+                              <br>\
+                              <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
+                              <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
                             </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
@@ -899,6 +905,9 @@ Version:
                               <a id="us-link"><span id="us-getlink">Get link</span></a>\
                               <a id="us-link"><span class="us-diagram-edit" edm="false">Full screen</span></a>\
                               <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
+                              <br>\
+                              <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
+                              <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
                             </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
@@ -917,11 +926,9 @@ Version:
         });
       }
     
-      if ($("#us-getlink-content").length == 0)
-        $("#tabs").append("<div id='us-getlink-content'><label>Absolute path:</label><p><input value='absolute path'/></p>\
-                          <label>Relative path:</label><p><input value='Relative path'/></p></div>");
-      $(selector + " #us-getlink").click(function() {
-        $("#us-getlink-content").toggle();
+      $(selector + " #us-getlink").click(params, function(event) {
+        self.cachedLink = event.data;
+        $(selector + " #us-getlink-content").toggle();
       });
     },
     //
@@ -980,6 +987,8 @@ Version:
                         <li class="us-toolbox-button us-toolbox-quotes"><a title="Quotes" prefix="> ">Quotes</a></li>\
                         <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" prefix="<code>" postfix="</code>">Code Block / Code</a></li>\
                         <li class="us-toolbox-separator">&nbsp</li>\
+                        <li class="us-toolbox-button us-toolbox-diagram"><a title="Insert diagram reference" prefix="diagram">Diagram reference / Diagram</a></li>\
+                        <li class="us-toolbox-separator">&nbsp</li>\
                       </ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
         $(selector + " div#readme").remove();
         $(rrrr).appendTo(selector);
@@ -987,15 +996,40 @@ Version:
         self._helperUpdateFrameWork(true); // Make text area to fit size of content
 
         $(selector + " span.us-toolbox-header ul li.us-toolbox-button a")
-        .click(function(e) {
-           
+        .click(params, function(e) {
+           var params = e.data;
            var sel = $(selector + " #markdown").getSelection();
            //$(selector + " #markdown").getSelection();
            //alert("CLICKED !!! " + sel.text);
            var prefix = $(this).attr("prefix") || "",
              postfix = $(this).attr("postfix") || "";
+
+           if (prefix == "diagram") {
+             prefix = "";
+             if (self.cachedLink && self.cachedLink.title.split(".").pop() == "umlsync") {
+               var params2 = self.cachedLink;
+               var path;
+               // Use relative paths inside repository
+               if (params2.repoId == params.repoId
+                 && params2.viewid == params.viewid
+                 && params2.branch == params.branch) {
+                 alert("TODO: add relative path here");
+                 path = "?path=" + params2.absPath;
+               }
+               // and absolute path for external references
+               else {
+                 path = "/" + params2.repoId + "/" + params2.branch + "/" + params2.absPath;
+               }
+               prefix = '![Diagram: ] (http://umlsync.org/github' + path + ' "';
+               postfix = '")';
+             }
+             else {
+               prefix = '![Diagram: ] (http://umlsync.org/github/%repo%/%branch%/%path% "';
+               postfix = '")';
+             }
+           }
+
            $(selector + " #markdown").wrapSelection(prefix, postfix);
-           //alert("add prefix !!! " + $(this).attr("prefix"));
 
            e.preventDefault();
            e.stopPropagation();
@@ -1136,8 +1170,10 @@ Version:
       if (self.views[viewid]) {
         self.views[viewid].view.loadContent(params, {
           'success': function(msg, data) {
-            if (params.selector == undefined)
+            if (params.selector == undefined) {
+              params.hasModification = true;
               self.contents[tabname] = params;
+            }
 
             // Simple toolbox for each diagram
             self.appendContentToolbox(tabname, params);
@@ -1297,6 +1333,61 @@ Version:
         return this.diagrams[this.selectedDiagramId];
       }
       return null;
+    },
+    //
+    // Close or save modified files for an active repository
+    // @param oldRepoId - previous repo unique id
+    // @return bool - true handled all items, false - operation skiped
+    //
+    // Steps:
+    //   1. go through the opened contents 
+    //   1.1. Activate content tab
+    //   1.2. Open Save/Skip/Cancel dialog
+    //   1.3 if not "Cancel" then continue
+    //
+    handleModifiedContentOnRepoChange:function(oldRepoId, callback) {
+      if (!this.contents) {
+        callback(true);
+      }
+      var self = this.contents;
+      function visitModified(list) {
+        var item = list.shift();
+
+        while (item && (self[item].repoId != oldRepoId || !self[item].hasModification)) {
+          item = list.shift();
+        }
+        if (item) {
+          dm.dm.dialogs['ConfirmationDialog'](
+            {
+              title:"Save",
+              description: 'Save file "' + self[item].title + '" ?',
+              buttons:
+                {
+                  "Yes": function() {
+                    $( this ).dialog( "close" );
+                    visitModified(list);
+                  },
+                  "No": function() {
+                    $( this ).dialog( "close" );
+                    visitModified(list);
+                  },
+                  "Cancel":function() {
+                    $( this ).dialog( "close" );
+                    callback(false);
+                  }
+                }
+            });
+        }
+        else {
+          callback(true);
+        }
+      }
+
+      var contentList = new Array();
+      for (var r in this.contents) {
+        contentList.push(r);
+      }
+      visitModified(contentList);
     },
 //////////////////////////////////////////////////////////////
 //      Framework: keys, toolbox, re-size
