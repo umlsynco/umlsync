@@ -81,26 +81,31 @@
               return;
             }
 
-            dm.dm.dialogs['ConfirmationDialog'](
-            {
-              title:"Change repository ?",
-              description: "Modified files will be removed on repository change.",
-              buttons:
-                {
-                  "ok": function() {
-                    githubView.openRepository(repo, true);
-                    dm.dm.fw.onRepoSelect(githubView, repo);
-                    $( this ).dialog( "close" );
-                  },
-                  "cancel": function() {
-                    $( this ).dialog( "close" );
-                  },
-                  "commit...":function() {
-                    $( this ).dialog( "close" );
+            if (githubView.hasModifications()) {
+              dm.dm.dialogs['ConfirmationDialog'](
+              {
+                title:"Change repository?",
+                description: "Modified files will be removed on repository change.",
+                buttons:
+                  {
+                    "ok": function() {
+                      githubView.openRepository(repo, true);
+                      dm.dm.fw.onRepoSelect(githubView, repo);
+                      $( this ).dialog( "close" );
+                    },
+                    "cancel": function() {
+                      $( this ).dialog( "close" );
+                    },
+                    "commit...":function() {
+                      $( this ).dialog( "close" );
+                    }
                   }
-                }
-            });
+              });
+            }
           });
+        }
+        else {
+          alert("Internal site ERROR");
         }
       }
     };
@@ -184,11 +189,11 @@
       }
       return null;
     };
-    
+
     var IGithubView = function (repoId, isOwner) {
       // Reading a repository
       //var repo = github().getRepo(username, repoId.split('/').pop());
-     
+
       var self =
       {
         euid: "github",
@@ -214,6 +219,20 @@
         // }
         //
         repositories: {},
+        //
+        // Return whether repo was updated or not
+        //
+        hasModifications: function() {
+          alert("hasModifications doesn't work");
+          if (self.activeRepo != null) {
+            if (self.activeRepo.updated != null) {
+              return Object.keys(self.activeRepo.updated).length > 0;
+            }
+          }
+          else {
+            return false
+          };
+        },
         //
         // Return the active repository
         //
@@ -367,7 +386,7 @@
             self.repositories[params.repoId].contents[params.sha].refCount++;
             return;
           }
-          
+
           // Try to get by path:
           if (params.sha == undefined) {
             for (var g in self.repositories[params.repoId].contents) {
@@ -425,7 +444,7 @@
             callback.error("Not enough information about content.");
             return;
           }
-          
+
           //
           // Reduce cache size on 5 useless contents
           //
@@ -504,7 +523,7 @@
             }
           }
           return "/" + valid_path_array.join("/");
-          
+
         },
         //
         // return the list of subfolders for a given path
@@ -537,11 +556,11 @@
           if (!self.activeStorageNode) {
             return "Wrong path or path was not loaded yet: " + name;
           }
-          
+
           if (self.activeStorageNode.getAbsolutePath() != name.substring(0, name.lastIndexOf("/"))) {
             return "Wrong path, expected: " + self.activeStorageNode.getAbsolutePath();
           }
-          
+
           var filename = name.split("/").pop();
           var tmp = self.activeStorageNode.getChildren();
           for (var b in tmp) {
@@ -549,9 +568,9 @@
               return "File already exist";
             }
           }
-          
+
           self.activeStorageNode.addChild({title:filename, addClass:"dynatree-ico-added"});
-          
+
           return "ok";
         },
         //
