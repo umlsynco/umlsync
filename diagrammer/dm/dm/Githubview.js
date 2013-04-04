@@ -103,23 +103,34 @@
       $.log("loadRightAway()");
       var title = path.split("/").pop();
       var contentType = dm.dm.fw.getContentType(title);
-
-      if (contentType == undefined) {
-          alert("TODO: Not supported content type. Redirect on some page !!!");
-          return;
+      if (contentType != undefined) {
+        $.log(repo);
+        var params =
+          {
+            viewid: "github",
+            absPath: path,
+            title: title,
+            branch: branch,
+            repoId: repo,
+            editable: false,
+            contentType: contentType
+          };
+        $.log(params);
       }
-      $.log(repo);
-      var params =
-        {
-          viewid: "github",
-          absPath: path,
-          title: title,
-          branch: branch,
-          repoId: repo,
-          editable: false,
-          contentType: contentType
-        };
-      $.log(params);
+      else
+      {
+        //load default page
+        var params =
+         {
+            viewid: "github",
+            absPath: "diagrams/ElkaClass.json",
+            title: "404",
+            branch: "master",
+            repoId: "kalaidin/diagrams",
+            editable: false,
+            contentType: "dm"
+          };
+      }
       dm.dm.fw.loadContent(params);
     };
 
@@ -130,7 +141,7 @@
 
     //
     // Initialize the list of repositories
-    // for loged-in user
+    // for logged-in user
     //
     this.init = function() {
       function showRepos(repos) {
