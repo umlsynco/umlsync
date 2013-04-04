@@ -1095,6 +1095,9 @@ span.cfolder span.dynatree-icon {
 .us-toolbox-code a {
     background-image: url("images/code.png");
 }
+.us-toolbox-diagram a {
+    background-image: url("images/diagram.png");
+}
 .us-toolbox-preview a {
     background-image: url("images/preview.png");
 }
@@ -1202,10 +1205,15 @@ div.color-picker {
 }
 
 #us-getlink-content {
-  position:absolute;
-  top:40px;
-  right:40px;
   background-color:#EEEEEE;
   border:1px solid black;
   display: none;
+  background-color: #F5F5F5;
+  background-image: -moz-linear-gradient(center top , #F5F5F5, #F1F1F1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #444444;
+}
+
+#us-modified-content {
+  display:none;
 }

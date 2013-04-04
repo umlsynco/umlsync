@@ -227,19 +227,19 @@ Version:
           .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
             'scrollable': true,
             'add': function(event, ui) {
-            if (self.diagrams) {
-              self.selectedDiagramId = "#" + ui.panel.id;
+              if (self.diagrams) {
+                self.selectedContentId = "#" + ui.panel.id;
             }
             $tabs.tabs('select', '#' + ui.panel.id);
           },
           'select': function(event, ui) {
             if (self.diagrams) {
-              self.selectedDiagramId = "#" + ui.panel.id;
+              self.selectedContentId = "#" + ui.panel.id;
 
               // Show/hide diagram menu to tabs change
-              if ($(self.selectedDiagramId).attr('edm') == "true") {
+              if ($(self.selectedContentId).attr('edm') == "true") {
                 $(".diagram-menu").show();
-                var did = self.diagrams[self.selectedDiagramId];
+                var did = self.diagrams[self.selectedContentId];
                 if (did) {
                   //@ifdef EDITOR
                   self['ActivateDiagramMenu'](did.options['type']);
@@ -254,8 +254,8 @@ Version:
           },
           'show': function(event, ui) {
             if (self.diagrams) {
-              self.selectedDiagramId = "#" + ui.panel.id;
-              var did = self.diagrams[self.selectedDiagramId];
+              self.selectedContentId = "#" + ui.panel.id;
+              var did = self.diagrams[self.selectedContentId];
               if (did) {
                 did.draw();
               }
@@ -280,18 +280,45 @@ Version:
 
           $('#tabs span.ui-test').live('click', function() {
             var index = $('li', $tabs).index($(this).parent().parent()),
+              ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
+            
+            function closeContent(saveIt) {
+              $(".diagram-menu").hide();
 
-            ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
-
-            // Hide the diagram menu
-            $(".diagram-menu").hide();
-
-            if (self.contents && self.contents[ahref]) {
-                self.saveContent(ahref, true);
+              if (self.contents && self.contents[ahref]) {
+                if (saveIt)
+                  self.saveContent(ahref, true);
                 delete self.contents[ahref];
+              }
+              $tabs.tabs('remove', index);
+              $(ahref).remove();
             }
-            $tabs.tabs('remove', index);
-            $(ahref).remove();
+            
+            if (!self.contents[ahref].isModified) {
+              closeContent(false);
+              return;
+            }
+              
+            dm.dm.dialogs['ConfirmationDialog'](
+            {
+              title:"Save",
+              description: 'Save file "' + self.contents[ahref].title + '" ?',
+              buttons:
+                {
+                  "Yes": function() {
+                    $( this ).dialog( "close" );
+                    closeContent(true);
+                  },
+                  "No": function() {
+                    $( this ).dialog( "close" );
+                    closeContent(false);
+                  },
+                  "Cancel":function() {
+                    $( this ).dialog( "close" );
+                  }
+                }
+            });
+            
           });
 
           var $treetabs = $("#treetabs");
@@ -730,6 +757,7 @@ Version:
 //////////////////////////////////////////////////////////////
 //                Content managment
 //////////////////////////////////////////////////////////////
+    selectedContentId:null,
     //
     // add new markdown content
     // @param params - the description of content
@@ -842,7 +870,10 @@ Version:
     // @param params - content description params
     //
     appendContentToolbox: function(selector, params) {
-      var self = this;
+      var self = this,
+      absPath = "http://umlsync.org/github/" + params.repoId + "/" + params.branch + "/" + params.absPath,
+      relPath = "http://umlsync.org/github?path=/" + params.absPath;
+
       // FULL SCREEN CONTENT
       if (params.selector == undefined) {
         var edit = (params.editable == true) || (params.editable == "true"),
@@ -851,6 +882,9 @@ Version:
         $(selector).append('<span class="us-diagram-toolbox">\
                                <a id="us-link"><span id="us-getlink">Get link</span></a>\
                                '+ editBullet +'\
+                              <br>\
+                              <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
+                              <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
                             </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
@@ -873,7 +907,7 @@ Version:
 
             // If content is diagram
             if (params.contentType == "dm") { 
-              var did = self.diagrams[self.selectedDiagramId];
+              var did = self.diagrams[self.selectedContentId];
               if (did != undefined) {
                 did._setWidgetsOption("editable", editFlag);
                 // Handle the diagram menu status
@@ -899,6 +933,9 @@ Version:
                               <a id="us-link"><span id="us-getlink">Get link</span></a>\
                               <a id="us-link"><span class="us-diagram-edit" edm="false">Full screen</span></a>\
                               <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
+                              <br>\
+                              <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
+                              <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
                             </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
@@ -917,11 +954,9 @@ Version:
         });
       }
     
-      if ($("#us-getlink-content").length == 0)
-        $("#tabs").append("<div id='us-getlink-content'><label>Absolute path:</label><p><input value='absolute path'/></p>\
-                          <label>Relative path:</label><p><input value='Relative path'/></p></div>");
-      $(selector + " #us-getlink").click(function() {
-        $("#us-getlink-content").toggle();
+      $(selector + " #us-getlink").click(params, function(event) {
+        self.cachedLink = event.data;
+        $(selector + " #us-getlink-content").toggle();
       });
     },
     //
@@ -980,6 +1015,8 @@ Version:
                         <li class="us-toolbox-button us-toolbox-quotes"><a title="Quotes" prefix="> ">Quotes</a></li>\
                         <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" prefix="<code>" postfix="</code>">Code Block / Code</a></li>\
                         <li class="us-toolbox-separator">&nbsp</li>\
+                        <li class="us-toolbox-button us-toolbox-diagram"><a title="Insert diagram reference" prefix="diagram">Diagram reference / Diagram</a></li>\
+                        <li class="us-toolbox-separator">&nbsp</li>\
                       </ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
         $(selector + " div#readme").remove();
         $(rrrr).appendTo(selector);
@@ -987,15 +1024,40 @@ Version:
         self._helperUpdateFrameWork(true); // Make text area to fit size of content
 
         $(selector + " span.us-toolbox-header ul li.us-toolbox-button a")
-        .click(function(e) {
-           
+        .click(params, function(e) {
+           var params = e.data;
            var sel = $(selector + " #markdown").getSelection();
            //$(selector + " #markdown").getSelection();
            //alert("CLICKED !!! " + sel.text);
            var prefix = $(this).attr("prefix") || "",
              postfix = $(this).attr("postfix") || "";
+
+           if (prefix == "diagram") {
+             prefix = "";
+             if (self.cachedLink && self.cachedLink.title.split(".").pop() == "umlsync") {
+               var params2 = self.cachedLink;
+               var path;
+               // Use relative paths inside repository
+               if (params2.repoId == params.repoId
+                 && params2.viewid == params.viewid
+                 && params2.branch == params.branch) {
+                 alert("TODO: add relative path here");
+                 path = "?path=" + params2.absPath;
+               }
+               // and absolute path for external references
+               else {
+                 path = "/" + params2.repoId + "/" + params2.branch + "/" + params2.absPath;
+               }
+               prefix = '![Diagram: ] (http://umlsync.org/github' + path + ' "';
+               postfix = '")';
+             }
+             else {
+               prefix = '![Diagram: ] (http://umlsync.org/github/%repo%/%branch%/%path% "';
+               postfix = '")';
+             }
+           }
+
            $(selector + " #markdown").wrapSelection(prefix, postfix);
-           //alert("add prefix !!! " + $(this).attr("prefix"));
 
            e.preventDefault();
            e.stopPropagation();
@@ -1005,7 +1067,16 @@ Version:
 
         self.views[viewid].view.loadContent(params, {
             'success': function(err, data) {
-              $(selector + " #markdown").text(data);
+              $(selector + " #markdown")
+              .text(data)
+              .bind("keyup paste", data, function(e) {
+                 if ($(this).val() != e.data) {
+                   slef.onContentModifiedStateChanged(selector, true);
+                 }
+                 else {
+                   slef.onContentModifiedStateChanged(selector, false);
+                 }
+              });
 
               // Update the framework sizes
               self._helperUpdateFrameWork(true);
@@ -1136,8 +1207,10 @@ Version:
       if (self.views[viewid]) {
         self.views[viewid].view.loadContent(params, {
           'success': function(msg, data) {
-            if (params.selector == undefined)
+            if (params.selector == undefined) {
+              params.hasModification = true;
               self.contents[tabname] = params;
+            }
 
             // Simple toolbox for each diagram
             self.appendContentToolbox(tabname, params);
@@ -1293,10 +1366,106 @@ Version:
     // therefore we have two arrays: contents & diagrams
     //
     getActiveDiagram:function() {
-      if (this.diagrams && this.selectedDiagramId) {
-        return this.diagrams[this.selectedDiagramId];
+      if (this.diagrams && this.selectedContentId) {
+        return this.diagrams[this.selectedContentId];
       }
       return null;
+    },
+    //
+    // Close or save modified files for an active repository
+    // @param oldRepoId - previous repo unique id
+    // @return bool - true handled all items, false - operation skiped
+    //
+    // Steps:
+    //   1. go through the opened contents 
+    //   1.1. Activate content tab
+    //   1.2. Open Save/Skip/Cancel dialog
+    //   1.3 if not "Cancel" then continue
+    //
+    handleModifiedContentOnRepoChange:function(oldRepoId, callback) {
+      if (!this.contents) {
+        callback(true);
+      }
+      
+      function keepContent(ahref, saveIt) {
+        $(".diagram-menu").hide();
+
+        if (self.contents && self.contents[ahref]) {
+          if (saveIt) {
+            self.saveContent(ahref, true);
+            contents[item].isModified = false;
+          }
+          else {
+            delete self.contents[ahref];
+            $tabs.tabs('remove', ahref);
+            $(ahref).remove();
+          }
+        }
+        
+      }
+      
+      var contents = this.contents;
+      function visitModified(list) {
+        var item = list.shift();
+
+        while (item && (contents[item].repoId != oldRepoId || !contents[item].isModified)) {
+          item = list.shift();
+        }
+        if (item) {
+          $("#tabs").tabs('select', item);
+          dm.dm.dialogs['ConfirmationDialog'](
+            {
+              title:"Save",
+              description: 'Save file "' + contents[item].title + '" ?',
+              buttons:
+                {
+                  "Yes": function() {
+                    $( this ).dialog( "close" );
+                    keepContent(item, true);
+                    visitModified(list);
+                  },
+                  "No": function() {
+                    $( this ).dialog( "close" );
+                    keepContent(item, false);
+                    visitModified(list);
+                  },
+                  "Cancel":function() {
+                    $( this ).dialog( "close" );
+                    callback(false);
+                  }
+                }
+            });
+        }
+        else {
+          callback(true);
+        }
+      }
+
+      var contentList = new Array();
+      for (var r in this.contents) {
+        contentList.push(r);
+      }
+      visitModified(contentList);
+    },
+    //
+    // Callback method to report modification of diagram state
+    // @param selector - the diagram selector
+    // @param state - "true" content was modified
+    //                "false" content was not modified
+    //
+    onContentModifiedStateChanged: function(selector, state) {
+      if (this.contents[selector].isModified != state) {
+        var $item = $('a[href$="'+selector+'"]').children("span");
+        var text = $item.text();
+        if (text[0] != "*" && state) {
+          text = "* " + text;
+        }
+        else if (text[0] == "*" && !state) {
+          text = text.substring(2);
+        }
+        $item.text(text);
+        this.contents[selector].isModified = state;
+      }
     },
 //////////////////////////////////////////////////////////////
 //      Framework: keys, toolbox, re-size
@@ -1410,9 +1579,9 @@ Version:
         if (e.ctrlKey && e.keyCode == 17) {
           fw.CtrlDown = true;
         } else if (e.keyCode == 46) { // Del
-          if (($(".editablefield input").length == 0) && (fw.diagrams[fw.selectedDiagramId] != undefined))  {
-            if (fw.diagrams[fw.selectedDiagramId]) {
-              fw.diagrams[fw.selectedDiagramId].removeSelectedElements();
+          if (($(".editablefield input").length == 0) && (fw.diagrams[fw.selectedContentId] != undefined))  {
+            if (fw.diagrams[fw.selectedContentId]) {
+              fw.diagrams[fw.selectedContentId].removeSelectedElements();
             }
           }
         } else if (e.keyCode == 27) { // Esc
@@ -1424,8 +1593,8 @@ Version:
         } else if (e.ctrlKey) {
           switch (e.keyCode) {
             case 65:// Handle Ctrl-A
-              if (fw.diagrams[fw.selectedDiagramId]) {
-                fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", true);
+              if (fw.diagrams[fw.selectedContentId]) {
+                fw.diagrams[fw.selectedContentId]._setWidgetsOption("selected", true);
               }
               e.preventDefault();
               break;
@@ -1434,8 +1603,8 @@ Version:
               // 1. Get focus manager
               // 2. if element ? => copy it on clipboard
               //              stop propagate
-              if (fw.diagrams[fw.selectedDiagramId])  {
-                $.clippy = fw.diagrams[fw.selectedDiagramId].getDescription("selected", true);
+              if (fw.diagrams[fw.selectedContentId])  {
+                $.clippy = fw.diagrams[fw.selectedContentId].getDescription("selected", true);
               } else {
                 $.clippy = undefined;
               }
@@ -1446,11 +1615,11 @@ Version:
               // 2. if element ? => copy it on clipboard
               //              stop propagate
               // 3. Remove element
-              if (fw.diagrams[fw.selectedDiagramId])  {
-                if (fw.diagrams[fw.selectedDiagramId].clickedElement != undefined) {
-                  fw.diagrams[fw.selectedDiagramId].clickedElement._update();
-                  $.clippy = fw.diagrams[fw.selectedDiagramId].clickedElement.getDescription();
-                  $("#" + fw.diagrams[fw.selectedDiagramId].clickedElement.euid + "_Border").remove();
+              if (fw.diagrams[fw.selectedContentId])  {
+                if (fw.diagrams[fw.selectedContentId].clickedElement != undefined) {
+                  fw.diagrams[fw.selectedContentId].clickedElement._update();
+                  $.clippy = fw.diagrams[fw.selectedContentId].clickedElement.getDescription();
+                  $("#" + fw.diagrams[fw.selectedContentId].clickedElement.euid + "_Border").remove();
                 } else {
                   $.clippy = undefined;
                 }
@@ -1462,10 +1631,10 @@ Version:
               // 1. Get focus manager
               // 2. if diagram ? => try copy element from clipboard
               //              stop propagate if success
-              if (($.clippy)  && (fw.diagrams[fw.selectedDiagramId])) {
+              if (($.clippy)  && (fw.diagrams[fw.selectedContentId])) {
                 // Make selected only inserter items
-                fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("selected", false);
-                fw.diagrams[fw.selectedDiagramId].multipleSelection = true;
+                fw.diagrams[fw.selectedContentId]._setWidgetsOption("selected", false);
+                fw.diagrams[fw.selectedContentId].multipleSelection = true;
                 var obj = $.parseJSON($.clippy),
                 es = obj["elements"],
                 cs = obj["connectors"];
@@ -1473,11 +1642,11 @@ Version:
                   es[j].pageX = parseInt(es[j].pageX) + 10;
                   $.log("pzgeX: " + es[j].pageX);
                   es[j].pageY = parseInt(es[j].pageY) + 10;
-                  fw.diagrams[fw.selectedDiagramId].Element(es[j].type, es[j]);
+                  fw.diagrams[fw.selectedContentId].Element(es[j].type, es[j]);
                 }
 
                 //for (j in cs)
-                //fw.diagrams[fw.selectedDiagramId].Connector(cs[j].type, cs[j]);
+                //fw.diagrams[fw.selectedContentId].Connector(cs[j].type, cs[j]);
                 $.clippy = undefined;
               }
               break;
@@ -1485,22 +1654,37 @@ Version:
               // 1. Get focus manager
               // 2. if diagram => get operation sequence manager
               //             -> goBack()
-              if (fw.diagrams[fw.selectedDiagramId])  {
-                fw.diagrams[fw.selectedDiagramId].opman.revertOperation();
+              if (fw.diagrams[fw.selectedContentId])  {
+                fw.diagrams[fw.selectedContentId].opman.revertOperation();
               }
               break;
             case 89:// Handle Ctrl-Y
               // 1. Get focus manager
               // 2. if diagram => get operation sequence manager
               //             -> goForward()
-              if (fw.diagrams[fw.selectedDiagramId])  {
-                fw.diagrams[fw.selectedDiagramId].opman.repeatOperation();
+              if (fw.diagrams[fw.selectedContentId])  {
+                fw.diagrams[fw.selectedContentId].opman.repeatOperation();
               }
               break;
             case 83:// Handle Ctrl-S
+              var params = fw.contents[fw.selectedContentId];
               // 1. Get focus manager
               // 2. if diagram =>  Store the current diagram
-              //             -> goBack()
+              if (fw.diagrams[fw.selectedContentId])  {
+                // Get diagram JSON
+                var data = fw.diagrams[fw.selectedContentId].getDescription();
+
+                // Save content to view
+                fw.views[params.viewid].view.saveContent(params, data);
+
+                // Keep the current state as saved to prevent changes on Ctrl-Z/Y
+                fw.diagrams[fw.selectedContentId].saveState();
+
+                // Modify the framework state
+                fw.onContentModifiedStateChanged(fw.selectedContentId, false);
+              }
+              e.preventDefault();
+
               break;
             default:
               break;
@@ -1562,39 +1746,39 @@ Version:
           }
 
           $('button#color5').simpleColorPicker({ 'onChangeColor': function(color) {
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("color", color);
+            if (fw.diagrams[fw.selectedContentId])  {
+              fw.diagrams[fw.selectedContentId]._setWidgetsOption("color", color);
             }
           } }).click(function() { $(".context-menu").hide();});
 
           $('button#color6').simpleColorPicker({ 'onChangeColor': function(color) {
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("font-color", color);
+            if (fw.diagrams[fw.selectedContentId])  {
+              fw.diagrams[fw.selectedContentId]._setWidgetsOption("font-color", color);
             }
           } }).click(function() { $(".context-menu").hide();});
           
           $('button#vatop').click(function() {
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("z-index", "front");
+            if (fw.diagrams[fw.selectedContentId])  {
+              fw.diagrams[fw.selectedContentId]._setWidgetsOption("z-index", "front");
             }
           });
           $('button#vabottom').click(function() {
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("z-index", "back");
+            if (fw.diagrams[fw.selectedContentId])  {
+              fw.diagrams[fw.selectedContentId]._setWidgetsOption("z-index", "back");
             }
           });
 
           $("#borderWidth").change(function() {
-            if (fw.diagrams[fw.selectedDiagramId])  {
+            if (fw.diagrams[fw.selectedContentId])  {
               $.log("diagram ok");
-              fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("borderwidth", $(this).val() + "px");
+              fw.diagrams[fw.selectedContentId]._setWidgetsOption("borderwidth", $(this).val() + "px");
             }
           });
 
           $("select#speedAa").change(function() {
             $.log("diagram ok");
-            if (fw.diagrams[fw.selectedDiagramId])  {
-              fw.diagrams[fw.selectedDiagramId]._setWidgetsOption("font-family", $(this).val());
+            if (fw.diagrams[fw.selectedContentId])  {
+              fw.diagrams[fw.selectedContentId]._setWidgetsOption("font-family", $(this).val());
             }
           });
 

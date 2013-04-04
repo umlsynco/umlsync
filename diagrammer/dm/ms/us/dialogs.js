@@ -480,6 +480,9 @@
   // Modal dialog.
   //
   'ConfirmationDialog': function(descr, callback) {
+    // Destroy previous dialog
+    $("#us-dialog-confirm").remove();
+
     var innerHtml = '<div id="us-dialog-confirm" title="'+descr.title+'">\
                      <p>\
                        <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;">\
@@ -489,12 +492,15 @@
     var self = this;
     $(innerHtml).appendTo('body');
 
-    $( "#us-dialog-confirm" ).dialog({
+    var $dialog = $( "#us-dialog-confirm" ).dialog({
       resizable: false,
+      autoOpen: false,
       height:140,
       modal: true,
       buttons: descr.buttons
     });
+
+    return $dialog.dialog('open');
   },
   };
 //@aspect

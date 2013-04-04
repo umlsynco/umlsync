@@ -58,10 +58,40 @@ dm['at'] = dm.at; //automated testing
     this.started = false;
     this.count = 0;
     this.processing = false;
+    // skip all operations report
+    // during diagram loading
+    this.skipall = true;
+    // Position which is equal to original
+    this.savedPosition = 0;
+    // last reported modificatoin state
+    this.lastReportedState = false;
   }
 
   dm.base.opman.prototype = {
-                             startTransaction: function() {
+   startReporting: function() {
+     this.skipall = false;
+   },
+   _hasModification: function(newReported) {
+     // New state overwite the stable state
+     if (newReported && this.queue.length == this.savedPosition) {
+       this.savedPosition = -1;
+     }
+     return (this.savedPosition == -1) || (this.queue.length != this.savedPosition);
+   },
+   notifyObserver: function(newReported) {
+    // report state change
+    if (this.lastReportedState != this._hasModification(newReported)) {
+      this.lastReportedState = this._hasModification(newReported);
+      dm.dm.fw.onContentModifiedStateChanged(this.diagram.parrent, this.lastReportedState);
+    }
+   },
+   saveNewPosition: function() {
+     this.savedPosition = this.queue.length;
+     this.lastReportedState = false;
+   },
+   startTransaction: function() {
+    if (this.skipall)
+      return;
     this.count++;
     if (this.started) {
       return;
@@ -71,6 +101,9 @@ dm['at'] = dm.at; //automated testing
     this.working_stack = new Array();
   },
   stopTransaction: function() {
+    if (this.skipall)
+      return;
+
     if (!this.started) {
       alert("Transaction was not started");
       return;
@@ -107,6 +140,8 @@ dm['at'] = dm.at; //automated testing
       }
     }
 
+    this.notifyObserver(true);
+
     while (this.queue.length > this.queueLimit) {
       var item = this.queue.shift();
       var step = item.step;
@@ -125,6 +160,10 @@ dm['at'] = dm.at; //automated testing
       }
       delete step;
       delete item;
+      // It is not possible to return to original state
+      // if too many operations were done
+      if (this.savedPosition != -1)
+         this.savedPosition--;
     }
 
     delete this.working; // Clean the current working copy !!!
@@ -136,6 +175,9 @@ dm['at'] = dm.at; //automated testing
    * options: element options which changed
    */
   reportStart: function(type, euid, options) {
+    if (this.skipall)
+      return;
+
     if (this.processing)
       return;
     this.working[euid] = this.working[euid] || {};
@@ -144,6 +186,9 @@ dm['at'] = dm.at; //automated testing
     this.working_stack.push({id: euid, type: type});
   },
   reportStop: function(type, euid, options) {
+    if (this.skipall)
+      return;
+
     if (this.processing)
       return;
     this.working[euid] = this.working[euid] || {};
@@ -151,6 +196,9 @@ dm['at'] = dm.at; //automated testing
     this.working[euid][type]["stop"] = $.extend({}, this.working[euid][type]["stop"], options);
   },
   reportShort: function(type, euid, before, after) {
+    if (this.skipall)
+      return;
+
     if (this.processing)
       return;
     $.log("reportShort: " + euid + " OP " + type);
@@ -169,6 +217,9 @@ dm['at'] = dm.at; //automated testing
     }
   },
   revertOperation: function() {
+    if (this.skipall)
+      return;
+
     if (this.queue.length == 0) {
       return; // nothing to revert !!!
     }
@@ -278,8 +329,13 @@ dm['at'] = dm.at; //automated testing
       this.diagram.draw();
     }
     this.processing = false;
+
+    this.notifyObserver(false);
   },
   repeatOperation: function() {
+    if (this.skipall)
+      return;
+
     this.processing = true;
     var item = this.revertedQueue.pop();
 
@@ -385,6 +441,8 @@ dm['at'] = dm.at; //automated testing
     }
     this.processing = false;
     this.diagram.draw();
+
+    this.notifyObserver(false);
   },
   };
 
@@ -475,16 +533,14 @@ dm['at'] = dm.at; //automated testing
         event.data.destroy();
       });
 
-      //this._trigger( "create" );
-
       this['_init']();
     } else {
       // TODO: change on even to ERROR manager !!!
       alert("Please, declare method _create() for diagram element " + this.euid);
     }
   },
-//@ifdef EDITOR
-  //@proexp
+
+  
   getDescription: function(key, value) {
     var kv = !(key || value || false);
     var proto = Object.getPrototypeOf(this);
@@ -529,19 +585,19 @@ dm['at'] = dm.at; //automated testing
     item += '}';
     return item;
   },
-  //@proexp
+  
   _update: function() {
     $.log("_update");
   },
 //@endif
-  //@proexp
+  
   _create: function(){$.log("_create");},
-  //@proexp
+  
   _init: function(){$.log("_init");},
-  //@proexp
+  
   _baseinit: function(){$.log("_baseinit");},
 
-  //@proexp
+  
   _destroy: function(){$.log("_destroy");},
   destroy: function() {
     this['_destroy']();
@@ -550,7 +606,7 @@ dm['at'] = dm.at; //automated testing
     .unbind( "." + this.euid )
     .removeData( this.euid );
   },
-  //@proexp
+  
   option: function( key, value ) {
     var options = key;
 
@@ -571,20 +627,20 @@ dm['at'] = dm.at; //automated testing
 
     return this;
   },
-  //@proexp
+  
   _setOptions: function( options ) {
     var self = this;
     for (var r in options) {
       self._setOption( r, options[r] );
     }
   },
-  //@proexp
+  
   _setOption: function( key, value ) {
     this.options[ key ] = value;
     // TODO: REDIRECT ON inherited function !!!
   },
   /*
-    //@proexp
+    
     _trigger: function( type, event, data ) {
         var callback = this.options[type];
 
@@ -633,7 +689,7 @@ dm['at'] = dm.at; //automated testing
     'type2': 'diagram', // hack while we do not have a project manager
     'editable':true
   },
-  //@proexp
+  
   _create: function () {
     //<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
     //this.options.multicanvas = true; ~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USES for DROP SOME NODES FROM DYNATREE
@@ -879,6 +935,7 @@ dm['at'] = dm.at; //automated testing
 
     // Perform function on diagram load completion
     dm['dm']['loader']['OnLoadComplete'](function() {
+      diag.opman.startReporting();
       for (var i in diag.elements) {
         var d = diag.elements[i].options['dropped'];
         if (d) {
@@ -917,8 +974,8 @@ dm['at'] = dm.at; //automated testing
     }
 
   },
-//@ifdef EDITOR
-  //@proexp
+
+  
   _update: function() {
     this.options['connectors'] = this.connectors;
     var i = 0;
@@ -930,7 +987,7 @@ dm['at'] = dm.at; //automated testing
 
   },
 //@endif
-  //@proexp
+  
   _init: function () {
     // It is necessary to init mouse over listener
     // to detect connections types
@@ -956,7 +1013,7 @@ dm['at'] = dm.at; //automated testing
    *       TODO: provide ElementLoaded functionality as
    *             argument-function of loader.Element
    */
-  //@proexp
+  
   Element: function (type, options, callback) {
     dm.ds.diagram.ec++;
     options = options || {};
@@ -990,8 +1047,8 @@ dm['at'] = dm.at; //automated testing
 //  @endif
     return options.euid;
   },
-//@ifdef EDITOR
-  //@proexp
+
+  
   _setWidgetsOption: function( key, value ) {
     if (key == "selected") {
       this.multipleSelection = value;
@@ -1100,7 +1157,7 @@ dm['at'] = dm.at; //automated testing
    * \class Function.
    * TODO: think about lifeline diagram
    */
-  //@proexp
+  
   checkdrop: function(x,y) {
     for (var d in this.elements) {
       var p = $("#" + this.elements[d].euid + "_Border").position();
@@ -1123,28 +1180,28 @@ dm['at'] = dm.at; //automated testing
           <div id='ConnectionHelper' style='border:solid yellow;border-width:1px;'> [ x ]</div></div>");
     });
   },
-//@ifdef EDITOR
+
   /**
    * \class Function.
    */
-  //@proexp
+  
   setMenuBuilder: function(type, menu) {
     if (type == "main") {
-      //@proexp
+      
       this.menuMain = menu;
     }
     if (type == "context") {
-      //@proexp
+      
       this.menuCtx = menu;
     }
     if (type == "icon") {
-      //@proexp
+      
       this.menuIcon = menu;
     }
 
   },
 //@endif
-  //@proexp
+  
   removeSelectedElements: function() {
     var el = this.elements;
     this.opman.startTransaction();
@@ -1158,7 +1215,7 @@ dm['at'] = dm.at; //automated testing
     }
     this.opman.stopTransaction();
   },
-  //@proexp
+  
   removeElement: function(euid) {
     var el = this.elements;
 
@@ -1192,7 +1249,7 @@ dm['at'] = dm.at; //automated testing
 
     $('#' +  euid + '_Border').hide(); //remove(); // Think about removal !!!!
   },
-//@ifdef EDITOR
+
   /**
    * \class Function.
    * remove connector from the list of updatable connectors
@@ -1200,7 +1257,7 @@ dm['at'] = dm.at; //automated testing
    * all elements to or from element
    * if both Ids are undefined than remove all connectors
    */
-  //@proexp
+  
   removeConnector: function (fromId, toId, type) {
 
     if (Object.keys(this.connectors).length > 0) {
@@ -1255,7 +1312,7 @@ dm['at'] = dm.at; //automated testing
    *       How to load connector correctly ? 
    *       
    */
-  //@proexp
+  
   Connector: function (type, options, callback) {
     // Loader is responsible for connector creation
     var self = this;
@@ -1274,8 +1331,8 @@ dm['at'] = dm.at; //automated testing
       }
     });
   },
-//@ifdef EDITOR
-  //@proexp
+
+  
   _dropConnector: function(ui) {
     var result = undefined,
     scrollLeft = $("#" + this.euid).scrollLeft(),
@@ -1298,7 +1355,7 @@ dm['at'] = dm.at; //automated testing
     }
     return result;
   },
-  //@proexp
+  
   _dropSubDiagram: function(path, event, ui) {
     var d, z = 0;
     for (var i in this.elements) {
@@ -1335,7 +1392,7 @@ dm['at'] = dm.at; //automated testing
       });
     }
   },
-  //@proexp
+  
   _dropElement: function(element, ui) {
     var eeuid = element.euid;
     var prev, next;
@@ -1374,7 +1431,7 @@ dm['at'] = dm.at; //automated testing
     }
   },
 //@endif
-  //@proexp    
+      
   onElementDragStart: function(el, ui) {
     this.opman.startTransaction();
 
@@ -1399,7 +1456,7 @@ dm['at'] = dm.at; //automated testing
 
   },
 
-  //@proexp
+  
   onElementDragMove: function(el, ui) {
     for (var i in this.elements)
       if (this.elements[i].option("dragStart") != undefined
@@ -1409,7 +1466,7 @@ dm['at'] = dm.at; //automated testing
       if (this.connectors[i].option("dragStart"))
         this.connectors[i].onDragMove(ui);
   },
-  //@proexp
+  
   onElementDragStop: function(el, ui) {
     el.onDragStop(ui);
     for (var i in this.elements) {
@@ -1431,7 +1488,7 @@ dm['at'] = dm.at; //automated testing
    * Clear the canvas rectangle and re-draw
    * all connectors on the Canvas.
    */
-  //@proexp
+  
   draw: function() {
     if (!this.canvas)
       return;
@@ -1478,7 +1535,7 @@ dm['at'] = dm.at; //automated testing
    * and it seems that capability of browser is good enought
    * to support such actions
    */
-  //@proexp
+  
   isPointOnLine: function(x,y) {
     if (Object.keys(this.connectors).length > 0) {
 //    @ifdef EDITOR
@@ -1514,12 +1571,12 @@ dm['at'] = dm.at; //automated testing
 
     return false;
   },
-//@ifdef EDITOR
+
   /**
    * \class Function.
    * The connector transfomation function.
    */
-  //@proexp
+  
   startConnectorTransform: function(x,y) {
     if (this.selectedconntector != undefined) {
       this.transformStarted = true;
@@ -1530,7 +1587,7 @@ dm['at'] = dm.at; //automated testing
    * \class Function.
    * The connector transfomation function.
    */
-  //@proexp
+  
   stopConnectorTransform: function(x,y) {
     if ((this.transformStarted == true)
         && (this.selectedconntector != undefined))
@@ -1541,7 +1598,7 @@ dm['at'] = dm.at; //automated testing
   /**
    * \class Function.
    */
-  //@proexp
+  
   _mouseClick: function(refElement) {
 //  @ifdef EDITOR
     var mtype = (refElement == undefined) ? undefined : refElement.options['menu'];
@@ -1612,16 +1669,19 @@ dm['at'] = dm.at; //automated testing
       this.selectedElement._setOption("selected", true);
       this.draw();
     }
-//  @endif
+
   },
-//@ifdef EDITOR
-  isModified: function() {
-    return true;
+  //
+  // Save the current operation manager state
+  // and use it to check that content was modified or not
+  //
+  saveState: function() {
+    // Save the current position
+    this.opman.saveNewPosition();
   }
-//@endif
   });
 
-    //@print
+    
 
 //  Global elements counter
 //  Entroduced to avoid side-effecst because of
@@ -1651,14 +1711,14 @@ dm['at'] = dm.at; //automated testing
         }
       }
     },*/
-    //@proexp
+    
     _create: function () {
       // if parent element is undefined, do nothing
       // create element at possition which described in jsonDesc
       alert("Could not create virtual element !!!");
     },
 //  @ifdef EDITOR
-    //@proexp
+    
     _update: function() {
       var p = $("#" + this.euid + "_Border").position();
       this.options['pageX'] = p.left;
@@ -1679,8 +1739,8 @@ dm['at'] = dm.at; //automated testing
         }
       }
     },
-//  @endif
-    //@proexp
+
+    
     _init: function () {
       if (this.options['height']) {
         $('#' + this.euid)
@@ -1700,7 +1760,7 @@ dm['at'] = dm.at; //automated testing
      *  Add the behaviour: editable, draggale, menu hide/show
      *  TODO: refactoring is coming 
      */
-    //@proexp
+    
     _baseinit: function() {
       //wrap with border
       var poz = "";
@@ -2031,7 +2091,7 @@ dm['at'] = dm.at; //automated testing
       if (this.options["z-index"])
         $('#'+this.euid + "_Border").css("z-index", this.options["z-index"]);
     },
-    //@proexp
+    
     _setOption: function( key, value ) {
       var old_val  = this.options[ key ];
 
@@ -2095,7 +2155,7 @@ dm['at'] = dm.at; //automated testing
       this.options[ key ] = value;
     },
 //  @ifdef EDITOR
-    //@proexp
+    
     onDragStart: function(ui, skipDropped) {
 
       if (this.options.dragStart != undefined)
@@ -2126,7 +2186,7 @@ dm['at'] = dm.at; //automated testing
       this.start_operation = {left:this.options.left, top: this.options.top};
 //    }
     },
-    //@proexp
+    
     onDragMove: function(ui) {
       if (this.options.dragStart === undefined)
         return;
@@ -2140,7 +2200,7 @@ dm['at'] = dm.at; //automated testing
 
 
     },
-    //@proexp
+    
     onDragStop: function(ui) {
       if (ui) {
         //this.onDragMove(ui); // TODO: This operation lead to jump of element on drag stop
@@ -2161,10 +2221,10 @@ dm['at'] = dm.at; //automated testing
       delete this.options.dragStart;
       delete this.start_operation;            
     }
-//  @endif
+
     });
 
-    //@print
+    
 
     dm.ds.diagram = dm.ds.diagram || {}; 
     dm.ds.diagram.ec = 0; 
@@ -2176,7 +2236,7 @@ dm['at'] = dm.at; //automated testing
       'nameTemplate': 'Connector',
       'ctx_menu': 'connector'
     },
-    //@proexp
+    
     addLabel: function(opt) {
       var self = this,
       lid = this.euid + "_l" + this.label_count;  // uniqie label name to simplify revert editable
@@ -2247,7 +2307,7 @@ dm['at'] = dm.at; //automated testing
       this.labels[opt.idx].css({left:opt.left, top:opt.top});
     },
 //  @ifdef EDITOR
-    //@proexp
+    
     getDescription: function() {
       this.options['fromId'] = this.from;
       this.options['toId'] = this.toId;
@@ -2288,7 +2348,7 @@ dm['at'] = dm.at; //automated testing
       item +=  '}';
       return item; 
     },
-//  @endif
+
     _setOption: function( key, value ) {
       if (value == undefined) {
         delete this.options[ key ];
@@ -2316,9 +2376,9 @@ dm['at'] = dm.at; //automated testing
         this.options[ key ] = value;
       }
     },
-    //@proexp
+    
     _create: function () {
-      //@proexp
+      
       this.epoints = [];
       this.label_count = 0;
       this.cleanOnNextTransform = false;
@@ -2358,15 +2418,15 @@ dm['at'] = dm.at; //automated testing
                 this.addLabel({text:l.name, left:parseInt(l.x), top:parseInt(l.y)});
       }
     },
-    //@proexp
+    
     _init: function () {
       // this.element.draggable().resizable().selectable().border()
     },
-    //@proexp
+    
     _baseinit: function() {
       // TODO: add on mouse drag&drop
     },
-    //@proexp
+    
     drawSelected: function(c, points, color) {
       c.beginPath();
       c.fillStyle = color;
@@ -2379,10 +2439,10 @@ dm['at'] = dm.at; //automated testing
       c.stroke();
       c.closePath();
     },
-    //@proexp
+    
     draw: function(ctx, points, color) {},
 
-    //@proexp
+    
     redraw: function(ctx, color) {
       var context = ctx;
       var col = color || "rgba(0,0,0,1)";
@@ -2410,7 +2470,7 @@ dm['at'] = dm.at; //automated testing
       this['draw'](context, this.points, col);
     },
 
-    //@proexp
+    
     _getRValue: function(x1, x2, w) {
       var diffx = x2-x1;
       if (diffx>0) {
@@ -2420,7 +2480,7 @@ dm['at'] = dm.at; //automated testing
       }
       return x1;
     },
-    //@proexp
+    
     isPointOnLine: function(x,y) {
       if (this.points == undefined)
         return false;
@@ -2450,7 +2510,7 @@ dm['at'] = dm.at; //automated testing
       return false;          
     },
 //  @ifdef EDITOR
-    //@proexp
+    
     canRemovePoint: function(p1,p2,rp) {
       if ((p1 == undefined)
           || (p2 == undefined)) {
@@ -2469,7 +2529,7 @@ dm['at'] = dm.at; //automated testing
         return true;
       return false;
     },
-    //@proexp        
+            
     startTransform: function(x1,y1) {
       if (!this.parrent.options.editable)
         return;
@@ -2539,7 +2599,7 @@ dm['at'] = dm.at; //automated testing
       if (this.onStartTransform != undefined)
         this.onStartTransform(x,y);
     },
-    //@proexp
+    
     stopTransform: function(x1,y1) {
       if (this.eppos == undefined) {
         return;
@@ -2601,7 +2661,7 @@ dm['at'] = dm.at; //automated testing
       delete this.report; // remove the value
 
     },
-    //@proexp
+    
     TransformTo: function(x1,y1) {
       if (this.eppos != undefined) {
         var x =  x1 + $("#" + this.parrent.euid).scrollLeft(),
@@ -2612,8 +2672,8 @@ dm['at'] = dm.at; //automated testing
           this.onTransform(x,y);
       }
     },
-//  @endif
-    //@proexp
+
+    
     _getConnectionPoints: function(fromId, toId, epoints) {
 
       var p1 = $('#'+ fromId).position();
@@ -2671,7 +2731,7 @@ dm['at'] = dm.at; //automated testing
       }
     },
 //  @ifdef EDITOR
-    //@proexp
+    
     onDragStart: function(ui) {
       if (this.epoints.length > 0) {
 
@@ -2698,7 +2758,7 @@ dm['at'] = dm.at; //automated testing
       this.parrent.opman.reportStart("option", this.euid, {'epoints': this.epoints_drag, 'labels':this.labels_drag});
 
     },
-    //@proexp
+    
     onDragMove: function(ui) {
       if (this.options.dragStart == undefined)
         return;
@@ -2712,7 +2772,7 @@ dm['at'] = dm.at; //automated testing
           top: this.labels_drag[i][1] + ui.top});
       }
     },
-    //@proexp
+    
     onDragStop: function(ui) {
       if (ui == undefined) {
         return;
@@ -2724,8 +2784,8 @@ dm['at'] = dm.at; //automated testing
       delete this.epoints_drag;
       delete this.labels_drag;
     }
-//  @endif
+
     });
-    //@print
+    
 //  @aspect
 })(jQuery, dm);

@@ -65,30 +65,47 @@
     this.onRepoSelect = function(title, repo) {
       var githubView = this.githubView;
       if (title == 'Yours') {
-        if (githubView != null && githubView.hasModifications()) {
-          dm.dm.dialogs['ConfirmationDialog'](
-            {
-              title:"Change repository?",
-              description: "Modified files will be removed on repository change.",
-              buttons:
-                {
-                  "ok": function() {
-                    githubView.openRepository(repo, true);
-                    dm.dm.fw.onRepoSelect(githubView, repo);
-                    $( this ).dialog( "close" );
-                  },
-                  "cancel": function() {
-                    $( this ).dialog( "close" );
-                  },
-                  "commit...":function() {
-                    $( this ).dialog( "close" );
+        if (githubView != null) {
+
+          // First activation of repository
+          if (githubView.activeRepo == null) {
+            githubView.openRepository(repo, true);
+            dm.dm.fw.onRepoSelect(githubView, repo);
+            return;
+          }
+
+          // Skiped repo change during modified content
+          // save dialog opening
+          dm.dm.fw.handleModifiedContentOnRepoChange(githubView.activeRepo, function(isAccepted) {
+            if (!isAccepted) {
+              return;
+            }
+
+            if (githubView.hasModifications()) {
+              dm.dm.dialogs['ConfirmationDialog'](
+              {
+                title:"Change repository?",
+                description: "Modified files will be removed on repository change.",
+                buttons:
+                  {
+                    "ok": function() {
+                      githubView.openRepository(repo, true);
+                      dm.dm.fw.onRepoSelect(githubView, repo);
+                      $( this ).dialog( "close" );
+                    },
+                    "cancel": function() {
+                      $( this ).dialog( "close" );
+                    },
+                    "commit...":function() {
+                      $( this ).dialog( "close" );
+                    }
                   }
-                }
-            });
+              });
+            }
+          });
         }
         else {
-          githubView.openRepository(repo, true);
-          dm.dm.fw.onRepoSelect(githubView, repo);
+          alert("Internal site ERROR");
         }
       }
     };
@@ -191,7 +208,6 @@
       var self =
       {
         euid: "github",
-        modifiedList: {}, // The list of modified files by sha
 //////////////////////////////////////////////////////////////
 //           Repositories and branches
 //////////////////////////////////////////////////////////////
@@ -218,6 +234,7 @@
         // Return whether repo was updated or not
         //
         hasModifications: function() {
+          alert("hasModifications doesn't work");
           if (self.activeRepo != null) {
             if (self.activeRepo.updated != null) {
               return Object.keys(self.activeRepo.updated).length > 0;
