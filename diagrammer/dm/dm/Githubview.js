@@ -63,6 +63,7 @@
     };
 
     this.onRepoSelect = function(title, repo) {
+      $.log("onRepoSelect");
       var githubView = this.githubView;
       if (title == 'Yours') {
         if (githubView != null) {
@@ -74,7 +75,7 @@
             return;
           }
 
-          // Skiped repo change during modified content
+          // Skipped repo change during modified content
           // save dialog opening
           dm.dm.fw.handleModifiedContentOnRepoChange(githubView.activeRepo, function(isAccepted) {
             if (!isAccepted) {
@@ -234,9 +235,11 @@
         // Return whether repo was updated or not
         //
         hasModifications: function() {
-          alert("hasModifications doesn't work");
+          $.log("hasModifications");
+          $.log(self.activeRepo);
           if (self.activeRepo != null) {
             if (self.activeRepo.updated != null) {
+              $.log(self.activeRepo);
               return Object.keys(self.activeRepo.updated).length > 0;
             }
           }
