@@ -1077,10 +1077,10 @@ Version:
               .text(data)
               .bind("keyup paste", data, function(e) {
                  if ($(this).val() != e.data) {
-                   slef.onContentModifiedStateChanged(selector, true);
+                   self.onContentModifiedStateChanged(selector, true);
                  }
                  else {
-                   slef.onContentModifiedStateChanged(selector, false);
+                   self.onContentModifiedStateChanged(selector, false);
                  }
               });
 
@@ -1389,9 +1389,12 @@ Version:
     //   1.3 if not "Cancel" then continue
     //
     handleModifiedContentOnRepoChange:function(oldRepoId, callback) {
-      if (!this.contents) {
+      // There is no opened contents
+      if (!this.contents || Object.keys(this.contents).length == 0) {
         callback(true);
+        return;
       }
+      
       var self = this;
       function keepContent(ahref, saveIt) {
         if (self.contents && self.contents[ahref]) {

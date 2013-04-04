@@ -63,7 +63,6 @@
     };
 
     this.onRepoSelect = function(title, repo) {
-      $.log("onRepoSelect");
       var githubView = this.githubView;
       if (title == 'Yours') {
         if (githubView != null) {
@@ -236,8 +235,8 @@
         //
         hasModifications: function() {
           if (self.activeRepo != null) {
-            activeRepo = self.repositories[self.activeRepo];
-            if (activeRepo.updated != null) {
+            var activeRepo = self.repositories[self.activeRepo];
+            if (activeRepo.updated != null && activeRepo.updated != undefined) {
               return Object.keys(activeRepo.updated).length > 0;
             }
           }
