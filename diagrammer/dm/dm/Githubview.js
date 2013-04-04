@@ -235,12 +235,10 @@
         // Return whether repo was updated or not
         //
         hasModifications: function() {
-          $.log("hasModifications");
-          $.log(self.activeRepo);
           if (self.activeRepo != null) {
-            if (self.activeRepo.updated != null) {
-              $.log(self.activeRepo);
-              return Object.keys(self.activeRepo.updated).length > 0;
+            activeRepo = self.repositories[self.activeRepo];
+            if (activeRepo.updated != null) {
+              return Object.keys(activeRepo.updated).length > 0;
             }
           }
           else {
