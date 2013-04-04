@@ -236,7 +236,7 @@
         //
         hasModifications: function() {
           if (self.activeRepo != null) {
-            activeRepo = self.repositories[self.activeRepo];
+            var activeRepo = self.repositories[self.activeRepo];
             if (activeRepo.updated != null) {
               return Object.keys(activeRepo.updated).length > 0;
             }
