@@ -851,6 +851,9 @@ Version:
           return;
         var data = self.diagrams[tabid].getDescription();
         self.views[params.viewid].view.saveContent(params, data);
+
+        // Keep the current state as saved to prevent changes on Ctrl-Z/Y
+        self.diagrams[tabid].saveState();
       }
       else if (self.contents[tabid].contentType == "md") { // Markdown
         // Save the markdown content
@@ -862,6 +865,9 @@ Version:
           self.views[params.viewid].view.releaseContent(params);
         }
       }
+
+      // Modify the framework state
+      self.onContentModifiedStateChanged(tabid, false);
     },
     //
     // Toolbox for each content type: markdown or diagram.
@@ -1386,18 +1392,16 @@ Version:
       if (!this.contents) {
         callback(true);
       }
-      
+      var self = this;
       function keepContent(ahref, saveIt) {
-        $(".diagram-menu").hide();
-
         if (self.contents && self.contents[ahref]) {
           if (saveIt) {
             self.saveContent(ahref, true);
-            contents[item].isModified = false;
           }
           else {
+            $(".diagram-menu").hide();
             delete self.contents[ahref];
-            $tabs.tabs('remove', ahref);
+            $("#tabs").tabs('remove', ahref);
             $(ahref).remove();
           }
         }
@@ -1667,24 +1671,9 @@ Version:
               }
               break;
             case 83:// Handle Ctrl-S
-              var params = fw.contents[fw.selectedContentId];
-              // 1. Get focus manager
-              // 2. if diagram =>  Store the current diagram
-              if (fw.diagrams[fw.selectedContentId])  {
-                // Get diagram JSON
-                var data = fw.diagrams[fw.selectedContentId].getDescription();
-
-                // Save content to view
-                fw.views[params.viewid].view.saveContent(params, data);
-
-                // Keep the current state as saved to prevent changes on Ctrl-Z/Y
-                fw.diagrams[fw.selectedContentId].saveState();
-
-                // Modify the framework state
-                fw.onContentModifiedStateChanged(fw.selectedContentId, false);
-              }
+              if (fw.selectedContentId)
+                fw.saveContent(fw.selectedContentId);
               e.preventDefault();
-
               break;
             default:
               break;
