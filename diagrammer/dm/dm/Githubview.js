@@ -102,6 +102,10 @@
                   }
               });
             }
+            else {
+              githubView.openRepository(repo, true);
+              dm.dm.fw.onRepoSelect(githubView, repo);
+            }
           });
         }
         else {
