@@ -111,8 +111,9 @@
 
     // User data
     var username = "{{ user }}",
-        token = "{{ access_token }}",
-        path = "{{ path }}";
+      token = "{{ access_token }}",
+      path = "{{ path }}";
+
     $.log("credentials");
     $.log(username);
     $.log(token);
@@ -129,12 +130,13 @@
       $.log("Opening " + path);
       // expected path is like this:
       // kalaidin/octo-diagrams/master/diagrams/ElkaClass.json
-      var splitted_path = path.split("/");
-      var repo_path = splitted_path.slice(0, 2).join("/"); //kalaidin/octo-diagrams
-      var branch = splitted_path[2]; //master
-      var diagram = splitted_path.slice(3).join("/"); //diagrams/ElkaClass.json
-      var repo = repo_path;
-      dm.dm.IGithubViewsManager.onRepoSelect("Yours", repo); // repo is changed here!
+
+      var splitted_path = path.split("/"),
+        repo_path = splitted_path.slice(0, 2).join("/"),//kalaidin/octo-diagrams
+        branch = splitted_path[2],//master
+        diagram = splitted_path.slice(3).join("/"),//diagrams/ElkaClass.json
+        repo = repo_path;
+      dm.dm.IGithubViewsManager.onRepoSelect("Yours", repo);// repo is changed here!
       dm.dm.IGithubViewsManager.loadRightAway(repo_path, branch, diagram);
     }
   });

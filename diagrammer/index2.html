@@ -154,6 +154,8 @@
 	dm.dm.IGithubViewsManager = new dm.base.GithubViewsManager('umlsynco', null, "https://api.github.com/repos/umlsynco/diagrams/");
 	//fw.addViewManager('Github', dm.dm.IGithubViewsManager);
     dm.dm.IGithubViewsManager.init();
+    dm.dm.IGithubViewsManager.onRepoSelect("Yours", "umlsynco/diagrams");
+    dm.dm.IGithubViewsManager.loadRightAway(repo_path, "master", "/diagrams/classDiagram.umlsync");
 
 //    dm.dm.IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
 //	dm.dm.IFilesView.euid = 'Github';
