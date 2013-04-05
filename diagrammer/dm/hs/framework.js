@@ -452,9 +452,8 @@ Version:
       $("#treetabs").append("<div id='"+id+"'></div>");
 
       if (name != "Eclipse") {
-        $("#us-repo .js-select-button").text(IView.getActiveRepository());
+        $("#us-repo .js-select-button").text(view.getActiveRepository() != null ? view.getActiveRepository(): "none");
         $("#us-branch .js-select-button").text("master");
-      
      }
 
      id = "DIV#" + id;
@@ -603,7 +602,7 @@ Version:
             if (uid == "us-branch") {
               var text = $("#us-repo .js-select-button").text();
               var repoId = text.replace("/", "-");
-              dm.dm.dialogs['Activate']("branch-selection-dialog-"+repoId);
+              dm.dm.dialogs['Activate']("branch-selection-dialog-" + repoId);
             }
           });
     },

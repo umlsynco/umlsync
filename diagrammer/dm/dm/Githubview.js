@@ -858,6 +858,9 @@
       if (repoId != null) {
         self.openRepository(repoId, isOwner);
       }
+      else {
+        // maybe we need to activate a select repo dialog here?
+      }
       return self;
     };
   };
