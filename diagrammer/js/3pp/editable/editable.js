@@ -96,8 +96,18 @@ $.fn.editable = function(options){
 		  }
 		}
 	}
+    
+    function convert( str ) {
+      var c = {'<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;',
+       '#':'&#035;' };
+      var ret = str.replace( /[<>'"#]/g, function(s) {
+         return c[s]; 
+      } );
+      return ret;
+    }
+    
 	options.toNonEditable = function($this,change){
-		opts = $this.data('editable.options');
+		var opts = $this.data('editable.options');
 		// Configure events,styles for changed content
 		$this.one(opts.editBy,opts.toEditable)
 			 .data( 'editable.current',
@@ -108,7 +118,7 @@ $.fn.editable = function(options){
 			 .html(
 				    opts.type=='password'
 				   		?'*****'
-						:$this.data('editable.current')
+						:convert($this.data('editable.current'))
 					);
 		// Call User Function
 		var func = null;
@@ -119,8 +129,8 @@ $.fn.editable = function(options){
 		if(func!=null)
 			func.apply($this,
 						[{
-							current:$this.data('editable.current'),
-							previous:$this.data('editable.previous')
+							current:convert($this.data('editable.current')),
+							previous:convert($this.data('editable.previous'))
 						}]
 					);
 	}

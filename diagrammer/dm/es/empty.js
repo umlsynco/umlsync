@@ -17,7 +17,6 @@ dm.base.diagram("es.empty", dm.es.element, {
        this.options.width = $("#" + this.euid + "_Border").width();
        this.options.height = $("#" + this.euid + "_Border").height();
 
-       this.options.name = $("#" + this.euid + " #name" ).html();
 	   p = $("#" + this.euid + " #name" ).position();
 	   this.options.nameX = p.left;
 	   this.options.nameY = p.top;

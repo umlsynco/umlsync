@@ -50,6 +50,15 @@ dm['at'] = dm.at; //automated testing
 //@aspect
 (function( $, dm, undefined ) {
 
+  // Function to remove tags
+  dm.base.convert = function(str) {
+      var c = {'<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;',
+       '#':'&#035;' };
+      return str.replace( /[<>'"#]/g, function(s) {
+         return c[s]; 
+      } );
+  };
+
   dm.base.opman = function(diagram) {
     this.queueLimit = 24; // Limit for count of operations.
     this.diagram = diagram;
@@ -1681,7 +1690,37 @@ dm['at'] = dm.at; //automated testing
   }
   });
 
-    
+    //
+    // Helper method which implements a common approach for
+    // editable element
+    //
+    dm.base.editable = function(self, $items) {
+      $($items).editable({onSubmit:function(data) {
+          if (data["current"] == data["previous"])
+            return;
+          var id = $(this).attr("id"),
+            sid = id.split("-"),
+            optId = sid[0];
+          
+          // argument-N
+          if (sid.length == 2) {
+            // <ul><li><a id="operation-0">Editable</a></li></ul>
+            var $par = $(this).parent(),
+              idx = $par.parent().children().index($par);
+            self.options[optId+"s"][idx] = data["current"];
+          }
+          // name
+          else if (sid.length == 1) {
+            self.options[optId] = data["current"];
+          }
+          else {
+            alert("Unkown option change reported");
+            return false;
+          }
+          self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+          return true;
+      }});
+    };
 
 //  Global elements counter
 //  Entroduced to avoid side-effecst because of
@@ -1727,7 +1766,6 @@ dm['at'] = dm.at; //automated testing
       this.options['top'] = p.top;
       this.options['width'] = $("#" + this.euid + "_Border").width();
       this.options['height'] = $("#" + this.euid + "_Border").height();
-      this.options['name'] = $("#" + this.euid + " .Name").html();
 
       if (this._dropped) {
         this.options['dropped'] = new Array();
@@ -2066,14 +2104,8 @@ dm['at'] = dm.at; //automated testing
 
       // enable editable fields
       // if this diagram is editable
-      $("#" + this.euid + " .editablefield").editable({onSubmit:function(data) {
-          if (data["current"] == data["previous"])
-            return;
-          var id = $(this).attr("id");
-          self.options[id] = data["current"];
-          self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
-          return true;
-      }});
+      dm.base.editable(this, $("#" + this.euid + " .editablefield"));
+      
       // 
       if (!this.parrent.options['editable']) {
         $("#" + this.euid + " .editablefield").editable("disable");

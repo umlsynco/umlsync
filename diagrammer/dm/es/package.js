@@ -21,7 +21,6 @@ dm.base.diagram("es.package", dm.es.element, {
 
        // Height of packet body. Width is the same for all part of element
        this.options.height_b = $("#" + this.euid + "_Border .us-package-body").height();
-       this.options.name = $("#" + this.euid + " .us-package-body .editablefield" ).html();
        
        if (this._dropped) {
          this.options.dropped = new Array();

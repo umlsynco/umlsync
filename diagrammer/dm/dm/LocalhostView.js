@@ -60,11 +60,97 @@ Version:
     getActivePath: function() {
       return self.activePath || "/";
     },
+        getContentPath: function(params, parent) {
+          var relPath = params.relativePath;
+          // Actually it is an absolute path
+          if (relPath == undefined)
+            return "";
+
+          if(relPath[0] == "/") {
+            return relPath;
+          }
+          // Load an embedded diagrams
+          var count = 0,
+              liof = parent.absPath.lastIndexOf("/"), // if slash not found than it is root
+              parentPath = (liof == -1) ? "/":parent.absPath.substring(0, liof+1);
+
+          var full_path = parentPath + relPath;
+          // Relative path doesn't contain dotted links
+          if (full_path.indexOf("./") == -1) {
+            return full_path;
+          }
+          var sfp = full_path.split("/"),
+            valid_path_array = new Array();
+          for (var t in sfp) {
+            if (sfp[t] == "." || sfp[t] == "") { // Stay on the same position
+              continue;
+            }
+            else if (sfp[t] == "..") { // Folder up
+              var isEmpty = valid_path_array.pop();
+              if (isEmpty == undefined) {
+                alert("Wrong path: " + full_path);
+              }
+            }
+            else { // next folder/item
+              valid_path_array.push(sfp[t]);
+            }
+          }
+          return "/" + valid_path_array.join("/");
+
+        },
+        //
+        // return the list of subfolders for a given path
+        //
+        getSubPaths: function(path, sp_callback) {
+          self.activeStorageNode = null;
+
+          var $tree = $(self.treeParentSelector).dynatree("getTree");
+
+          $tree.loadKeyPath(path, function(node, result) {
+            if (result == "ok") {
+              self.activeStorageNode = node;
+              var tmp = node.getChildren();
+              var res = new Array();
+              for (var r in tmp) {
+                if (tmp[r].data.isFolder)
+                  res.push(tmp[r].data.title);
+              }
+              if (sp_callback) {
+                sp_callback(res);
+              }
+            }
+          },
+          "title");
+        },
+        //
+        // Check the content name:
+        //
+        checkContentName: function(name) {
+          if (!self.activeStorageNode) {
+            return "Wrong path or path was not loaded yet: " + name;
+          }
+
+          if (self.activeStorageNode.getAbsolutePath() != name.substring(0, name.lastIndexOf("/"))) {
+            return "Wrong path, expected: " + self.activeStorageNode.getAbsolutePath();
+          }
+
+          var filename = name.split("/").pop();
+          var tmp = self.activeStorageNode.getChildren();
+          for (var b in tmp) {
+            if (!tmp[b].data.isFolder && tmp[b].data.title == filename) {
+              return "File already exist";
+            }
+          }
+
+          self.activeStorageNode.addChild({title:filename, addClass:"dynatree-ico-added"});
+
+          return "ok";
+        },
     //
     // Load content or get it from cache:
     //
     loadContent: function(params, callback) {
-      var fullPath = params.absPath;
+      var fullPath = "/" + params.repoId + "/" + params.absPath;
 
       if (params.parentPath != undefined) {
         // absolute path from root
@@ -530,16 +616,21 @@ Version:
         if (!node.data.isFolder) {
           var tt = node.data.title.split(".");
           var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
-          var repo="pe";
+          var repo="pe",
+            path = node.getAbsolutePath(),
+            project = path.split("/")[1]; // start with "/"
+
+          path = path.substring(project.length + 2);
 
           var params =
             {
               viewid:self.euid,
-              node:node,
               title:node.data.title,
-              absPath:node.getAbsolutePath(),
+              absPath: path,
               branch:"master",
-              repo:"umlsynco/umlsync"
+              repoId: project,
+              isOwner:true,
+              editable:false
             };
 
             if (ext == "JSON" || ext == "UMLSYNC") {

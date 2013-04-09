@@ -683,7 +683,6 @@
                             var params =
                               {
                                 viewid:self.euid,
-                                node:node,
                                 sha:node.data.sha,
                                 title:node.data.title,
                                 absPath:node.getAbsolutePath(),
@@ -820,7 +819,6 @@
                               var params =
                                 {
                                   viewid:self.euid,
-                                  node:node,
                                   sha:node.data.sha,
                                   title:node.data.title,
                                   absPath:node.getAbsolutePath(),
