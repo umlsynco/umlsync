@@ -1,4 +1,6 @@
 import os
+import re
+
 from django.core.servers.basehttp import FileWrapper
 
 from django.http import HttpResponse
@@ -60,9 +62,19 @@ def export(request):
     response['Content-Length'] = os.path.getsize(filename)
     return response
 
+def get_referer_view(request, default=None):
+    referer = request.META.get('HTTP_REFERER')
+    if not referer:
+        return default
+    #referer = re.sub('^https?:\/\/', '', referer).split('/')
+    #if referer[0] != request.META.get('SERVER_NAME'):
+    #    return default
+    #referer = u'/' + u'/'.join(referer[1:])
+    return referer
 
 @login_required
 def open_path(request, *args, **kwargs):
+    print(get_referer_view(request))
     auth_response = kwargs.get('auth_response')
     path = kwargs.get('path')
     if auth_response:

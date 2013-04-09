@@ -102,6 +102,10 @@
                   }
               });
             }
+            else {
+              githubView.openRepository(repo, true);
+              dm.dm.fw.onRepoSelect(githubView, repo);
+            }
           });
         }
         else {
@@ -854,6 +858,9 @@
       $.log("opening the first repo");
       if (repoId != null) {
         self.openRepository(repoId, isOwner);
+      }
+      else {
+        // maybe we need to activate a select repo dialog here?
       }
       return self;
     };

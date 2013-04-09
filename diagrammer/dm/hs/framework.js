@@ -288,6 +288,12 @@ Version:
               if (self.contents && self.contents[ahref]) {
                 if (saveIt)
                   self.saveContent(ahref, true);
+
+                // Drop markdown cache if content is markdown
+                if (self.contents[ahref].contentType == "md") {
+                    delete self.markdown[ahref];
+                }
+
                 delete self.contents[ahref];
               }
               $tabs.tabs('remove', index);
@@ -452,9 +458,8 @@ Version:
       $("#treetabs").append("<div id='"+id+"'></div>");
 
       if (name != "Eclipse") {
-        $("#us-repo .js-select-button").text(IView.getActiveRepository());
+        $("#us-repo .js-select-button").text(IView.getActiveRepository() != null ? IView.getActiveRepository(): "none");
         $("#us-branch .js-select-button").text("master");
-      
      }
 
      id = "DIV#" + id;
@@ -603,7 +608,7 @@ Version:
             if (uid == "us-branch") {
               var text = $("#us-repo .js-select-button").text();
               var repoId = text.replace("/", "-");
-              dm.dm.dialogs['Activate']("branch-selection-dialog-"+repoId);
+              dm.dm.dialogs['Activate']("branch-selection-dialog-" + repoId);
             }
           });
     },
@@ -856,8 +861,13 @@ Version:
         self.diagrams[tabid].saveState();
       }
       else if (self.contents[tabid].contentType == "md") { // Markdown
+        var $md = $(tabid + " #markdown")
+        if ($md.length > 0) {
+            self.markdown[tabid] = $md.val();
+        }
+        
         // Save the markdown content
-        // self.views[params.viewid].view.saveContent(params, data);
+        self.views[params.viewid].view.saveContent(params, self.markdown[tabid]);
 
         // Diagram has listener on destroy,
         // but there is no destroy listener for markdown
@@ -984,21 +994,32 @@ Version:
         var data = $(selector + " #markdown").val();
 
         // Save content in storage cache
-        self.views[params.viewid].view.saveContent(params, data);
+        //self.views[params.viewid].view.saveContent(params, data);
 
         // remove edit UI elements
-        $(selector + " #markdown").remove();
-        $(selector + " span.us-toolbox-header").remove();
+        $(selector + " #markdown").hide();
+        $(selector + " span.us-toolbox-header").hide();
         
         // Load an updated markdown
         this.loadMarkdown(selector, params, data);
       }
       else {
+        $(selector + " div#readme").remove();
+
+        // Hide/Show editor menu
+        if ($(selector + " #markdown").length > 0) {
+            $(selector + " span.us-toolbox-header").show();
+            $(selector + " #markdown").show();
+            return;
+        }
+          
         function getSelection() {
           return (!!document.getSelection) ? document.getSelection() :
             (!!window.getSelection) ? window.getSelection() :
             document.selection.createRange().text;
         }
+
+
 
         // toolbox descriptor
         var rrrr = '<span class="us-toolbox-header"><ul style="list-style:none outside none;">\
@@ -1024,7 +1045,7 @@ Version:
                         <li class="us-toolbox-button us-toolbox-diagram"><a title="Insert diagram reference" prefix="diagram">Diagram reference / Diagram</a></li>\
                         <li class="us-toolbox-separator">&nbsp</li>\
                       </ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
-        $(selector + " div#readme").remove();
+
         $(rrrr).appendTo(selector);
 
         self._helperUpdateFrameWork(true); // Make text area to fit size of content
@@ -1071,26 +1092,34 @@ Version:
 
         var viewid = params.viewid;
 
-        self.views[viewid].view.loadContent(params, {
-            'success': function(err, data) {
-              $(selector + " #markdown")
-              .text(data)
-              .bind("keyup paste", data, function(e) {
-                 if ($(this).val() != e.data) {
-                   self.onContentModifiedStateChanged(selector, true);
-                 }
-                 else {
-                   self.onContentModifiedStateChanged(selector, false);
-                 }
-              });
+        var data = self.markdown[selector];
 
-              // Update the framework sizes
-              self._helperUpdateFrameWork(true);
-            },
-            'error': function() {
-            }
+        $(selector + " #markdown")
+        .text(data)
+        .bind("keyup paste", selector, function(e) {
+          var selector = e.data;
+
+var text2 = self.markdown[selector];
+var text1 = $(this).val();
+          if ($(this).val() != self.markdown[selector]) {
+            self.onContentModifiedStateChanged(selector, true);
+          }
+          else {
+            self.onContentModifiedStateChanged(selector, false);
+          }
         });
+
+        // Update the framework sizes
+        self._helperUpdateFrameWork(true);
      }
+    },
+    saveMarkdownContent:function(params) {
+      if (!params.isModified) {
+        return;
+      }
+      
+
+      this.saveContent();
     },
     //
     // Get the content type by title
@@ -1317,6 +1346,8 @@ Version:
         <article class="markdown-body entry-content" itemprop="mainContentOfPage">\
         '+converter.makeHtml(data)+'\
         </article></div>';
+
+      this.markdown[tabname] = data;
 
       $(tabname).append(innerHtml); // Markdown loaded
       $(tabname).attr("edm", false);//enable diagram menu is always false for markdown
@@ -1677,6 +1708,7 @@ Version:
               if (fw.selectedContentId)
                 fw.saveContent(fw.selectedContentId);
               e.preventDefault();
+              e.stopPropagation();
               break;
             default:
               break;
