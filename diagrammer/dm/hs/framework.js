@@ -458,7 +458,7 @@ Version:
       $("#treetabs").append("<div id='"+id+"'></div>");
 
       if (name != "Eclipse") {
-        $("#us-repo .js-select-button").text(view.getActiveRepository() != null ? view.getActiveRepository(): "none");
+        $("#us-repo .js-select-button").text(IView.getActiveRepository() != null ? IView.getActiveRepository(): "none");
         $("#us-branch .js-select-button").text("master");
      }
 
