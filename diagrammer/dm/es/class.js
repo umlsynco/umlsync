@@ -8,9 +8,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'options': {
         'nameTemplate': 'Class',
         'width': '150px',
-        'height': '64px',
-        operations: [],
-        attributes: []
+        'height': '64px'
     },
     '_getAux': function(aux) {
       var auxmap = [];
@@ -312,18 +310,18 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
 //       this.options['name'] = "" + $("#" + this.euid + " .us-class-name" ).html();
 //       this.options['aux'] = $("#" + this.euid + " .us-class-header .us-class-aux" ).html();
-       this.options['operations'] = new Array();
-       this.options['attributes'] = new Array();
+ //      this.options['operations'] = new Array();
+ //      this.options['attributes'] = new Array();
        var self = this;
-       
+       /*
        $("#" + this.euid + " .us-class-operations .operation").each(function(i) {
-         self.options['operations'].push(" " + dm.base.convert($(this).html()));
+         self.options['operations'].push("" + dm.base.convert($(this).html()));
        });
 
        $("#" + this.euid + " .us-class-attributes .attribute").each(function(i) {
-         self.options['attributes'].push(" " + dm.base.convert($(this).html()));
+         self.options['attributes'].push("" + dm.base.convert($(this).html()));
        });
-
+       */
     },
 //@endif
     '_create': function() {
@@ -331,6 +329,10 @@ dm.base.diagram("es.class", dm['es']['element'], {
 	       aux = "";
 	   this.atrN = 0;
 	   this.opN = 0;
+
+       // Work-around for get description methods
+       this.options.operations = this.options.operations || new Array();
+       this.options.attributes = this.options.attributes || new Array();
 
        if (this.options['aux'] && (this.options['aux'] != "")) {
 	       var aux2 = this._getAux(this.options['aux']);
@@ -426,10 +428,10 @@ dm.base.diagram("es.class", dm['es']['element'], {
 				      index = ui.item.index(),
                       type = ui.item.attr("id").split("-")[0];
 				  if (index != start_pos) {
-                    // Update options to keep them up to date
+                    // Update options values to keep them up to date
                     var tmp = self.options[type + "s"][start_pos];
-                    self.options[type + "s"][start_pos] = self.options[type + "s"][index];
-                    self.options[type + "s"][index] = self.options[type + "s"][start_pos];
+                    self.options.operations.splice(start_pos, 1);
+                    self.options.operations.splice(index, 0, tmp);
 
 					self.parrent.opman.reportShort("%"+ui.item.attr("id"), self.euid, {idx: start_pos}, {idx:index});
 				  }
