@@ -143,7 +143,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
                  })
                  .height();
 
-       dm.base.editable(this, $op);
+       dm.base.editable(this, $op, true);
 
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
 	       h2 = $("#" + this.euid + " .us-class-operations").height(),
@@ -224,7 +224,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
        });
 
        // Common approach for editable
-       dm.base.editable(this, $ch);
+       dm.base.editable(this, $ch, true);
        var hg = $ch.height();
 	   
 

@@ -212,7 +212,7 @@ Version:
            // Hide the github selection mini-buttons
            $("#reponav").children("div").hide();
            // Switch to eclipse tree
-           self.addView2('Eclipse', new dm.base.LocalhostView("http://localhost:8000/vm/pe"));
+           self.addView2('Eclipse', new dm.base.LocalhostView("http://localhost:8000/vm/cp"));
          });
 
 
@@ -418,23 +418,23 @@ Version:
         $.ajax({ 'url': viewmanager + "getviews",
           'dataType': json_type,
           'success':  function(json) {
-          var innerHtml = "",
-          selectHtml = "";
-          for (i in json) {
-            innerHtml += "<li><a href='#'>" + json[i]['title']+ "</a></li>";
-            selectHtml += "<option>" + json[i]['title'] + "</option>";
-            $('#vp_main_menu select').append($("<option></option>")
+            var innerHtml = "",
+            selectHtml = "";
+            for (i in json) {
+              innerHtml += "<li><a href='#'>" + json[i]['title']+ "</a></li>";
+              selectHtml += "<option>" + json[i]['title'] + "</option>";
+              $('#vp_main_menu select').append($("<option></option>")
                 .attr("value",json[i]['id'])
                 .text(json[i]['title']));
-          }
+            }
 
-          if ($('#header-menu #Views ul').length == 0) {
-            $('#header-menu').append("<li id='Views'><a href='#'>Views</a><ul>" + innerHtml+"</ul></li>").jqsimplemenu();
-          }
-          else {
-            $('#header-menu #Views ul').append(innerHtml);
-            $('#header-menu').jqsimplemenu();
-          }
+            if ($('#header-menu #Views ul').length == 0) {
+              $('#header-menu').append("<li id='Views'><a href='#'>Views</a><ul>" + innerHtml+"</ul></li>").jqsimplemenu();
+            }
+            else {
+              $('#header-menu #Views ul').append(innerHtml);
+              $('#header-menu').jqsimplemenu();
+            }
 
           // Complete menu update first.
           // And open the default views than.
@@ -478,6 +478,7 @@ Version:
           if (item.click) {
             item.click(activeNode, view)
             $(".context-menu").hide();
+			$("#context-toolbox").hide();
           }
         }
         });
@@ -824,7 +825,7 @@ Version:
 
       if (params.absPath) {
         // Save an empty diagram. It could be new diagram or 
-        self.views[params.viewid].view.saveContent(params, {}, true);
+        self.views[params.viewid].view.saveContent(params, "{baseType:"+baseType+",type:"+type+"}", true);
         // Add content to cache
         self.contents[tabname] = params;
       }

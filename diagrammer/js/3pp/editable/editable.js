@@ -97,12 +97,15 @@ $.fn.editable = function(options){
 		}
 	}
     
-    function convert( str ) {
+    function convert( str , noEmpy) {
       var c = {'<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;',
        '#':'&#035;' };
       var ret = str.replace( /[<>'"#]/g, function(s) {
          return c[s]; 
       } );
+      if (ret == "" && noEmpy) {
+        ret = "&nbsp;&nbsp;&nbsp;&nbsp;"
+      }
       return ret;
     }
     
@@ -118,7 +121,7 @@ $.fn.editable = function(options){
 			 .html(
 				    opts.type=='password'
 				   		?'*****'
-						:convert($this.data('editable.current'))
+						:convert($this.data('editable.current'), true)
 					);
 		// Call User Function
 		var func = null;
@@ -146,9 +149,6 @@ $.editableFactory = {
 		},
 		getValue: function($this,options){
 		    var val = $this.children().val();
-			if (val == "") {
-			   val = "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-			}
 			return val;
 		}
 	},

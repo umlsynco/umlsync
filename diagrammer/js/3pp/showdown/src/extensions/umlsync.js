@@ -12,7 +12,7 @@
                 return source.replace(/(<img [^>]*alt="Diagram:([^"]*)"[^>]*>)/gi, function(match) {
                     var s = match.split(" "),
                     isDiagram = false,
-                    source = repo = branch = path = title = "";
+                    repo = branch = path = title = "";
 
                     for (var i in s) {
                       // Check that it is diagram:
@@ -38,7 +38,6 @@
                         if (s[i].indexOf(relPath) == 0) {
                           // remove "path=" prefix too
                           path = ' path="' + s[i].substr(relPath.length + 5, s[i].length - relPath.length);
-                          source=' source="github"';
                         }
 
                         // absolute path:
@@ -53,7 +52,6 @@
                           }
                           repo = ' repo="'+ sp[0] + '/' + sp[1] + '"';
                           branch = ' branch="'+ sp[3] +'"';
-                          source=' source="github"';
                         }
 
                       }
@@ -66,7 +64,7 @@
                     
                     if (isDiagram) {
                       return '<div id="ClassInheritanceExample"\
-                         class="pack-diagram" ' + branch + source + repo + path + title+'></div>'
+                         class="pack-diagram" ' + branch + repo + path + title+'></div>'
                     }
                     
                     return match;

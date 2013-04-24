@@ -703,18 +703,19 @@ dm['at'] = dm.at; //automated testing
     //<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
     //this.options.multicanvas = true; ~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USES for DROP SOME NODES FROM DYNATREE
     if (this.options.multicanvas) {
+	  this.canvasEuid = this.euid +'_Canvas';
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
           <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
           <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
           <div class="us-canvas-bg" style="width:100%;height:100%;">\
           </div></div>');
-          this.canvas = window.document.getElementById(this.euid +'_Canvas');
     } else {
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
           <div class="us-canvas-bg" style="width:100%;height:100%;">\
           </div></div>');
-          this.canvas = window.document.getElementById('SingleCanvas');
+		  this.canvasEuid = 'SingleCanvas';
     }
+    this.canvas = window.document.getElementById(this.canvasEuid);
     this.max_zindex = 100;
 
     // Diagram canvas drop element
@@ -727,28 +728,30 @@ dm['at'] = dm.at; //automated testing
     $("#" + this.euid + ".us-diagram").scroll(function() {iDiagram.draw();});
 //  @ifdef EDITOR
 
-    $("#" + this.euid + "_Canvas").droppable({
+    $("#" + this.canvasEuid).droppable({
       drop: function( event, ui ) {
-      $.log("DIAGRAM.jS DROPPABLE !!!");
-      var source = ui.helper.data("dtSourceNode") || ui.draggable;
-      $.log("source: " + source.data.addClass);
-      if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
-        var key = "",
-        separator = "",
-        filenode = source,
-        isInterface = source.data.addClass == "iconinterface";
-        if (source.data.description) {
-          key = source.data.description;
-        }
-        else {
-          while ((filenode.data.addClass == 'iconinterface')
-              || (filenode.data.addClass == 'iconclass')
-              || (filenode.data.addClass == 'namespace')) {
-            key = filenode.data.title + separator + key;
-            separator = "::";
-            filenode = filenode.parent;
+        var source = ui.helper.data("dtSourceNode"); // dynatree node
+		if (!source)
+		  return;
+        $.log("source: " + source.data.addClass);
+        if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
+		  var thisOffset = $(this).offset();
+          var key = "",
+              separator = "",
+              filenode = source,
+              isInterface = source.data.addClass == "iconinterface";
+          if (source.data.description) {
+            key = source.data.description;
           }
-        }
+          else {
+            while ((filenode.data.addClass == 'iconinterface')
+                || (filenode.data.addClass == 'iconclass')
+                || (filenode.data.addClass == 'namespace')) {
+              key = filenode.data.title + separator + key;
+              separator = "::";
+              filenode = filenode.parent;
+            }
+          }
 
         if (iDiagram.options['type'] == "sequence") {
           var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Object Instance"), {'viewid':source.data.viewid});
@@ -772,8 +775,10 @@ dm['at'] = dm.at; //automated testing
           var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':source.data.viewid});
 
           if (element != undefined) {
-            element.pageX = 200;
-            element.pageY = 200;
+            element.pageX = ui.position.left - thisOffset.left;
+            element.pageY = ui.position.top - thisOffset.top;
+            element.left = element.pageX;
+            element.top = element.pageY;
             element.name = key;
             if (isInterface) element.aux = "interface";
             element.filepath = filenode.getAbsolutePath() + "/" + key;
@@ -838,7 +843,7 @@ dm['at'] = dm.at; //automated testing
       diag._setWidgetsOption("selected", false);
       
       // Work-around for references
-      $("#" + diag.euid + " .us-reference").hide();
+      $("#" + diag.euid + " .us-references").hide();
       /*            
            // Hide elements selectors on click
            //$(".ui-resizable-handle").css({'visibility':'hidden'});
@@ -1694,7 +1699,7 @@ dm['at'] = dm.at; //automated testing
     // Helper method which implements a common approach for
     // editable element
     //
-    dm.base.editable = function(self, $items) {
+    dm.base.editable = function(self, $items, removeEmpty) {
       $($items).editable({onSubmit:function(data) {
           if (data["current"] == data["previous"])
             return;
@@ -1708,6 +1713,19 @@ dm['at'] = dm.at; //automated testing
             var $par = $(this).parent(),
               idx = $par.parent().children().index($par);
             self.options[optId+"s"][idx] = data["current"];
+            if (data["current"] == "") {
+              if (removeEmpty) {
+                self.options[optId+"s"].splice(idx, 1);
+                var methodName = "rm" + optId.charAt(0).toUpperCase() + optId.slice(1);
+                if (self[methodName]) {
+                  self[methodName]({idx:idx})
+                }
+                $par.remove();
+                if ($par.parent().hasClass("us-sortable")) {
+                  $par.parent().sortable("refresh");
+                }
+              }
+            }
           }
           // name
           else if (sid.length == 1) {
@@ -1817,11 +1835,14 @@ dm['at'] = dm.at; //automated testing
       var parrentClass = this.parrent;
       var self = this;
       self.highlighted = false;
+      this.refN = 0;
+      this.options.references = this.options.references || new Array();
 
-      var subDiagramPaths = self.options['subdiagrams'] || {};
-      var subDiagramRefs =  "<div class='us-reference'><ul class='context-menu-3'><li id='reference-new'><a>new reference</a></li>";
+      var subDiagramPaths = self.options['subdiagrams'] || self.options['references'] || {};
+      var subDiagramRefs =  "<div class='us-references us-list'><ul class='context-menu-3'><li id='reference-new'><a>new reference</a></li>";
       for (var g in subDiagramPaths) {
-         subDiagramRefs+= "<li><a id='reference-"+g+"' class='editablefield'>" + subDiagramPaths[g] + "</a></li>";
+         subDiagramRefs+= "<li><a id='reference-"+this.refN+"' class='editablefield reference'>" + subDiagramPaths[g] + "</a></li>";
+         ++this.refN;
       }
       subDiagramRefs+="</ul></div>";
       
@@ -1995,7 +2016,7 @@ dm['at'] = dm.at; //automated testing
         element.parrent._mouseClick(element, element.options['menu']);
         event.stopPropagation();
         // Hide previous references
-         $("#" + element.parrent.euid + " .us-reference").hide();
+         $("#" + element.parrent.euid + " .us-references").hide();
       })       
       .mouseenter(self, function (event){
         var element = event.data;
@@ -2045,7 +2066,7 @@ dm['at'] = dm.at; //automated testing
 
       // Hide references by default and
       // prevent propagation of click event
-      $('#' + this.euid  + '_Border .us-reference')
+      $('#' + this.euid  + '_Border .us-references')
       .hide()
       .click(function(e) {
         e.stopPropagation();
@@ -2059,23 +2080,12 @@ dm['at'] = dm.at; //automated testing
          if (data["current"] == "")
              return;
 
-          self.options.subdiagrams = self.options.subdiagrams || new Array();
-          self.options.subdiagrams.push(data["current"]);
-          
-          $("<li><a id='reference-x' class='editablefield'>" + data["current"] + "</a></li>")
-            .appendTo("#" + self.euid + " div.us-reference ul")
-            .children("A")
-            .bind("click", self, function(event) {
-              var element = event.data;
-              if (!element.parrent.options.editable) {
-                dm.dm.fw.loadContent2(element.parrent.parrent, $(this).text());
-              }
-            });
+          self.addReference({text:data["current"]});
           return true;
         }
       });
       
-      $('#' + this.euid  + '_Border .us-reference ul li a').bind("click", self, function(event) {
+      $('#' + this.euid  + '_Border .us-references ul li a').bind("click", self, function(event) {
         var element = event.data;
         if (!element.parrent.options.editable) {
           dm.dm.fw.loadContent2(element.parrent.parrent, $(this).text());
@@ -2086,15 +2096,15 @@ dm['at'] = dm.at; //automated testing
        {
         $("img#" + this.euid + "_REF").attr('title', this.options['subdiagrams']).click(self, function(event) {
           var element = event.data;
-          var notShown = $("#" + element.euid + " .us-reference").css('display') == "none";
+          var notShown = $("#" + element.euid + " .us-references").css('display') == "none";
 
           // Hide all references on diagram
-          $("#" + element.parrent.euid + " .us-reference").hide();
+          $("#" + element.parrent.euid + " .us-references").hide();
 
           // open item if it was closed
           if (notShown) {
             var pos = $(this).position();
-            $('#' + element.euid  + '_Border .us-reference')
+            $('#' + element.euid  + '_Border .us-references')
             .show()
             .css({top:pos.top+20, left:pos.left});
           }
@@ -2123,7 +2133,67 @@ dm['at'] = dm.at; //automated testing
       if (this.options["z-index"])
         $('#'+this.euid + "_Border").css("z-index", this.options["z-index"]);
     },
-    
+  
+    'addReference': function(opt) {
+	   var self = this;
+	   var old_attr;
+	   if (opt.id) {
+	     old_attr = opt.id;
+	   } else {
+	     old_attr = 'reference-'+this.refN;
+	     ++this.refN;
+	   }
+
+       self.options.references.push(opt.text);
+          
+       var $ch =
+         $("<li id='reference'><a id='reference-"+self.refN+"' class='editablefield reference'>" + opt.text + "</a></li>")
+            .appendTo("#" + self.euid + " div.us-references ul")
+            .children("A")
+            .bind("click", self, function(event) {
+              var element = event.data;
+              if (!element.parrent.options.editable) {
+                dm.dm.fw.loadContent2(element.parrent.parrent, $(this).text());
+              }
+            });
+
+
+       // Common approach for editable
+       dm.base.editable(this, $ch, true);
+       var hg = $ch.height();
+
+	   this.parrent.opman.startTransaction();
+	   this.parrent.opman.reportShort("+reference",
+                                      this.euid,
+									  {idx:$("#" + this.euid + " .reference").length-1,
+									   text:opt.text,
+									   id: old_attr});
+       this.parrent.opman.stopTransaction();
+    },
+    'rmReference': function(opt) {
+       // selector is path to ul>li>a object
+       if (opt.selector) {
+         var text = $(opt.selector).text();
+         var idx = $(opt.selector.split(" ")[0] + " li").index($(opt.selector).parent());
+
+         // Update options
+         this.options.reference.splice(idx, 1);
+         
+         // Report reference.
+	     this.parrent.opman.reportShort("-reference",
+	                                  this.euid,
+									  {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
+         // It is necessary to remove li object
+         // but selector refs to li>a
+         $(opt.selector).parent().remove();
+       }
+       else {
+         // It is not necessary to report attribute
+         // because this case happen on revert attribute only
+         $("#"+this.euid+" .us-class-reference ul li:eq(" + opt.idx + ")").remove();
+       }
+
+	},
     _setOption: function( key, value ) {
       var old_val  = this.options[ key ];
 
