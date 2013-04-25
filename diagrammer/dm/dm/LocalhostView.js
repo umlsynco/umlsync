@@ -462,7 +462,7 @@
                   e2.pageX = 200;
                   e2.pageY = 200;
                   e2.name = val;
-                  var ename = element.parrent.menuIcon.diagram.Element(e2.type, e2);
+                  var ename = element.parrent.Element(e2.type, e2);
                   //menuBuilder.loader.Connector("generalization", {selected: element.id, temporary: ename});
                 });
               });
@@ -486,7 +486,7 @@
             dataType: "jsonp",
             success:function(data) {
             var items = [];
-            var e2 = $.extend({}, menuBuilder.dmb.getElementById("Class"), {'viewid':element.options.viewid});
+            var e2 = $.extend({}, element.parrent.menuIcon.dmb.getElementById("Class"), {'viewid':element.options.viewid});
             if (e2 != undefined) {
 
               var items = [];
@@ -535,7 +535,7 @@
                   e2.name = d['title'];
                   e2.filename = d['filename'];
 
-                  var ename = menuBuilder.diagram.Element(e2.type, e2);
+                  var ename = element.parrent.Element(e2.type, e2);
                   //    menuBuilder.loader.Connector("generalization", {selected: ename, temporary: element.euid});
                 });
             }
@@ -559,14 +559,14 @@
             dataType: "jsonp",
             success : function(data) {
             var items = [];
-            var e2 = $.extend({}, menuBuilder.dmb.getElementById("Class"), {'viewid':element.options.viewid});
+            var e2 = $.extend({}, element.parrent.menuIcon.dmb.getElementById("Class"), {'viewid':element.options.viewid});
             if (e2 != undefined) {
               $.each(data,function(k, d) {
                 $.each(d, function(key, val) {
                   e2.pageX = 200;
                   e2.pageY = 200;
                   e2.name = val;
-                  var ename = menuBuilder.diagram.Element(e2.type, e2);
+                  var ename = element.parrent.Element(e2.type, e2);
                   //menuBuilder.loader.Connector("generalization", {selected: element.id, temporary: ename});
                 });
               });
