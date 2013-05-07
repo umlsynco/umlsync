@@ -8,7 +8,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'options': {
         'nameTemplate': 'Class',
         'width': '150px',
-        'height': '64px'
+        'height': 'auto'
     },
     '_getAux': function(aux) {
       var auxmap = [];

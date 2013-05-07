@@ -62,7 +62,8 @@
 
     var innerHtml = '<form id="us-dialog-newdiagram">\
       <fieldset><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div>\
-      <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p><br><p><span class="left2"><input id="VP_inputselector" type="text" value="/Untitled" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/></span>\
+      <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p><br><p><span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
+	  </span>\
       </p></fieldset></form>';
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
       $(innerHtml).appendTo("#new-diagram-dialog");

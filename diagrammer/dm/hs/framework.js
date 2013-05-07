@@ -179,11 +179,11 @@ Version:
           </div>\
           <div id="reponav"><span id="us-github">Github</span><span style="float:right;" id="us-eclipse">Eclipse</span></div>\
           <div id="toolbox"><ul style="list-style:none;">\
-          <li class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
-          <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
-          <li id="us-newdoc" title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
-          <li id="us-revertdoc" title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
-          <li id="us-removedoc" title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
+          <li class="us-left" title="Commit changes"><img src="./images/commit.png" class="ui-icon"></li>\
+          <li class="us-left" title="Reload tree"><img src="./images/reload.png" class="ui-icon"></li>\
+          <li id="us-newdoc" title="New diagram"><img src="./images/newdoc.png" class="ui-icon"></li>\
+          <li id="us-revertdoc" title="Revert diagram"><img src="./images/revertdoc.png" class="ui-icon"></li>\
+          <li id="us-removedoc" title="Remove diagram"><img src="./images/deldoc.png" class="ui-icon"></li>\
           </ul></div>\
           <div id="treetabs"></div>\
           </div>\
@@ -1391,12 +1391,12 @@ var text1 = $(this).val();
     // Load source code and run google prettify on it
     //
     loadCode: function(tabname, params, data) {
-      $(tabname).append("<div class='us-diagram'><pre class='prettyprint linenums:1'>" + data + "</pre></div>");
+      $(tabname).append("<div class='us-sourcecode'><pre class='prettyprint linenums:1'>" + data + "</pre></div>");
       $(tabname).attr("edm", false);//enable diagram menu is always false for code
 
       prettyPrint();
  
-      self._helperUpdateFrameWork(true);
+      this._helperUpdateFrameWork(true);
     },
     //
     // Return an active diagram

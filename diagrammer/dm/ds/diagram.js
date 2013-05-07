@@ -598,7 +598,7 @@ dm['at'] = dm.at; //automated testing
   _update: function() {
     $.log("_update");
   },
-//@endif
+    
   
   _create: function(){$.log("_create");},
   
@@ -726,109 +726,114 @@ dm['at'] = dm.at; //automated testing
     var iDiagram = this;
 
     $("#" + this.euid + ".us-diagram").scroll(function() {iDiagram.draw();});
-//  @ifdef EDITOR
+	if ($("#" + this.canvasEuid).attr("init") != "true") {
+		$("#" + this.canvasEuid).droppable({
+		  drop: function( event, ui ) {
+			var iDiagram = dm.dm.fw.getActiveDiagram();
+			// do nothing
+			if (iDiagram == null)
+			  return;
 
-    $("#" + this.canvasEuid).droppable({
-      drop: function( event, ui ) {
-        var source = ui.helper.data("dtSourceNode"); // dynatree node
-		var thisOffset = $(this).offset();
-		if (!source)
-		  return;
-        $.log("source: " + source.data.addClass);
-        if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
-          var key = "",
-              separator = "",
-              filenode = source,
-              isInterface = source.data.addClass == "iconinterface";
-          if (source.data.description) {
-            key = source.data.description;
-          }
-          else {
-            while ((filenode.data.addClass == 'iconinterface')
-                || (filenode.data.addClass == 'iconclass')
-                || (filenode.data.addClass == 'namespace')) {
-              key = filenode.data.title + separator + key;
-              separator = "::";
-              filenode = filenode.parent;
-            }
-          }
+			var source = ui.helper.data("dtSourceNode"); // dynatree node
+			var thisOffset = $(this).offset();
+			if (!source)
+			  return;
+			$.log("source: " + source.data.addClass);
+			if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
+			  var key = "",
+				  separator = "",
+				  filenode = source,
+				  isInterface = source.data.addClass == "iconinterface";
+			  if (source.data.description) {
+				key = source.data.description;
+			  }
+			  else {
+				while ((filenode.data.addClass == 'iconinterface')
+					|| (filenode.data.addClass == 'iconclass')
+					|| (filenode.data.addClass == 'namespace')) {
+				  key = filenode.data.title + separator + key;
+				  separator = "::";
+				  filenode = filenode.parent;
+				}
+			  }
 
-        if (iDiagram.options['type'] == "sequence") {
-          var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Object Instance"), {'viewid':source.data.viewid});
-          element.pageX = ui.position.left - thisOffset.left;
-          element.left = element.pageX;
-          element.name = key;
-          var ename = iDiagram.Element(element.type, element);
-          return;
-        }
+			if (iDiagram.options['type'] == "sequence") {
+			  var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Object Instance"), {'viewid':source.data.viewid});
+			  element.pageX = ui.position.left - thisOffset.left;
+			  element.left = element.pageX;
+			  element.name = key;
+			  element.filepath = filenode.getAbsolutePath();
+			  var ename = iDiagram.Element(element.type, element);
+			  return;
+			}
 
-        if (iDiagram.options['type'] == "component") {
-          var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
-          element.pageX = ui.position.left - thisOffset.left;
-          element.pageY = ui.position.top - thisOffset.top;
-          element.left = element.pageX;
-          element.top = element.pageY;
-          element.name = key;
-          element.filepath = filenode.getAbsolutePath() + "/" + key;
-          var ename = iDiagram.Element(element.type, element);
-          return;
-        }
-        if (iDiagram.menuIcon != undefined) {
-          var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':source.data.viewid});
+			if (iDiagram.options['type'] == "component") {
+			  var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
+			  element.pageX = ui.position.left - thisOffset.left;
+			  element.pageY = ui.position.top - thisOffset.top;
+			  element.left = element.pageX;
+			  element.top = element.pageY;
+			  element.name = key;
+			  element.filepath = filenode.getAbsolutePath();
+			  var ename = iDiagram.Element(element.type, element);
+			  return;
+			}
+			if (iDiagram.menuIcon != undefined) {
+			  var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':source.data.viewid});
 
-          if (element != undefined) {
-            element.pageX = ui.position.left - thisOffset.left;
-            element.pageY = ui.position.top - thisOffset.top;
-            element.left = element.pageX;
-            element.top = element.pageY;
-            element.name = key;
-            if (isInterface) element.aux = "interface";
-            element.filepath = filenode.getAbsolutePath() + "/" + key;
-            var ename = iDiagram.Element(element.type, element);
-          }
-        } else {
-          iDiagram.Element("class", {name:source.data.title, filepath:source.getAbsolutePath(),editable:true,'viewid':source.data.viewid});
-        }
-      } else if (source.data.addClass == "diagramclass") {
-        // Add sub-diagram to element
-        $.eee = ui;
-        $.uuu = event;
-        iDiagram._dropSubDiagram(source.getAbsolutePath(), event, ui);
-      } else if (source.data.isFs) {
-        if (iDiagram.options['type'] == "component") {
-          var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Component"), {'viewid':source.data.viewid});
-          if (element != undefined) {
-            var x = element.pageX,
-            y = element.pageY;
-            element.pageX = ui.position.left - thisOffset.left;
-            element.pageY = ui.position.top - thisOffset.top;
-            element.left = element.pageX;
-            element.top = element.pageY;
-            element.name = source.data.title;
-            element.filepath = source.getAbsolutePath();
-            var ename = iDiagram.Element(element.type, element);   
-            return;
-          }
-        }
-        var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Package"), {'viewid':source.data.viewid});
+			  if (element != undefined) {
+				element.pageX = ui.position.left - thisOffset.left;
+				element.pageY = ui.position.top - thisOffset.top;
+				element.left = element.pageX;
+				element.top = element.pageY;
+				element.name = key;
+				if (isInterface) element.aux = "interface";
+				element.filepath = filenode.getAbsolutePath();
+				var ename = iDiagram.Element(element.type, element);
+			  }
+			} else {
+			  iDiagram.Element("class", {name:source.data.title, filepath:source.getAbsolutePath(),editable:true,'viewid':source.data.viewid});
+			}
+		  } else if (source.data.addClass == "diagramclass") {
+			// Add sub-diagram to element
+			$.eee = ui;
+			$.uuu = event;
+			iDiagram._dropSubDiagram(source.getAbsolutePath(), event, ui);
+		  } else if (source.data.isFs) {
+			if (iDiagram.options['type'] == "component") {
+			  var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Component"), {'viewid':source.data.viewid});
+			  if (element != undefined) {
+				var x = element.pageX,
+				y = element.pageY;
+				element.pageX = ui.position.left - thisOffset.left;
+				element.pageY = ui.position.top - thisOffset.top;
+				element.left = element.pageX;
+				element.top = element.pageY;
+				element.name = source.data.title;
+				element.filepath = source.getAbsolutePath();
+				var ename = iDiagram.Element(element.type, element);   
+				return;
+			  }
+			}
+			var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Package"), {'viewid':source.data.viewid});
 
-        if (element != undefined) {
-          var x = element.pageX,
-          y = element.pageY;
-            element.pageX = ui.position.left - thisOffset.left;
-            element.pageY = ui.position.top - thisOffset.top;
-            element.left = element.pageX;
-            element.top = element.pageY;
-          element.name = source.data.title;
-          element.filepath = source.getAbsolutePath();
-          var ename = iDiagram.Element(element.type, element);   
-        }
+			if (element != undefined) {
+			  var x = element.pageX,
+			  y = element.pageY;
+				element.pageX = ui.position.left - thisOffset.left;
+				element.pageY = ui.position.top - thisOffset.top;
+				element.left = element.pageX;
+				element.top = element.pageY;
+			  element.name = source.data.title;
+			  element.filepath = source.getAbsolutePath();
+			  var ename = iDiagram.Element(element.type, element);   
+			}
 
-      }
-    }
-    });
-
-//  @endif
+		  }
+		}
+		})
+        .attr("init", "true");
+    } 
     /** Canvas extra functionality handling:
      *   1. Hide resize GUI helpers on canvas click
      *   2. Position locator is debug functionality
@@ -888,7 +893,6 @@ dm['at'] = dm.at; //automated testing
         e.stopPropagation();
       }
     })
-//  @ifdef EDITOR
     .mouseup(function(e) {
       var p = $(this).offset(),
       x = e.pageX - p.left,
@@ -924,7 +928,7 @@ dm['at'] = dm.at; //automated testing
         diag.multipleSelection = true; // work around to hide connector selection on click
       }
     })
-//  @endif
+    
     ;
 
     // create an empty lists for connectors and elements
@@ -1005,7 +1009,7 @@ dm['at'] = dm.at; //automated testing
     this.options['elements'] = this.elements;
 
   },
-//@endif
+    
   
   _init: function () {
     // It is necessary to init mouse over listener
@@ -1050,7 +1054,6 @@ dm['at'] = dm.at; //automated testing
       if (callback)
         callback(obj);
     });
-//  @ifdef EDITOR
     // If it is editable diagram
     if (this.options['editable']) {
       // Load the context menu for element
@@ -1063,7 +1066,6 @@ dm['at'] = dm.at; //automated testing
       if ((this.menuIcon != undefined) && (options['menu'] != undefined))
         this.menuIcon['load'](options['menu']);
     }
-//  @endif
     return options.euid;
   },
 
@@ -1171,7 +1173,7 @@ dm['at'] = dm.at; //automated testing
 
     this.draw(); // work-around to re-draw connectors after options update
   },
-//@endif
+    
   /**
    * \class Function.
    * TODO: think about lifeline diagram
@@ -1219,7 +1221,7 @@ dm['at'] = dm.at; //automated testing
     }
 
   },
-//@endif
+    
   
   removeSelectedElements: function() {
     var el = this.elements;
@@ -1322,7 +1324,7 @@ dm['at'] = dm.at; //automated testing
       delete this.removedElements[euid];
     }
   },
-//@endif
+    
 
   /**
    * \class Function.
@@ -1449,7 +1451,7 @@ dm['at'] = dm.at; //automated testing
       this.opman.reportShort("drop", eeuid, prev, next);
     }
   },
-//@endif
+    
       
   onElementDragStart: function(el, ui) {
     this.opman.startTransaction();
@@ -1557,13 +1559,11 @@ dm['at'] = dm.at; //automated testing
   
   isPointOnLine: function(x,y) {
     if (Object.keys(this.connectors).length > 0) {
-//    @ifdef EDITOR
       if (this.transformStarted == true) {
         this.selectedconntector.TransformTo(x,y);
         this.draw();
         return true;
       }
-//    @endif
       for (var c in this.connectors) {        
         if (this.connectors[c].isPointOnLine(x,y)) {
           if (this.connectors[c] != this.selectedconntector) {
@@ -1578,11 +1578,9 @@ dm['at'] = dm.at; //automated testing
     // Hide selected connector
     // because it is no longer highlited
     if (this.selectedconntector != undefined) {
-//    @ifdef EDITOR
       if (this.selectedconntector._showMenu != undefined) {
         this.selectedconntector._showMenu(x,y, false);
       }
-//    @endif
       this.selectedconntector = undefined;
       dm.at.cs.mouseover = null;
       this.draw();
@@ -1613,13 +1611,12 @@ dm['at'] = dm.at; //automated testing
       this.selectedconntector.stopTransform(x,y);
     this.transformStarted = false;
   },
-//@endif
+    
   /**
    * \class Function.
    */
   
   _mouseClick: function(refElement) {
-//  @ifdef EDITOR
     var mtype = (refElement == undefined) ? undefined : refElement.options['menu'];
     var ctrlDown = dm['dm']['fw']['CtrlDown'];
     this.clickedElement = refElement;
@@ -1779,8 +1776,7 @@ dm['at'] = dm.at; //automated testing
       // create element at possition which described in jsonDesc
       alert("Could not create virtual element !!!");
     },
-//  @ifdef EDITOR
-    
+   
     _update: function() {
       var p = $("#" + this.euid + "_Border").position();
       this.options['pageX'] = p.left;
@@ -1853,7 +1849,6 @@ dm['at'] = dm.at; //automated testing
       
       var axis111 = this.options['axis'] || false;
       var elmt = $('#' + this.euid  + '_Border')
-//    @ifdef EDITOR
       .resizable({
         'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
         'scroll': true,
@@ -2003,17 +1998,14 @@ dm['at'] = dm.at; //automated testing
             self.parrent.menuCtx['visit'](self, e.pageX , e.pageY );
         }
       })
-//    @endif
       .css({'position':'absolute'})
       .css('top', this.options['pageY'])
       .css('left', this.options['pageX']);
 
-//    @ifdef EDITOR
       // Hide element resize points which was
       // added on the previous step
       $('#' + this.euid +'_Border ' + ".ui-resizable-handle").css({'visibility':'hidden'});
 
-//    @endif
       // You need to select element to start DND
       $('#'+this.euid)
       .click(self,function(event) {
@@ -2032,13 +2024,12 @@ dm['at'] = dm.at; //automated testing
           $bw.css({left:'-=' + bw, top:'-='+bw});
         }
 
-
         // Show "REFERENCE" in editable mode only
         if (!element.parrent.options.editable
-          && element.options.subdiagrams) {
+          && (element.options.subdiagrams || element.options.references.length != 0)) {
           $('#' + this.id +'_REF').css({'visibility':'visible'});
         }
-//      @ifdef EDITOR
+    
         // Show the  menu if element was selected
         if (element.parrent.menuIcon
           && element.options.selected
@@ -2046,7 +2037,7 @@ dm['at'] = dm.at; //automated testing
           element.parrent.menuIcon['Show'](this.id, element);
           $('#' + this.id +'_REF').css({'visibility':'visible'});
         }
-//      @endif
+    
         //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
       })
       .mouseleave(self, function (event){
@@ -2066,7 +2057,7 @@ dm['at'] = dm.at; //automated testing
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
       })
-      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='/images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
+      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
       .append(subDiagramRefs);
 
       // Hide references by default and
@@ -2261,7 +2252,7 @@ dm['at'] = dm.at; //automated testing
       }
       this.options[ key ] = value;
     },
-//  @ifdef EDITOR
+    
     
     onDragStart: function(ui, skipDropped) {
 
@@ -2354,7 +2345,6 @@ dm['at'] = dm.at; //automated testing
       .appendTo("#" + this.parrent.euid)
       .css("left", opt.left)
       .css("top", opt.top)
-//    @ifdef EDITOR
       .draggable({
         start: function(event, ui) {
         $(this).data('startPosition', ui.helper.position());
@@ -2390,7 +2380,7 @@ dm['at'] = dm.at; //automated testing
         self.parrent.draw();
         for (var i in self.labels) 
           $(self.labels[i]).removeClass("us-connector-hover")});
-//    @endif
+    
       if (opt.idx) {
         // add label to the special place in array
         this.labels.splice(opt.idx, 0, $item);
@@ -2413,8 +2403,6 @@ dm['at'] = dm.at; //automated testing
     moveLabel: function(opt) {
       this.labels[opt.idx].css({left:opt.left, top:opt.top});
     },
-//  @ifdef EDITOR
-    
     getDescription: function() {
       this.options['fromId'] = this.from;
       this.options['toId'] = this.toId;
@@ -2616,8 +2604,6 @@ dm['at'] = dm.at; //automated testing
       }
       return false;          
     },
-//  @ifdef EDITOR
-    
     canRemovePoint: function(p1,p2,rp) {
       if ((p1 == undefined)
           || (p2 == undefined)) {
@@ -2808,10 +2794,8 @@ dm['at'] = dm.at; //automated testing
         return newpoints;
       }
       else {
-//      @ifdef EDITOR
         scrollTop = $("#" + this.parrent.euid).scrollTop();
         scrollLeft = $("#" + this.parrent.euid).scrollLeft();
-//      @endif
         var lln = epoints.length -1;
         var x1 = this._getRValue(p1.left + p11.left, epoints[0][0] - scrollLeft, $('#'+ fromId).width()) ;
         var y1 = this._getRValue(p1.top + p11.top, epoints[0][1] - scrollTop, $('#'+ fromId).height()) ;
@@ -2837,8 +2821,6 @@ dm['at'] = dm.at; //automated testing
         return newpoints;
       }
     },
-//  @ifdef EDITOR
-    
     onDragStart: function(ui) {
       if (this.epoints.length > 0) {
 

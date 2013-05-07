@@ -146,10 +146,11 @@ dm.base.diagram("cs.llsequence", dm.cs.connector, {
          return this.parrent.elements[this.toId].getAutocomplete();
         return null;
     },
-    'addLable': function(text, x, y) {
+    'addLabel': function(opt) {
       var self = this;
-      this.lables.push($("<div style=\"position:absolute;z-index:99999;\">" + text + "</div>").appendTo("#" + this.parrent.euid)
-      .css("left", x).css("top", y)
+      this.labels.push($("<div style=\"position:absolute;z-index:99999;\">" + opt.text + "</div>").appendTo("#" + this.parrent.euid)
+      .css("left", opt.left)
+      .css("top", opt.top)
       .draggable().editable({onAutocomplete:function() { return self.getAutocomplete() }}));
     },
     'canRemovePoint': function() {

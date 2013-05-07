@@ -81,6 +81,7 @@
           }
           });
         },
+		activePath: "/",
         //
         // Get active tree path
         //
@@ -261,11 +262,24 @@
           // TODO: REMOVE THIS COPY_PAST OF tree.onActivate !!!
           if (!node.data.isFolder) {
             if ($("#tab-" + node.data.key).length == 0) {
-              if ('diagramclass' == node.data.addClass)
-                dm.dm.fw.loadDiagram({viewid:self.euid, node:node, title:node.data.title, absPath:node.getAbsolutePath()}); // Create tab first and load content later
+              var title = node.data.title;
+              var contentType = dm.dm.fw.getContentType(title);
 
-              if ('cfile' == node.data.addClass)
-                dm.dm.fw.loadCode(urlArg + '/openfile?path=' + node.getAbsolutePath(), node.data.title);
+              if (contentType != undefined) {
+                var params =
+                    {
+					  viewid:self.euid,
+					  sha:node.data.sha,
+					  title:node.data.title,
+					  absPath:node.getAbsolutePath(),
+					  branch:self.activeBranch,
+					  isOwner:true,
+					  repoId:self.activeRepo,
+					  contentType:contentType,
+					  editable:false
+					};
+					dm.dm.fw.loadContent(params);
+		      }
             }
           }
         },
@@ -322,14 +336,25 @@
             {
               title:'Open',
               click: function(element) {
-                var name = element.option("name");
-                if ($("#tab-" + name).length == 0) {
-                  $("#tabs").tabs('add', '#tab-' + name, name);
-                  if (element.options.filepath) {
-                    $("#tab-" + name).load('http://localhost:8000/editor/?key=' + element.options.filepath.substr(0, element.options.filepath.length - name.length - 1) +'&project=storageman');
-                  }
+                if (element.options.filepath) {
+                  var title = element.options.filepath.split("/").pop();
+                  var contentType = dm.dm.fw.getContentType(title);
+
+				  if (contentType != undefined) {
+					var params =
+						{
+						  viewid:self.euid,
+						  title:title,
+						  absPath:element.options.filepath,
+						  branch:self.activeBranch,
+						  isOwner:true,
+						  repoId:self.activeRepo,
+						  contentType:contentType,
+						  editable:false
+						};
+						dm.dm.fw.loadContent(params);
+				  }
                 }
-                $("#tabs").tabs('select', '#tab-' + element.option("name"));
               },
               klass: "menu-item-1" // a custom css class for this menu item (usable for styling)
             },
@@ -361,8 +386,7 @@
                 }
 
               var fpath = element.options.filepath;
-                fpath = (fpath) ? fpath.substr(0, fpath.length - element.options.name.length - 1):"";
-                fpath = (fpath) ? "&path="+fpath : "";
+              fpath = (fpath) ? "&path="+fpath : "";
                 // Check if the information about file available
               $.ajax({
                 url: urlArg + "/db/class/methods?key="+ element.getName() + fpath,
@@ -400,32 +424,49 @@
                   innerHtml = "<div id='vp_main_menu2'><div><div class='scrollable' style='scroll:auto;'>\
                     <table id='SearchResultTable' class='tablesorter'><thead><tr class='header'><th>Visibility</th><th>Class</th><th>Return type</th><th>Arguments</th></tr></thead><tbody>\
                     " + innerHtml + "</tbody></table></div>" +
-                    "<p><label>Search result: </label><input type='text' maxlength='30' pattern='[a-zA-Z ]{5,}' name='name'></p>" +
-                    "<p style='margin: 10px 0; align: middle;'><button class='finish' type='submit' style='background-color:#7FAEFF;cursor:default;'>Finish</button>&nbsp;&nbsp;&nbsp;" +
-                    "<button type='submit' class='close'>Cancel</button></p>" +
+                    "<p><input type='checkbox' id='us-public' value='public' />Public\
+					 <input type='checkbox' id='us-private' value='private' />Private\
+					 <input type='checkbox' id='us-protected' value='protected' />Protected</br>\
+					 <input type='checkbox' name='us-static' value='static' />Static\
+					 <input type='checkbox' name='us-not-static' value='not-static' />Not Static</br>\
+					 <input type='checkbox' name='us-constructor' value='constructor' />Constructor\
+					 <input type='checkbox' name='us-destructor' value='destructor' />Destructor</br>\
+					 <br>\
+					 <input type='checkbox' name='us-filter-arguments' value='arguments' />Show arguments ?</br>\
+ 					<label>Name filter: </label><input id='us-filter-methods' type='text' maxlength='30' pattern='[a-zA-Z ]{5,}' name='name'></p>" +
                     "</div></div>";
 
                     $('body').append(innerHtml);
-                    //$("#vp_main_menu2").draggable({cancel: '.scrollable'});
+
                     $("#vp_main_menu2").dialog({
                         autoOpen: true,
                         width: 550,
                         modal: true,
                         buttons: {
                           "Accept": function() {
-                              var reg = $("#vp_main_menu2 input").val();
+                              var reg = $("#vp_main_menu2 input#us-filter-methods").val();
+							  var showArguments = $('#vp_main_menu2 input#us-filter-arguments').attr('checked');
+							  var attributesFlag = 0x0000;
+							   attributesFlag |= ($('#vp_main_menu2 input#us-public').attr('checked') ? 0x0004 : 0x0000);
+							   attributesFlag |= ($('#vp_main_menu2 input#us-private').attr('checked') ? 0x0001 : 0x0000);
+							   attributesFlag |= ($('#vp_main_menu2 input#us-protected').attr('checked') ? 0x0002 : 0x0000);
                               $.each(data, function(k, d) {
-                                if (reg != '') {
-                                  if (d.md.match(reg))
-                                    element.addOperation({text:mapVisibility(parseInt(d.attr), d.attr, true) + " " + d.ret + " " +d.md + "("+ d.args +")"});
-                                } else {
-                                  element.addOperation({text:mapVisibility(parseInt(d.attr), d.attr, true) + " " + d.ret + " " +d.md + "("+ d.args +")"});
-                                }
+							    // Visibility filter
+							    if (attributesFlag & parseInt(d.attr)) {
+                                  if (reg != '') {
+                                    if (d.md.match(reg))
+                                      element.addOperation({text:mapVisibility(parseInt(d.attr), d.attr, true) + " " + d.ret + " " +d.md + "("+ (showArguments ? d.args : "") +")"});
+                                  } else {
+                                    element.addOperation({text:mapVisibility(parseInt(d.attr), d.attr, true) + " " + d.ret + " " +d.md + "("+ (showArguments ? d.args : "") +")"});
+                                  }
+								}
                               });
-
+							  $( this ).dialog( "close" );
+							  $( this ).remove();
                           },
                           Cancel: function() {
                             $( this ).dialog( "close" );
+							$( this ).remove();
                           }
                         },
                         close: function() {
@@ -434,7 +475,14 @@
 
                     $("#SearchResultTable").tablesorter({sortList: [[0,0], [1,0]]});
                   }
-                }
+
+                  else {
+				    element.options.methods = new Array();
+					$.each(data, function(k, d) {
+					  element.options.methods.push(d.md + "()");
+                    });
+				  }
+  			    }
               }
               ).fail(function(x,y,z) {alert("FAILED TO LOAD !!!" + x + y + z);}); // getJSON
               },
@@ -443,107 +491,111 @@
             {
               title:'Get base class',
               click: function(element){
-          if (!element.options.viewid
-              || !element.options.filepath) {
-            return;
-          }
-          var fpath = element.options.filepath;
-          fpath = (fpath) ? fpath.substr(0, fpath.length - element.options.name.length - 1):"";
-          fpath = (fpath) ? "&path="+fpath : "";
-          $.ajax({
-            url: urlArg + "/db/class/base/?key="+ element.getName() + fpath,
-            dataType: "jsonp",
-            success : function(data) {
-            var items = [];
-            var e2 = $.extend({}, element.parrent.menuIcon.dmb.getElementById("Class"), {'viewid':element.options.viewid});
-            if (e2 != undefined) {
-              $.each(data,function(k, d) {
-                $.each(d, function(key, val) {
-                  e2.pageX = 200;
-                  e2.pageY = 200;
-                  e2.name = val;
-                  var ename = element.parrent.Element(e2.type, e2);
-                  //menuBuilder.loader.Connector("generalization", {selected: element.id, temporary: ename});
-                });
-              });
-            }
-          }
-          });
-        },
+				  if (!element.options.viewid
+					  || !element.options.filepath) {
+					return;
+				  }
+				  var fpath = element.options.filepath;
+				  fpath = (fpath) ? "&path="+fpath : "";
+				  $.ajax({
+					url: urlArg + "/db/class/base/?key="+ element.getName() + fpath,
+					dataType: "jsonp",
+					success : function(data) {
+					var items = [];
+					var e2 = $.extend({}, element.parrent.menuIcon.dmb.getElementById("Class"), {'viewid':element.options.viewid});
+					if (e2 != undefined) {
+					  $.each(data,function(k, d) {
+						$.each(d, function(key, val) {
+						  e2.pageX = 200;
+						  e2.pageY = 200;
+						  e2.name = val;
+						  e2.filepath = val['filepath'];
+						  var ename = element.parrent.Element(e2.type, e2);
+						  //menuBuilder.loader.Connector("generalization", {selected: element.id, temporary: ename});
+						});
+					  });
+					}
+				  }
+				  });
+			  },
               klass: "second-menu-item"
             },
             {
              title:'Get realization class',
              click: function(element){
-          if (!element.options.viewid) {
-            return;
-          }
-          var fpath = element.options.filepath;
-          fpath = (fpath) ? fpath.substr(0, fpath.length - element.options.name.length - 1):"";
-          fpath = (fpath) ? "&path="+fpath : "";
-          $.ajax({
-            url: urlArg +"/db/class/realization?key="+ element.getName() + fpath,
-            dataType: "jsonp",
-            success:function(data) {
-            var items = [];
-            var e2 = $.extend({}, element.parrent.menuIcon.dmb.getElementById("Class"), {'viewid':element.options.viewid});
-            if (e2 != undefined) {
+				  if (!element.options.viewid) {
+					return;
+				  }
+				  var fpath = element.options.filepath;
+				  fpath = (fpath) ? "&path="+fpath : "";
+				  $.ajax({
+					url: urlArg +"/db/class/realization?key="+ element.getName() + fpath,
+					dataType: "jsonp",
+					success:function(data) {
+					var items = [];
+					var e2 = $.extend({}, element.parrent.menuIcon.dmb.getElementById("Class"), {'viewid':element.options.viewid});
+					if (e2 != undefined) {
 
-              var items = [];
+					  var items = [];
 
-              $.each(data, function(k, d) {
-                items.push('<tr><td>' + d['filepath'] + '</td><td>' + d['title'] + '</td></tr>');
-              }); 
+					  $.each(data, function(k, d) {
+						items.push('<tr><td>' + d['filepath'] + '</td><td>' + d['title'] + '</td></tr>');
+					  }); 
 
-              var innerHtml = items.join('');
-              innerHtml = "<div id='vp_main_menu2'><div><div class='scrollable' style='scroll:auto;'>\
-                <table id='SearchResultTable' class='tablesorter'><thead><tr class='header'><th>Path</th><th>Class</th></tr></thead><tbody>\
-                " + innerHtml + "</tbody></table></div>" +
-                "<p><label>Search result: </label><input type='text' maxlength='30' pattern='[a-zA-Z ]{5,}' name='name'></p>" +
-                "<p style='margin: 10px 0; align: middle;'><button class='finish' type='submit' style='background-color:#7FAEFF;cursor:default;'>Finish</button>&nbsp;&nbsp;&nbsp;" +
-                "<button type='submit' class='close'>Cancel</button></p>" +
-                "</div></div>";
+					  var innerHtml = items.join('');
+					  innerHtml = "<div id='vp_main_menu2'><div><div class='scrollable' style='scroll:auto;'>\
+						<table id='SearchResultTable' class='tablesorter'><thead><tr class='header'><th>Path</th><th>Class</th></tr></thead><tbody>\
+						" + innerHtml + "</tbody></table></div>" +
+						"<p><label>Search result: </label><input type='text' maxlength='30' pattern='[a-zA-Z ]{5,}' name='name'></p>" +
+						"</div></div>";
 
 
 
-                $('body').append(innerHtml);
-                $("#vp_main_menu2").draggable({cancel: '.scrollable'});
-                $("#vp_main_menu2").overlay({
-                  // custom top position
-                  top: 150,
-                  // some mask tweaks suitable for facebox-looking dialogs
-                  mask: {
-                  // you might also consider a "transparent" color for the mask
-                  color: '#',
-                  // load mask a little faster
-                  loadSpeed: 200,
-                  // very transparent
-                  opacity: 0.5
-                },
-                // disable this for modal dialog-type of overlayoverlays
-                closeOnClick: true,
-                // load it immediately after the construction
-                load: true
-                });
-                $("#vp_main_menu2 .close").click(function() { $("#vp_main_menu2").remove();});
-                $("#vp_main_menu2 .finish").click(function() { $("#vp_main_menu2").remove();});
-                $("#SearchResultTable").tablesorter({sortList: [[0,0], [1,0]]});
-                $.each(data,function(k, d) {
+  					  $('body').append(innerHtml);
+                      $("#vp_main_menu2").dialog({
+                        autoOpen: true,
+                        width: 550,
+                        modal: true,
+                        buttons: {
+                          "Accept": function() {
+                              var reg = $("#vp_main_menu2 input").val();
+                              var posInc = 200;
+							  $.each(data,function(k, d) {
+                                if (reg == '' || d.md.match(reg)) {
+								  e2.pageX = posInc;
+								  e2.pageY = 200;
+								  posInc+=200;
+								  e2.left = e2.pageX;
+								  e2.top = e2.pageY;
+								  e2.name = d['title'];
+								  e2.filepath = d['filepath'];
 
-                  e2.pageX = 200;
-                  e2.pageY = 200;
-                  e2.name = d['title'];
-                  e2.filename = d['filename'];
+								  var ename = element.parrent.Element(e2.type, e2, function(loadedElement) {
+								    // Create the connector
+								    element.parrent.Connector("generalization", {fromId: loadedElement.euid, toId: element.euid});
+								  }
+								  );
+								}
+							  });
+							  $( this ).dialog( "close" );
+							  $( this ).remove();
+                          },
+                          Cancel: function() {
+                            $( this ).dialog( "close" );
+							$( this ).remove();
+                          }
+                        },
+                        close: function() {
+                        }
+                    }); // $.dialog({});
 
-                  var ename = element.parrent.Element(e2.type, e2);
-                  //    menuBuilder.loader.Connector("generalization", {selected: ename, temporary: element.euid});
-                });
-            }
-          }
-          }); // ajax
-        },
+    				$("#SearchResultTable").tablesorter({sortList: [[0,0], [1,0]]});
+					}
+				  }
+				}); // ajax
+			 },
              klass: "second-menu-item"
-            },
+             },
             {
               title:'Get nested class',
               click: function(element){
@@ -631,8 +683,15 @@
           onActivate: function(node) {
             // Nothing to load for folder
             if (node.data.isFolder) {
+			    self.active =  node.getAbsolutePath();
                 return;
-            }
+            } else {
+			  var par = node.parent;
+			  while (!par.data.isFolder) {
+			    par = par.parent;
+			  }
+			  self.active =  par ? par.getAbsolutePath() : "/";
+			}
 
             var title = node.data.title;
             var contentType = dm.dm.fw.getContentType(title);
