@@ -28,9 +28,8 @@ BUT there are several exceptions exists:<br>
 4. dm/ms/ds/common.js : base menu for diagrams etc...
 </pre>      
 
-<div id="packageDiagram" class="pack-diagram" repo="umlsynco/umlsync" path="/diagrammer/docs/dm-diagrams/PackageStructure.umlsync">
-UMLSync package structure diagram. 
-</div>
+<br>
+![Diagram:](http://umlsync.org/github?path=./dm-diagrams/PackageStructure.umlsync "Class.")
 <br>
 
 *dm.base.loader* is responsible for loading and creating diagrams, elements, connectors and diagram menus.

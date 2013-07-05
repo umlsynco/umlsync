@@ -6,10 +6,8 @@ UML Diagrammer framework: Hierarchy of elements
 
 Hierarchy of elements based on dm.base.diagram() method which implements elements inheritance.
 
-<div id="HierarhyOfClasses" class="pack-diagram" repo="umlsynco/umlsync" path="/diagrammer/docs/dm-diagrams/HierarchyOfElements.umlsync">
-Hierarchy of elements. 
-</div>
-
+<br>
+![Diagram:](http://umlsync.org/github?path=./dm-diagrams/HierarchyOfElements.umlsync "Class.")
 <br>
 
 Inheritance implementation use overwrite method for options and methods. Thus each method which available in object prototype is VIRTUAL and could be replaced.

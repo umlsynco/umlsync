@@ -825,7 +825,7 @@ Version:
 
       if (params.absPath) {
         // Save an empty diagram. It could be new diagram or 
-        self.views[params.viewid].view.saveContent(params, "{baseType:"+baseType+",type:"+type+"}", true);
+        self.views[params.viewid].view.saveContent(params, "{baseType:'"+baseType+"',type:'"+type+"'}", true);
         // Add content to cache
         self.contents[tabname] = params;
       }

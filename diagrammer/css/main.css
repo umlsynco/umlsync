@@ -1236,3 +1236,14 @@ div.color-picker {
   max-height:300px;
   overflow:scroll;
 }
+
+
+#us-eclipse:hover {
+  color:white;
+  background:none repeat scroll 0 0 #555555;
+}
+
+#us-github:hover {
+  color:white;
+  background:none repeat scroll 0 0 #555555;
+}

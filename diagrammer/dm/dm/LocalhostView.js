@@ -198,21 +198,33 @@
             }
           }
 
-          $.ajax({
-            url: urlArg + '/open?path='+ fullPath,
-            dataType: 'jsonp',
-            success: function(x,y,z) {
-               if (x.data != undefined) {
-                 decodeMDContent(x,y,z,function(data) { callback.success(null, data)});
-               }
-               else {
-                 callback.success(y, x);
-               }
-            },
-            error:function(x,y,z) {
-               callback.error(x);
-            }
-          });
+		  if (params.contentType == "md" || params.contentType == "dm") {
+			  $.ajax({
+				url: urlArg + '/open?path='+ fullPath,
+				dataType: 'jsonp',
+				success: function(x,y,z) {
+				   if (x.data != undefined) {
+					 decodeMDContent(x,y,z,function(data) { callback.success(null, data)});
+				   }
+				   else {
+					 callback.success(y, x);
+				   }
+				},
+				error:function(x,y,z) {
+				   callback.error(x);
+				}
+			  });
+		  }
+		  else {  // Open file in Eclipse
+			  $.ajax({
+				url: urlArg + '/file?path='+ fullPath,
+				dataType: 'jsonp',
+				success: function(x,y,z) {
+				},
+				error:function(x,y,z) {
+				}
+			  });
+	      }
         },
         //
         // Save content to eclipse plugin
@@ -278,7 +290,12 @@
 					  contentType:contentType,
 					  editable:false
 					};
-					dm.dm.fw.loadContent(params);
+					if (params.contentType == "md" || params.contentType == "dm") {
+					  dm.dm.fw.loadContent(params);
+					}
+					else {
+					  self.loadContent(params);
+					}
 		      }
             }
           }
@@ -352,7 +369,12 @@
 						  contentType:contentType,
 						  editable:false
 						};
-						dm.dm.fw.loadContent(params);
+				        if (params.contentType == "md" || params.contentType == "dm") {
+						  dm.dm.fw.loadContent(params);
+						}
+						else {
+						  self.loadContent(params);
+						}
 				  }
                 }
               },
@@ -378,7 +400,7 @@
                     dataType: "jsonp",
                     success: function(data) {
                       if (data && data.filepath) {
-                        element.options.filepath = data.filepath + "/" + data.title;
+                        element.options.filepath = data.filepath;
                       }
                     }
                   }).fail(function(x,y,z) {alert("FAILED TO LOAD !!!" + x + y + z);});
@@ -710,7 +732,12 @@
                   editable:false
                 };
 
-                dm.dm.fw.loadContent(params);
+	           if (params.contentType == "md" || params.contentType == "dm") {
+                  dm.dm.fw.loadContent(params);
+				}
+				else {
+				  self.loadContent(params);
+				}
             }
           }, // onActivate
           onCreate: function(node, span){
