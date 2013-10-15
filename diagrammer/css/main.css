@@ -18,6 +18,10 @@ a.editablefield  {
   text-decoration: none;
 }
 
+a.reference {
+  float:left;
+}
+
 a {
   text-decoration: none;
 }

@@ -8,8 +8,6 @@
  * Last Modified Date: 2013-01-24
  *
  */
-
-//@aspect
 (function($, dm, undefined) {
 
   dm.ms['dg'] = function(handler, options) {
@@ -63,7 +61,7 @@
     var innerHtml = '<form id="us-dialog-newdiagram">\
       <fieldset><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div>\
       <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p><br><p><span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
-	  </span>\
+      </span>\
       </p></fieldset></form>';
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
       $(innerHtml).appendTo("#new-diagram-dialog");
@@ -486,10 +484,10 @@
 
     var innerHtml = '<div id="us-dialog-confirm" title="'+descr.title+'">\
                      <p>\
-                       <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;">\
-                       </span>\
-                       '+descr.description+'</p>\
-                    </div>';
+                     <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;">\
+                     </span>\
+                     '+descr.description+'</p>\
+                     </div>';
     var self = this;
     $(innerHtml).appendTo('body');
 
@@ -504,5 +502,4 @@
     return $dialog.dialog('open');
   },
   };
-//@aspect
 })(jQuery, dm);

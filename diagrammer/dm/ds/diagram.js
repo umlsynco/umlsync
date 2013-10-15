@@ -5,7 +5,7 @@ Author:
   Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
 
 Copyright:
-  Copyright (c) 2012 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
+  Copyright (c) 2012-13 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com). All rights reserved.
 
 URL:
   umlsync.org/about
@@ -2131,21 +2131,27 @@ dm['at'] = dm.at; //automated testing
     },
   
     'addReference': function(opt) {
-	   var self = this;
-	   var old_attr;
-	   if (opt.id) {
-	     old_attr = opt.id;
-	   } else {
-	     old_attr = 'reference-'+this.refN;
-	     ++this.refN;
-	   }
+      var self = this;
+      var old_attr;
+      if (opt.id) {
+        old_attr = opt.id;
+      } else {
+        old_attr = 'reference-'+this.refN;
+        ++this.refN;
+      }
 
        self.options.references.push(opt.text);
           
        var $ch =
-         $("<li id='reference'><a id='reference-"+self.refN+"' class='editablefield reference'>" + opt.text + "</a></li>")
-            .appendTo("#" + self.euid + " div.us-references ul")
-            .children("A")
+         $("<li id='reference'><a id='reference-"+self.refN+"' class='editablefield reference'>" + opt.text + "</a>" + 
+           "<a class='ui-corner-all'><span class='ui-test ui-icon ui-icon-close' style='float:right;'></span></a></li>")
+            .appendTo("#" + self.euid + " div.us-references ul");
+
+         $ch.children("A.ui-icon-close").bind("click", function(event) {
+             alert("drop this reference !!!");
+         });
+
+         $ch = $ch.children("A.reference")
             .bind("click", self, function(event) {
               var element = event.data;
               if (!element.parrent.options.editable) {
@@ -2154,16 +2160,17 @@ dm['at'] = dm.at; //automated testing
             });
 
 
+
        // Common approach for editable
        dm.base.editable(this, $ch, true);
        var hg = $ch.height();
 
-	   this.parrent.opman.startTransaction();
-	   this.parrent.opman.reportShort("+reference",
+       this.parrent.opman.startTransaction();
+       this.parrent.opman.reportShort("+reference",
                                       this.euid,
-									  {idx:$("#" + this.euid + " .reference").length-1,
-									   text:opt.text,
-									   id: old_attr});
+                                      {idx:$("#" + this.euid + " .reference").length-1,
+                                      text:opt.text,
+                                      id: old_attr});
        this.parrent.opman.stopTransaction();
     },
     'rmReference': function(opt) {
@@ -2176,9 +2183,9 @@ dm['at'] = dm.at; //automated testing
          this.options.reference.splice(idx, 1);
          
          // Report reference.
-	     this.parrent.opman.reportShort("-reference",
-	                                  this.euid,
-									  {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
+         this.parrent.opman.reportShort("-reference",
+                                        this.euid,
+                                        {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
          // It is necessary to remove li object
          // but selector refs to li>a
          $(opt.selector).parent().remove();
@@ -2189,7 +2196,7 @@ dm['at'] = dm.at; //automated testing
          $("#"+this.euid+" .us-class-reference ul li:eq(" + opt.idx + ")").remove();
        }
 
-	},
+    },
     _setOption: function( key, value ) {
       var old_val  = this.options[ key ];
 
@@ -2875,6 +2882,4 @@ dm['at'] = dm.at; //automated testing
     }
 
     });
-    
-//  @aspect
 })(jQuery, dm);
