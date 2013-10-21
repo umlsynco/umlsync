@@ -2147,7 +2147,7 @@ dm['at'] = dm.at; //automated testing
            "<a class='ui-corner-all'><span class='ui-test ui-icon ui-icon-close' style='float:right;'></span></a></li>")
             .appendTo("#" + self.euid + " div.us-references ul");
 
-         $ch.children("A.ui-icon-close").bind("click", function(event) {
+         $ch.children("A").children("span.ui-icon-close").bind("click", function(event) {
              alert("drop this reference !!!");
          });
 
