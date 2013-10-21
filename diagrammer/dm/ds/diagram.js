@@ -911,7 +911,9 @@ dm['at'] = dm.at; //automated testing
         y = dm.at.mouse.y;
       }
 
-      diag.startConnectorTransform(x,y);
+	  if (e.which != 3) {
+        diag.startConnectorTransform(x,y);
+	  }
 
       if ((diag.selectedconntector)
           && (!dm['dm']['fw']['CtrlDown'])) {
