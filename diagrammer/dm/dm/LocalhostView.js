@@ -198,7 +198,7 @@
             }
           }
 
-		  if (params.contentType == "md" || params.contentType == "dm") {
+		  if (params.contentType == "md" || params.contentType == "dm" || params.contentType == "code") {
 			  $.ajax({
 				url: urlArg + '/open?path='+ fullPath,
 				dataType: 'jsonp',
@@ -290,12 +290,12 @@
 					  contentType:contentType,
 					  editable:false
 					};
-					if (params.contentType == "md" || params.contentType == "dm") {
+//					if (params.contentType == "md" || params.contentType == "dm") {
 					  dm.dm.fw.loadContent(params);
-					}
+/*					}
 					else {
 					  self.loadContent(params);
-					}
+					}*/
 		      }
             }
           }
@@ -732,7 +732,7 @@
                   editable:false
                 };
 
-	           if (params.contentType == "md" || params.contentType == "dm") {
+	           if (params.contentType == "md" || params.contentType == "dm"|| params.contentType == "code") {
                   dm.dm.fw.loadContent(params);
 				}
 				else {

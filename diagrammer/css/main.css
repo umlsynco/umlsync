@@ -1214,6 +1214,10 @@ span.cfolder span.dynatree-icon {
   text-decoration: none;
 }
 
+.context-menu-3 LI A:hover {
+  background-color: #97F7A1;
+}
+
 div.color-picker {
   z-index:1000000000000;
 }
