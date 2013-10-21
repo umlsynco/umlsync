@@ -2132,23 +2132,39 @@ dm['at'] = dm.at; //automated testing
   
     'addReference': function(opt) {
       var self = this;
+      
       var old_attr;
       if (opt.id) {
         old_attr = opt.id;
+        self.options.references.splice(opt.idx, 0, opt.text);
       } else {
         old_attr = 'reference-'+this.refN;
         ++this.refN;
+        self.options.references.push(opt.text);
       }
 
-       self.options.references.push(opt.text);
-          
-       var $ch =
-         $("<li id='reference'><a id='reference-"+self.refN+"' class='editablefield reference'>" + opt.text + "</a>" + 
-           "<a class='ui-corner-all'><span class='ui-test ui-icon ui-icon-close' style='float:right;'></span></a></li>")
-            .appendTo("#" + self.euid + " div.us-references ul");
+       var idx = (opt.idx == undefined) ? this.refN : opt.idx,
+         $ch =
+         $("<li id='reference'><a id='"+old_attr+"' class='editablefield reference'>" + opt.text + "</a>" + 
+           "<a class='ui-corner-all'><span class='ui-test ui-icon ui-icon-close' style='float:right;'></span></a></li>"),
+           $idx = $("#"+self.euid+" .us-references ul li:eq(" + idx + ")");
 
-         $ch.children("A").children("span.ui-icon-close").bind("click", function(event) {
-             alert("drop this reference !!!");
+         // if the position for insertion was found
+         if ($idx.length == 1) {
+           $ch = $ch.insertAfter($idx);
+         }
+         else {
+           $ch = $ch.appendTo("#" + self.euid + " div.us-references ul");
+         }
+
+         $ch.children("A").children("span.ui-icon-close").bind("click", self, function(event) {
+              var element = event.data;
+              if (element.parrent.options.editable) {
+                var nextid = $(this).parent().parent().children("a.reference").attr("id");
+                element.rmReference({selector:"#" + element.euid + " #" + nextid});
+                alert("Drop: " + "#" + element.euid + " #" + nextid);
+              }
+
          });
 
          $ch = $ch.children("A.reference")
@@ -2163,24 +2179,28 @@ dm['at'] = dm.at; //automated testing
 
        // Common approach for editable
        dm.base.editable(this, $ch, true);
-       var hg = $ch.height();
 
-       this.parrent.opman.startTransaction();
-       this.parrent.opman.reportShort("+reference",
-                                      this.euid,
-                                      {idx:$("#" + this.euid + " .reference").length-1,
-                                      text:opt.text,
-                                      id: old_attr});
-       this.parrent.opman.stopTransaction();
+       // Do not report operation if it was reported before
+       if (opt.idx == undefined) {
+         var hg = $ch.height();
+         this.parrent.opman.startTransaction();
+         this.parrent.opman.reportShort("+reference",
+                                        self.euid,
+                                        {idx:$("#" + this.euid + " .reference").length-1,
+                                        text:opt.text,
+                                        id: old_attr});
+         this.parrent.opman.stopTransaction();
+       }
     },
     'rmReference': function(opt) {
        // selector is path to ul>li>a object
        if (opt.selector) {
          var text = $(opt.selector).text();
-         var idx = $(opt.selector.split(" ")[0] + " li").index($(opt.selector).parent());
+         var idx = $(opt.selector.split(" ")[0] + " li").index($(opt.selector).parent())-1;
 
          // Update options
-         this.options.reference.splice(idx, 1);
+         // On the first line a "new reference" message
+         this.options.references.splice(idx, 1);
          
          // Report reference.
          this.parrent.opman.reportShort("-reference",
@@ -2193,7 +2213,9 @@ dm['at'] = dm.at; //automated testing
        else {
          // It is not necessary to report attribute
          // because this case happen on revert attribute only
-         $("#"+this.euid+" .us-class-reference ul li:eq(" + opt.idx + ")").remove();
+         var rm_idx = opt.idx +1;
+         this.options.references.splice(opt.idx, 1);
+         $("#"+this.euid+" .us-references ul li:eq(" + rm_idx + ")").remove();
        }
 
     },
