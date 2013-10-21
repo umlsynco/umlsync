@@ -179,11 +179,11 @@ Version:
           </div>\
           <div id="reponav"><span id="us-github">Github</span><span style="float:right;" id="us-eclipse">Eclipse</span></div>\
           <div id="toolbox"><ul style="list-style:none;">\
-          <li class="us-left" title="Commit changes"><img src="./images/commit.png" class="ui-icon"></li>\
-          <li class="us-left" title="Reload tree"><img src="./images/reload.png" class="ui-icon"></li>\
-          <li id="us-newdoc" title="New diagram"><img src="./images/newdoc.png" class="ui-icon"></li>\
-          <li id="us-revertdoc" title="Revert diagram"><img src="./images/revertdoc.png" class="ui-icon"></li>\
-          <li id="us-removedoc" title="Remove diagram"><img src="./images/deldoc.png" class="ui-icon"></li>\
+          <li class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
+          <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
+          <li id="us-newdoc" title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
+          <li id="us-revertdoc" title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
+          <li id="us-removedoc" title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
           </ul></div>\
           <div id="treetabs"></div>\
           </div>\
@@ -1731,7 +1731,7 @@ var text1 = $(this).val();
     _helperInitializeToolBox: function(Loader) {
       var fw=this;
       // Place for logo !!!
-      //$("body").append('<img src="./images/logo.png" style="position:fixed;top:0;left:0;"/>');
+      //$("body").append('<img src="/images/logo.png" style="position:fixed;top:0;left:0;"/>');
       $("body").append('<div id="context-toolbox" class="us-context-toolbox">\
           <select name="speedAa" id="speedAa" style="border: 1px solid #B3C7E1;width:60px;"></select>\
           <select name="borderWidth" id="borderWidth" style="border: 1px solid #B3C7E1;"></select>\

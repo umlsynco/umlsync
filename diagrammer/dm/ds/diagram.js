@@ -2057,7 +2057,7 @@ dm['at'] = dm.at; //automated testing
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
       })
-      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
+      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='/images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
       .append(subDiagramRefs);
 
       // Hide references by default and
