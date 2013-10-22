@@ -2060,6 +2060,7 @@ dm['at'] = dm.at; //automated testing
 
       })
       .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='/images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
+	  .parent()
       .append(subDiagramRefs);
 
       // Hide references by default and
@@ -2070,7 +2071,7 @@ dm['at'] = dm.at; //automated testing
         e.stopPropagation();
       });
       
-      $('#' + this.euid + " #reference-new a").editable({onSubmit:function(data){
+      $('#' + this.euid + "_Border #reference-new a").editable({onSubmit:function(data){
          if (data["current"] == data["previous"])
             return;
 
@@ -2092,15 +2093,17 @@ dm['at'] = dm.at; //automated testing
 
       //if (this.options['subdiagram'])
        {
-        $("img#" + this.euid + "_REF").attr('title', this.options['subdiagrams']).click(self, function(event) {
+        $("img#" + this.euid + "_REF")
+		.attr('title', this.options['subdiagrams'])
+		.click(self, function(event) {
           var element = event.data;
-          var notShown = $("#" + element.euid + " .us-references").css('display') == "none";
+          var isShown = $("#" + element.euid + " .us-references").css('display') == "none";
 
           // Hide all references on diagram
           $("#" + element.parrent.euid + " .us-references").hide();
 
           // open item if it was closed
-          if (notShown) {
+          if (!isShown) {
             var pos = $(this).position();
             $('#' + element.euid  + '_Border .us-references')
             .show()
@@ -2112,11 +2115,11 @@ dm['at'] = dm.at; //automated testing
 
       // enable editable fields
       // if this diagram is editable
-      dm.base.editable(this, $("#" + this.euid + " .editablefield"));
+      dm.base.editable(this, $("#" + this.euid + "_Border .editablefield"));
       
       // 
       if (!this.parrent.options['editable']) {
-        $("#" + this.euid + " .editablefield").editable("disable");
+        $("#" + this.euid + "_Border .editablefield").editable("disable");
       }
 
       if (this.options['color']) 
@@ -2149,22 +2152,21 @@ dm['at'] = dm.at; //automated testing
          $ch =
          $("<li id='reference'><a id='"+old_attr+"' class='editablefield reference'>" + opt.text + "</a>" + 
            "<a class='ui-corner-all'><span class='ui-test ui-icon ui-icon-close' style='float:right;'></span></a></li>"),
-           $idx = $("#"+self.euid+" .us-references ul li:eq(" + idx + ")");
+           $idx = $("#"+self.euid+"_Border .us-references ul li:eq(" + idx + ")");
 
          // if the position for insertion was found
          if ($idx.length == 1) {
            $ch = $ch.insertAfter($idx);
          }
          else {
-           $ch = $ch.appendTo("#" + self.euid + " div.us-references ul");
+           $ch = $ch.appendTo("#" + self.euid + "_Border div.us-references ul");
          }
 
          $ch.children("A").children("span.ui-icon-close").bind("click", self, function(event) {
               var element = event.data;
               if (element.parrent.options.editable) {
                 var nextid = $(this).parent().parent().children("a.reference").attr("id");
-                element.rmReference({selector:"#" + element.euid + " #" + nextid});
-                alert("Drop: " + "#" + element.euid + " #" + nextid);
+                element.rmReference({selector:"#" + element.euid + "_Border #" + nextid});
               }
 
          });
@@ -2188,7 +2190,7 @@ dm['at'] = dm.at; //automated testing
          this.parrent.opman.startTransaction();
          this.parrent.opman.reportShort("+reference",
                                         self.euid,
-                                        {idx:$("#" + this.euid + " .reference").length-1,
+                                        {idx:$("#" + this.euid + "_Border .reference").length-1,
                                         text:opt.text,
                                         id: old_attr});
          this.parrent.opman.stopTransaction();
@@ -2217,7 +2219,7 @@ dm['at'] = dm.at; //automated testing
          // because this case happen on revert attribute only
          var rm_idx = opt.idx +1;
          this.options.references.splice(opt.idx, 1);
-         $("#"+this.euid+" .us-references ul li:eq(" + rm_idx + ")").remove();
+         $("#"+this.euid+"_Border .us-references ul li:eq(" + rm_idx + ")").remove();
        }
 
     },
@@ -2232,9 +2234,9 @@ dm['at'] = dm.at; //automated testing
         .draggable("option", "disabled", !value);
 
         // Work-around for elements without editable fields
-        if ($("#" + this.euid + " .editablefield").length) {
-          $("#" + this.euid + " .editablefield").editable(value ? "enable":"disable");
-          $("#" + this.euid + " #reference-new").css("display", value ? "block":"none");//css("visibility", value ?  "visible":"hidden");
+        if ($("#" + this.euid + "_Border .editablefield").length) {
+          $("#" + this.euid + "_Border .editablefield").editable(value ? "enable":"disable");
+          $("#" + this.euid + "_Border #reference-new").css("display", value ? "block":"none");//css("visibility", value ?  "visible":"hidden");
         }
 
       } else if (key == "font-color") {
