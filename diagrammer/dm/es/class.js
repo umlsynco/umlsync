@@ -23,7 +23,6 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       return auxmap[aux] || aux;
     },
-//@ifdef EDITOR
     showContextMenu: function(selector, e) {
         var self = this,
             diag = this.parrent;
@@ -106,21 +105,22 @@ dm.base.diagram("es.class", dm['es']['element'], {
         e.preventDefault();  // prevent default context menu showing
     },
     'addOperation': function(opt) {
-	   if (this.options['aux'] == "Enumeration")
-	     return;
-	   var self = this;
-       var idx = opt.idx || this.opN;
+      if (this.options['aux'] == "Enumeration")
+        return;
+      var self = this;
+      var idx = (opt.idx == undefined) ? this.opN : opt.idx;
 
-       // Ctrl-Z/Y support
-	   var old_id;
-	   if (opt.id) {
-	     old_id = opt.id;
-         this.options.operations.splice(opt.idx, 0, opt.text);
-       } else {
-	    old_id  = ('operation-'+this.opN);
-		++this.opN;
+      // Ctrl-Z/Y support
+      var old_id;
+      if (opt.id) {
+        ld_id = opt.id;
+        this.options.operations.splice(opt.idx, 0, opt.text);
+      }
+      else {
+        old_id  = ('operation-'+this.opN);
+        ++this.opN;
         this.options.operations.push(opt.text);
-	   }
+      }
 
 
 
@@ -137,7 +137,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
        $op = $op.children("a");
 
-	   var hg = $op
+       var hg = $op
                  .bind('contextmenu', function(e) {
                     self.showContextMenu("#" + self.euid + " #" + this.id, e)
                  })
@@ -146,30 +146,30 @@ dm.base.diagram("es.class", dm['es']['element'], {
        dm.base.editable(this, $op, true);
 
        var h1 = $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh").height(),
-	       h2 = $("#" + this.euid + " .us-class-operations").height(),
-		   h3, h4;
-	   if (h1 > h2 ) {
-	     h3 = $("#" + this.euid + "_Border").height();
-		 $("#" + this.euid + "_Border").height("+="+ hg);
-	     $("#" + this.euid + " .us-class-operations").height("+=" + hg);
-		 h4 = $("#" + this.euid + "_Border").height();
-		 this.options.height = h4;
-		 this.options.height_o += hg;
-	   }
-	   
-	   this.parrent.opman.startTransaction();
-	   this.parrent.opman.reportShort("+operation",
-	                                  this.euid,
-									  {idx:$("#" + this.euid + " .operation").length-1, text:opt.text, id: old_id});
-	   if (h1 > h2 ) {
+           h2 = $("#" + this.euid + " .us-class-operations").height(),
+           h3, h4;
+       if (h1 > h2 ) {
+         h3 = $("#" + this.euid + "_Border").height();
+         $("#" + this.euid + "_Border").height("+="+ hg);
+         $("#" + this.euid + " .us-class-operations").height("+=" + hg);
+         h4 = $("#" + this.euid + "_Border").height();
+         this.options.height = h4;
+         this.options.height_o += hg;
+       }
+       
+       this.parrent.opman.startTransaction();
+       this.parrent.opman.reportShort("+operation",
+                                      this.euid,
+                                      {idx:$("#" + this.euid + " .operation").length-1, text:opt.text, id: old_id});
+       if (h1 > h2 ) {
          this.parrent.opman.reportShort("option",
-		                                this.euid,
-		 							    {height: h3},
-										{height: h4});
+                                        this.euid,
+                                         {height: h3},
+                                        {height: h4});
        }
        this.parrent.opman.stopTransaction();
     },
-	'rmOperation': function(opt) {
+    'rmOperation': function(opt) {
        // selector is path to ul>li>a object
        if (opt.selector) {
          var text = $(opt.selector).text();
@@ -179,9 +179,9 @@ dm.base.diagram("es.class", dm['es']['element'], {
          this.options.operations.splice(idx, 1);
 
          // Report operation.
-	     this.parrent.opman.reportShort("-operation",
-	                                  this.euid,
-									  {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
+         this.parrent.opman.reportShort("-operation",
+                                      this.euid,
+                                      {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
          // It is necessary to remove li object
          // but selector refs to li>a
          $(opt.selector).parent().remove();
@@ -194,31 +194,40 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
        // Refresh sortable after item removal
        $("#" + this.euid + " .us-class-operations .us-sortable").sortable("refresh");
-	},
-	'moveOperation': function(start, stop) {
-	  var s1 = $("#"+this.euid+" .us-class-operations ul li:eq(" + stop.idx + ")");
-	  var s2 = $("#"+this.euid+" .us-class-operations ul li:eq(" + start.idx + ")");
-	  if (stop.idx < start.idx) {
-	    s1.insertAfter(s2);
-	  } else {
-	    s1.insertBefore(s2);
-	  }
-	},
+    },
+    'moveOperation': function(start, stop) {
+      var s1 = $("#"+this.euid+" .us-class-operations ul li:eq(" + stop.idx + ")");
+      var s2 = $("#"+this.euid+" .us-class-operations ul li:eq(" + start.idx + ")");
+      if (stop.idx < start.idx) {
+        s1.insertAfter(s2);
+      } else {
+        s1.insertBefore(s2);
+      }
+    },
     'addAttribute': function(opt) {
-	   if (this.options['aux'] == "Interface")
-	     return;
-	   var self = this;
-	   var old_attr;
-	   if (opt.id) {
-	     old_attr = opt.id;
-	   } else {
-	     old_attr = 'attribute-'+this.atrN;
-	     this.atrN++;
-	   }
-	   
-       var $ch = $('<li id="attribute"><a id="'+ old_attr +'" class="editablefield attribute" >' + opt.text + '</a></li>')
-	   .appendTo("#" + this.euid + " .us-class-attributes .us-sortable")
-	   .children("a")
+       if (this.options['aux'] == "Interface")
+         return;
+       var self = this;
+       var old_attr;
+       if (opt.id) {
+         old_attr = opt.id;
+       } else {
+         old_attr = 'attribute-'+this.atrN;
+         ++this.atrN;
+       }
+       var idx = (opt.idx == undefined) ? this.opN : opt.idx;
+       var $ch = $('<li id="attribute"><a id="'+ old_attr +'" class="editablefield attribute" >' + opt.text + '</a></li>'),
+          $idx = $("#" + this.euid + " .us-class-attributes .us-sortable li:eq("+idx+")");
+       
+       // if index not found
+       if ($idx.length == 1) {
+         $ch = $ch.insertAfter($idx);
+       }
+       else {
+         $ch = $ch.appendTo("#" + this.euid + " .us-class-attributes .us-sortable");
+       }
+
+       $ch.children("a")
        .bind('contextmenu', function(e) {
          self.showContextMenu("#" + self.euid + " #" + this.id, e)
        });
@@ -226,34 +235,34 @@ dm.base.diagram("es.class", dm['es']['element'], {
        // Common approach for editable
        dm.base.editable(this, $ch, true);
        var hg = $ch.height();
-	   
+       
 
        var h1 = $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh").height(),
-	       h2 = $("#" + this.euid + " .us-class-attributes").height(),
-		   h3, h4;
+           h2 = $("#" + this.euid + " .us-class-attributes").height(),
+           h3, h4;
 
-	   if (h1 > h2) {
-	     h3 = $("#" + this.euid + "_Border .us-class-attributes").height();
+       if (h1 > h2) {
+         h3 = $("#" + this.euid + "_Border .us-class-attributes").height();
 
-		 $("#" + this.euid + "_Border").height("+="+ hg);
-	     $("#" + this.euid + " .us-class-attributes").height("+=" + hg);
+         $("#" + this.euid + "_Border").height("+="+ hg);
+         $("#" + this.euid + " .us-class-attributes").height("+=" + hg);
 
-		 h4 = $("#" + this.euid + "_Border .us-class-attributes").height();
-		 this.options.height_a = h4;
-		 this.options.height = $("#" + this.euid + "_Border").height();
-	   }
+         h4 = $("#" + this.euid + "_Border .us-class-attributes").height();
+         this.options.height_a = h4;
+         this.options.height = $("#" + this.euid + "_Border").height();
+       }
 
-	   this.parrent.opman.startTransaction();
-	   this.parrent.opman.reportShort("+attribute",
+       this.parrent.opman.startTransaction();
+       this.parrent.opman.reportShort("+attribute",
                                       this.euid,
-									  {idx:$("#" + this.euid + " .attribute").length-1,
-									   text:opt.text,
-									   id: old_attr});
-	   if (h1 > h2 ) {
+                                      {idx:$("#" + this.euid + " .attribute").length-1,
+                                       text:opt.text,
+                                       id: old_attr});
+       if (h1 > h2 ) {
          this.parrent.opman.reportShort("option",
-		                                this.euid,
-		 							    {height_a: h3},
-										{height_a: h4});
+                                        this.euid,
+                                        {height_a: h3},
+                                        {height_a: h4});
        }
        this.parrent.opman.stopTransaction();
     },
@@ -267,9 +276,9 @@ dm.base.diagram("es.class", dm['es']['element'], {
          this.options.attributes.splice(idx, 1);
          
          // Report attribute.
-	     this.parrent.opman.reportShort("-attribute",
-	                                  this.euid,
-									  {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
+         this.parrent.opman.reportShort("-attribute",
+                                      this.euid,
+                                      {idx:idx, text:text, id: opt.selector.split(" ")[1].substring(1)});
          // It is necessary to remove li object
          // but selector refs to li>a
          $(opt.selector).parent().remove();
@@ -282,16 +291,16 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
        // Refresh sortable after item removal
        $("#" + this.euid + " .us-class-attributes .us-sortable").sortable("refresh");
-	},
-	'moveAttribute': function(start, stop) {
-	  var s1 = $("#"+this.euid+" .us-class-attributes ul li:eq(" + stop.idx + ")");
-	  var s2 = $("#"+this.euid+" .us-class-attributes ul li:eq(" + start.idx + ")");
-	  if (stop.idx < start.idx) {
-	    s1.insertAfter(s2);
-	  } else {
-	    s1.insertBefore(s2);
-	  }
-	},
+    },
+    'moveAttribute': function(start, stop) {
+      var s1 = $("#"+this.euid+" .us-class-attributes ul li:eq(" + stop.idx + ")");
+      var s2 = $("#"+this.euid+" .us-class-attributes ul li:eq(" + start.idx + ")");
+      if (stop.idx < start.idx) {
+        s1.insertAfter(s2);
+      } else {
+        s1.insertBefore(s2);
+      }
+    },
     _update: function() {
        var p = $("#" + this.euid + "_Border").position();
 
@@ -323,23 +332,22 @@ dm.base.diagram("es.class", dm['es']['element'], {
        });
        */
     },
-//@endif
     '_create': function() {
-	   var templ = "",
-	       aux = "";
-	   this.atrN = 0;
-	   this.opN = 0;
+       var templ = "",
+           aux = "";
+       this.atrN = 0;
+       this.opN = 0;
 
        // Work-around for get description methods
        this.options.operations = this.options.operations || new Array();
        this.options.attributes = this.options.attributes || new Array();
 
        if (this.options['aux'] && (this.options['aux'] != "")) {
-	       var aux2 = this._getAux(this.options['aux']);
-		   if (aux2 != undefined && aux2 != "" && aux2 != " ") {
+           var aux2 = this._getAux(this.options['aux']);
+           if (aux2 != undefined && aux2 != "" && aux2 != " ") {
              aux = "&lt&lt " + aux2 + " &gt&gt";
-		   }
-		   templ = (this.options['aux'] != 'Template') ? "" : "<div class='editablefield us-class-template'>" + (this.options['template'] || "T")+"</div>";
+           }
+           templ = (this.options['aux'] != 'Template') ? "" : "<div class='editablefield us-class-template'>" + (this.options['template'] || "T")+"</div>";
        }
 
        var operations = "",
@@ -347,12 +355,12 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
         for (var i in this.options['operations']) {
            operations += '<li id="operation"><a id="operation-'+this.atrN+'" class="editablefield operation">' + this.options['operations'][i] + '</a></li>';
-		   this.atrN++;
+           this.atrN++;
         }
     
         for (var i in this.options['attributes']) {
            attributes += '<li id="attribute"><a id="attribute-'+this.opN+'" class="editablefield attribute">' + this.options['attributes'][i] +'</a></li>';
-		   this.opN++;
+           this.opN++;
         }
 
       // HTML for class structure creation
@@ -385,124 +393,121 @@ dm.base.diagram("es.class", dm['es']['element'], {
       });
     },
     '_init': function() {
-		this._setOptions(this.options);
-		this.attributes = new Array();
-		this.operations = new Array();
+        this._setOptions(this.options);
+        this.attributes = new Array();
+        this.operations = new Array();
 
- //@ifdef EDITOR
-      if (this['parrent'].options['editable']) {
+       if (this['parrent'].options['editable']) {
       
          var border = "#"+this.euid + "_Border";
          var self = this;
          // stop-function is a fix for attributes area which became not resizizable with black points after internal resize usage
          $("#"+this.euid + " .us-class-attributes")
-		 .resizable({'handles': 's-l',
-		             'alsoResize': border,
+         .resizable({'handles': 's-l',
+                     'alsoResize': border,
                      'start': function() {
-					    self._update();
+                        self._update();
                         self.operation_start = {height_a:self.options.height_a};
-			            $("#tabs #us-editable input").hide();  // TODO: send blur to editable ? 
+                        $("#tabs #us-editable input").hide();  // TODO: send blur to editable ? 
                      },
                      'stop': function(event, ui) {
-			           self._update();
-			           self.parrent.opman.reportShort("option",
-			                                 self.euid,
-											 self.operation_start,
-											 {height_a:self.options.height_a});
+                       self._update();
+                       self.parrent.opman.reportShort("option",
+                                             self.euid,
+                                             self.operation_start,
+                                             {height_a:self.options.height_a});
                        $("#"+self.euid + " .us-class-attributes").css({'width':""});
-			         }
-					}); // resizable
+                     }
+                    }); // resizable
 /*         $("#"+this.euid + " .us-class-operations").resizable({'handles': 's-l', 'alsoResize': border,
-														   'resize': function(event, ui) { if ($(border).width() < ui.size.width) $(this).width($(border).width());}
-											   
-		 });
+                                                           'resize': function(event, ui) { if ($(border).width() < ui.size.width) $(this).width($(border).width());}
+                                               
+         });
 */         
 
         this.sortableHandler = {
-		  start: function(event, ui) {
-		           var start_pos = ui.item.index();
+          start: function(event, ui) {
+                   var start_pos = ui.item.index();
                    ui.item.data('start_pos', start_pos);
-		         },
-		  stop: function(event, ui) {
-			      var start_pos = ui.item.data('start_pos'),
-				      index = ui.item.index(),
+                 },
+          stop: function(event, ui) {
+                  var start_pos = ui.item.data('start_pos'),
+                      index = ui.item.index(),
                       type = ui.item.attr("id").split("-")[0];
-				  if (index != start_pos) {
+                  if (index != start_pos) {
                     // Update options values to keep them up to date
                     var tmp = self.options[type + "s"][start_pos];
                     self.options.operations.splice(start_pos, 1);
                     self.options.operations.splice(index, 0, tmp);
 
-					self.parrent.opman.reportShort("%"+ui.item.attr("id"), self.euid, {idx: start_pos}, {idx:index});
-				  }
-			}
-		};
-		
+                    self.parrent.opman.reportShort("%"+ui.item.attr("id"), self.euid, {idx: start_pos}, {idx:index});
+                  }
+            }
+        };
+        
          $("#" + this.euid + " .us-class-operations .us-sortable")
-		.sortable(this.sortableHandler)
-		.disableSelection()
-		.each(function($item) {self.operations.push($item);})
-		.children('A')
-		.editable({onSubmit:function(data) {
-				    if (data["current"] == data["previous"])
-					  return;
-					var id = $(this).attr("id");
-				    self.options[id] = data["current"];
-					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
-					return true;
-	             }});
+        .sortable(this.sortableHandler)
+        .disableSelection()
+        .each(function($item) {self.operations.push($item);})
+        .children('A')
+        .editable({onSubmit:function(data) {
+                    if (data["current"] == data["previous"])
+                      return;
+                    var id = $(this).attr("id");
+                    self.options[id] = data["current"];
+                    self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+                    return true;
+                 }});
 
-		$("#" + this.euid + " .us-class-attributes .us-sortable")
-		.sortable(this.sortableHandler)
-		.disableSelection()
+        $("#" + this.euid + " .us-class-attributes .us-sortable")
+        .sortable(this.sortableHandler)
+        .disableSelection()
         .each(function($item) {self.attributes.push($item);})
-		.children('A')
-		.editable({onSubmit:function(data) {
-				    if (data["current"] == data["previous"])
-					  return;
-					var id = $(this).attr("id");
-				    self.options[id] = data["current"];
-					self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
-					return true;
-	             }});
+        .children('A')
+        .editable({onSubmit:function(data) {
+                    if (data["current"] == data["previous"])
+                      return;
+                    var id = $(this).attr("id");
+                    self.options[id] = data["current"];
+                    self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
+                    return true;
+                 }});
       }
-//@endif
     },
-	_setOption2:function(key, value) {
-	  if (key == "height_o") {
+    _setOption2:function(key, value) {
+      if (key == "height_o") {
         $('#' + this.euid  + '_Border .us-class-operations').css('height', value);
-		return true;
-	  } else if (key == 'height_a') {
-	     var oval = this.options[key];
+        return true;
+      } else if (key == 'height_a') {
+         var oval = this.options[key];
          $('#' + this.euid  + '_Border .us-class-attributes').css('height', value);
 
-		 var v = parseInt(value) - parseInt(oval);
-		 
+         var v = parseInt(value) - parseInt(oval);
+         
          if (v != 0) {
-		   var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
+           var inc=(v>0)? ("+=" + v) : ("-=" + Math.abs(v));
 
            $('#' + this.euid  + '_Border').css('height', inc);
 
-		   // Change the default height value too
-		   this.options['height'] += v;
+           // Change the default height value too
+           this.options['height'] += v;
         }
 
-		 return true;
-	  }
+         return true;
+      }
       else if (key == "editable") {
         // do not return true because it is only part of 
         // transition to none-editable
         $("#" + this.euid + " .us-sortable").sortable({ disabled: (value == true) ? false:true });
       }
       /* else if (key.indexOf('height') == 0) {
-	     var diff = parseInt(value) - parseInt(this.options['height_a']) - $('#' + this.euid + ' .us-class-header').height();
-		 if (diff > 0)
+         var diff = parseInt(value) - parseInt(this.options['height_a']) - $('#' + this.euid + ' .us-class-header').height();
+         if (diff > 0)
            $('#' + this.euid  + '_Border .us-class-operations').css('height', diff);
-	  }*/
-	  return false;
-	},
-	
-//@ifdef EDITOR
+      }*/
+      return false;
+    },
+    
     'getName': function() {
       this.options['name'] = "" + $("#" + this.euid + " .us-class-name" ).html();
       return this.options['name'];
@@ -510,10 +515,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'getAux': function() {
       return $("#" + this.euid + " .us-class-header .us-class-aux").html();
     },
-//@endif
     'ec': 0
 });
 
-
-//@aspect
 })(jQuery, dm);
