@@ -74,9 +74,24 @@ def get_referer_view(request, default=None):
     referer = u'/' + u'/'.join(referer[1:])
     return referer
 
+def serve_file(request, filename):
+    fullname = filename
+    try:
+        f = file(fullname, "rb")
+    except Exception, e:
+        return page_not_found(request, template_name='404.html')
+    try:
+        wrapper = FileWrapper(f)
+        response = HttpResponse(wrapper, mimetype='image/gif')
+        response['Content-Length'] = os.path.getsize(fullname)
+        response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+        return response
+    except Exception, e:
+        return page_not_found(request, template_name='500.html')
+
 def open_path_or_image(request, *args, **kwargs):
     if get_referer_view(request) != None:
-        print('RETURN IMAGE')
+        return serve_file(request, '/home/evgeny/Projects/GH8/umlsync/www.github.com/umlsync_files/octocat-spinner-64.gif')
     else:
         return open_path(request, *args, **kwargs)
 
