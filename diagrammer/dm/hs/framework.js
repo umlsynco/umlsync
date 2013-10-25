@@ -947,13 +947,18 @@ Version:
         var edit = (params.editable == true) || (params.editable == "true"),
         editBullet = '<a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>';
 
-        $(selector).append('<span class="us-diagram-toolbox">\
-                               <a id="us-link"><span id="us-getlink">Get link</span></a>\
-                               '+ editBullet +'\
-                              <br>\
-                              <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
-                              <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
-                            </span>');
+        var $selrt = $(selector);
+        // switch elements to the view mode
+        if (!edit)
+          $selrt.addClass("us-view-mode");
+
+        $selrt.append('<span class="us-diagram-toolbox">\
+                       <a id="us-link"><span id="us-getlink">Get link</span></a>\
+                      '+ editBullet +'\
+                      <br>\
+                      <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
+                      <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
+                      </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
         // or if user is not owner/commiter of repository
@@ -997,8 +1002,6 @@ Version:
                   $(".diagram-menu").hide();
                    // Hide the refernces close-icons
                   $selrt.addClass("us-view-mode");
-                  //var $refs = $(selector + " .ui-icon-close");
-                  //$refs.hide();
                 }
               }
             }
