@@ -171,7 +171,7 @@
             branch:dm.dm.fw.getActiveBranch(),
             contentType:"dm",
             editable:true,
-            isNewOne: !isNamed
+            isNewOne:!isNamed
           };
 
           if (isNamed)

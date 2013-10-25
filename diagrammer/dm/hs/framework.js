@@ -799,12 +799,15 @@ Version:
       if (params.absPath) {
         // Save an empty diagram. It could be new diagram or 
         self.views[params.viewid].view.saveContent(params, defaultMarkdownData, true);
-        // Add content to cache
-        self.contents[tabname] = params;
       }
+      // Add content into the framework cache
+      self.contents[tabname] = params;
 
       self.loadMarkdown(tabname, params, defaultMarkdownData);
-
+ 
+      // Simple toolbox for each document
+      self.appendContentToolbox(tabname, params);
+ 
       this._helperUpdateFrameWork(true);
     },
     //
@@ -842,6 +845,9 @@ Version:
       self.contents[tabname] = params;
 
       self.loadDiagram(tabname, params, {type:type, base_type:baseType});
+
+      // Simple toolbox for each document
+      self.appendContentToolbox(tabname, params);
 
       this._helperUpdateFrameWork(true);
     },
@@ -951,8 +957,15 @@ Version:
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
         // or if user is not owner/commiter of repository
-        if (!params.isOwner || params.absPath == undefined) {
-          $(selector + " #us-diagram-edit").hide();
+        if ((!params.isOwner || params.absPath == undefined) && !params.isNewOne) {
+          $(selector + " #us-diagram-edit").parent().hide();
+        }
+
+        // It is not possible to provide link
+        // for a new content.
+        // TODO: It is possible to provide link for a saved new content !!!
+        if (params.isNewOne) {
+          $(selector + " #us-getlink").parent().hide();
         }
 
         $(selector + " #us-diagram-edit").click(function() {
