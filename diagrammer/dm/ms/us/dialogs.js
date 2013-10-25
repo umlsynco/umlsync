@@ -137,7 +137,7 @@
         'buttons': {
         "Create": function() {
           var isNamed = $("#us-new-diagram-dialog-input").is(":checked"),
-            diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
+              diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
          
          // Add file extension for diagram files
          if ((diagram_name.lastIndexOf(".umlsync") != diagram_name.length - 8) && (self.selected != "markdown")) {
@@ -171,7 +171,7 @@
             branch:dm.dm.fw.getActiveBranch(),
             contentType:"dm",
             editable:true,
-            isNewOne: isNamed
+            isNewOne: !isNamed
           };
 
           if (isNamed)
@@ -193,8 +193,8 @@
           var folder = dm.dm.fw.getActiveTreePath();
           $("#new-diagram-dialog input#VP_inputselector").val(folder);
         }
-        var $par = $( "#new-diagram-dialog")
-              .parent();
+        var $par = $( "#new-diagram-dialog").parent();
+
         $par.offset($("#treetabs").offset());
         $par.children("DIV.ui-dialog-titlebar").children("span.ui-dialog-title").children("span").text(dm.dm.fw.getActiveRepository() || "none");
       },
@@ -374,8 +374,81 @@
   //
   // Save diagram dialog which propose to user save change
   //
-  'SaveDiagramDialog':function(){
+  'SaveAs': function(callback) {
+    var innerHtml = '<p id="dl-validation-tip" style="color:red;"></p><form>\<fieldset>\
+      <div style="display:inline;"><label for="name">Name:</label>\
+      <input type="text" name="name" id="us-saveas-autocomplete-input" class="text ui-widget-content ui-corner-all" /></div>\
+      </fieldset>\
+      </form>';
+      var self = this;
+      
+      
+      $('<div id="save-as-dialog" title="Save as:"></div>').appendTo('body');
+      $(innerHtml).appendTo("#save-as-dialog");
+      
+      var currentStatus = "", currentList = {};
+      $("#us-saveas-autocomplete-input")
+      .autocomplete(
+        {
+          source:function(request, response) {
+            if (response) {
+              var val = $("input#us-saveas-autocomplete-input").val();
+              var newStatus = val.substr(0, val.lastIndexOf('/'));
+              var match = val.split("/").pop();
 
+              function getMatch(descr) {
+                var retList = new Array();
+                for (var t in currentList) {
+                    if (currentList[t].indexOf(descr) !== -1) {
+                        retList.push(currentStatus + "/" + currentList[t] + "/");
+                    }
+                }
+                return retList;
+              }
+
+              // Prevent multiple request of the same paths
+              if (currentStatus != newStatus) {
+                currentStatus = newStatus;
+                dm.dm.fw.getSubPaths(newStatus, function(data) {
+                  currentList = data;
+                  response(getMatch(match)); // Update search result
+                });
+              } else {
+                response(getMatch(match));
+              }
+            }
+          }
+        }
+      );
+
+      $("#save-as-dialog").dialog({
+        autoOpen: false,
+        height: 154,
+        width: 350,
+        modal: true,
+        buttons: {
+        "Create": function() {
+          var val = $("#save-as-dialog input").val();
+          var msg = dm.dm.fw.checkContentName(val);
+
+          if ((val != "") && (msg == "ok")) {
+            if (self.callback && self.callback["save-as-dialog"]) {
+              self.callback["save-as-dialog"](val);
+            }
+            $( this ).dialog( "close" );
+          } else {
+            $("#save-as-dialog #dl-validation-tip").text(msg);
+          }
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        $("#save-as-dialog input").val("");
+        $("#save-as-dialog #dl-validation-tip").text("");
+      }
+    });
   },
   //
   // Create new folder dialog.

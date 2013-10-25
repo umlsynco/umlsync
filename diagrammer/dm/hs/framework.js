@@ -286,18 +286,27 @@ Version:
               $(".diagram-menu").hide();
 
               if (self.contents && self.contents[ahref]) {
-                if (saveIt)
-                  self.saveContent(ahref, true);
-
-                // Drop markdown cache if content is markdown
-                if (self.contents[ahref].contentType == "md") {
+                function dropTabAndContent() {
+                  // Drop markdown cache if content is markdown
+                  if (self.contents[ahref].contentType == "md") {
                     delete self.markdown[ahref];
+                  }
+                  delete self.contents[ahref];
+                  $tabs.tabs('remove', index);
+                  $(ahref).remove();
                 }
 
-                delete self.contents[ahref];
+                if (saveIt) {
+                  self.saveContent(ahref, true, dropTabAndContent);
+                }
+                else {
+                    dropTabAndContent();
+                }
               }
-              $tabs.tabs('remove', index);
-              $(ahref).remove();
+              else {
+                $tabs.tabs('remove', index);
+                $(ahref).remove();
+              }
             }
             
             if (!self.contents[ahref].isModified) {
@@ -731,6 +740,7 @@ Version:
         dm.dm.dialogs['NewDiagramDialog'](data);
       });
       dm.dm.dialogs['NewFolder']();
+      dm.dm.dialogs['SaveAs']();
     },
     'ShowContextMenu': function(name, event, node) {
       $.log("SHOW: " + name);
@@ -826,9 +836,10 @@ Version:
       if (params.absPath) {
         // Save an empty diagram. It could be new diagram or 
         self.views[params.viewid].view.saveContent(params, "{baseType:'"+baseType+"',type:'"+type+"'}", true);
-        // Add content to cache
-        self.contents[tabname] = params;
       }
+
+      // Add content to cache
+      self.contents[tabname] = params;
 
       self.loadDiagram(tabname, params, {type:type, base_type:baseType});
 
@@ -839,13 +850,47 @@ Version:
     // @param tabid - jquery.ui.tabs id
     // @param isTabClosed - indicate if tab was closed
     //
-    saveContent: function(tabid, isTabClosed) {
+    saveContent: function(tabid, isTabClosed, callback) {
       var self = this;
+      var params = self.contents[tabid];
+
+      if (params != undefined && params.isNewOne) {
+        params.repoId = self.getActiveRepository();
+        params.viewid = self.getActiveView();
+        params.branch = self.getActiveBranch();
+
+        if (params.repoId == undefined || params.repoId == "none") {
+            alert("You need to select a repository to store this content!");
+            return;
+        }
+
+        if (params.branch == undefined || params.branch == "none") {
+            alert("You need to select a branch to store this content!");
+            return;
+        }
+
+        dm.dm.dialogs['Activate']("save-as-dialog", function(result) {
+            self.contents[tabid].absPath = result;
+            self.contents[tabid].title = result.split('/').pop();
+            self._saveContentHelper(tabid, isTabClosed);
+            if (callback != undefined)
+              callback();
+        });
+      }
+      else {
+        self._saveContentHelper(tabid, isTabClosed);
+        if (callback != undefined)
+          callback();
+      }
+    },
+    _saveContentHelper: function(tabid, isTabClosed) {
+      var self = this;
+
       if (!self.contents[tabid]) {
         return;
       }
       var params = self.contents[tabid];
-      
+
       if (!self.views || !self.views[params.viewid] || !self.views[params.viewid].view) {
         alert("View: " + params.viewid + " was not initialize.");
         return;
@@ -856,7 +901,7 @@ Version:
         if (!self.diagrams[tabid])
           return;
         var data = self.diagrams[tabid].getDescription();
-        self.views[params.viewid].view.saveContent(params, data);
+        self.views[params.viewid].view.saveContent(params, data, params.isNewOne);
 
         // Keep the current state as saved to prevent changes on Ctrl-Z/Y
         self.diagrams[tabid].saveState();
@@ -868,7 +913,7 @@ Version:
         }
         
         // Save the markdown content
-        self.views[params.viewid].view.saveContent(params, self.markdown[tabid]);
+        self.views[params.viewid].view.saveContent(params, self.markdown[tabid], params.isNewOne);
 
         // Diagram has listener on destroy,
         // but there is no destroy listener for markdown

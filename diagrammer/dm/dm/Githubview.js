@@ -333,7 +333,7 @@
         saveContent: function(params, data, isNewContent) {
           if (params.repoId != self.activeRepo
           || params.branch != self.activeBranch) {
-            alert("Attemption to commit on not active repository or branch.");
+            alert("Attemption to save to the not active repository or branch.");
             return;
           }
 
@@ -342,8 +342,8 @@
             return;
           }
 
-          // Save new content
-          if (isNewContent) {
+          // Save new content or loaded by path content
+          if (isNewContent || params.sha == undefined) {
             // Check that user has selected the location of content
             if (!params.absPath) {
               alert("Location not defined !");
@@ -435,7 +435,7 @@
           }
           else if (params.absPath) {
             var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
-            repo.contents(cPath,  function(err, data) {
+            repo.contents(cPath,  function(err, data, response) {
               if (data.message) {
                 callback.error(data.message);
                 return;
