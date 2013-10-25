@@ -180,6 +180,8 @@
           dm.dm.fw['addDiagramContent']("base", self.selected, params);
         }
         else {
+          params.contentType = "md";
+          params.editable = false;
           dm.dm.fw['addMarkdownContent'](params);
         }
         $(this).dialog("close");
