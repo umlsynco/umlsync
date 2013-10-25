@@ -986,12 +986,19 @@ Version:
               if (did != undefined) {
                 did._setWidgetsOption("editable", editFlag);
                 // Handle the diagram menu status
-                $(selector).attr("edm", editFlag);
+                var $selrt = $(selector).attr("edm", editFlag);
                 if (editFlag) {
                   $(".diagram-menu").show();
+                   // Show the refernces close-icons
+                  $selrt.removeClass("us-view-mode");
+                  $(selector + " div#us-references .ui-icon-close").show();
                   self['ActivateDiagramMenu'](did.options['type']);
                 } else {
                   $(".diagram-menu").hide();
+                   // Hide the refernces close-icons
+                  $selrt.addClass("us-view-mode");
+                  //var $refs = $(selector + " .ui-icon-close");
+                  //$refs.hide();
                 }
               }
             }
