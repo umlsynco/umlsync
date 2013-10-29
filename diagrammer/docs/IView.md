@@ -5,7 +5,7 @@ IView interface were created for CORS requests to the 3PP data store services li
 
 It is responsible for incapsulation of all AJAX requests. Thus all calls to the concrete service should be placed in a single file.   
 
-<div id="IViewAPI" class="pack-diagram" repo="umlsynco/umlsync" path="/diagrammer/docs/dm-diagrams/IViewAPI.umlsync">
+<div id="IViewAPI" class="pack-diagram" repo="umlsynco/umlsync" path="dm-diagrams/IViewAPI.umlsync">
 IView interface and it's dependencies. 
 </div>
 <br>
@@ -33,7 +33,7 @@ It means that AJAX request should happen only by user request: tree navigation (
 
 So, the sequence of diagram load look like this:
 
-<div id="OpenDiagram" class="pack-diagram" repo="umlsynco/umlsync" path="/diagrammer/docs/dm-diagrams/OpenDiagram.umlsync">
+<div id="OpenDiagram" class="pack-diagram" repo="umlsynco/umlsync" path="./dm-diagrams/OpenDiagram.umlsync">
 Open diagram by click on tree element. 
 </div>
 <br>

@@ -52,6 +52,11 @@ $.fn.editable = function(options){
 	
 	options.toEditable = function(){
 		$this = $(this);
+		// Do not handle edit twice
+		if ($this.children('input').length != 0) {
+		  return;
+		}
+
 		$this.data('editable.current',$this.html());
 		opts = $this.data('editable.options');
 		$.editableFactory[opts.type].toEditable($this.empty(),opts);

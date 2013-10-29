@@ -1704,7 +1704,8 @@ dm['at'] = dm.at; //automated testing
     // editable element
     //
     dm.base.editable = function(self, $items, removeEmpty) {
-      $($items).editable({onSubmit:function(data) {
+	  $.each($items, function(index, item) {
+      $(item).editable({onSubmit:function(data) {
           if (data["current"] == data["previous"])
             return;
           var id = $(this).attr("id"),
@@ -1742,6 +1743,7 @@ dm['at'] = dm.at; //automated testing
           self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
           return true;
       }});
+      });
     };
 
 //  Global elements counter
@@ -2059,7 +2061,7 @@ dm['at'] = dm.at; //automated testing
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
       })
-      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='/images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
+      .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
 	  .parent()
       .append(subDiagramRefs);
 
@@ -2119,7 +2121,10 @@ dm['at'] = dm.at; //automated testing
       
       // 
       if (!this.parrent.options['editable']) {
-        $("#" + this.euid + "_Border .editablefield").editable("disable");
+        $.each($("#" + this.euid + "_Border .editablefield"),
+		       function(index, item) {
+			     $(item).editable("disable");
+			   });
       }
 
       if (this.options['color']) 
@@ -2235,7 +2240,10 @@ dm['at'] = dm.at; //automated testing
 
         // Work-around for elements without editable fields
         if ($("#" + this.euid + "_Border .editablefield").length) {
-          $("#" + this.euid + "_Border .editablefield").editable(value ? "enable":"disable");
+		  $.each($("#" + this.euid + "_Border .editablefield"),
+		         function(index, item) {
+				   $(item).editable(value ? "enable":"disable");
+			     });
           $("#" + this.euid + "_Border #reference-new").css("display", value ? "block":"none");//css("visibility", value ?  "visible":"hidden");
         }
 
@@ -2495,9 +2503,11 @@ dm['at'] = dm.at; //automated testing
       }
       else if (key == "editable") {
          for (var i in this.labels) {
-           this.labels[i]
-           .draggable("option", "disabled", !value)
-           .editable(value ? "enable":"disable");
+           $.each(this.labels[i],
+		     function(index, item) {
+               $(item).draggable("option", "disabled", !value)
+                      .editable(value ? "enable":"disable");
+			 });
          }
       }
       else {
