@@ -1703,7 +1703,7 @@ dm['at'] = dm.at; //automated testing
     // Helper method which implements a common approach for
     // editable element
     //
-    dm.base.editable = function(self, $items, removeEmpty) {
+    dm.base.editable = function(self, $items, removeEmpty, shift) {
 	  $.each($items, function(index, item) {
       $(item).editable({onSubmit:function(data) {
           if (data["current"] == data["previous"])
@@ -1717,6 +1717,9 @@ dm['at'] = dm.at; //automated testing
             // <ul><li><a id="operation-0">Editable</a></li></ul>
             var $par = $(this).parent(),
               idx = $par.parent().children().index($par);
+            // list of references is shifted on one item
+            if (shift && idx >= shift) idx -= shift;
+
             self.options[optId+"s"][idx] = data["current"];
             if (data["current"] == "") {
               if (removeEmpty) {
@@ -1845,10 +1848,6 @@ dm['at'] = dm.at; //automated testing
 
       var subDiagramPaths = self.options['subdiagrams'] || self.options['references'] || {};
       var subDiagramRefs =  "<div class='us-references us-list'><ul class='context-menu-3'><li id='reference-new'><a>new reference</a></li>";
-      for (var g in subDiagramPaths) {
-         subDiagramRefs+= "<li><a id='reference-"+this.refN+"' class='editablefield reference'>" + subDiagramPaths[g] + "</a></li>";
-         ++this.refN;
-      }
       subDiagramRefs+="</ul></div>";
       
       var axis111 = this.options['axis'] || false;
@@ -2065,6 +2064,10 @@ dm['at'] = dm.at; //automated testing
 	  .parent()
       .append(subDiagramRefs);
 
+      for (var g in subDiagramPaths) {
+         self.addReference({text:subDiagramPaths[g]}, true);
+      }
+
       // Hide references by default and
       // prevent propagation of click event
       $('#' + this.euid  + '_Border .us-references')
@@ -2085,7 +2088,7 @@ dm['at'] = dm.at; //automated testing
           return true;
         }
       });
-      
+/*
       $('#' + this.euid  + '_Border .us-references ul li a').bind("click", self, function(event) {
         var element = event.data;
         if (!element.parrent.options.editable) {
@@ -2093,6 +2096,7 @@ dm['at'] = dm.at; //automated testing
         }
       });
 
+*/
       //if (this.options['subdiagram'])
        {
         $("img#" + this.euid + "_REF")
@@ -2117,7 +2121,7 @@ dm['at'] = dm.at; //automated testing
 
       // enable editable fields
       // if this diagram is editable
-      dm.base.editable(this, $("#" + this.euid + "_Border .editablefield"));
+      dm.base.editable(this, $("#" + this.euid + " .editablefield"));
       
       // 
       if (!this.parrent.options['editable']) {
@@ -2140,7 +2144,7 @@ dm['at'] = dm.at; //automated testing
         $('#'+this.euid + "_Border").css("z-index", this.options["z-index"]);
     },
   
-    'addReference': function(opt) {
+    'addReference': function(opt, isInit) {
       var self = this;
       
       var old_attr;
@@ -2150,6 +2154,9 @@ dm['at'] = dm.at; //automated testing
       } else {
         old_attr = 'reference-'+this.refN;
         ++this.refN;
+
+        // Do not update references on initialization
+        if (!isInit)
         self.options.references.push(opt.text);
       }
 
@@ -2182,12 +2189,13 @@ dm['at'] = dm.at; //automated testing
               if (!element.parrent.options.editable) {
                 dm.dm.fw.loadContent2(element.parrent.parrent, $(this).text());
               }
+              event.stopPropagation();
             });
 
 
 
        // Common approach for editable
-       dm.base.editable(this, $ch, true);
+       dm.base.editable(this, $ch, true, 1);
 
        // Do not report operation if it was reported before
        if (opt.idx == undefined) {
