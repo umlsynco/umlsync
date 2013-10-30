@@ -33,7 +33,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
         }
     },
     addTemplate:function(opt) {
-      $("<div class='editablefield us-class-template'>Template</div>").appendTo($("#" + this.euid)).editable();
+      dm.base.editable(this, $("<div id='template' class='editablefield us-class-template'>Template</div>").appendTo($("#" + this.euid)));
       this.options["aux"] = "Template";
     },
     rmTemplate:function(opt) {
@@ -42,6 +42,15 @@ dm.base.diagram("es.class", dm['es']['element'], {
         template.remove();
         this.options["aux"].splice();
       }
+    },
+    //
+    // On/Off subroutin UI element of class
+    //
+    handleSubroutine: function() {
+    },
+    addSubroutine:function() {
+    },
+    rmSubroutine:function() {
     },
     showContextMenu: function(selector, e) {
         var self = this,
@@ -367,7 +376,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
            if (aux2 != undefined && aux2 != "" && aux2 != " ") {
              aux = "&lt&lt " + aux2 + " &gt&gt";
            }
-           templ = (this.options['aux'] != 'Template') ? "" : "<div class='editablefield us-class-template'>" + (this.options['template'] || "T")+"</div>";
+           templ = (this.options['aux'] != 'Template') ? "" : "<div id='template' class='editablefield us-class-template'>" + (this.options['template'] || "T")+"</div>";
        }
 
        var operations = "",
