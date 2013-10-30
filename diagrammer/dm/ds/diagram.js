@@ -1704,37 +1704,39 @@ dm['at'] = dm.at; //automated testing
     // editable element
     //
     dm.base.editable = function(self, $items, removeEmpty, shift) {
-	  $.each($items, function(index, item) {
-      $(item).editable({onSubmit:function(data) {
-          if (data["current"] == data["previous"])
-            return;
-          var id = $(this).attr("id"),
-            sid = id.split("-"),
-            optId = sid[0];
+      $.each(
+        $items,
+        function(index, item) {
+          $(item).editable({onSubmit:function(data) {
+            if (data["current"] == data["previous"])
+              return;
+            var id = $(this).attr("id"),
+              sid = id.split("-"),
+              optId = sid[0];
           
-          // argument-N
-          if (sid.length == 2) {
-            // <ul><li><a id="operation-0">Editable</a></li></ul>
-            var $par = $(this).parent(),
+            // argument-N
+            if (sid.length == 2) {
+              // <ul><li><a id="operation-0">Editable</a></li></ul>
+              var $par = $(this).parent(),
               idx = $par.parent().children().index($par);
-            // list of references is shifted on one item
-            if (shift && idx >= shift) idx -= shift;
+              // list of references is shifted on one item
+              if (shift && idx >= shift) idx -= shift;
 
-            self.options[optId+"s"][idx] = data["current"];
-            if (data["current"] == "") {
-              if (removeEmpty) {
-                self.options[optId+"s"].splice(idx, 1);
-                var methodName = "rm" + optId.charAt(0).toUpperCase() + optId.slice(1);
-                if (self[methodName]) {
-                  self[methodName]({idx:idx})
-                }
-                $par.remove();
-                if ($par.parent().hasClass("us-sortable")) {
-                  $par.parent().sortable("refresh");
+              self.options[optId+"s"][idx] = data["current"];
+              if (data["current"] == "") {
+                if (removeEmpty) {
+                  self.options[optId+"s"].splice(idx, 1);
+                  var methodName = "rm" + optId.charAt(0).toUpperCase() + optId.slice(1);
+                  if (self[methodName]) {
+                    self[methodName]({idx:idx})
+                  }
+                  $par.remove();
+                  if ($par.parent().hasClass("us-sortable")) {
+                    $par.parent().sortable("refresh");
+                  }
                 }
               }
             }
-          }
           // name
           else if (sid.length == 1) {
             self.options[optId] = data["current"];
@@ -2386,9 +2388,9 @@ dm['at'] = dm.at; //automated testing
     
     addLabel: function(opt) {
       var self = this,
-      lid = this.euid + "_l" + this.label_count;  // uniqie label name to simplify revert editable
+      lid = opt.lid != undefined ? opt.lid : this.euid + "_l" + this.label_count;  // uniqie label name to simplify revert editable
 
-      ++this.label_count
+      if (opt.lid == undefined) ++this.label_count;
 
       var $item = $("<div id='"+lid+"' class='editablefield' style=\"position:absolute;z-index:99999;background-color:white;\">" + opt.text + "</div>")
       .appendTo("#" + this.parrent.euid)
@@ -2439,8 +2441,10 @@ dm['at'] = dm.at; //automated testing
       this.parrent.opman.reportShort("+label",
           this.euid,
           {idx:this.labels.length-1,
-        left:opt.left, top:opt.top,
-        text: opt.text
+           left:opt.left,
+           top:opt.top,
+           text: opt.text,
+           lid:lid
           });
     },
     rmLabel: function(opt) {
