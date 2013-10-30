@@ -23,6 +23,26 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       return auxmap[aux] || aux;
     },
+    handleTemplate: function() {
+        var template = $("#" + this.euid + " .us-class-template");
+        if (template.length != 0) {
+          this.rmTemplate();
+        }
+        else {
+          this.addTemplate();
+        }
+    },
+    addTemplate:function(opt) {
+      $("<div class='editablefield us-class-template'>Template</div>").appendTo($("#" + this.euid)).editable();
+      this.options["aux"] = "Template";
+    },
+    rmTemplate:function(opt) {
+      var template = $("#" + this.euid + " .us-class-template");
+      if (template.length != 0) {
+        template.remove();
+        this.options["aux"].splice();
+      }
+    },
     showContextMenu: function(selector, e) {
         var self = this,
             diag = this.parrent;

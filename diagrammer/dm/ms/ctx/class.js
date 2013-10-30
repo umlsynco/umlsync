@@ -18,6 +18,20 @@
             }
         },
         {
+            title: 'Template On/Off',
+            click: function(element){ 
+            if (element.handleTemplate != undefined) 
+                element.handleTemplate();
+            }
+        },
+        {
+            title: 'Subroutine On/Off',
+            click: function(element){ 
+            if (element.handleSubroutine != undefined) 
+                element.handleSubroutine();
+            }
+        },
+        {
 			title: 'Add method',
             click: function(element){ 
             if (element.addOperation != undefined) 
