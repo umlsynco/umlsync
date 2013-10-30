@@ -2528,8 +2528,15 @@ dm['at'] = dm.at; //automated testing
     },
     
     _create: function () {
-      
-      this.epoints = this.options.epoints || [];
+      this.epoints = [];
+      var self=this;
+      if (this.options.epoints != undefined) {
+        $.each(this.options.epoints, function(idx, item) {
+            self.epoints[idx] = [];
+            self.epoints[idx][0] = parseInt(item[0]);
+            self.epoints[idx][1] = parseInt(item[1]);
+        });
+      }
       this.label_count = 0;
       this.cleanOnNextTransform = false;
 
@@ -2868,7 +2875,7 @@ dm['at'] = dm.at; //automated testing
         var newpoints = [];
         newpoints[0] = [x1,y1];
         for (var i=1;i<=epoints.length;++i) {
-          newpoints[i] = [parseInt(epoints[i-1][0]), parseInt(epoints[i-1][1])];//epoints[i-1];
+          newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
           newpoints[i][0] -= scrollLeft;
           newpoints[i][1] -= scrollTop;
         }
