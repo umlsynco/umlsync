@@ -1745,12 +1745,30 @@ var text1 = $(this).val();
                 var obj = $.parseJSON($.clippy),
                 es = obj["elements"],
                 cs = obj["connectors"];
-                for (j in es) {
+                for (var j in es) {
                   es[j].pageX = parseInt(es[j].pageX) + 10;
                   $.log("pzgeX: " + es[j].pageX);
                   es[j].pageY = parseInt(es[j].pageY) + 10;
-                  fw.diagrams[fw.selectedContentId].Element(es[j].type, es[j]);
+                  fw.diagrams[fw.selectedContentId].Element(es[j].type, es[j], function(obj) {
+                        es[j].euid = obj.euid;
+                      });
                 }
+
+                dm.dm.loader.OnLoadComplete(function() {
+                  for (var c in cs) {
+                    for (var j in es) {
+                      if (es[j].id == cs[c].fromId) {
+                          cs[c].fromId = es[j].euid;
+                      }
+                      // Can not use else because of selfassociation connector
+                      if (es[j].id == cs[c].toId) {
+                          cs[c].toId = es[j].euid;
+                      }
+
+                    }
+                    fw.diagrams[fw.selectedContentId].Connector(cs[c].type, cs[c]);
+                  }
+                });
 
                 //for (j in cs)
                 //fw.diagrams[fw.selectedContentId].Connector(cs[j].type, cs[j]);
