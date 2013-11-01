@@ -164,12 +164,29 @@
     // Initialize the list of repositories
     // for logged-in user
     //
-    this.init = function() {
+    this.init = function(path) {
+      
+      function loadPath() {
+        if (path != "") {
+          var splitted_path = path.split("/"),
+            repo_path = splitted_path.slice(0, 2).join("/"),
+            branch = splitted_path[2],//master
+            diagram = splitted_path.slice(3).join("/"),
+            repo = repo_path;
+            // TODO: check that repo is in the list of user repositories
+            ISelectionObserver.onRepoSelect("Yours", repo);
+            ISelectionObserver.loadRightAway(repo_path, branch, diagram);
+        }
+      }
+
       function showRepos(err, repos) {
         if (err != null) {
             dm.dm.fw.loadError("repos", err);
             return;
         }
+        // Repositories are loaded successfully 
+        // Now loading the content
+        loadPath();
         dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
         for (var r in repos) {
           userRepositories.push(repos[r]['full_name']);
