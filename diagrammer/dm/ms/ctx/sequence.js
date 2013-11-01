@@ -32,7 +32,7 @@ dm.ms.ctx['sequence'] = function(menuBuilder) {
                     menuBuilder.diagram.removeElement(element.euid);
                     //$('#' +   + '_Border').remove();
                 }
-            },
+            }
 /*            'Update': {
                 click: function(element) {  // element is the jquery obj clicked on when context menu launched
 
@@ -121,7 +121,7 @@ $("#vp_main_menu2 .close").click(function() { $("#vp_main_menu2").remove();});
 				    dm.dm.fw.ShowElementContextMenu(element.options.description, viewid);
 				  }
    			    }
-            },*/
+            },
 			{
 				title: 'View specific >>',
 				mouseenter: function(element, event) {  // element is the jquery obj clicked on when context menu launched
@@ -131,7 +131,7 @@ $("#vp_main_menu2 .close").click(function() { $("#vp_main_menu2").remove();});
 				  dm.dm.fw.ShowElementContextMenu(element.options.description, viewid, element, {clientX:p.left + $(event.currentTarget).width(), clientY:p.top});
 				}
               }
-			}
+			}*/
         ]);
 }
 //@aspect
