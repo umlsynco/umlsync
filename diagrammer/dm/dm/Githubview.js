@@ -165,7 +165,11 @@
     // for logged-in user
     //
     this.init = function() {
-      function showRepos(repos) {
+      function showRepos(err, repos) {
+        if (err != null) {
+            dm.dm.fw.loadError("repos", err);
+            return;
+        }
         dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
         for (var r in repos) {
           userRepositories.push(repos[r]['full_name']);
@@ -175,7 +179,7 @@
       if (!isLocal) {
         // Server-based use-case
         var user = github().getUser();
-        user.repos(function(err, repos){ showRepos(repos) });
+        user.repos(function(err, repos){ showRepos(err, repos) });
       }
       else {
         // Local files access without service ON
@@ -436,6 +440,10 @@
           else if (params.absPath) {
             var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
             repo.contents(cPath,  function(err, data, response) {
+              if (err != null) {
+                callback.error(err);
+                return;
+              }
               if (data.message) {
                 callback.error(data.message);
                 return;

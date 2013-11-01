@@ -1341,7 +1341,7 @@ var text1 = $(this).val();
             self._helperUpdateFrameWork(true);
           },
           'error': function(msg) {
-            alert("Failed to load: " + params.absPath + ":\n" + msg);
+              self.loadError("content", msg, tabname, params);
           }
         });
       }
@@ -1465,6 +1465,36 @@ var text1 = $(this).val();
       prettyPrint();
  
       this._helperUpdateFrameWork(true);
+    },
+    //
+    // Load the error message and picture
+    //
+    loadError: function(type, err, tabname, params) {
+      // parse the error code and text
+      var errcode = "";
+      var errtext = "";
+      // Error happens for the not loged in users
+      if (err && err.error == 403) {
+          window.location.href = "/login";
+          return;
+      }
+
+      if (type == "content") {
+        $(tabname).append("<div class='us-sourcecode'><img src='/images/loadfailed.jpg' style='align:center;'/>"+errcode + "<br>" + errtext+"</div>");
+        $(tabname).attr("edm", false);//enable diagram menu is always false for error window
+        this._helperUpdateFrameWork(true);
+      }
+      else if (type == "repos") {
+          // reload page in case of internal server error
+          if (err && err.error == 500) {
+            window.location.href = "/editor/";
+            return;
+          }
+      }
+      else {
+          alert("unknown issue !" + "\n" + errcode + " : " + errtext);
+      }
+
     },
     //
     // Return an active diagram

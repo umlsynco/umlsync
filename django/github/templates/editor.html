@@ -84,14 +84,16 @@
     // Initialize header menu on the left
     $('#header-menu').combomenu({menu:{
         'Project': {
-          'Change repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
-          'Change branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
+          'Select repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
+          'Select branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
           'New diagram': {handler:function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}},
-          'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
+//          'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
         },
+/*        
         'Actions': {
           'Post for review':{handler: function() {      }}
         },
+*/
         'Edit':{
           'Un-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;    e.keyCode = 90; $(window).trigger(e); }},
           'Re-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 89; $(window).trigger(e); }},
@@ -102,8 +104,8 @@
           'Select All':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 65; $(window).trigger(e); }},
         },
         'Views':{
-          'Google code':{handler: function(){          }},
-          'Sourceforege':{handler: function(){          }},
+//          'Google code':{handler: function(){          }},
+//          'Sourceforege':{handler: function(){          }},
           'Github':{handler: function(){          }},
           'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
         }
@@ -115,10 +117,6 @@
       token = "{{ access_token }}",
       path = "{{ path }}";
 
-    $.log("credentials");
-    $.log(username);
-    $.log(token);
-
     // Pre-initialize workspace
     dm.dm = dm.dm || {};
 
@@ -127,17 +125,15 @@
       new dm.base.GithubViewsManager(username, token);
     dm.dm.IGithubViewsManager.init();
 
+    // Load the diagram by path on github
+    // TODO: move into the inilialize method
     if (path != "") {
-      $.log("Opening " + path);
-      // expected path is like this:
-      // kalaidin/octo-diagrams/master/diagrams/ElkaClass.json
-
       var splitted_path = path.split("/"),
-        repo_path = splitted_path.slice(0, 2).join("/"),//kalaidin/octo-diagrams
+        repo_path = splitted_path.slice(0, 2).join("/"),
         branch = splitted_path[2],//master
-        diagram = splitted_path.slice(3).join("/"),//diagrams/ElkaClass.json
+        diagram = splitted_path.slice(3).join("/"),
         repo = repo_path;
-      dm.dm.IGithubViewsManager.onRepoSelect("Yours", repo);// repo is changed here!
+      dm.dm.IGithubViewsManager.onRepoSelect("Yours", repo);
       dm.dm.IGithubViewsManager.loadRightAway(repo_path, branch, diagram);
     }
   });
