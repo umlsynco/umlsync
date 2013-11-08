@@ -50,7 +50,6 @@ class SVGClass(sw.container.Group):
         self.add(title)
         self.add(fields)
         for i, attribute in enumerate(properties["attributes"]):
-            pprint.pprint(i)
             text_start = (self.x + 5, self.y + self.caption_height + self.text_height * i)
             pprint.pprint(text_start)
             text = sw.text.Text(insert=text_start,
@@ -73,41 +72,67 @@ class SVGConnector(sw.container.Group):
     angle = math.pi / 8
     arrow_length = 15
 
+    def getRValue(self, x1, x2, w):
+      diffx = x2-x1;
+      if (diffx>0):
+        if diffx > w:
+          return x1 + w
+        return x2
+      return x1
+
     def __init__(self, properties, start, end):
         sw.container.Group.__init__(self)
+
+        self.draw_last_line = True
+        pprint.pprint(properties["type"])
+
+        if properties["type"] == "dependency" or properties["type"] == "realization" or properties["type"] == "anchor":
+            pprint.pprint("DEPENDENCY")
+            self.dasharray = [7,3]
+        else:
+            self.dasharray = None
+
+        if properties["type"] == "dependency" or properties["type"] == "anchor" or properties["type"] == "association":
+            self.draw_last_line = True
+
         self.from_id = properties["fromId"]
         self.to_id = properties["toId"]
         self.epoints = properties["epoints"]
         line_cx = (start.center_x + end.center_x) / 2.0
         line_cy = (start.center_y + end.center_y) / 2.0
-        if abs(start.right - line_cx) < abs(start.x - line_cx):
-            line_sx = start.right
-        else:
-            line_sx = start.x
-        if abs(end.right - line_cx) < abs(end.x - line_cx):
-            line_ex = end.right
-        else:
-            line_ex = end.x
-        if abs(start.bottom - line_cy) < abs(start.y - line_cy):
-            line_sy = start.bottom
-        else:
-            line_sy = start.y
-        if abs(end.bottom - line_cy) < abs(end.y - line_cy):
-            line_ey = end.bottom
-        else:
-            line_ey = end.y
+
         points = []
-        points.append((line_sx, line_sy))
-        for epoint in self.epoints:
-            points.append((float(epoint["0"]), float(epoint["1"])))
-        points.append((line_ex, line_ey))
+        if len(self.epoints) == 0:
+            x1 = self.getRValue(start.x, end.x, start.width)
+            y1 = self.getRValue(start.y, end.y, start.height)
+            x2 = self.getRValue(end.x, start.x, end.width)
+            y2 = self.getRValue(end.y, start.y,  end.height)
+            points.append((x1,y1))
+            points.append((x2,y2))
+        else:
+            lln = len(self.epoints)-1
+            point = self.epoints[0]
+            x1 = self.getRValue(start.x, float(point["0"]), start.width)
+            y1 = self.getRValue(start.y, float(point["1"]), start.height)
+            point = self.epoints[lln]
+            x2 = self.getRValue(end.x, float(point["0"]), end.width)
+            y2 = self.getRValue(end.y, float(point["1"]), end.height)
+
+            points.append((x1,y1))
+            for epoint in self.epoints:
+                points.append((float(epoint["0"]), float(epoint["1"])))
+            points.append((x2,y2))
+
         for i in range(len(points) - 1):
-            line = sw.shapes.Line(start=points[i],
-                                  end=points[i + 1],
-                                  stroke='black', stroke_width=1)
-            self.add(line)
             if i == len(points) - 2:
-                self.draw_arrow()
+                self.draw_arrow(points[i], points[i+1])
+
+            if self.draw_last_line or i != len(points) - 2:
+                line = sw.shapes.Line(start=points[i],
+                                      end=points[i + 1],
+                                      stroke='black',
+                                      stroke_width=1)
+                self.add(line).dasharray(self.dasharray)
 
     def draw_arrow(self, p1, p2):
         # draw an arrow
@@ -121,7 +146,7 @@ class SVGConnector(sw.container.Group):
                 vec[1] * math.cos(self.angle))
         arrow_dots = (x2 + arrow[0] * self.arrow_length,
                       y2 + arrow[1] * self.arrow_length)
-        line = sw.shapes.Line(start=points[i + 1],
+        line = sw.shapes.Line(start=p2,
                               end=arrow_dots,
                               stroke='black', stroke_width=1)
         self.add(line)
@@ -131,7 +156,7 @@ class SVGConnector(sw.container.Group):
                 vec[1] * math.cos(-self.angle))
         arrow_dots = (x2 + arrow[0] * self.arrow_length,
                       y2 + arrow[1] * self.arrow_length)
-        line = sw.shapes.Line(start=points[i + 1],
+        line = sw.shapes.Line(start=p2,
                               end=arrow_dots,
                               stroke='black', stroke_width=1)
         self.add(line)
@@ -164,8 +189,8 @@ class CustomJSONtoSVGConverter:
 
         if self.json_data.get("connectors"):
           for connector in self.json_data["connectors"]:
-            start = elements[connector["toId"]]
-            end = elements[connector["fromId"]]
+            start = elements[connector["fromId"]]
+            end = elements[connector["toId"]]
             svg_connector = SVGConnector(connector, start, end)
             dwg.add(svg_connector)
         dwg.save()
