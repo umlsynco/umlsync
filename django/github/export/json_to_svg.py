@@ -107,32 +107,34 @@ class SVGConnector(sw.container.Group):
                                   stroke='black', stroke_width=1)
             self.add(line)
             if i == len(points) - 2:
-                # draw an arrow
-                (x1, y1) = points[i]
-                (x2, y2) = points[i + 1]
-                length = ((x1 - x2)**2 + (y2 - y1)**2)**0.5
-                vec = ((x1 - x2) / length, (y1 - y2) / length)
-                arrow = (vec[0] * math.cos(self.angle) +
-                         vec[1] * math.sin(-self.angle),
-                         vec[0] * math.sin(self.angle) +
-                         vec[1] * math.cos(self.angle))
-                arrow_dots = (x2 + arrow[0] * self.arrow_length,
-                              y2 + arrow[1] * self.arrow_length)
-                line = sw.shapes.Line(start=points[i + 1],
-                                      end=arrow_dots,
-                                      stroke='black', stroke_width=1)
-                self.add(line)
-                arrow = (vec[0] * math.cos(-self.angle) +
-                         vec[1] * math.sin(self.angle),
-                         vec[0] * math.sin(-self.angle) +
-                         vec[1] * math.cos(-self.angle))
-                arrow_dots = (x2 + arrow[0] * self.arrow_length,
-                              y2 + arrow[1] * self.arrow_length)
-                line = sw.shapes.Line(start=points[i + 1],
-                                      end=arrow_dots,
-                                      stroke='black', stroke_width=1)
-                self.add(line)
+                self.draw_arrow()
 
+    def draw_arrow(self, p1, p2):
+        # draw an arrow
+        (x1, y1) = p1
+        (x2, y2) = p2
+        length = ((x1 - x2)**2 + (y2 - y1)**2)**0.5
+        vec = ((x1 - x2) / length, (y1 - y2) / length)
+        arrow = (vec[0] * math.cos(self.angle) +
+                vec[1] * math.sin(-self.angle),
+                vec[0] * math.sin(self.angle) +
+                vec[1] * math.cos(self.angle))
+        arrow_dots = (x2 + arrow[0] * self.arrow_length,
+                      y2 + arrow[1] * self.arrow_length)
+        line = sw.shapes.Line(start=points[i + 1],
+                              end=arrow_dots,
+                              stroke='black', stroke_width=1)
+        self.add(line)
+        arrow = (vec[0] * math.cos(-self.angle) +
+                 vec[1] * math.sin(self.angle),
+                 vec[0] * math.sin(-self.angle) +
+                vec[1] * math.cos(-self.angle))
+        arrow_dots = (x2 + arrow[0] * self.arrow_length,
+                      y2 + arrow[1] * self.arrow_length)
+        line = sw.shapes.Line(start=points[i + 1],
+                              end=arrow_dots,
+                              stroke='black', stroke_width=1)
+        self.add(line)
 
 class CustomJSONtoSVGConverter:
     def __init__(self):
