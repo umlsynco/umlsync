@@ -12,9 +12,15 @@ class SVGClass(sw.container.Group):
     """
     Represent Class element grouping several SVG primitives.
     """
-    text_height = 15
 
     def __init__(self, properties):
+        self.style = "font-size:13px; font-family:Verdana,Arial,sans-serif;"
+        self.font_height = 13
+        self.font_line_space = 2
+        self.font_width = 7
+        self.text_height = self.font_height + self.font_line_space
+        self.caption_height = 20
+
         sw.container.Group.__init__(self)
         self.x = float(properties["pageX"])
         self.y = float(properties["pageY"])
@@ -26,38 +32,36 @@ class SVGClass(sw.container.Group):
         self.bottom = self.y + self.height
         body = sw.shapes.Rect(insert=(self.x, self.y),
                               size=(self.width, self.height),
-                              fill='white', stroke='black', stroke_width=1)
+                              fill='#ECF3EC', stroke='black', stroke_width=1)
         caption = sw.shapes.Rect(insert=(self.x, self.y),
-                                 size=(self.width, 10),
-                                 fill='white', stroke='black', stroke_width=1)
+                                 size=(self.width, self.caption_height),
+                                 fill='#ECF3EC', stroke='black', stroke_width=1)
+        fields  = sw.shapes.Rect(insert=(self.x, self.y + self.height_a),
+                                 size=(self.width, self.caption_height),
+                                 fill='#ECF3EC', stroke='black', stroke_width=1)
         self.center_x = self.x + self.width / 2.0
         self.center_y = self.y + self.height / 2.0
+        align_x = len(properties["name"])*self.font_width/2
+        title = sw.text.Text(insert=(self.center_x - align_x, self.y+self.caption_height-2*self.font_line_space),
+                             text=properties["name"],
+                             style=self.style)
         self.add(body)
         self.add(caption)
+        self.add(title)
+        self.add(fields)
         for i, attribute in enumerate(properties["attributes"]):
-            start = (self.x, self.y + 10 + self.height_a * i)
-            att = sw.shapes.Rect(insert=start,
-                                 size=(self.width, self.height_a),
-                                 fill='gray', stroke='black', stroke_width=1)
-            text_start = (self.x + 5, self.y + 10 + self.height_a * i +
-                          self.text_height)
+            pprint.pprint(i)
+            text_start = (self.x + 5, self.y + self.caption_height + self.text_height * i)
+            pprint.pprint(text_start)
             text = sw.text.Text(insert=text_start,
-                                text=attribute)
-            self.add(att)
+                                text=attribute,
+                                style=self.style)
             self.add(text)
         for i, operation in enumerate(properties["operations"]):
-            start = (self.x, self.y + 10 + self.height_o * i +
-                     self.height_a * len(properties["attributes"]))
-            op = sw.shapes.Rect(insert=start,
-                                size=(self.width, self.height_o),
-                                fill='whitesmoke', stroke='black',
-                                stroke_width=1)
-            text_start = (self.x + 5, self.y + 10 + self.height_o * i +
-                          self.height_a * len(properties["attributes"]) +
-                          self.text_height)
+            text_start = (self.x + 5, self.y + self.caption_height + self.height_a + self.text_height * (i + 1))
             text = sw.text.Text(insert=text_start,
-                                text=operation)
-            self.add(op)
+                                text=operation,
+                                style=self.style)
             self.add(text)
 
     def get_coords(self):
@@ -138,7 +142,7 @@ class CustomJSONtoSVGConverter:
         """Read and parse JSON file."""
         with open(filename) as f:
             self.json_data = json.load(f)
-            pprint.pprint(self.json_data)
+            #pprint.pprint(self.json_data)
 
     def load_data(self, contents):
         self.json_data = json.loads(contents)
@@ -147,12 +151,17 @@ class CustomJSONtoSVGConverter:
         """Convert JSON to SVG."""
         dwg = sw.Drawing(filename=filename, debug=True)
         elements = {}
-        for element in self.json_data["elements"]:
+
+        if self.json_data.get("elements") != None:
+          for element in self.json_data["elements"]:
+            print element["type"]
             if element["type"] == "class":
                 svg_class = SVGClass(element)
                 elements[element["id"]] = svg_class
                 dwg.add(svg_class)
-        for connector in self.json_data["connectors"]:
+
+        if self.json_data.get("connectors"):
+          for connector in self.json_data["connectors"]:
             start = elements[connector["toId"]]
             end = elements[connector["fromId"]]
             svg_connector = SVGConnector(connector, start, end)
@@ -168,11 +177,11 @@ if __name__ == '__main__':
                       help="name of the output file")
     (options, args) = parser.parse_args()
     converter = CustomJSONtoSVGConverter()
-    #input_file = options.input_file
-    #output_file = options.output_file
-    input_file = "test.json"
-    output_file = "test.svg"
-    #converter.load(input_file)
-    contents = r"""{"type":"class","name":"classDiagram"}"""
-    converter.load_data(contents)
+    input_file = options.input_file
+    output_file = options.output_file
+    #input_file = "test.json"
+    #output_file = "test.svg"
+    converter.load(input_file)
+    #contents = r"""{"type":"class","name":"classDiagram"}"""
+    #converter.load_data(contents)
     converter.dump(output_file)
