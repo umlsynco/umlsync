@@ -72,6 +72,9 @@ class SVGConnector(sw.container.Group):
     angle = math.pi / 8
     arrow_length = 15
 
+    # The method of connection point detection
+    # There is no fixed connection point
+    # all points are flexible
     def getRValue(self, x1, x2, w):
       diffx = x2-x1;
       if (diffx>0):
@@ -168,9 +171,9 @@ class SVGConnector(sw.container.Group):
                               end=(x3,y3),
                               stroke='black',
                               stroke_width=1)
-
         # keep dash style for the line, but not end figure
         self.add(line).dasharray(self.dasharray)
+
         line = sw.shapes.Line(start=(x3,y3),
                               end=(x4,y4),
                               stroke='black',
@@ -192,6 +195,68 @@ class SVGConnector(sw.container.Group):
                               stroke_width=1)
         self.add(line)
 
+    def draw_romb_arrow(self, p1, p2):
+      (x1, y1) = p1
+      (x2, y2) = p2
+      x = 10
+      dx = x2 -x1
+      dy = y2 -y1
+      gip = math.sqrt(dx*dx + dy*dy)
+
+      if gip<x:
+        return
+
+      return
+        
+    def draw_nested_arraw(self, p1, p2):
+      (x1, y1) = p1
+      (x2, y2) = p2
+      x = 10
+      dx = x2 -x1
+      dy = y2 -y1
+      gip = math.sqrt(dx*dx + dy*dy)
+
+      if gip<x:
+        return
+
+      sina = dy/gip
+      cosa = dx/gip
+      z = x-3
+      x3 = x2 - math.sqrt(x*x*3/4)*cosa
+      y3 = y2 - math.sqrt(x*x*3/4)*sina
+      x6 = x2 - math.sqrt(x*x*3)*cosa
+      y6 = y2 - math.sqrt(x*x*3)*sina
+      x4 = x3 + z * sina/2
+      y4 = y3 - z * cosa/2
+      x5 = x3 - z * sina/2
+      y5 = y3 + z * cosa/2
+      x31 = x2 - math.sqrt(z*z*3/4)*cosa
+      y31 = y2 - math.sqrt(z*z*3/4)*sina
+      x61 = x2 - math.sqrt(z*z*3)*cosa
+      y61 = y2 - math.sqrt(z*z*3)*sina
+
+      # draw line partially to the up to the figure
+      line = sw.shapes.Line(start=p1,
+                            end=(x6,y6),
+                            stroke='black',
+                            stroke_width=1)
+      self.add(line)
+
+#      Arc should be there !
+#      context2.moveTo(x3, y3);
+#      context2.arc(x3,y3, x/2, 0, Math.PI * 2, true);
+
+      line = sw.shapes.Line(start=(x4, y4),
+                            end=(x5,y5),
+                            stroke='black',
+                            stroke_width=1)
+      self.add(line)
+
+      line = sw.shapes.Line(start=(x31, y31),
+                            end=(x61,y61),
+                            stroke='black',
+                            stroke_width=1)
+      self.add(line)
 
     def draw_simple_arrow(self, p1, p2):
         # draw an arrow
