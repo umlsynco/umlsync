@@ -20,15 +20,50 @@ class SVGElementsManager():
             return SVGClass(info)
         if info.get("type") == "package":
             return SVGPackage(info)
-        if info.get("type") == "llport":
+        if info.get("type") == "llport" or info.get("type") == "port":
+            return SVGSimpleRect(info)
+        if info.get("type") == "instance":
             return SVGSimpleRect(info)
         if info.get("type") == "component":
-            return SVGSimpleRect(info)
+            return SVGComponent(info)
         if info.get("type") == "interface":
-            return SVGSimpleRect(info)
+            return SVGSimpleCircle(info)
         if info.get("type") == "objinstance":
             return SVGObjectInstance(info)
         return None
+
+class SVGSimpleCircle(sw.container.Group):
+    """
+    Simple rectangle Class element.
+    """
+
+    def __init__(self, properties):
+        self.style = "font-size:11px;font-family:Verdana,Arial,sans-serif;"
+        sw.container.Group.__init__(self)
+        # element including tab
+        self.x = float(properties["pageX"])
+        self.y = float(properties["pageY"])
+        self.width = float(properties["width"])
+        self.height = float(properties["height"])
+        # color
+        self.color = '#ECF3EC'
+        if properties.get("background-color"):
+            self.color = properties.get("background-color")
+        # extra info for connectors
+        self.right = self.x + self.width
+        self.bottom = self.y + self.height
+        self.center_x = self.x + self.width / 2.0
+        self.center_y = self.y + self.height-2
+        # draw the tab
+        body = sw.shapes.Circle(center=(self.center_x, self.center_y),
+                              r=self.width/2,
+                              fill=self.color, stroke='black', stroke_width=1)
+        self.add(body)
+        if properties.get("name") != None:
+          title = sw.text.Text(insert=(self.x + float(properties.get("nameX")), self.y + float(properties.get("nameY"))+ self.height-2),
+                               text=properties.get("name"),
+                               style=self.style)
+          self.add(title)
 
 class SVGSimpleRect(sw.container.Group):
     """
@@ -56,6 +91,42 @@ class SVGSimpleRect(sw.container.Group):
                               size=(self.width, self.height),
                               fill=self.color, stroke='black', stroke_width=1)
         self.add(body)
+
+class SVGComponent(SVGSimpleRect):
+  def __init__(self, properties):
+    SVGSimpleRect.__init__(self, properties)
+    pprint.pprint(properties)
+    self.style = "font-size:11px;font-family:Verdana,Arial,sans-serif;"
+    # Draw the component sign:
+    # width 14, height 17, indentation top 3, right 17
+    self.sign_x = self.x+self.width- 14 - 17 + 2
+    sign = sw.shapes.Rect(insert=(self.sign_x, self.y+5),
+                          size=(12,17),
+                          fill="white",
+                          stroke='black', stroke_width=1)
+    self.add(sign)
+    
+    sign = sw.shapes.Rect(insert=(self.sign_x-2, self.y+5+2+1),
+                          size=(7,4),
+                          fill="white",
+                          stroke='black', stroke_width=1)
+    self.add(sign)
+    
+    sign = sw.shapes.Rect(insert=(self.sign_x-2, self.y+5+2+1+7),
+                          size=(7,4),
+                          fill="white",
+                          stroke='black', stroke_width=1)
+    self.add(sign)
+    if properties.get("name") != None:
+      self.font_width = 6
+      self.center_x = self.x + self.width / 2.0
+      self.center_y = self.y + self.height / 2.0
+      align_x = (len(properties.get("name"))+1)*self.font_width/2
+      title = sw.text.Text(insert=(self.center_x - align_x, self.center_y),
+                           text=properties.get("name"),
+                           style=self.style)
+      self.add(title)
+
 
 class SVGObjectInstance(sw.container.Group):
     """
@@ -104,7 +175,7 @@ class SVGObjectInstance(sw.container.Group):
         align_x = (len(properties["name"])+1)*self.font_width/2
         # add caption
         title = sw.text.Text(insert=(self.center_x - align_x, self.center_y+self.font_height),
-                             text=properties["name"],
+                             text=":" + properties["name"],
                              style=self.style)
         self.add(caption)
         self.add(line).dasharray(self.dasharray)
@@ -258,7 +329,7 @@ class SVGConnector(sw.container.Group):
         else:
             self.dasharray = None
 
-        if properties["type"] == "dependency" or properties["type"] == "anchor" or properties["type"] == "association" or properties["type"] == "llsequence":
+        if properties["type"] == "dependency" or properties["type"] == "anchor" or properties["type"] == "association":
             self.draw_last_line = True
 
         self.from_id = properties["fromId"]
@@ -318,9 +389,9 @@ class SVGConnector(sw.container.Group):
         if connector == "anchor" or connector == "association":
             return
         # simple figure
-        if connector == "dependency" or connector == "llsequence" or connector == "llreturn":
+        if connector == "dependency" or connector == "llreturn":
             self.draw_simple_arrow(p1,p2)
-        if connector == "generalization":
+        if connector == "generalization" or connector == "llsequence":
             self.draw_triangle_arrow(p1,p2)
         if connector == "composition":
             self.draw_romb_arrow(p1,p2, "black")
