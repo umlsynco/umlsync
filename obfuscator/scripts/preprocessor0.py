@@ -24,10 +24,12 @@ def preprocess(infile, outfile, options):
   wf = open(outfile, 'wc')
   skeepNextLines = False
   options = "//@ifdef " + options
+  print options
   skeepOneLine = False
 
   for line in rf:
-    if "//@ifdef" in line:
+    if "//@ifdef" in line or "//@ifndef" in line:
+        print "found"
         skeepOneLine = True
         if options in line:
             skeepNextLines = False

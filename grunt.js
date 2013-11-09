@@ -47,7 +47,6 @@ dm/cs/composition.js   dm/cs/llsequence.js
   var viewerFiles = [
             'dm/dm/loader.js',
             'dm/ds/diagram.js',
-            'dm/hs/framework.js',
             'dm/es/class.js',
 /*            'dm/dm/loader.js',
             'dm/ds/base.js',
@@ -63,42 +62,25 @@ dm/cs/composition.js   dm/cs/llsequence.js
   // Project configuration.
    initProjectConfig = {
   'commandline': {
-      init_externals: {
-          cmd: "cp -f obfuscator/jquery_ext.js diagrammer/externals.js",
-      },
       create_dirs: {
-          cmd: "mkdir -p viewer && cp -rf diagrammer/* viewer/ && mkdir -p editor && cp -rf diagrammer/* editor/",
+          cmd: "mkdir -p viewer",
       },
       clean: {
-          cmd: "rm -rf viewer editor",
-      },
-      sync_viewer_externals: {
-        cmd: "cat externals_ext.js >> viewer/externals.js",
+          cmd: "rm -rf viewer",
       },
   },
   'pythonscript': {
   },
-  'closure-compiler': {
-  },
 
   concat: {
     dist: {
-      src: ['./diagrammer/dm/ds/diagram.js',
-            './diagrammer/dm/dm/loader.js',
-            './diagrammer/dm/ds/base.js',
-            './diagrammer/dm/hs/framework.js',
-            './diagrammer/dm/ms/us/us.js',
-            './diagrammer/dm/ms/ds/common.js',
-            './diagrammer/dm/es/*.js',
-            './diagrammer/dm/cs/*.js',
-            './diagrammer/dm/ms/ctx/default.js',
-            './diagrammer/dm/ms/ctx/class.js',
-            './diagrammer/dm/ms/ctx/connector.js'],
-      dest: 'diagrammer/built.js'
-    },
-    connectors: {
-      src: ['./diagrammer/dm/cs/*.js',],
-      dest: 'diagrammer/built_cont.js'
+      src: ['./viewer/dm/ds/diagram.js',
+            './viewer/dm/dm/loader.js',
+            './viewer/dm/ds/base.js',
+            './viewer/dm/es/*.js',
+            './viewer/dm/cs/*.js'
+            ],
+      dest: 'viewer/built.js'
     }
   },
   jshint: {
@@ -112,7 +94,7 @@ dm/cs/composition.js   dm/cs/llsequence.js
 
   var expandedListOfFiles = new Array();
 
-  for (p in editorFiles) {
+  for (p in viewerFiles) {
            var file = "editor/" + editorFiles[p],
             severalFiles = grunt.file.expandFiles(file);
           if (severalFiles.length > 0) {
@@ -124,7 +106,7 @@ dm/cs/composition.js   dm/cs/llsequence.js
 
   editorFiles = expandedListOfFiles;
 
-  var taskPP0 = "commandline:init_externals commandline:create_dirs";
+  var taskPP0 = "commandline:create_dirs";
 
   for (p in expandedListOfFiles) {
       var file = expandedListOfFiles[p],
@@ -136,42 +118,12 @@ dm/cs/composition.js   dm/cs/llsequence.js
         script: 'obfuscator/scripts/preprocessor0.py',
       };
 
-      // pre-processor target
-      initProjectConfig['pythonscript']["pre" + file] =  {
-        src: expandedListOfFiles[p],
-        dst: cutext + "pre.js",
-        script: 'obfuscator/scripts/preprocessor.py',
-      };
-
-      // post-processor target
-      initProjectConfig['pythonscript']["post" + file] =  {
-        src: cutext + "min.a.js",
-        dst: cutext + "min.js",
-        script: 'obfuscator/scripts/postprocessor0.py',
-      };
-
-      // closure compiler target
-      initProjectConfig['closure-compiler'][file] = {
-        closurePath: 'obfuscator/3pp-closure-compiler/',
-        js: cutext + "pre.js",
-        jsOutputFile: cutext + "min.a.js",
-        options: {
-            compilation_level: 'ADVANCED_OPTIMIZATIONS',
-            language_in: 'ECMASCRIPT5_STRICT',
-            externs: 'viewer/externals.js',
-        }
-      };
-
-      initProjectConfig['commandline'][file] = {
+/*      initProjectConfig['commandline'][file] = {
         cmd: 'cat ./obfuscator/license.txt > ' + file +' && cat ' + cutext + "min.js >> " + file
              + ' &&rm -f ' + cutext + "pre.js " + cutext + "min.a.js " + cutext + "min.js"
              + ' &&rm -f ' + cutext + "min.a.js.report.txt "
       };
-
-      defaultTasks += ' pythonscript:pre' + file;
-      defaultTasks += ' closure-compiler:' + file;
-      defaultTasks += ' pythonscript:post' + file;
-      defaultTasks += ' commandline:sync_viewer_externals';
+*/
       defaultTasks += ' commandline:' + file;
   }
 
@@ -181,11 +133,11 @@ dm/cs/composition.js   dm/cs/llsequence.js
   
   // Load tasks from "grunt-sample" grunt plugin installed via Npm.
   //grunt.loadNpmTasks('grunt-sample');
-  grunt.loadNpmTasks('grunt-closure-compiler');
+  //grunt.loadNpmTasks('grunt-closure-compiler');
 
   // Default task.
-  grunt.registerTask('editor', taskPP0);
-  grunt.registerTask('default', taskPP0 + defaultTasks);
+  grunt.registerTask('viewer', taskPP0);
+//  grunt.registerTask('default', taskPP0 + defaultTasks);
 
   // Clean task
   grunt.registerTask('clean', 'commandline:clean');

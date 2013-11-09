@@ -1,7 +1,6 @@
 /**
   *  
   */
-//@aspect
 (function( $, dm, undefined ) {
 
 dm.base.diagram("es.class", dm['es']['element'], {
@@ -23,6 +22,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       return auxmap[aux] || aux;
     },
+//@ifdef EDITOR
     handleTemplate: function() {
         var template = $("#" + this.euid + " .us-class-template");
         if (template.length != 0) {
@@ -133,6 +133,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
         e.stopPropagation(); // prevent class menu showing
         e.preventDefault();  // prevent default context menu showing
     },
+//@endif
     'addOperation': function(opt) {
       if (this.options['aux'] == "Enumeration")
         return;
@@ -141,11 +142,14 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
       // Ctrl-Z/Y support
       var old_id;
+//@ifdef EDITOR
       if (opt.id) {
         ld_id = opt.id;
         this.options.operations.splice(opt.idx, 0, opt.text);
       }
-      else {
+      else
+//@endif
+       {
         old_id  = ('operation-'+this.opN);
         ++this.opN;
         this.options.operations.push(opt.text);
@@ -167,9 +171,11 @@ dm.base.diagram("es.class", dm['es']['element'], {
        $op = $op.children("a");
 
        var hg = $op
+//@ifdef EDITOR
                  .bind('contextmenu', function(e) {
                     self.showContextMenu("#" + self.euid + " #" + this.id, e)
                  })
+//@endif
                  .height();
 
        dm.base.editable(this, $op, true);
@@ -185,7 +191,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
          this.options.height = h4;
          this.options.height_o += hg;
        }
-       
+//@ifdef EDITOR
        this.parrent.opman.startTransaction();
        this.parrent.opman.reportShort("+operation",
                                       this.euid,
@@ -197,7 +203,9 @@ dm.base.diagram("es.class", dm['es']['element'], {
                                         {height: h4});
        }
        this.parrent.opman.stopTransaction();
+//@endif
     },
+//@ifdef EDITOR
     'rmOperation': function(opt) {
        // selector is path to ul>li>a object
        if (opt.selector) {
@@ -233,14 +241,18 @@ dm.base.diagram("es.class", dm['es']['element'], {
         s1.insertBefore(s2);
       }
     },
+//@endif
     'addAttribute': function(opt) {
        if (this.options['aux'] == "Interface")
          return;
        var self = this;
        var old_attr;
+//@ifdef EDITOR
        if (opt.id) {
          old_attr = opt.id;
-       } else {
+       } else
+//@endif
+       {
          old_attr = 'attribute-'+this.atrN;
          ++this.atrN;
        }
@@ -256,6 +268,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
          $ch = $ch.appendTo("#" + this.euid + " .us-class-attributes .us-sortable");
        }
 
+//@ifdef EDITOR
        $ch.children("a")
        .bind('contextmenu', function(e) {
          self.showContextMenu("#" + self.euid + " #" + this.id, e)
@@ -263,6 +276,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
 
        // Common approach for editable
        dm.base.editable(this, $ch, true);
+//@endif
        var hg = $ch.height();
        
 
@@ -280,7 +294,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
          this.options.height_a = h4;
          this.options.height = $("#" + this.euid + "_Border").height();
        }
-
+//@ifdef EDITOR
        this.parrent.opman.startTransaction();
        this.parrent.opman.reportShort("+attribute",
                                       this.euid,
@@ -294,7 +308,9 @@ dm.base.diagram("es.class", dm['es']['element'], {
                                         {height_a: h4});
        }
        this.parrent.opman.stopTransaction();
+//@endif
     },
+//@ifdef EDITOR
     'rmAttribute': function(opt) {
        // selector is path to ul>li>a object
        if (opt.selector) {
@@ -361,6 +377,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
        });
        */
     },
+//@endif
     '_create': function() {
        var templ = "",
            aux = "";
@@ -407,6 +424,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
       
       this.element = $("#"  + this.euid);
 
+//@ifdef EDITOR
       this.element
       .children('#operation')
       .children("a")
@@ -420,6 +438,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
       .bind('contextmenu', function(e) {
         self.showContextMenu("#" + self.euid + " #" + this.id, e);
       });
+//@endif
     },
     '_init': function() {
         this._setOptions(this.options);
@@ -431,6 +450,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
          var border = "#"+this.euid + "_Border";
          var self = this;
          // stop-function is a fix for attributes area which became not resizizable with black points after internal resize usage
+//@ifdef EDITOR
          $("#"+this.euid + " .us-class-attributes")
          .resizable({'handles': 's-l',
                      'alsoResize': border,
@@ -473,7 +493,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
                   }
             }
         };
-        
+
          $("#" + this.euid + " .us-class-operations .us-sortable")
         .sortable(this.sortableHandler)
         .disableSelection()
@@ -501,6 +521,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
                     self.parrent.opman.reportShort("~"+id, self.euid, data["previous"], data["current"]);
                     return true;
                  }});
+//@endif
       }
     },
     _setOption2:function(key, value) {
@@ -536,7 +557,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
       }*/
       return false;
     },
-    
+//@ifdef EDITOR
     'getName': function() {
       this.options['name'] = "" + $("#" + this.euid + " .us-class-name" ).html();
       return this.options['name'];
@@ -544,6 +565,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'getAux': function() {
       return $("#" + this.euid + " .us-class-header .us-class-aux").html();
     },
+//@endif
     'ec': 0
 });
 

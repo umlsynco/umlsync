@@ -58,7 +58,7 @@ dm['at'] = dm.at; //automated testing
          return c[s]; 
       } );
   };
-
+//@ifdef EDITOR
   dm.base.opman = function(diagram) {
     this.queueLimit = 24; // Limit for count of operations.
     this.diagram = diagram;
@@ -75,6 +75,7 @@ dm['at'] = dm.at; //automated testing
     // last reported modificatoin state
     this.lastReportedState = false;
   }
+
 
   dm.base.opman.prototype = {
    startReporting: function() {
@@ -454,6 +455,7 @@ dm['at'] = dm.at; //automated testing
     this.notifyObserver(false);
   },
   };
+//@endif
 
   //@export:dm.base.diagram:plain
   dm.base.diagram = function( name, base, prototype ) {
@@ -726,6 +728,7 @@ dm['at'] = dm.at; //automated testing
     var iDiagram = this;
 
     $("#" + this.euid + ".us-diagram").scroll(function() {iDiagram.draw();});
+//@ifdef EDITOR
 	if ($("#" + this.canvasEuid).attr("init") != "true") {
 		$("#" + this.canvasEuid).droppable({
 		  drop: function( event, ui ) {
@@ -834,6 +837,7 @@ dm['at'] = dm.at; //automated testing
 		})
         .attr("init", "true");
     } 
+//@endif
     /** Canvas extra functionality handling:
      *   1. Hide resize GUI helpers on canvas click
      *   2. Position locator is debug functionality
@@ -880,6 +884,7 @@ dm['at'] = dm.at; //automated testing
       diag.draw();
       evt.stopPropagation();
     })
+//@ifdef EDITOR
     .mousemove(function(e) {  // DEBUG FUNCTIONALITY.
       var p = $(this).offset(),
       x = e.pageX - p.left,
@@ -930,7 +935,7 @@ dm['at'] = dm.at; //automated testing
         diag.multipleSelection = true; // work around to hide connector selection on click
       }
     })
-    
+//@endif
     ;
 
     // create an empty lists for connectors and elements
@@ -977,7 +982,7 @@ dm['at'] = dm.at; //automated testing
         }
       } // i
     });
-
+//@ifdef EDITOR
     this.opman = new dm.base.opman(this);
 
     if (this.options.force) {
@@ -997,10 +1002,9 @@ dm['at'] = dm.at; //automated testing
         self.canvas.height = y; 
       }, this);
     }
-
+//@endif
   },
-
-  
+//@ifdef EDITOR
   _update: function() {
     this.options['connectors'] = this.connectors;
     var i = 0;
@@ -1011,7 +1015,7 @@ dm['at'] = dm.at; //automated testing
     this.options['elements'] = this.elements;
 
   },
-    
+//@endif
   
   _init: function () {
     // It is necessary to init mouse over listener
@@ -1051,11 +1055,13 @@ dm['at'] = dm.at; //automated testing
     dm['dm']['loader']['Element'](type, options, this, function(obj) {
       if (obj != undefined)
         self.elements[obj.euid] = obj;
-
+//@ifdef EDITOR
       self.opman.reportShort("add", obj.euid, true);
+//@endif
       if (callback)
         callback(obj);
     });
+//@ifdef EDITOR
     // If it is editable diagram
     if (this.options['editable']) {
       // Load the context menu for element
@@ -1068,6 +1074,7 @@ dm['at'] = dm.at; //automated testing
       if ((this.menuIcon != undefined) && (options['menu'] != undefined))
         this.menuIcon['load'](options['menu']);
     }
+//@endif
     return options.euid;
   },
 
@@ -1126,6 +1133,7 @@ dm['at'] = dm.at; //automated testing
         }
       this.max_zindex = newmax + 1;
     }
+//@ifdef EDITOR
     else if (key == "editable") {
       if (this.options[key] != value) {
         this.options[key] = value;
@@ -1143,6 +1151,7 @@ dm['at'] = dm.at; //automated testing
         }
       }
     }
+//@endif
     else {
       var isSel = ("selected" != key);
       isSel && this.opman.startTransaction();
@@ -1170,7 +1179,9 @@ dm['at'] = dm.at; //automated testing
                 opa);
           };
         }
+//@ifdef EDITOR
       isSel && this.opman.stopTransaction();
+//@endif
     }
 
     this.draw(); // work-around to re-draw connectors after options update
@@ -1180,7 +1191,7 @@ dm['at'] = dm.at; //automated testing
    * \class Function.
    * TODO: think about lifeline diagram
    */
-  
+//@ifdef EDITOR
   checkdrop: function(x,y) {
     for (var d in this.elements) {
       var p = $("#" + this.elements[d].euid + "_Border").position();
@@ -1326,7 +1337,7 @@ dm['at'] = dm.at; //automated testing
       delete this.removedElements[euid];
     }
   },
-    
+//@endif
 
   /**
    * \class Function.
@@ -1345,7 +1356,9 @@ dm['at'] = dm.at; //automated testing
         self.connectors[connector.euid] = connector;
         if (connector.options.toId != 'ConnectionHelper') {
           $.log("REPORT: " + connector.options.toId + "   FROM : " + connector.options.fromId);
+//@ifdef EDITOR
           self.opman.reportShort("add", connector.euid, false);
+//@endif
         }
 
         self.draw();
@@ -1355,7 +1368,7 @@ dm['at'] = dm.at; //automated testing
     });
   },
 
-  
+//@ifdef EDITOR
   _dropConnector: function(ui) {
     var result = undefined,
     scrollLeft = $("#" + this.euid).scrollLeft(),
@@ -1506,6 +1519,8 @@ dm['at'] = dm.at; //automated testing
 
     this.opman.stopTransaction();
   },
+//@endif
+
   /**
    * \class Function.
    * Clear the canvas rectangle and re-draw
@@ -1590,7 +1605,7 @@ dm['at'] = dm.at; //automated testing
 
     return false;
   },
-
+//@ifdef EDITOR
   /**
    * \class Function.
    * The connector transfomation function.
@@ -1697,8 +1712,10 @@ dm['at'] = dm.at; //automated testing
     // Save the current position
     this.opman.saveNewPosition();
   }
+//@endif
   });
 
+//@ifdef EDITOR
     //
     // Helper method which implements a common approach for
     // editable element
@@ -1750,6 +1767,7 @@ dm['at'] = dm.at; //automated testing
       }});
       });
     };
+//@endif
 
 //  Global elements counter
 //  Entroduced to avoid side-effecst because of
@@ -1836,12 +1854,12 @@ dm['at'] = dm.at; //automated testing
       }
 
       $(this.element).wrap('<div id="' + this.euid + '_Border"' + poz + ' class="us-element-border"></div>');
-
+//@ifdef EDITOR
       // Setup menu attribute for automated testing
       if (this.options.menu) {
         $("#" + this.euid + "_Border").attr("menu", this.options.menu);
       }
-
+//@endif
       var parrentClass = this.parrent;
       var self = this;
       self.highlighted = false;
@@ -1854,6 +1872,7 @@ dm['at'] = dm.at; //automated testing
       
       var axis111 = this.options['axis'] || false;
       var elmt = $('#' + this.euid  + '_Border')
+//@ifdef EDITOR
       .resizable({
         'containment': "#" + this.parrent.euid,// to prevent jumping of element on resize start
         'scroll': true,
@@ -2003,6 +2022,7 @@ dm['at'] = dm.at; //automated testing
             self.parrent.menuCtx['visit'](self, e.pageX , e.pageY );
         }
       })
+//@endif
       .css({'position':'absolute'})
       .css('top', this.options['pageY'])
       .css('left', this.options['pageX']);
@@ -2014,9 +2034,11 @@ dm['at'] = dm.at; //automated testing
       // You need to select element to start DND
       $('#'+this.euid)
       .click(self,function(event) {
+//@ifdef EDITOR
         var element = event.data;
         element.parrent._mouseClick(element, element.options['menu']);
         event.stopPropagation();
+//@endif
         // Hide previous references
          $("#" + element.parrent.euid + " .us-references").hide();
       })       
@@ -2034,7 +2056,7 @@ dm['at'] = dm.at; //automated testing
           && (element.options.subdiagrams || element.options.references.length != 0)) {
           $('#' + this.id +'_REF').css({'visibility':'visible'});
         }
-    
+//@ifdef EDITOR
         // Show the  menu if element was selected
         if (element.parrent.menuIcon
           && element.options.selected
@@ -2042,7 +2064,7 @@ dm['at'] = dm.at; //automated testing
           element.parrent.menuIcon['Show'](this.id, element);
           $('#' + this.id +'_REF').css({'visibility':'visible'});
         }
-    
+//@endif
         //$(".elmenu-" + self.menutype).stop().animate({opacity:"1"});;
       })
       .mouseleave(self, function (event){
@@ -2053,12 +2075,13 @@ dm['at'] = dm.at; //automated testing
           $bw.css({'border-width':'0px'}).css({left:'+=' + bw, top:'+='+bw});
           element.highlighted = false;
         }
-
+//@ifdef EDITOR
         //Check if this.euid is the same as selected
         if (element.parrent.menuIcon
           && element.parrent.options.editable) {
           element.parrent.menuIcon['Hide'](this.id);
         }
+//@endif
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
 
       })
@@ -2077,7 +2100,7 @@ dm['at'] = dm.at; //automated testing
       .click(function(e) {
         e.stopPropagation();
       });
-      
+//@ifdef EDITOR
       $('#' + this.euid + "_Border #reference-new a").editable({onSubmit:function(data){
          if (data["current"] == data["previous"])
             return;
@@ -2090,6 +2113,8 @@ dm['at'] = dm.at; //automated testing
           return true;
         }
       });
+//@endif
+
 /*
       $('#' + this.euid  + '_Border .us-references ul li a').bind("click", self, function(event) {
         var element = event.data;
@@ -2121,6 +2146,7 @@ dm['at'] = dm.at; //automated testing
         });
       }
 
+//@ifdef EDITOR
       // enable editable fields
       // if this diagram is editable
       dm.base.editable(this, $("#" + this.euid + " .editablefield"));
@@ -2132,7 +2158,7 @@ dm['at'] = dm.at; //automated testing
 			     $(item).editable("disable");
 			   });
       }
-
+//@endif
       if (this.options['color']) 
         this._setOption("color", this.options['color']);
 
@@ -2150,10 +2176,13 @@ dm['at'] = dm.at; //automated testing
       var self = this;
       
       var old_attr;
+//@ifdef EDITOR
       if (opt.id) {
         old_attr = opt.id;
         self.options.references.splice(opt.idx, 0, opt.text);
-      } else {
+      } else
+//@endif
+      {
         old_attr = 'reference-'+this.refN;
         ++this.refN;
 
@@ -2175,7 +2204,7 @@ dm['at'] = dm.at; //automated testing
          else {
            $ch = $ch.appendTo("#" + self.euid + "_Border div.us-references ul");
          }
-
+//@ifdef EDITOR
          $ch.children("A").children("span.ui-icon-close").bind("click", self, function(event) {
               var element = event.data;
               if (element.parrent.options.editable) {
@@ -2184,7 +2213,7 @@ dm['at'] = dm.at; //automated testing
               }
 
          });
-
+//@endif
          $ch = $ch.children("A.reference")
             .bind("click", self, function(event) {
               var element = event.data;
@@ -2195,7 +2224,7 @@ dm['at'] = dm.at; //automated testing
             });
 
 
-
+//@ifdef EDITOR
        // Common approach for editable
        dm.base.editable(this, $ch, true, 1);
 
@@ -2210,7 +2239,9 @@ dm['at'] = dm.at; //automated testing
                                         id: old_attr});
          this.parrent.opman.stopTransaction();
        }
+//@endif
     },
+//@ifdef EDITOR
     'rmReference': function(opt) {
        // selector is path to ul>li>a object
        if (opt.selector) {
@@ -2238,12 +2269,16 @@ dm['at'] = dm.at; //automated testing
        }
 
     },
+//@endif
     _setOption: function( key, value ) {
       var old_val  = this.options[ key ];
 
       if (this._setOption2 != undefined && this._setOption2(key, value)) {
         // redefine the base options in inherited class
-      } else if (key == "editable") {
+      }
+//@ifdef EDITOR
+      else if (key == "editable") {
+
         $('#' + this.euid  + '_Border')
         .resizable("option", "disabled", !value)
         .draggable("option", "disabled", !value);
@@ -2257,7 +2292,9 @@ dm['at'] = dm.at; //automated testing
           $("#" + this.euid + "_Border #reference-new").css("display", value ? "block":"none");//css("visibility", value ?  "visible":"hidden");
         }
 
-      } else if (key == "font-color") {
+      }
+//@endif
+       else if (key == "font-color") {
         $("#" + this.euid + "_Border.us-element-border a").css("color", value);
       } else if (key == "left") {
         $("#" + this.euid + "_Border").css(key, value);
@@ -2304,7 +2341,7 @@ dm['at'] = dm.at; //automated testing
       this.options[ key ] = value;
     },
     
-    
+//@ifdef EDITOR
     onDragStart: function(ui, skipDropped) {
 
       if (this.options.dragStart != undefined)
@@ -2370,7 +2407,7 @@ dm['at'] = dm.at; //automated testing
       delete this.options.dragStart;
       delete this.start_operation;            
     }
-
+//@endif
     });
 
     
@@ -2396,6 +2433,7 @@ dm['at'] = dm.at; //automated testing
       .appendTo("#" + this.parrent.euid)
       .css("left", opt.left)
       .css("top", opt.top)
+//@ifdef EDITOR
       .draggable({
         start: function(event, ui) {
         $(this).data('startPosition', ui.helper.position());
@@ -2423,15 +2461,16 @@ dm['at'] = dm.at; //automated testing
         return true;
       }
       })
+//@endif
       .mouseenter(function() {self.options.selected = true;
       self.parrent.draw();
       for (var i in self.labels) 
         $(self.labels[i]).addClass("us-connector-hover")})
-        .mouseleave(function (){self.options.selected = false;
+      .mouseleave(function (){self.options.selected = false;
         self.parrent.draw();
         for (var i in self.labels) 
           $(self.labels[i]).removeClass("us-connector-hover")});
-    
+//@ifdef EDITOR
       if (opt.idx) {
         // add label to the special place in array
         this.labels.splice(opt.idx, 0, $item);
@@ -2446,7 +2485,9 @@ dm['at'] = dm.at; //automated testing
            text: opt.text,
            lid:lid
           });
+//@endif
     },
+//@ifdef EDITOR
     rmLabel: function(opt) {
       var l = this.labels[opt.idx];
       this.parrent.opman.reportShort("-label", this.euid, {idx:opt.idx, left:l.css("left"), top:l.css("top")});
@@ -2496,7 +2537,7 @@ dm['at'] = dm.at; //automated testing
       item +=  '}';
       return item; 
     },
-
+//@endif
     _setOption: function( key, value ) {
       if (value == undefined) {
         delete this.options[ key ];
@@ -2513,6 +2554,7 @@ dm['at'] = dm.at; //automated testing
           this.labels[i].css({left:value[i][0], top: value[i][1]});
         }       
       }
+//@ifdef EDITOR
       else if (key == "editable") {
          for (var i in this.labels) {
            $.each(this.labels[i],
@@ -2522,6 +2564,7 @@ dm['at'] = dm.at; //automated testing
 			 });
          }
       }
+//@endif
       else {
         this.options[ key ] = value;
       }
@@ -2684,7 +2727,7 @@ dm['at'] = dm.at; //automated testing
         return true;
       return false;
     },
-            
+//@ifdef EDITOR
     startTransform: function(x1,y1) {
       if (!this.parrent.options.editable)
         return;
@@ -2828,7 +2871,7 @@ dm['at'] = dm.at; //automated testing
       }
     },
 
-    
+//@endif
     _getConnectionPoints: function(fromId, toId, epoints) {
 
       var p1 = $('#'+ fromId).position();
@@ -2883,6 +2926,7 @@ dm['at'] = dm.at; //automated testing
         return newpoints;
       }
     },
+//@ifdef EDITOR
     onDragStart: function(ui) {
       if (this.epoints.length > 0) {
 
@@ -2935,6 +2979,6 @@ dm['at'] = dm.at; //automated testing
       delete this.epoints_drag;
       delete this.labels_drag;
     }
-
+//@endif
     });
 })(jQuery, dm);
