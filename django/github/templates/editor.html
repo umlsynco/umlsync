@@ -35,7 +35,6 @@
   <script src="/static/js/3pp/base64/jquery.base64.js"></script>
   <script type="text/javascript" src="/static/js/3pp/jquery-fieldselection/jquery-fieldselection.js"></script>
   <style>
-    body { font-size: 62.5%; }
     label, input { display: inline; }
     fieldset { padding:0; border:0; margin-top:5px; }
     h1 { font-size: 1.2em; margin: .6em 0; }
@@ -105,10 +104,11 @@
           'Select All':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 65; $(window).trigger(e); }},
         },
         'Views':{
-//          'Google code':{handler: function(){          }},
-//          'Sourceforege':{handler: function(){          }},
           'Github':{handler: function(){          }},
           'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
+//          'BitBucket':{handler: function(){          }},
+//          'Google code':{handler: function(){          }},
+//          'Sourceforege':{handler: function(){          }},
         }
     },
     prefix: "file-menu"});
@@ -138,11 +138,13 @@
   <ul id="header-menu" class="header-menu-left"></ul>
   </div>
   <div>
-    <ul class="header-menu-right">
-        <li><a href="http://http://umlsync.org/">Log out</a></li>
-        <li><a href="http://127.0.0.1:8000/about">About</a></li>
-        <li><a href="#">Settings </a></li>
-        <li><a href="#">Report a bug</a></li>
+    <ul id="user-links" class="header-menu-right">
+        <li class="us-head-menu-separator">&nbsp;</li>
+        <li><a class="name" href="https://github.com/{{ user }}"><img height="20" width="20" src="{{ avatar }}"/>{{ user }}</a></li>
+        <li class="us-head-menu-separator">&nbsp;</li>
+        <li><a href="http://umlsync.org/logout">Log out</a></li>
+        <li class="us-head-menu-separator">&nbsp;</li>
+        <li><a id="us-fw-user-settings" href="http://github.com/umlsynco/diagrams/issues">Report a bug</a></li>
     </ul>
   </div>
   </div>

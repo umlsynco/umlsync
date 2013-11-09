@@ -1,6 +1,6 @@
 body {
-  font-family: sans-serif, Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
-  font-size: 11px;
+  font-family: Helvetica,arial,freesans,clean,sans-serif;
+  font-size: 13px;
   color: #666666; 
   width: 100%;
   height: 100%;
@@ -1044,11 +1044,11 @@ span.cfolder span.dynatree-icon {
   cursor:pointer;
 }
 
-.us-diagram-toolbox  a {
-  border-radius: 0 2px 2px 0;
+.us-diagram-toolbox a {
   min-width: 20px;
   padding: 5px;
-  background-color: #F5F5F5;
+  background-color: #9daa9d;
+  border-radius:0 0 4px 4px;
   background-image: -moz-linear-gradient(center top , #F5F5F5, #F1F1F1);
   border: 1px solid rgba(0, 0, 0, 0.1);
   color: #444444;
@@ -1134,6 +1134,13 @@ span.cfolder span.dynatree-icon {
     width: 16px;
 }
 
+.us-head-menu-separator {
+  background-color: #CCCCCC;
+  height: 16px;
+  margin: 0 10px;
+  overflow: hidden;
+  width: 1px;
+}
 
 .us-toolbox-separator {
   background-color: #CCCCCC;
@@ -1258,4 +1265,16 @@ div.color-picker {
 
 .us-view-mode div.us-references .ui-icon-close {
   display: none;
+}
+
+
+#user-links .name img {
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 0 #FFFFFF;
+    margin: -2px 5px 0 0;
+    border: 0 none;
+}
+
+#user-links {
+  font-weight: bold;
 }

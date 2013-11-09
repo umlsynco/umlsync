@@ -162,6 +162,11 @@ GITHUB_API_SECRET = 'cacef225c2e332b31791bc6e8ddfd7078a3690c0' #os.environ['GITH
 
 GITHUB_EXTENDED_PERMISSIONS = ['repo']
 
+GITHUB_EXTRA_DATA = [
+    ('avatar_url', 'avatar'),
+    ('name', 'name'),
+]
+
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/editor/'
 LOGIN_ERROR_URL = '/login-error/'

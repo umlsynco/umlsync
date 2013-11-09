@@ -137,6 +137,19 @@ def get_access_token(user):
 
     return access_token
 
+def get_gravatar(user):
+   gravatar = None
+   try:
+       social_user = user.social_user if hasattr(user, 'avatar') \
+           else UserSocialAuth.objects.get(user=user.id,
+                                           provider=GithubBackend.name)
+   except UserSocialAuth.DoesNotExist:
+       return None
+
+   if social_user.extra_data:
+      gravatar = social_user.extra_data.get('avatar')
+
+   return gravatar
 
 # Facebook decorator to setup environment
 def facebook_decorator(func):
@@ -184,5 +197,6 @@ def editor2(request, *args, **kwargs):
 
     return render_to_response('editor.html',
                               {'warning': request.method == 'GET',
-                               'access_token': get_access_token(request.user)},
+                               'access_token': get_access_token(request.user),
+                               'avatar': get_gravatar(request.user)},
                               RequestContext(request))
