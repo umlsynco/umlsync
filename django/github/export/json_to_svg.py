@@ -7,6 +7,71 @@ import pprint
 from optparse import OptionParser
 import svgwrite as sw
 
+class SVGElementsManager():
+    """
+    Handling the diagram.io elements.
+    """
+    def __init__(self):
+        """
+        nothing special to init
+        """
+    def draw_element(self, info):
+        if info.get("type") == "class":
+            return SVGClass(info)
+        if info.get("type") == "package":
+            return SVGPackage(info)
+        return None
+
+class SVGPackage(sw.container.Group):
+    """
+    Represent Class element grouping several SVG primitives.
+    """
+
+    def __init__(self, properties):
+        sw.container.Group.__init__(self)
+        # font settings
+        self.style = "font-size:11px;font-family:Verdana,Arial,sans-serif;"
+        self.font_height = 11
+        self.font_line_space = 2
+        self.font_width = 6
+        self.text_height = self.font_height + self.font_line_space
+        # element including tab
+        self.x = float(properties["pageX"])
+        self.y = float(properties["pageY"])
+        self.width = float(properties["width"])
+        self.height = float(properties["height"])
+        # header tab
+        self.tab_width = self.width * 0.15
+        self.tab_height = 20
+        # color
+        self.color = '#ECF3EC'
+        if properties.get("color"):
+            self.color = properties.get("color")
+
+        # extra info for connectors
+        self.right = self.x + self.width
+        self.bottom = self.y + self.height
+        # draw the tab
+        tab = sw.shapes.Rect(insert=(self.x, self.y),
+                             size=(self.tab_width, self.tab_height),
+                             fill=self.color, stroke='black', stroke_width=1)
+        # draw package body
+        body = sw.shapes.Rect(insert=(self.x, self.y+self.tab_height),
+                              size=(self.width, self.height-self.tab_height-2),
+                              fill=self.color, stroke='black', stroke_width=1)
+        self.center_x = self.x + self.width / 2.0
+        self.center_y = self.y + self.height / 2.0
+        align_x = (len(properties["name"])+1)*self.font_width/2
+        # add caption
+        title = sw.text.Text(insert=(self.center_x - align_x, self.y+self.tab_height+self.font_height),
+                             text=properties["name"],
+                             style=self.style)
+        self.add(tab)
+        self.add(body)
+        self.add(title)
+
+    def get_coords(self):
+        pass
 
 class SVGClass(sw.container.Group):
     """
@@ -14,6 +79,8 @@ class SVGClass(sw.container.Group):
     """
 
     def __init__(self, properties):
+        sw.container.Group.__init__(self)
+
         self.style = "font-size:13px; font-family:Verdana,Arial,sans-serif;"
         self.font_height = 13
         self.font_line_space = 2
@@ -21,7 +88,6 @@ class SVGClass(sw.container.Group):
         self.text_height = self.font_height + self.font_line_space
         self.caption_height = 20
 
-        sw.container.Group.__init__(self)
         self.x = float(properties["pageX"])
         self.y = float(properties["pageY"])
         self.width = float(properties["width"])
@@ -30,15 +96,20 @@ class SVGClass(sw.container.Group):
         self.height_o = float(properties["height_o"])
         self.right = self.x + self.width
         self.bottom = self.y + self.height
+        # color
+        self.color = '#ECF3EC'
+        if properties.get("color"):
+            self.color = properties.get("color")
+        # Drawing
         body = sw.shapes.Rect(insert=(self.x, self.y),
                               size=(self.width, self.height),
-                              fill='#ECF3EC', stroke='black', stroke_width=1)
+                              fill=self.color, stroke='black', stroke_width=1)
         caption = sw.shapes.Rect(insert=(self.x, self.y),
                                  size=(self.width, self.caption_height),
-                                 fill='#ECF3EC', stroke='black', stroke_width=1)
+                                 fill=self.color, stroke='black', stroke_width=1)
         fields  = sw.shapes.Rect(insert=(self.x, self.y + self.height_a),
                                  size=(self.width, self.caption_height),
-                                 fill='#ECF3EC', stroke='black', stroke_width=1)
+                                 fill=self.color, stroke='black', stroke_width=1)
         self.center_x = self.x + self.width / 2.0
         self.center_y = self.y + self.height / 2.0
         align_x = len(properties["name"])*self.font_width/2
@@ -312,6 +383,7 @@ class SVGConnector(sw.container.Group):
 
 class CustomJSONtoSVGConverter:
     def __init__(self):
+        self.element_manager = SVGElementsManager()
         pass
 
     def load(self, filename):
@@ -331,10 +403,10 @@ class CustomJSONtoSVGConverter:
         if self.json_data.get("elements") != None:
           for element in self.json_data["elements"]:
             print element["type"]
-            if element["type"] == "class":
-                svg_class = SVGClass(element)
-                elements[element["id"]] = svg_class
-                dwg.add(svg_class)
+            if element.get("type") != None:
+                svg_element = self.element_manager.draw_element(element)
+                elements[element["id"]] = svg_element
+                dwg.add(svg_element)
 
         if self.json_data.get("connectors"):
           for connector in self.json_data["connectors"]:
