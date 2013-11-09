@@ -51,7 +51,6 @@ class SVGClass(sw.container.Group):
         self.add(fields)
         for i, attribute in enumerate(properties["attributes"]):
             text_start = (self.x + 5, self.y + self.caption_height + self.text_height * i)
-            pprint.pprint(text_start)
             text = sw.text.Text(insert=text_start,
                                 text=attribute,
                                 style=self.style)
@@ -85,12 +84,11 @@ class SVGConnector(sw.container.Group):
 
     def __init__(self, properties, start, end):
         sw.container.Group.__init__(self)
-
+        self.style = "font-size:13px; font-family:Verdana,Arial,sans-serif;"
         self.draw_last_line = False
         pprint.pprint(properties["type"])
 
         if properties["type"] == "dependency" or properties["type"] == "realization" or properties["type"] == "anchor":
-            pprint.pprint("DEPENDENCY")
             self.dasharray = [7,3]
         else:
             self.dasharray = None
@@ -137,13 +135,32 @@ class SVGConnector(sw.container.Group):
                                       stroke_width=1)
                 self.add(line).dasharray(self.dasharray)
 
+        if len(properties["labels"])>0:
+          for l in range(len(properties["labels"])):
+            self.draw_label(properties["labels"][l])
+
+    def draw_label(self, label):
+      title = sw.text.Text(insert=(float(label["x"]), float(label["y"])+20),
+                           text=label["name"],
+                           style=self.style)
+
+      pprint.pprint(label)
+
+      self.add(title)
+
     def draw_arrow(self, connector, p1, p2):
-        if connector == "dependency" or connector == "llsequence" or connector == "llreturn":
-            self.draw_simple_arrow(p1,p2)
+        # No arrow figure required
         if connector == "anchor" or connector == "association":
             return
+        # simple figure
+        if connector == "dependency" or connector == "llsequence" or connector == "llreturn":
+            self.draw_simple_arrow(p1,p2)
         if connector == "generalization":
             self.draw_triangle_arrow(p1,p2)
+        if connector == "composition":
+            self.draw_romb_arrow(p1,p2, "black")
+        if connector == "aggregation":
+            self.draw_romb_arrow(p1,p2, "white")
 
     def draw_triangle_arrow(self, p1, p2):
         (x1, y1) = p1
@@ -174,28 +191,14 @@ class SVGConnector(sw.container.Group):
         # keep dash style for the line, but not end figure
         self.add(line).dasharray(self.dasharray)
 
-        line = sw.shapes.Line(start=(x3,y3),
-                              end=(x4,y4),
+        # Draw the figure !
+        poly = sw.shapes.Polyline([(x3,y3),(x4,y4),(x2,y2),(x5,y5),(x3,y3)],
                               stroke='black',
+                              fill="white",
                               stroke_width=1)
-        self.add(line)
-        line = sw.shapes.Line(start=(x4,y4),
-                              end=(x2,y2),
-                              stroke='black',
-                              stroke_width=1)
-        self.add(line)
-        line = sw.shapes.Line(start=(x2,y2),
-                              end=(x5,y5),
-                              stroke='black',
-                              stroke_width=1)
-        self.add(line)
-        line = sw.shapes.Line(start=(x5,y5),
-                              end=(x3,y3),
-                              stroke='black',
-                              stroke_width=1)
-        self.add(line)
+        self.add(poly)
 
-    def draw_romb_arrow(self, p1, p2):
+    def draw_romb_arrow(self, p1, p2, color):
       (x1, y1) = p1
       (x2, y2) = p2
       x = 10
@@ -206,8 +209,31 @@ class SVGConnector(sw.container.Group):
       if gip<x:
         return
 
-      return
-        
+      sina = dy/gip
+      cosa = dx/gip
+      x3 = x2 - math.sqrt(x*x*3/4)*cosa
+      y3 = y2 - math.sqrt(x*x*3/4)*sina
+      x6 = x2 - math.sqrt(x*x*3)*cosa
+      y6 = y2 - math.sqrt(x*x*3)*sina
+      x4 = x3 + x * sina/2
+      y4 = y3 - x * cosa/2
+      x5 = x3 - x * sina/2
+      y5 = y3 + x * cosa/2
+
+      # draw line partially to the up to the figure
+      line = sw.shapes.Line(start=p1,
+                            end=(x6,y6),
+                            stroke='black',
+                            stroke_width=1)
+      self.add(line)
+
+      # Draw the romb figure
+      poly = sw.shapes.Polygon([(x6,y6),(x4,y4),(x2,y2),(x5,y5),(x6,y6)],
+                               stroke='black',
+                               fill=color,
+                               stroke_width=1)
+      self.add(poly)
+
     def draw_nested_arraw(self, p1, p2):
       (x1, y1) = p1
       (x2, y2) = p2
@@ -242,9 +268,8 @@ class SVGConnector(sw.container.Group):
                             stroke_width=1)
       self.add(line)
 
-#      Arc should be there !
-#      context2.moveTo(x3, y3);
-#      context2.arc(x3,y3, x/2, 0, Math.PI * 2, true);
+      circle = sw.shapes.Circle(center=(x3,y3), r=x(0.5))
+      self.add(circle)
 
       line = sw.shapes.Line(start=(x4, y4),
                             end=(x5,y5),
