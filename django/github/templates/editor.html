@@ -140,11 +140,11 @@
   <div>
     <ul id="user-links" class="header-menu-right">
         <li class="us-head-menu-separator">&nbsp;</li>
-        <li><a class="name" href="https://github.com/{{ user }}"><img height="20" width="20" src="{{ avatar }}"/>{{ user }}</a></li>
+        <li><a class="name" href="https://github.com/{{ user }}" target="_blank"><img height="20" width="20" src="{{ avatar }}"/>{{ user }}</a></li>
         <li class="us-head-menu-separator">&nbsp;</li>
-        <li><a href="http://umlsync.org/logout">Log out</a></li>
+        <li><a href="{% url socialauth_disconnect 'github' %}?next=/">Log out</a></li>
         <li class="us-head-menu-separator">&nbsp;</li>
-        <li><a id="us-fw-user-settings" href="http://github.com/umlsynco/diagrams/issues">Report a bug</a></li>
+        <li><a id="us-fw-user-settings" href="http://github.com/umlsynco/diagrams/issues" target="_blank">Report a bug</a></li>
     </ul>
   </div>
   </div>

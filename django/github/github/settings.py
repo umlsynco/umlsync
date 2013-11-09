@@ -152,6 +152,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
     'social_auth.context_processors.social_auth_backends',
+    'social_auth.context_processors.social_auth_by_name_backends',
+    'social_auth.context_processors.social_auth_by_type_backends',
 )
 
 SOCIAL_AUTH_ENABLED_BACKENDS = ('github',)

@@ -11,7 +11,7 @@ from django.views.generic import RedirectView
 urlpatterns = patterns('',
     url(r'', include('social_auth.urls')),
     url(r'^login/', RedirectView.as_view(url='/login/github/')),
-    url(r'^$', 'editor.views.editor', name='editor.html'),
+    url(r'^$', 'editor.views.index3', name='index3.html'),
     url(r'^editor/', 'editor.views.editor2', name='editor.html'),
     url(r'^login-error/', 'editor.views.error', name='editor.html'),
     url(r'^export/', 'editor.views.export'),

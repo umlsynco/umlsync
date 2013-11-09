@@ -178,6 +178,9 @@ def facebook_decorator(func):
 
     return wrapper
 
+def index3(request, *args, **kwargs):
+    return render_to_response('index3.h',{}, RequestContext(request))
+
 
 @login_required
 @csrf_exempt

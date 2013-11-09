@@ -15,7 +15,7 @@
   </style>    
 </head>
 <body>
-<a href="{% url 'socialauth_begin' 'github' %}">Login with GitHub</a>
+<a href="{% url socialauth_begin 'github' %}?next=/editor/">Login with GitHub</a>
 <div style="width:800px; margin:0 auto;">
 <img src="./blackboard4.jpg"/>
 </div>
