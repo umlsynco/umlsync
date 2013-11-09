@@ -125,7 +125,7 @@ class SVGConnector(sw.container.Group):
 
         for i in range(len(points) - 1):
             if i == len(points) - 2:
-                self.draw_arrow(points[i], points[i+1])
+                self.draw_arrow(properties["type"], points[i], points[i+1])
 
             if self.draw_last_line or i != len(points) - 2:
                 line = sw.shapes.Line(start=points[i],
@@ -147,7 +147,7 @@ class SVGConnector(sw.container.Group):
         (x2, y2) = p2
         x = 10
         dx = x2 -x1
-        dy = y2 -y1,
+        dy = y2 -y1
         gip = math.sqrt(dx*dx + dy*dy)
 
         if gip<x:
@@ -164,18 +164,13 @@ class SVGConnector(sw.container.Group):
         x5 = x3 - x * sina/2
         y5 = y3 + x * cosa/2
 
-        c.moveTo(x1, y1);
-        c.lineTo(x3, y3);
-            c.lineTo(x4, y4);
-            c.lineTo(x2, y2);
-            c.lineTo(x5, y5);
-            c.lineTo(x3, y3);
-
         line = sw.shapes.Line(start=p1,
                               end=(x3,y3),
                               stroke='black',
                               stroke_width=1)
-        self.add(line)
+
+        # keep dash style for the line, but not end figure
+        self.add(line).dasharray(self.dasharray)
         line = sw.shapes.Line(start=(x3,y3),
                               end=(x4,y4),
                               stroke='black',
