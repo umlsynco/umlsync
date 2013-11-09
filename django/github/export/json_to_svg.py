@@ -27,7 +27,7 @@ class SVGElementsManager():
         if info.get("type") == "interface":
             return SVGSimpleRect(info)
         if info.get("type") == "objinstance":
-            return SVGPackage(info)
+            return SVGObjectInstance(info)
         return None
 
 class SVGSimpleRect(sw.container.Group):
@@ -49,6 +49,8 @@ class SVGSimpleRect(sw.container.Group):
         # extra info for connectors
         self.right = self.x + self.width
         self.bottom = self.y + self.height
+        self.center_x = self.x + self.width / 2.0
+        self.center_y = self.y + self.height / 2.0
         # draw the tab
         body = sw.shapes.Rect(insert=(self.x, self.y),
                               size=(self.width, self.height),
@@ -71,8 +73,12 @@ class SVGObjectInstance(sw.container.Group):
         # element including tab
         self.x = float(properties["pageX"])
         self.y = float(properties["pageY"])
-        self.width = float(properties["width"])
-        self.height = float(properties["height"])
+        self.width = 150
+        if properties.get("width"):
+            self.width = float(properties["width"])
+        self.height = 400
+        if properties.get("height"):
+            self.height = float(properties["height"])
         # Caption parameters
         self.caption_height = 40
         # color
@@ -84,12 +90,13 @@ class SVGObjectInstance(sw.container.Group):
         self.right = self.x + self.width
         self.bottom = self.y + self.height
         # draw the tab
+        self.dasharray = [7,3]
         caption = sw.shapes.Rect(insert=(self.x, self.y),
                                  size=(self.width, self.caption_height),
                                  fill=self.color, stroke='black', stroke_width=1)
         # draw the vertical line
-        line = sw.shapes.line(insert=(self.x + self.width/2, self.y+self.caption_height),
-                              size=(self.x + self.width/2, self.y+self.height),
+        line = sw.shapes.Line(start=(self.x + self.width/2, self.y+self.caption_height),
+                              end=(self.x + self.width/2, self.y+self.height),
                               stroke='black', stroke_width=1)
 
         self.center_x = self.x + self.width / 2.0
@@ -100,7 +107,7 @@ class SVGObjectInstance(sw.container.Group):
                              text=properties["name"],
                              style=self.style)
         self.add(caption)
-        self.add(line)
+        self.add(line).dasharray(self.dasharray)
         self.add(title)
 
     def get_coords(self):
@@ -243,12 +250,15 @@ class SVGConnector(sw.container.Group):
         self.draw_last_line = False
         pprint.pprint(properties["type"])
 
+        # old style of diagram
+        if properties["type"] == "lifeline":
+            return
         if properties["type"] == "dependency" or properties["type"] == "realization" or properties["type"] == "anchor":
             self.dasharray = [7,3]
         else:
             self.dasharray = None
 
-        if properties["type"] == "dependency" or properties["type"] == "anchor" or properties["type"] == "association":
+        if properties["type"] == "dependency" or properties["type"] == "anchor" or properties["type"] == "association" or properties["type"] == "llsequence":
             self.draw_last_line = True
 
         self.from_id = properties["fromId"]
@@ -290,7 +300,7 @@ class SVGConnector(sw.container.Group):
                                       stroke_width=1)
                 self.add(line).dasharray(self.dasharray)
 
-        if len(properties["labels"])>0:
+        if properties.get("labels")!= None and len(properties.get("labels"))>0:
           for l in range(len(properties["labels"])):
             self.draw_label(properties["labels"][l])
 
