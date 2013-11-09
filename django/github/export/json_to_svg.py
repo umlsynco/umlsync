@@ -22,6 +22,8 @@ class SVGElementsManager():
             return SVGPackage(info)
         if info.get("type") == "llport" or info.get("type") == "port":
             return SVGSimpleRect(info)
+        if info.get("type") == "note":
+            return SVGNote(info)
         if info.get("type") == "instance":
             return SVGSimpleRect(info)
         if info.get("type") == "component":
@@ -53,14 +55,14 @@ class SVGSimpleCircle(sw.container.Group):
         self.right = self.x + self.width
         self.bottom = self.y + self.height
         self.center_x = self.x + self.width / 2.0
-        self.center_y = self.y + self.height-2
+        self.center_y = self.y + self.height/2
         # draw the tab
         body = sw.shapes.Circle(center=(self.center_x, self.center_y),
                               r=self.width/2,
                               fill=self.color, stroke='black', stroke_width=1)
         self.add(body)
         if properties.get("name") != None:
-          title = sw.text.Text(insert=(self.x + float(properties.get("nameX")), self.y + float(properties.get("nameY"))+ self.height-2),
+          title = sw.text.Text(insert=(self.x + float(properties.get("nameX")), self.y + float(properties.get("nameY"))+11), #11-font-height
                                text=properties.get("name"),
                                style=self.style)
           self.add(title)
@@ -72,10 +74,13 @@ class SVGSimpleRect(sw.container.Group):
 
     def __init__(self, properties):
         sw.container.Group.__init__(self)
+        pprint.pprint(properties)
         # element including tab
         self.x = float(properties["pageX"])
         self.y = float(properties["pageY"])
-        self.width = float(properties["width"])
+        self.width = 142
+        if properties.get("width") != None:
+          self.width = float(properties["width"])
         self.height = float(properties["height"])
         # color
         self.color = '#ECF3EC'
@@ -90,6 +95,44 @@ class SVGSimpleRect(sw.container.Group):
         body = sw.shapes.Rect(insert=(self.x, self.y),
                               size=(self.width, self.height),
                               fill=self.color, stroke='black', stroke_width=1)
+        self.add(body)
+
+class SVGNote(sw.container.Group):
+    """
+    Simple rectangle Class element.
+    """
+
+    def __init__(self, properties):
+        sw.container.Group.__init__(self)
+        pprint.pprint(properties)
+        # element including tab
+        self.x = float(properties["pageX"])
+        self.y = float(properties["pageY"])
+        self.width = 142
+        if properties.get("width") != None:
+          self.width = float(properties["width"])
+        self.height = float(properties["height"])
+        # color
+        self.color = '#ECF3EC'
+        if properties.get("color"):
+            self.color = properties.get("color")
+        # extra info for connectors
+        self.right = self.x + self.width
+        self.bottom = self.y + self.height
+        self.center_x = self.x + self.width / 2.0
+        self.center_y = self.y + self.height / 2.0
+        # draw the tab
+        body = sw.shapes.Polygon([(self.x + self.width - 16, self.y),
+                                  (self.x + self.width, self.y+16),
+                                  (self.x + self.width, self.y+self.height),
+                                  (self.x, self.y+self.height),
+                                  (self.x, self.y),
+                                  (self.x + self.width - 16, self.y),
+                                  (self.x + self.width - 16, self.y+16),
+                                  (self.x + self.width, self.y+16)
+                                  ],
+                                  fill=self.color,
+                                  stroke='black', stroke_width=1)
         self.add(body)
 
 class SVGComponent(SVGSimpleRect):
@@ -324,7 +367,7 @@ class SVGConnector(sw.container.Group):
         # old style of diagram
         if properties["type"] == "lifeline":
             return
-        if properties["type"] == "dependency" or properties["type"] == "realization" or properties["type"] == "anchor":
+        if properties["type"] == "dependency" or properties["type"] == "realization" or properties["type"] == "anchor" or properties["type"] == "realization":
             self.dasharray = [7,3]
         else:
             self.dasharray = None
@@ -391,7 +434,7 @@ class SVGConnector(sw.container.Group):
         # simple figure
         if connector == "dependency" or connector == "llreturn":
             self.draw_simple_arrow(p1,p2)
-        if connector == "generalization" or connector == "llsequence":
+        if connector == "generalization" or connector == "llsequence" or connector == "realization":
             self.draw_triangle_arrow(p1,p2)
         if connector == "composition":
             self.draw_romb_arrow(p1,p2, "black")
