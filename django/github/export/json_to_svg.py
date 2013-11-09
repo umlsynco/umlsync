@@ -83,7 +83,7 @@ class SVGConnector(sw.container.Group):
     def __init__(self, properties, start, end):
         sw.container.Group.__init__(self)
 
-        self.draw_last_line = True
+        self.draw_last_line = False
         pprint.pprint(properties["type"])
 
         if properties["type"] == "dependency" or properties["type"] == "realization" or properties["type"] == "anchor":
@@ -134,7 +134,71 @@ class SVGConnector(sw.container.Group):
                                       stroke_width=1)
                 self.add(line).dasharray(self.dasharray)
 
-    def draw_arrow(self, p1, p2):
+    def draw_arrow(self, connector, p1, p2):
+        if connector == "dependency" or connector == "llsequence" or connector == "llreturn":
+            self.draw_simple_arrow(p1,p2)
+        if connector == "anchor" or connector == "association":
+            return
+        if connector == "generalization":
+            self.draw_triangle_arrow(p1,p2)
+
+    def draw_triangle_arrow(self, p1, p2):
+        (x1, y1) = p1
+        (x2, y2) = p2
+        x = 10
+        dx = x2 -x1
+        dy = y2 -y1,
+        gip = math.sqrt(dx*dx + dy*dy)
+
+        if gip<x:
+          return
+
+        sina = dy/gip
+        cosa = dx/gip
+        x3 = x2 - math.sqrt(x*x*3/4)*cosa
+        y3 = y2 - math.sqrt(x*x*3/4)*sina
+        x6 = x1 - math.sqrt(x*x*3)*cosa
+        y6 = y1 - math.sqrt(x*x*3)*sina
+        x4 = x3 + x * sina/2
+        y4 = y3 - x * cosa/2
+        x5 = x3 - x * sina/2
+        y5 = y3 + x * cosa/2
+
+        c.moveTo(x1, y1);
+        c.lineTo(x3, y3);
+            c.lineTo(x4, y4);
+            c.lineTo(x2, y2);
+            c.lineTo(x5, y5);
+            c.lineTo(x3, y3);
+
+        line = sw.shapes.Line(start=p1,
+                              end=(x3,y3),
+                              stroke='black',
+                              stroke_width=1)
+        self.add(line)
+        line = sw.shapes.Line(start=(x3,y3),
+                              end=(x4,y4),
+                              stroke='black',
+                              stroke_width=1)
+        self.add(line)
+        line = sw.shapes.Line(start=(x4,y4),
+                              end=(x2,y2),
+                              stroke='black',
+                              stroke_width=1)
+        self.add(line)
+        line = sw.shapes.Line(start=(x2,y2),
+                              end=(x5,y5),
+                              stroke='black',
+                              stroke_width=1)
+        self.add(line)
+        line = sw.shapes.Line(start=(x5,y5),
+                              end=(x3,y3),
+                              stroke='black',
+                              stroke_width=1)
+        self.add(line)
+
+
+    def draw_simple_arrow(self, p1, p2):
         # draw an arrow
         (x1, y1) = p1
         (x2, y2) = p2
