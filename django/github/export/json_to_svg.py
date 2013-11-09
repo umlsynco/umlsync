@@ -20,7 +20,91 @@ class SVGElementsManager():
             return SVGClass(info)
         if info.get("type") == "package":
             return SVGPackage(info)
+        if info.get("type") == "llport":
+            return SVGSimpleRect(info)
+        if info.get("type") == "component":
+            return SVGSimpleRect(info)
+        if info.get("type") == "interface":
+            return SVGSimpleRect(info)
+        if info.get("type") == "objinstance":
+            return SVGPackage(info)
         return None
+
+class SVGSimpleRect(sw.container.Group):
+    """
+    Simple rectangle Class element.
+    """
+
+    def __init__(self, properties):
+        sw.container.Group.__init__(self)
+        # element including tab
+        self.x = float(properties["pageX"])
+        self.y = float(properties["pageY"])
+        self.width = float(properties["width"])
+        self.height = float(properties["height"])
+        # color
+        self.color = '#ECF3EC'
+        if properties.get("color"):
+            self.color = properties.get("color")
+        # extra info for connectors
+        self.right = self.x + self.width
+        self.bottom = self.y + self.height
+        # draw the tab
+        body = sw.shapes.Rect(insert=(self.x, self.y),
+                              size=(self.width, self.height),
+                              fill=self.color, stroke='black', stroke_width=1)
+        self.add(body)
+
+class SVGObjectInstance(sw.container.Group):
+    """
+    Represent Class element grouping several SVG primitives.
+    """
+
+    def __init__(self, properties):
+        sw.container.Group.__init__(self)
+        # font settings
+        self.style = "font-size:11px;font-family:Verdana,Arial,sans-serif;"
+        self.font_height = 11
+        self.font_line_space = 2
+        self.font_width = 6
+        self.text_height = self.font_height + self.font_line_space
+        # element including tab
+        self.x = float(properties["pageX"])
+        self.y = float(properties["pageY"])
+        self.width = float(properties["width"])
+        self.height = float(properties["height"])
+        # Caption parameters
+        self.caption_height = 40
+        # color
+        self.color = '#ECF3EC'
+        if properties.get("color"):
+            self.color = properties.get("color")
+
+        # extra info for connectors
+        self.right = self.x + self.width
+        self.bottom = self.y + self.height
+        # draw the tab
+        caption = sw.shapes.Rect(insert=(self.x, self.y),
+                                 size=(self.width, self.caption_height),
+                                 fill=self.color, stroke='black', stroke_width=1)
+        # draw the vertical line
+        line = sw.shapes.line(insert=(self.x + self.width/2, self.y+self.caption_height),
+                              size=(self.x + self.width/2, self.y+self.height),
+                              stroke='black', stroke_width=1)
+
+        self.center_x = self.x + self.width / 2.0
+        self.center_y = self.y + self.caption_height / 2.0
+        align_x = (len(properties["name"])+1)*self.font_width/2
+        # add caption
+        title = sw.text.Text(insert=(self.center_x - align_x, self.center_y+self.font_height),
+                             text=properties["name"],
+                             style=self.style)
+        self.add(caption)
+        self.add(line)
+        self.add(title)
+
+    def get_coords(self):
+        pass
 
 class SVGPackage(sw.container.Group):
     """
