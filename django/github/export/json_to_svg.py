@@ -129,8 +129,7 @@ class SVGNote(sw.container.Group):
                                   (self.x, self.y),
                                   (self.x + self.width - 16, self.y),
                                   (self.x + self.width - 16, self.y+16),
-                                  (self.x + self.width, self.y+16)
-                                  ],
+                                  (self.x + self.width, self.y+16)],
                                   fill=self.color,
                                   stroke='black', stroke_width=1)
         self.add(body)
