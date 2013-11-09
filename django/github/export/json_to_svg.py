@@ -104,6 +104,8 @@ class SVGNote(sw.container.Group):
 
     def __init__(self, properties):
         sw.container.Group.__init__(self)
+        self.font_width = 6
+        self.style = "font-size:11px;font-family:Verdana,Arial,sans-serif;"
         pprint.pprint(properties)
         # element including tab
         self.x = float(properties["pageX"])
@@ -133,6 +135,14 @@ class SVGNote(sw.container.Group):
                                   fill=self.color,
                                   stroke='black', stroke_width=1)
         self.add(body)
+        if properties.get("name") != None:
+            self.center_x = self.x + self.width / 2.0
+            self.center_y = self.y + self.height / 2.0
+            align_x = (len(properties.get("name"))+1)*self.font_width/2
+            title = sw.text.Text(insert=(self.center_x - align_x, self.center_y),
+                                 text=properties.get("name"),
+                                 style=self.style)
+            self.add(title)
 
 class SVGComponent(SVGSimpleRect):
   def __init__(self, properties):
