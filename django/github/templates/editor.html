@@ -84,9 +84,9 @@
     // Initialize header menu on the left
     $('#header-menu').combomenu({menu:{
         'Project': {
-          'Select repository': {handler:function() {dm.dm.dialogs['Activate']("repo-selection-dialog");}},
-          'Select branch': {handler:function() {dm.dm.dialogs['Activate']("new-project-dialog");}},
-          'New diagram': {handler:function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}},
+          'Select repository': {handler:function() {$("#us-repo").click();}},
+          'Select branch': {handler:function() {$("#us-branch").click();}},
+          'New diagram': {handler:function() {$("#us-newdoc").click();}},
 //          'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
         },
 /*        
@@ -104,11 +104,11 @@
           'Select All':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 65; $(window).trigger(e); }},
         },
         'Views':{
-          'Github':{handler: function(){          }},
-          'Eclipse':{handler: function(){fw.registerViewManager("http://localhost:8000/vm/", "jsonp"); }}
-//          'BitBucket':{handler: function(){          }},
-//          'Google code':{handler: function(){          }},
-//          'Sourceforege':{handler: function(){          }},
+          'Github':{handler: function(){$("#us-github").click();}},
+          'Eclipse':{handler: function(){$("#us-eclipse").click();}}
+//          'BitBucket':{handler: function(){$("#us-bitbucket").click();}},
+//          'Google code':{handler: function(){}},
+//          'Sourceforege':{handler: function(){}},
         }
     },
     prefix: "file-menu"});

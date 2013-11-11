@@ -939,8 +939,7 @@ Version:
     //
     appendContentToolbox: function(selector, params) {
       var self = this,
-      absPath = "http://umlsync.org/github/" + params.repoId + "/" + params.branch + "/" + params.absPath,
-      relPath = "http://umlsync.org/github?path=/" + params.absPath;
+      absPath = "http://umlsync.org/github/" + params.repoId + "/" + params.branch + "/" + params.absPath;
 
       // FULL SCREEN CONTENT
       if (params.selector == undefined) {
@@ -957,7 +956,7 @@ Version:
                       '+ editBullet +'\
                       <br>\
                       <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
-                      <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
+                      </div>\
                       </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
@@ -1020,7 +1019,7 @@ Version:
                               <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
                               <br>\
                               <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
-                              <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
+                              </p></div>\
                             </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
@@ -1137,8 +1136,27 @@ Version:
                if (params2.repoId == params.repoId
                  && params2.viewid == params.viewid
                  && params2.branch == params.branch) {
-                 alert("TODO: add relative path here");
-                 path = "?path=" + params2.absPath;
+                 var p1 = params.absPath.split("/"),
+                     p2 = params2.absPath.split("/"),
+                     p3 = "",
+                     idx = 0,
+                     idx2 = 0;
+                 while (p2[idx] == p1[idx]) {
+                     ++idx;
+                 }
+                 idx2 = idx;
+                 for (;idx<p1.length-1; ++idx) {
+                   p3 = "../" + p3;
+                 }
+                 if (p3 == "") {
+                     p3 = "."
+                 } else {
+                     p3 = p3.substring(0, p3.length -1);
+                 }
+                 for (;idx2<p2.length; ++idx2) {
+                   p3 = p3 + "/" + p2[idx2];
+                 }
+                 path = "?path=" + p3;
                }
                // and absolute path for external references
                else {
