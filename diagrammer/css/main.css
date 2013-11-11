@@ -34,6 +34,8 @@ a {
   position: relative;
   background-color: white;
   background-image: url('../images/bground_sq.png');
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 1.1em;
 }
 
 .us-sourcecode {
