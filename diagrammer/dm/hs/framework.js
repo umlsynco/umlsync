@@ -939,8 +939,7 @@ Version:
     //
     appendContentToolbox: function(selector, params) {
       var self = this,
-      absPath = "http://umlsync.org/github/" + params.repoId + "/" + params.branch + "/" + params.absPath,
-      relPath = "http://umlsync.org/github?path=/" + params.absPath;
+      absPath = "http://umlsync.org/github/" + params.repoId + "/" + params.branch + "/" + params.absPath;
 
       // FULL SCREEN CONTENT
       if (params.selector == undefined) {
@@ -957,7 +956,7 @@ Version:
                       '+ editBullet +'\
                       <br>\
                       <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
-                      <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
+                      </div>\
                       </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
@@ -1020,7 +1019,7 @@ Version:
                               <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
                               <br>\
                               <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
-                              <label>Relative path:</label><p><input value="'+relPath+'"/></p></div>\
+                              </p></div>\
                             </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
