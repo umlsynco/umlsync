@@ -1647,11 +1647,14 @@ var text1 = $(this).val();
         $("#switcher #treetabs").height(hhh - repoH - toolboxH-2);
 
         var $ch, $md;
-        if ($ch1.children(".ui-tabs-panel").length) {
+        if ($ch1.children(".ui-tabs-panel").filter(':visible').length) {
+          // Check that is it no full screen mode for printing
+          // Or if it is first-start page !!!
           if (this.options.notabs == undefined || !this.options.notabs)
             hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
 
-          $ch = $ch1.children(".ui-tabs-panel").height(hhh)
+          // Mess hapens only because of wrong in-visible elements !!!
+          $ch = $ch1.children(".ui-tabs-panel").filter(':visible').height(hhh)
           .children("div").height(hhh - 24); // Border 1px + padding 11
           hhh -= 24;
 
@@ -1676,8 +1679,7 @@ var text1 = $(this).val();
           if ($ch) {
             var s = $ch.offset();
             if (s) {
-              canvas.left = s.x;
-              canvas.top = s.y;
+              $(canvas).offset(s);
             }
           }
           canvas.height = hhh - 11; // 11-is scroll element size
