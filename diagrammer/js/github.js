@@ -15,10 +15,14 @@
     // 
     // I'm not proud of this and neither should you be if you were responsible for the XMLHttpRequest spec.
 
-    function _request(method, path, data, cb, raw) {
+    function _request(method, path, data, cb, dataType) {
 
-      // Work-around to work without server
-	  if (options.token == null || options.token == undefined) {
+    var raw = dataType == "raw",
+        isJsonp = dataType == "jsonp",
+        jsonpCallbackId = "";
+
+    // Work-around to work without server
+    if (options.token == null || options.token == undefined) {
         function decodeMDContent(data) {
           for (d in data) {
             if (d == 'data') {
@@ -32,22 +36,26 @@
           }
         };
 
-	    $.ajax({
-		  url: API_URL + path,
-		  type: method,
-		  dataType: "jsonp",
-		  success: function(obj) {
-                     cb(null, raw ? decodeMDContent(obj) : obj['data']);
-		           },
-		  error: function(err) {
-                   cb({request: this, error: this.status});
-		         }
-		  }
-		);
-		return;
-	  } // Work-around for local pages loading
+        $.ajax({
+            url: API_URL + path,
+            type: method,
+            dataType: "jsonp",
+            success: function(obj) {
+              cb(null, raw ? decodeMDContent(obj) : obj['data']);
+            },
+            error: function(err) {
+              cb({request: this, error: this.status});
+            }
+        });
+        return;
+    } // Work-around for local pages loading
 
-      function getURL() {
+      function getURL(isJsonp) {
+        if (isJsonp) {
+          jsonpCallbackId = "cb" + (new Date()).getTime();
+          var url = API_URL + path;
+          return url + ((/\?/).test(url) ? "&" : "?callback=") + jsonpCallbackId;
+        }
         var url = API_URL + path;
         return url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
       }
@@ -55,18 +63,32 @@
       var xhr = new XMLHttpRequest();
       if (!raw) {xhr.dataType = "json";}
 
-      xhr.open(method, getURL());
+      xhr.open(method, getURL(isJsonp));
       xhr.onreadystatechange = function () {
         if (this.readyState == 4) {
           if (this.status >= 200 && this.status < 300 || this.status === 304) {
-            cb(null, raw ? this.responseText : this.responseText ? JSON.parse(this.responseText) : true);
+            // Extract x-rate-limit-remaning
+            Github.xRateLimitRemaining = this.getResponseHeader('X-RateLimit-Remaining');
+
+            if (isJsonp) {
+                var subResponse = this.responseText.substr(jsonpCallbackId.length + 1, this.responseText.length-jsonpCallbackId.length - 3);
+                cb(null, subResponse ? JSON.parse(subResponse) : true);
+            } else {
+              cb(null, raw ? this.responseText : this.responseText ? JSON.parse(this.responseText) : true);
+            }
           } else {
             cb({request: this, error: this.status});
           }
         }
       };
-      xhr.setRequestHeader('Accept','application/vnd.github.raw');
-      xhr.setRequestHeader('Content-Type','application/json');
+      if (!isJsonp) {
+        xhr.setRequestHeader('Accept','application/vnd.github.raw');
+        xhr.setRequestHeader('Content-Type','application/json');
+      } else {
+        xhr.setRequestHeader('Content-Type','application/jsonp');
+      }
+
+
       if (
          (options.auth == 'oauth' && options.token) ||
          (options.auth == 'basic' && options.username && options.password)
@@ -466,7 +488,7 @@
       // --------
 
       this.contents = function(path, cb) {
-        _request("GET", repoPath + "/contents/" + path, null, cb, true);
+        _request("GET", repoPath + "/contents/" + path, null, cb, "jsonp");
       };
 
       // Fork repository
@@ -663,5 +685,9 @@
     this.getGist = function(id) {
       return new Github.Gist({id: id});
     };
+
+    this.getRemainingLimit = function() {
+        return this.xRateLimitRemaining;
+    }
   };
 }).call(this);

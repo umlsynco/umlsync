@@ -472,7 +472,8 @@
                   }
                   else if (params.absPath) {
                     var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
-                    repo.contents(cPath,  function(err, data, response) {
+                    repo.contents(cPath,  function(err, retObj, response) {
+                      var data = retObj.data;
                       if (err != null) {
                         callback.error(err);
                         return;
