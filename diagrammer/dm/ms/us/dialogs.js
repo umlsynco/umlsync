@@ -507,7 +507,8 @@
       <table id='us-commit-table' class='tablesorter'><thead><tr class='header'><th></th><th>File path</th></tr></thead><tbody>\
       " + innerHtml + "</tbody></table></div>" +
       "<p><label>Commit message: </label><br>"+
-      "<textarea id='us-commit-message' maxlength='300' pattern='[a-zA-Z ]{5,}' style='width:99%;'></textarea></p>" +
+      "<textarea id='us-commit-message' maxlength='300' pattern='[a-zA-Z ]{5,}' style='width:99%;'></textarea><br>"+
+      "<label id='us-commit-status'></label></p>" +
       "</div></div>";
 
       var self = this;
@@ -522,7 +523,7 @@
       var commit_data = data;
       $("#commit-changes-dialog").dialog({
         autoOpen: true,
-        height: 254,
+        height: 284,
         width: 550,
         modal: true,
         buttons: {
@@ -538,8 +539,22 @@
             commit_items[file] = commit_data[file];
           }
         });
-        $( this ).dialog( "close" );
-        commit_callback(message, commit_items);
+        var myLovelyDialog = this;
+        commit_callback(message,
+                        commit_items,
+                        function(err) { // On any completion state
+                           if (err == null) {
+                             // Clear the commit status message
+                             $("#commit-changes-dialog #us-commit-status").html("");
+                             $( myLovelyDialog ).dialog( "close" );
+                             return;
+                           }
+                           $("#commit-changes-dialog #us-commit-status").html("Error:"+err.message);
+                           // It is up to user to cancel or repeat the commit
+                        },
+                        function(status) {
+                            $("#commit-changes-dialog #us-commit-status").html(status);
+                        });
       },
       Cancel: function() {
         $( this ).dialog( "close" );
