@@ -178,13 +178,7 @@ Version:
           </div>\
           </div>\
           <div id="reponav"><span id="us-github">Github</span><span style="float:right;" id="us-eclipse">Eclipse</span></div>\
-          <div id="toolbox"><ul style="list-style:none;">\
-          <li class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
-          <li class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
-          <li id="us-newdoc" title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
-          <li id="us-revertdoc" title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
-          <li id="us-removedoc" title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
-          </ul></div>\
+          <div id="us-toolbox"></div>\
           <div id="treetabs"></div>\
           </div>\
           </div>\
@@ -219,10 +213,6 @@ Version:
           var $switcher = $('#switcher');
           $switcher.addClass('ui-switcher ui-widget ui-helper-reset ui-switcher-icons');
 
-          $("#us-newdoc").click(function() {
-            dm.dm.dialogs['Activate']("new-diagram-dialog");
-          });
-          
           var $tabs = $("#tabs")
           .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
             'scrollable': true,

@@ -93,15 +93,15 @@ a {
 }
 
 .us-class div.us-class-template {
-	min-width:80px;
-	background-color:white;
-	position:absolute;
+    min-width:80px;
+    background-color:white;
+    position:absolute;
     border: 1px dashed black;
-	min-height:15px;
-	top:-10px;
-	left:50%;
-	right:-40px;
-	z-index:1100;
+    min-height:15px;
+    top:-10px;
+    left:50%;
+    right:-40px;
+    z-index:1100;
 }
 
 .us-class-header {
@@ -774,44 +774,44 @@ span.cfolder span.dynatree-icon {
 .ui-scrollable-tabs { overflow:hidden; position:relative; }
 
 .ui-scrollable-tabs .ui-tabs-nav {
-	width:1000000px;
-	padding:1px 0 0 1px;
-	border-left:none;
-	border-right:none;
-	padding-top:1px;
-	position:relative;
+    width:1000000px;
+    padding:1px 0 0 1px;
+    border-left:none;
+    border-right:none;
+    padding-top:1px;
+    position:relative;
 }
 
 .ui-scrollable-tabs .ui-tabs .ui-tabs-closable li a {
-	padding-right:5px;
+    padding-right:5px;
 }
 
 .ui-scrollable-tabs .ui-tabs-nav-arrows {
-	left: 0;
-	margin: 0;
-	margin:0 5px;
-	padding: 0;
-	position: absolute;
-	right: 0;
-	top: 5px;
+    left: 0;
+    margin: 0;
+    margin:0 5px;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 5px;
 }
 
 
 /*IE7 fix*/
 *:first-child+html .ui-scrollable-tabs .ui-tabs-nav-arrows {
-	z-index:1;
+    z-index:1;
 }
 
 .ui-scrollable-tabs .ui-tabs .ui-tabs-nav li {
-	margin:0 1px 0;
+    margin:0 1px 0;
 }
 
 .ui-tabs-nav li .ui-tabs-close {
-	float:left;
-	margin-top:8px;
-	margin-right:4px;
-	border:none;
-	cursor:pointer;
+    float:left;
+    margin-top:8px;
+    margin-right:4px;
+    border:none;
+    cursor:pointer;
 }
 
 .ui-scrollable-tabs .ui-tabs-nav-arrows .ui-tabs-arrow-next { float:right;  margin-top:10px;}
@@ -824,8 +824,8 @@ span.cfolder span.dynatree-icon {
     cursor:pointer;
     margin:0;
     padding:0;
-	display:none;
-	z-index:1;
+    display:none;
+    z-index:1;
 }
 
 .ui-scrollable-tabs .ui-tabs-nav-arrows li a {
@@ -990,41 +990,41 @@ span.cfolder span.dynatree-icon {
 
 @media print {
    .diagram-menu, #content-left, .header-nav, #content-bottom {
-		display:none !important;
+        display:none !important;
    }
    
    .us-diagram  {
-		left: 0;
-		width:100%;
-		height:100%;
+        left: 0;
+        width:100%;
+        height:100%;
    }
    
    .us-element-border {
-	 display:block !important;
+     display:block !important;
    }
 }
 
-#toolbox {
+#us-toolbox {
   height:20px;
   display:block;
 }
 
-#toolbox ul {
+#us-toolbox ul {
   margin: 0 auto; padding: 0;
   width: 100%;
 }
 
-#toolbox ul li {
+#us-toolbox ul li {
   display: inline;
   float: left;
   margin: 2px;
 }
 
-#toolbox ul li.us-left {
+#us-toolbox ul li.us-left {
    float: right;
 }
 
-#toolbox ul li:hover {
+#us-toolbox ul li:hover {
   background-color:green;
 }
 

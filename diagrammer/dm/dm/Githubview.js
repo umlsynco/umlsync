@@ -56,8 +56,44 @@
                     if (this.activated) {
                         return;
                     }
+
+                    this._activateToolboxWidget("#us-toolbox");
+
                     // A lot of initialization stuff is here !
                     this.activated = true;
+                };
+
+                //
+                // IViewManager::onViewManagerChange - activate the toolbox area helper
+                // ------
+                //
+                this._activateToolboxWidget = function(selector) {
+                   var self = this;
+                   // Append HTML code
+                   $(selector).append('<ul style="list-style:none;">\
+                   <li id="us-github-commit" class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
+                   <li id="us-github-reload" class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
+                   <li id="us-github-newdoc" title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
+                   <li id="us-github-revertdoc" title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
+                   <li id="us-github-removedoc" title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
+                   </ul>')
+                  // Initialize handlers
+                  $("#us-github-newdoc").click(function() {
+                    dm.dm.dialogs['Activate']("new-diagram-dialog");
+                  });
+
+                  $("#us-github-commit").click(function() {
+                    if (self.githubView != null) {
+                        self.githubView.commitContent();
+                    }
+                  });
+
+                  $("#us-github-reload").click(function() {
+                    if (self.githubView != null) {
+                        self.githubView.reloadTree();
+                    }
+                  });
+
                 };
     
                 //
@@ -202,7 +238,9 @@
                 // for logged-in user
                 //
                 this.init = function(path) {
-                  
+                  // This is the default view
+                  this.onViewManagerChange(this.id);
+
                   function loadPath() {
                     if (path != "") {
                       var splitted_path = path.split("/"),
@@ -722,6 +760,12 @@
                       else {
                         self.rmNodeStatus(node, "modified");
                       }
+                    },
+                    //
+                    // Reload the tree HEAD, and check for the conflicts
+                    //
+                    reloadTree: function() {
+                        self.initTree(self.treeParentSelector, true);
                     },
                     //
                     // Comit content
