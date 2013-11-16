@@ -177,7 +177,8 @@ Version:
           </a>\
           </div>\
           </div>\
-          <div id="reponav"><span id="us-github">Github</span><span style="float:right;" id="us-eclipse">Eclipse</span></div>\
+          <div id="us-viewmanager"><span id="us-github">Github</span><span style="float:right;" id="us-eclipse">Eclipse</span></div>\
+          <div id="us-repo-select"></div>\
           <div id="us-toolbox"></div>\
           <div id="treetabs"></div>\
           </div>\
@@ -191,9 +192,9 @@ Version:
           var self = this;
           self._helperUpdateFrameWork(true); // $(window).trigger("resize");
           $(window).resize(function(e) {
-            if ((e.target === window) || (e.target == window)) {
-              self._helperUpdateFrameWork(true);
-            }
+        if ((e.target === window) || (e.target == window)) {
+          self._helperUpdateFrameWork(true);
+        }
           });
           
          // Switch between github and eclipse engine          
@@ -215,41 +216,41 @@ Version:
 
           var $tabs = $("#tabs")
           .tabs( {'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
-            'scrollable': true,
-            'add': function(event, ui) {
-              if (self.diagrams) {
-                self.selectedContentId = "#" + ui.panel.id;
-            }
-            $tabs.tabs('select', '#' + ui.panel.id);
+        'scrollable': true,
+        'add': function(event, ui) {
+          if (self.diagrams) {
+            self.selectedContentId = "#" + ui.panel.id;
+        }
+        $tabs.tabs('select', '#' + ui.panel.id);
           },
           'select': function(event, ui) {
-            if (self.diagrams) {
-              self.selectedContentId = "#" + ui.panel.id;
+        if (self.diagrams) {
+          self.selectedContentId = "#" + ui.panel.id;
 
-              // Show/hide diagram menu to tabs change
-              if ($(self.selectedContentId).attr('edm') == "true") {
-                $(".diagram-menu").show();
-                var did = self.diagrams[self.selectedContentId];
-                if (did) {
-                  //@ifdef EDITOR
-                  self['ActivateDiagramMenu'](did.options['type']);
-                  //@endif
-                  did.draw();
-                }
-              } else {
-                $(".diagram-menu").hide();
-              }
+          // Show/hide diagram menu to tabs change
+          if ($(self.selectedContentId).attr('edm') == "true") {
+            $(".diagram-menu").show();
+            var did = self.diagrams[self.selectedContentId];
+            if (did) {
+              //@ifdef EDITOR
+              self['ActivateDiagramMenu'](did.options['type']);
+              //@endif
+              did.draw();
             }
-            self._helperUpdateFrameWork(true);
+          } else {
+            $(".diagram-menu").hide();
+          }
+        }
+        self._helperUpdateFrameWork(true);
           },
           'show': function(event, ui) {
-            if (self.diagrams) {
-              self.selectedContentId = "#" + ui.panel.id;
-              var did = self.diagrams[self.selectedContentId];
-              if (did) {
-                did.draw();
-              }
-            }
+        if (self.diagrams) {
+          self.selectedContentId = "#" + ui.panel.id;
+          var did = self.diagrams[self.selectedContentId];
+          if (did) {
+            did.draw();
+          }
+        }
           }
           });
           $("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
@@ -258,72 +259,72 @@ Version:
           $("#tabs").append('<canvas id="SingleCanvas" class="us-canvas" style="left:18px;top:'+canvasTop+'px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
           
           if (this.options.notabs)
-            $("#tabs ul.ui-tabs-nav").hide();
+        $("#tabs ul.ui-tabs-nav").hide();
 
           // AUTOMATED TEST WORK_AROUND !!!
           $("#content-right DIV.ui-scrollable-tabs").scroll(
-              function (e){
-                $(this).scrollTop(0);
-                e.preventDefault();
-                e.stopPropagation();
-              });
+          function (e){
+            $(this).scrollTop(0);
+            e.preventDefault();
+            e.stopPropagation();
+          });
 
           $('#tabs span.ui-test').live('click', function() {
-            var index = $('li', $tabs).index($(this).parent().parent()),
-              ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
-            
-            function closeContent(saveIt) {
-              $(".diagram-menu").hide();
+        var index = $('li', $tabs).index($(this).parent().parent()),
+          ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
+        
+        function closeContent(saveIt) {
+          $(".diagram-menu").hide();
 
-              if (self.contents && self.contents[ahref]) {
-                function dropTabAndContent() {
-                  // Drop markdown cache if content is markdown
-                  if (self.contents[ahref].contentType == "md") {
-                    delete self.markdown[ahref];
-                  }
-                  delete self.contents[ahref];
-                  $tabs.tabs('remove', index);
-                  $(ahref).remove();
-                }
+          if (self.contents && self.contents[ahref]) {
+            function dropTabAndContent() {
+              // Drop markdown cache if content is markdown
+              if (self.contents[ahref].contentType == "md") {
+                delete self.markdown[ahref];
+              }
+              delete self.contents[ahref];
+              $tabs.tabs('remove', index);
+              $(ahref).remove();
+            }
 
-                if (saveIt) {
-                  self.saveContent(ahref, true, dropTabAndContent);
-                }
-                else {
-                    dropTabAndContent();
-                }
-              }
-              else {
-                $tabs.tabs('remove', index);
-                $(ahref).remove();
-              }
+            if (saveIt) {
+              self.saveContent(ahref, true, dropTabAndContent);
             }
-            
-            if (!self.contents[ahref].isModified) {
-              closeContent(false);
-              return;
+            else {
+                dropTabAndContent();
             }
-              
-            dm.dm.dialogs['ConfirmationDialog'](
+          }
+          else {
+            $tabs.tabs('remove', index);
+            $(ahref).remove();
+          }
+        }
+        
+        if (!self.contents[ahref].isModified) {
+          closeContent(false);
+          return;
+        }
+          
+        dm.dm.dialogs['ConfirmationDialog'](
+        {
+          title:"Save",
+          description: 'Save file "' + self.contents[ahref].title + '" ?',
+          buttons:
             {
-              title:"Save",
-              description: 'Save file "' + self.contents[ahref].title + '" ?',
-              buttons:
-                {
-                  "Yes": function() {
-                    $( this ).dialog( "close" );
-                    closeContent(true);
-                  },
-                  "No": function() {
-                    $( this ).dialog( "close" );
-                    closeContent(false);
-                  },
-                  "Cancel":function() {
-                    $( this ).dialog( "close" );
-                  }
-                }
-            });
-            
+              "Yes": function() {
+                $( this ).dialog( "close" );
+                closeContent(true);
+              },
+              "No": function() {
+                $( this ).dialog( "close" );
+                closeContent(false);
+              },
+              "Cancel":function() {
+                $( this ).dialog( "close" );
+              }
+            }
+        });
+        
           });
 
           var $treetabs = $("#treetabs");
@@ -333,57 +334,26 @@ Version:
 
 
           /*          $('#treetabs span.ui-test').live('click', function() {
-            var index = $('li', $treetabs).index($(this).parent());
-            ///$treetabs.tabs('remove', index);
+        var index = $('li', $treetabs).index($(this).parent());
+        ///$treetabs.tabs('remove', index);
           });
            */
           $("#content-left-right-resize").draggable({ axis: 'x', 'drag': function(ui) {
-            self._helperUpdateFrameWork(false, ui);
+        self._helperUpdateFrameWork(false, ui);
           },
           stop: function(ui) {
-            self._helperUpdateFrameWork(false, ui, true);
+        self._helperUpdateFrameWork(false, ui, true);
           }
           });
 
           // Initialize the key handler
           this._helperInitializeKeyHandler(dm.dm.loader);
           if (this.options.viewmanager) {
-            this.registerViewManager(this.options.viewmanager);
+        this.registerViewManager(this.options.viewmanager);
           }
 
           this.left_counter = 0;
           this.right_counter = 0;
-
-          this._helperInitDropDownSelector('#switcher #reponav', "us-repo",
-              {
-            filter:true,
-            mtitle: 'Repository',
-            title: 'Open/Switch repository',
-            onSelect: function(selectedTab, selectedItem) {
-            if (selectedTab == 'Yours') {
-              // simply change repo
-            }
-            else if (selectedTab == 'Follow') {
-              // open gists
-            }
-          }
-              }
-          ); // _helperInitDropDownSelector
-          this._helperInitDropDownSelector('#switcher #reponav', 'us-branch',
-              {
-            filter:true,
-            mtitle: 'Branch',
-            onSelect: function(selectedTab, selectedItem) {
-            if (selectedTab == 'Yours') {
-              // simply change repo
-            }
-            else if (selectedTab == 'Follow') {
-              // open gists
-            }
-            alert("SELECTED !!!");
-          }
-              }
-          ); // _helperInitDropDownSelector
 
           // Update the sizes first time
           this._helperUpdateFrameWork(true);
@@ -417,32 +387,32 @@ Version:
         $.ajax({ 'url': viewmanager + "getviews",
           'dataType': json_type,
           'success':  function(json) {
-            var innerHtml = "",
-            selectHtml = "";
-            for (i in json) {
-              innerHtml += "<li><a href='#'>" + json[i]['title']+ "</a></li>";
-              selectHtml += "<option>" + json[i]['title'] + "</option>";
-              $('#vp_main_menu select').append($("<option></option>")
-                .attr("value",json[i]['id'])
-                .text(json[i]['title']));
-            }
+        var innerHtml = "",
+        selectHtml = "";
+        for (i in json) {
+          innerHtml += "<li><a href='#'>" + json[i]['title']+ "</a></li>";
+          selectHtml += "<option>" + json[i]['title'] + "</option>";
+          $('#vp_main_menu select').append($("<option></option>")
+            .attr("value",json[i]['id'])
+            .text(json[i]['title']));
+        }
 
-            if ($('#header-menu #Views ul').length == 0) {
-              $('#header-menu').append("<li id='Views'><a href='#'>Views</a><ul>" + innerHtml+"</ul></li>").jqsimplemenu();
-            }
-            else {
-              $('#header-menu #Views ul').append(innerHtml);
-              $('#header-menu').jqsimplemenu();
-            }
+        if ($('#header-menu #Views ul').length == 0) {
+          $('#header-menu').append("<li id='Views'><a href='#'>Views</a><ul>" + innerHtml+"</ul></li>").jqsimplemenu();
+        }
+        else {
+          $('#header-menu #Views ul').append(innerHtml);
+          $('#header-menu').jqsimplemenu();
+        }
 
           // Complete menu update first.
           // And open the default views than.
           for (i in json) {
-            if (json[i]['isdefault']) {
-              var IView = new dm.base.LocalhostView(self.options.viewmanager + json[i]['id']);
-              IView.euid = json[i]['id'];
-              self.addView2(json[i]['title'], IView);
-            }
+        if (json[i]['isdefault']) {
+          var IView = new dm.base.LocalhostView(self.options.viewmanager + json[i]['id']);
+          IView.euid = json[i]['id'];
+          self.addView2(json[i]['title'], IView);
+        }
           }
         }
         });
@@ -475,8 +445,8 @@ Version:
           data:items,
           onSelect: function(item) {
           if (item.click) {
-            item.click(activeNode, view)
-            $(".context-menu").hide();
+        item.click(activeNode, view)
+        $(".context-menu").hide();
 			$("#context-toolbox").hide();
           }
         }
@@ -495,13 +465,13 @@ Version:
           self.views[IView.euid]['element_menu'] = {};
           var counter = 0;
           for (var r in IView['element_menu']) {
-            var rs = r.split(","), // Multiple elements support "Package,Subsystem"
-            nm = IView.euid + "-" + counter;
-            for (var h in rs) {
-              self.views[IView.euid]['element_menu'][rs[h]] = nm;
-            }
-            initCtxMenu(nm, IView['element_menu'][r], IView);
-            counter++;
+        var rs = r.split(","), // Multiple elements support "Package,Subsystem"
+        nm = IView.euid + "-" + counter;
+        for (var h in rs) {
+          self.views[IView.euid]['element_menu'][rs[h]] = nm;
+        }
+        initCtxMenu(nm, IView['element_menu'][r], IView);
+        counter++;
           }
         }
       }
@@ -532,8 +502,8 @@ Version:
         $(innerHtml).appendTo(id);
         for (i in toolbox.items) {
           $("#toolboxitem" + i).click(i, function(e) {
-            if (tb.items[e.data] && tb.items[e.data].method)
-              tb.items[e.data].method(dt.getActiveNode());}
+        if (tb.items[e.data] && tb.items[e.data].method)
+          tb.items[e.data].method(dt.getActiveNode());}
           );
         }
       }
@@ -583,34 +553,6 @@ Version:
         $("#us-repo .js-select-button").text(view.getActiveRepository());
         $("#us-branch .js-select-button").text(view.activeBranch);
       }
-    },
-    //
-    // Helper method to create the drop down selector with tabs
-    // param - element id to attach widget
-    // desc - JSON description of drop down selector
-    //        {filter: true/false, mtitle: MiniTitle, title: TITLE, tabs:{ name1: {id1, id2}, name2: {id3, id4}}}
-    //
-    _helperInitDropDownSelector: function(parentId, uid, desc) {
-
-      $('<div class="dropdown-widget" id="'+uid+'">\
-          <div class="select-menu">\
-          <a class="minibutton select-menu-button js-menu-target">\
-          <span class="mini-icon mini-icon-branch"></span>\
-          <i>'+desc.mtitle+':</i>\
-          <span class="js-select-button">none</span>\
-          </a>\
-          </div>\
-          </div>')
-          .appendTo(parentId)
-          .click(function() {
-            if (uid == "us-repo")
-              dm.dm.dialogs['Activate']("repo-selection-dialog");
-            if (uid == "us-branch") {
-              var text = $("#us-repo .js-select-button").text();
-              var repoId = text.replace("/", "-");
-              dm.dm.dialogs['Activate']("branch-selection-dialog-" + repoId);
-            }
-          });
     },
     //
     // Return an active repository under the current active view
@@ -687,10 +629,10 @@ Version:
           $("#accordion").accordion({'active': 0, autoHeight:false, clearStyle: true});
 
           if (!this.openDiagramMenuOnFirstInit) {
-            $(".diagram-menu").hide();
+        $(".diagram-menu").hide();
           }
 		  $("#diagram-menu-header a.ui-dialog-titlebar-close").click(function() { 
-                $("div.diagram-menu #accordion").slideToggle();
+            $("div.diagram-menu #accordion").slideToggle();
           });
       }
       if (callback) {
@@ -710,8 +652,8 @@ Version:
         $("#accordion").find("h3").each(function(index) {
           ++len;
           if ($(this).attr("aux") == type) {
-            idx = index;
-            menuIsActive = true;
+        idx = index;
+        menuIsActive = true;
           }
         });
 
@@ -761,7 +703,7 @@ Version:
       }
     },
 //////////////////////////////////////////////////////////////
-//                Content managment
+//            Content managment
 //////////////////////////////////////////////////////////////
     selectedContentId:null,
     //
@@ -856,21 +798,21 @@ Version:
         params.branch = self.getActiveBranch();
 
         if (params.repoId == undefined || params.repoId == "none") {
-            alert("You need to select a repository to store this content!");
-            return;
+        alert("You need to select a repository to store this content!");
+        return;
         }
 
         if (params.branch == undefined || params.branch == "none") {
-            alert("You need to select a branch to store this content!");
-            return;
+        alert("You need to select a branch to store this content!");
+        return;
         }
 
         dm.dm.dialogs['Activate']("save-as-dialog", function(result) {
-            self.contents[tabid].absPath = result;
-            self.contents[tabid].title = result.split('/').pop();
-            self._saveContentHelper(tabid, isTabClosed);
-            if (callback != undefined)
-              callback();
+        self.contents[tabid].absPath = result;
+        self.contents[tabid].title = result.split('/').pop();
+        self._saveContentHelper(tabid, isTabClosed);
+        if (callback != undefined)
+          callback();
         });
       }
       else {
@@ -905,7 +847,7 @@ Version:
       else if (self.contents[tabid].contentType == "md") { // Markdown
         var $md = $(tabid + " #markdown")
         if ($md.length > 0) {
-            self.markdown[tabid] = $md.val();
+        self.markdown[tabid] = $md.val();
         }
         
         // Save the markdown content
@@ -942,12 +884,12 @@ Version:
           $selrt.addClass("us-view-mode");
 
         $selrt.append('<span class="us-diagram-toolbox">\
-                       <a id="us-link"><span id="us-getlink">Get link</span></a>\
-                      '+ editBullet +'\
-                      <br>\
-                      <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
-                      </div>\
-                      </span>');
+                   <a id="us-link"><span id="us-getlink">Get link</span></a>\
+                  '+ editBullet +'\
+                  <br>\
+                  <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
+                  </div>\
+                  </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
         // or if user is not owner/commiter of repository
@@ -963,54 +905,54 @@ Version:
         }
 
         $(selector + " #us-diagram-edit").click(function() {
-            // switch from editable to static and back
-            var text = $(this).text(),
-                editFlag = false;
-            if (text == "Edit") {
-              $(this).text("View");
-              editFlag = true
-            }
-            else {
-              $(this).text("Edit");
-            }
+        // switch from editable to static and back
+        var text = $(this).text(),
+            editFlag = false;
+        if (text == "Edit") {
+          $(this).text("View");
+          editFlag = true
+        }
+        else {
+          $(this).text("Edit");
+        }
 
-            // If content is diagram
-            if (params.contentType == "dm") { 
-              var did = self.diagrams[self.selectedContentId];
-              if (did != undefined) {
-                did._setWidgetsOption("editable", editFlag);
-                // Handle the diagram menu status
-                var $selrt = $(selector).attr("edm", editFlag);
-                if (editFlag) {
-                  $(".diagram-menu").show();
-                   // Show the refernces close-icons
-                  $selrt.removeClass("us-view-mode");
-                  $(selector + " div#us-references .ui-icon-close").show();
-                  self['ActivateDiagramMenu'](did.options['type']);
-                } else {
-                  $(".diagram-menu").hide();
-                   // Hide the refernces close-icons
-                  $selrt.addClass("us-view-mode");
-                }
-              }
+        // If content is diagram
+        if (params.contentType == "dm") { 
+          var did = self.diagrams[self.selectedContentId];
+          if (did != undefined) {
+            did._setWidgetsOption("editable", editFlag);
+            // Handle the diagram menu status
+            var $selrt = $(selector).attr("edm", editFlag);
+            if (editFlag) {
+              $(".diagram-menu").show();
+               // Show the refernces close-icons
+              $selrt.removeClass("us-view-mode");
+              $(selector + " div#us-references .ui-icon-close").show();
+              self['ActivateDiagramMenu'](did.options['type']);
+            } else {
+              $(".diagram-menu").hide();
+               // Hide the refernces close-icons
+              $selrt.addClass("us-view-mode");
             }
-            // if content is markdown code
-            else if (params.contentType == "md") { 
-              self.editMarkdown(selector, params);
-            }
+          }
+        }
+        // if content is markdown code
+        else if (params.contentType == "md") { 
+          self.editMarkdown(selector, params);
+        }
         });
 
       }
       // EMBEDDED CONTENT
       else {
         $(selector).append('<span class="us-diagram-toolbox">\
-                              <a id="us-link"><span id="us-getlink">Get link</span></a>\
-                              <a id="us-link"><span class="us-diagram-edit" edm="false">Full screen</span></a>\
-                              <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
-                              <br>\
-                              <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
-                              </p></div>\
-                            </span>');
+                      <a id="us-link"><span id="us-getlink">Get link</span></a>\
+                      <a id="us-link"><span class="us-diagram-edit" edm="false">Full screen</span></a>\
+                      <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
+                      <br>\
+                      <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
+                      </p></div>\
+                    </span>');
 
         // It is not possible to edit file if it is defined by sha (and path unknown)
         // or if user is not owner/commiter of repository
@@ -1019,12 +961,12 @@ Version:
         }
 
         $(selector + " .us-diagram-edit").click(params, function(event) {
-            var params = event.data;
-            var clonedParams = $.extend(true, {}, params);
-            delete clonedParams['selector'];
-            // jquery return string for attibute "edm" therefore we have to compare it with 'false'
-            clonedParams.editable = params.isOwner ? ($(this).attr("edm") != 'false') : false;
-            self.loadContent(clonedParams);
+        var params = event.data;
+        var clonedParams = $.extend(true, {}, params);
+        delete clonedParams['selector'];
+        // jquery return string for attibute "edm" therefore we have to compare it with 'false'
+        clonedParams.editable = params.isOwner ? ($(this).attr("edm") != 'false') : false;
+        self.loadContent(clonedParams);
         });
       }
     
@@ -1066,43 +1008,43 @@ Version:
 
         // Hide/Show editor menu
         if ($(selector + " #markdown").length > 0) {
-            $(selector + " span.us-toolbox-header").show();
-            $(selector + " #markdown").show();
-            return;
+        $(selector + " span.us-toolbox-header").show();
+        $(selector + " #markdown").show();
+        return;
         }
           
         function getSelection() {
           return (!!document.getSelection) ? document.getSelection() :
-            (!!window.getSelection) ? window.getSelection() :
-            document.selection.createRange().text;
+        (!!window.getSelection) ? window.getSelection() :
+        document.selection.createRange().text;
         }
 
 
 
         // toolbox descriptor
         var rrrr = '<span class="us-toolbox-header"><ul style="list-style:none outside none;">\
-                        <li class="us-toolbox-button us-toolbox-h1"><a title="Heading 1 [Ctrl+1]" accesskey="1" postfix="\n========\n">First Level Heading</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h2"><a title="Heading 2 [Ctrl+2]" accesskey="2" postfix="\n--------\n" href="">Second Level Heading</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h3"><a title="Heading 3 [Ctrl+3]" accesskey="3" prefix="### " href="">Heading 3</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h4"><a title="Heading 4 [Ctrl+4]" accesskey="4" prefix="#### " href="">Heading 4</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h5"><a title="Heading 5 [Ctrl+5]" accesskey="5" prefix="##### " href="">Heading 5</a></li>\
-                        <li class="us-toolbox-button us-toolbox-h6"><a title="Heading 6 [Ctrl+6]" accesskey="6" prefix="###### " href="">Heading 6</a>\
-                        </li><li class="us-toolbox-separator">&nbsp</li>\
-                        <li class="us-toolbox-button us-toolbox-bold"><a title="Bold [Ctrl+B]" accesskey="B" prefix="**" postfix="**">Bold</a></li>\
-                        <li class="us-toolbox-button us-toolbox-italic"><a title="Italic [Ctrl+I]" accesskey="I" prefix="_" postfix="_">Italic</a></li>\
-                        <li class="us-toolbox-separator">&nbsp</li>\
-                        <li class="us-toolbox-button us-toolbox-bullet "><a title="Bulleted List" prefix="- ">Bulleted List</a></li>\
-                        <li class="us-toolbox-button us-toolbox-numlist"><a title="Numeric List" prefix="1. ">Numeric List</a></li>\
-                        <li class="us-toolbox-separator">&nbsp</li>\
-                        <li class="us-toolbox-button us-toolbox-pic"><a title="Picture [Ctrl+P]" accesskey="P" prefix="">Picture</a></li>\
-                        <li class="us-toolbox-button us-toolbox-link"><a title="Link [Ctrl+L]" accesskey="L" prefix="">Link</a></li>\
-                        <li class="us-toolbox-separator">&nbsp</li>\
-                        <li class="us-toolbox-button us-toolbox-quotes"><a title="Quotes" prefix="> ">Quotes</a></li>\
-                        <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" prefix="<code>" postfix="</code>">Code Block / Code</a></li>\
-                        <li class="us-toolbox-separator">&nbsp</li>\
-                        <li class="us-toolbox-button us-toolbox-diagram"><a title="Insert diagram reference" prefix="diagram">Diagram reference / Diagram</a></li>\
-                        <li class="us-toolbox-separator">&nbsp</li>\
-                      </ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
+                <li class="us-toolbox-button us-toolbox-h1"><a title="Heading 1 [Ctrl+1]" accesskey="1" postfix="\n========\n">First Level Heading</a></li>\
+                <li class="us-toolbox-button us-toolbox-h2"><a title="Heading 2 [Ctrl+2]" accesskey="2" postfix="\n--------\n" href="">Second Level Heading</a></li>\
+                <li class="us-toolbox-button us-toolbox-h3"><a title="Heading 3 [Ctrl+3]" accesskey="3" prefix="### " href="">Heading 3</a></li>\
+                <li class="us-toolbox-button us-toolbox-h4"><a title="Heading 4 [Ctrl+4]" accesskey="4" prefix="#### " href="">Heading 4</a></li>\
+                <li class="us-toolbox-button us-toolbox-h5"><a title="Heading 5 [Ctrl+5]" accesskey="5" prefix="##### " href="">Heading 5</a></li>\
+                <li class="us-toolbox-button us-toolbox-h6"><a title="Heading 6 [Ctrl+6]" accesskey="6" prefix="###### " href="">Heading 6</a>\
+                </li><li class="us-toolbox-separator">&nbsp</li>\
+                <li class="us-toolbox-button us-toolbox-bold"><a title="Bold [Ctrl+B]" accesskey="B" prefix="**" postfix="**">Bold</a></li>\
+                <li class="us-toolbox-button us-toolbox-italic"><a title="Italic [Ctrl+I]" accesskey="I" prefix="_" postfix="_">Italic</a></li>\
+                <li class="us-toolbox-separator">&nbsp</li>\
+                <li class="us-toolbox-button us-toolbox-bullet "><a title="Bulleted List" prefix="- ">Bulleted List</a></li>\
+                <li class="us-toolbox-button us-toolbox-numlist"><a title="Numeric List" prefix="1. ">Numeric List</a></li>\
+                <li class="us-toolbox-separator">&nbsp</li>\
+                <li class="us-toolbox-button us-toolbox-pic"><a title="Picture [Ctrl+P]" accesskey="P" prefix="">Picture</a></li>\
+                <li class="us-toolbox-button us-toolbox-link"><a title="Link [Ctrl+L]" accesskey="L" prefix="">Link</a></li>\
+                <li class="us-toolbox-separator">&nbsp</li>\
+                <li class="us-toolbox-button us-toolbox-quotes"><a title="Quotes" prefix="> ">Quotes</a></li>\
+                <li class="us-toolbox-button us-toolbox-code"><a title="Code Block / Code" prefix="<code>" postfix="</code>">Code Block / Code</a></li>\
+                <li class="us-toolbox-separator">&nbsp</li>\
+                <li class="us-toolbox-button us-toolbox-diagram"><a title="Insert diagram reference" prefix="diagram">Diagram reference / Diagram</a></li>\
+                <li class="us-toolbox-separator">&nbsp</li>\
+                  </ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
 
         $(rrrr).appendTo(selector);
 
@@ -1115,50 +1057,50 @@ Version:
            //$(selector + " #markdown").getSelection();
            //alert("CLICKED !!! " + sel.text);
            var prefix = $(this).attr("prefix") || "",
-             postfix = $(this).attr("postfix") || "";
+         postfix = $(this).attr("postfix") || "";
 
            if (prefix == "diagram") {
-             prefix = "";
-             if (self.cachedLink && self.cachedLink.title.split(".").pop() == "umlsync") {
-               var params2 = self.cachedLink;
-               var path;
-               // Use relative paths inside repository
-               if (params2.repoId == params.repoId
-                 && params2.viewid == params.viewid
-                 && params2.branch == params.branch) {
-                 var p1 = params.absPath.split("/"),
-                     p2 = params2.absPath.split("/"),
-                     p3 = "",
-                     idx = 0,
-                     idx2 = 0;
-                 while (p2[idx] == p1[idx]) {
-                     ++idx;
-                 }
-                 idx2 = idx;
-                 for (;idx<p1.length-1; ++idx) {
-                   p3 = "../" + p3;
-                 }
-                 if (p3 == "") {
-                     p3 = "."
-                 } else {
-                     p3 = p3.substring(0, p3.length -1);
-                 }
-                 for (;idx2<p2.length; ++idx2) {
-                   p3 = p3 + "/" + p2[idx2];
-                 }
-                 path = "?path=" + p3;
-               }
-               // and absolute path for external references
-               else {
-                 path = "/" + params2.repoId + "/" + params2.branch + "/" + params2.absPath;
-               }
-               prefix = '![Diagram: ] (http://umlsync.org/github' + path + ' "';
-               postfix = '")';
+         prefix = "";
+         if (self.cachedLink && self.cachedLink.title.split(".").pop() == "umlsync") {
+           var params2 = self.cachedLink;
+           var path;
+           // Use relative paths inside repository
+           if (params2.repoId == params.repoId
+             && params2.viewid == params.viewid
+             && params2.branch == params.branch) {
+             var p1 = params.absPath.split("/"),
+                 p2 = params2.absPath.split("/"),
+                 p3 = "",
+                 idx = 0,
+                 idx2 = 0;
+             while (p2[idx] == p1[idx]) {
+                 ++idx;
              }
-             else {
-               prefix = '![Diagram: ] (http://umlsync.org/github/%repo%/%branch%/%path% "';
-               postfix = '")';
+             idx2 = idx;
+             for (;idx<p1.length-1; ++idx) {
+               p3 = "../" + p3;
              }
+             if (p3 == "") {
+                 p3 = "."
+             } else {
+                 p3 = p3.substring(0, p3.length -1);
+             }
+             for (;idx2<p2.length; ++idx2) {
+               p3 = p3 + "/" + p2[idx2];
+             }
+             path = "?path=" + p3;
+           }
+           // and absolute path for external references
+           else {
+             path = "/" + params2.repoId + "/" + params2.branch + "/" + params2.absPath;
+           }
+           prefix = '![Diagram: ] (http://umlsync.org/github' + path + ' "';
+           postfix = '")';
+         }
+         else {
+           prefix = '![Diagram: ] (http://umlsync.org/github/%repo%/%branch%/%path% "';
+           postfix = '")';
+         }
            }
 
            $(selector + " #markdown").wrapSelection(prefix, postfix);
@@ -1179,10 +1121,10 @@ Version:
 var text2 = self.markdown[selector];
 var text1 = $(this).val();
           if ($(this).val() != self.markdown[selector]) {
-            self.onContentModifiedStateChanged(selector, true);
+        self.onContentModifiedStateChanged(selector, true);
           }
           else {
-            self.onContentModifiedStateChanged(selector, false);
+        self.onContentModifiedStateChanged(selector, false);
           }
         });
 
@@ -1229,17 +1171,17 @@ var text1 = $(this).val();
         var contentType = this.getContentType(title);
         // Nothing to load
         if (contentType == undefined) {
-            return;
+        return;
         }
         
         var params = this.contents[ahref] || this.embeddedContents[ahref],
           clone = {
-             relativePath:path,
-             viewid:params.viewid,
-             repoId:params.repoId,
-             branch:params.branch,
-             contentType:contentType,
-             title:title
+         relativePath:path,
+         viewid:params.viewid,
+         repoId:params.repoId,
+         branch:params.branch,
+         contentType:contentType,
+         title:title
           };
         this.loadContent(clone, params);
     },
@@ -1253,7 +1195,7 @@ var text1 = $(this).val();
         self = this;
 
       // Check if view is really exists: fox example if some diagram contain
-      //                                 reference on sourceforge or googlecode
+      //                         reference on sourceforge or googlecode
       if (!self.views || !self.views[viewid] || !self.views[viewid].view) {
         alert("View: " + viewid + " was not initialize.");
         return;
@@ -1284,13 +1226,13 @@ var text1 = $(this).val();
         for (var r in self.contents) {
           var d = self.contents[r];
           if ((d.viewid == params.viewid)  // Github 
-              && (d.repoId == params.repoId)   // userid/repo
-              && (d.branch == params.branch) // tree/master
-              && (d.absPath == params.absPath) // path from root
-              )
+          && (d.repoId == params.repoId)   // userid/repo
+          && (d.branch == params.branch) // tree/master
+          && (d.absPath == params.absPath) // path from root
+          )
           { // if
-              $("#tabs").tabs('select', r);
-              return;
+          $("#tabs").tabs('select', r);
+          return;
           } // end if
         }
       }
@@ -1319,37 +1261,37 @@ var text1 = $(this).val();
       if (self.views[viewid]) {
         self.views[viewid].view.loadContent(params, {
           'success': function(msg, data) {
-            if (params.selector == undefined) {
-              params.hasModification = true;
-              self.contents[tabname] = params;
-            }
+        if (params.selector == undefined) {
+          params.hasModification = true;
+          self.contents[tabname] = params;
+        }
 
-            // Simple toolbox for each diagram
-            self.appendContentToolbox(tabname, params);
+        // Simple toolbox for each diagram
+        self.appendContentToolbox(tabname, params);
 
-            // Remove puh after JSON load completion
-            $(tabname + " #puh").remove();
+        // Remove puh after JSON load completion
+        $(tabname + " #puh").remove();
 
-            var ct = params.contentType;
+        var ct = params.contentType;
 
-            if (params.contentType == "dm") {
-              self.loadDiagram(tabname, params, data);
-            }
-            else if (params.contentType == "md") {
-              self.loadMarkdown(tabname, params, data);
-            }
-            else if (params.contentType == "code") {
-              self.loadCode(tabname, params, data);
-            }
-            else {
-              alert("Unknown content type: " + params.contentType);
-            }
+        if (params.contentType == "dm") {
+          self.loadDiagram(tabname, params, data);
+        }
+        else if (params.contentType == "md") {
+          self.loadMarkdown(tabname, params, data);
+        }
+        else if (params.contentType == "code") {
+          self.loadCode(tabname, params, data);
+        }
+        else {
+          alert("Unknown content type: " + params.contentType);
+        }
 
-            // Update the framework sizes
-            self._helperUpdateFrameWork(true);
+        // Update the framework sizes
+        self._helperUpdateFrameWork(true);
           },
           'error': function(msg) {
-              self.loadError("content", msg, tabname, params);
+          self.loadError("content", msg, tabname, params);
           }
         });
       }
@@ -1398,19 +1340,19 @@ var text1 = $(this).val();
           self.diagrams[tabname] = obj; // Keep diagram name
 
           obj.onDestroy(function() {
-            self.views[params.viewid].view.releaseContent(params);
-            delete self.diagrams[tabname];
+        self.views[params.viewid].view.releaseContent(params);
+        delete self.diagrams[tabname];
           });
 
           if (obj.options.multicanvas) {
-            self['ActivateDiagramMenu'](obj.options['type']);
-            obj.draw();
+        self['ActivateDiagramMenu'](obj.options['type']);
+        obj.draw();
           }
           obj.options['viewid'] = viewid;
           dm.dm.loader.OnLoadComplete(
-            function() {
-              obj._setWidgetsOption("editable", params.editable);
-            }
+        function() {
+          obj._setWidgetsOption("editable", params.editable);
+        }
           );
         });
     },
@@ -1435,8 +1377,8 @@ var text1 = $(this).val();
         self.counter++;
         
         var relativePath = $(this).attr("path"),
-            sum = $(this).attr("sha"),
-            loadParams;
+        sum = $(this).attr("sha"),
+        loadParams;
        
         // Initialize load parameter from content or inherit them from parent document
         loadParams = {
@@ -1495,8 +1437,8 @@ var text1 = $(this).val();
       else if (type == "repos") {
           // reload page in case of internal server error
           if (err && err.error == 500) {
-            window.location.href = "/editor/";
-            return;
+        window.location.href = "/editor/";
+        return;
           }
       }
       else {
@@ -1537,13 +1479,13 @@ var text1 = $(this).val();
       function keepContent(ahref, saveIt) {
         if (self.contents && self.contents[ahref]) {
           if (saveIt) {
-            self.saveContent(ahref, true);
+        self.saveContent(ahref, true);
           }
           else {
-            $(".diagram-menu").hide();
-            delete self.contents[ahref];
-            $("#tabs").tabs('remove', ahref);
-            $(ahref).remove();
+        $(".diagram-menu").hide();
+        delete self.contents[ahref];
+        $("#tabs").tabs('remove', ahref);
+        $(ahref).remove();
           }
         }
         
@@ -1559,27 +1501,27 @@ var text1 = $(this).val();
         if (item) {
           $("#tabs").tabs('select', item);
           dm.dm.dialogs['ConfirmationDialog'](
+        {
+          title:"Save",
+          description: 'Save file "' + contents[item].title + '" ?',
+          buttons:
             {
-              title:"Save",
-              description: 'Save file "' + contents[item].title + '" ?',
-              buttons:
-                {
-                  "Yes": function() {
-                    $( this ).dialog( "close" );
-                    keepContent(item, true);
-                    visitModified(list);
-                  },
-                  "No": function() {
-                    $( this ).dialog( "close" );
-                    keepContent(item, false);
-                    visitModified(list);
-                  },
-                  "Cancel":function() {
-                    $( this ).dialog( "close" );
-                    callback(false);
-                  }
-                }
-            });
+              "Yes": function() {
+                $( this ).dialog( "close" );
+                keepContent(item, true);
+                visitModified(list);
+              },
+              "No": function() {
+                $( this ).dialog( "close" );
+                keepContent(item, false);
+                visitModified(list);
+              },
+              "Cancel":function() {
+                $( this ).dialog( "close" );
+                callback(false);
+              }
+            }
+        });
         }
         else {
           callback(true);
@@ -1596,7 +1538,7 @@ var text1 = $(this).val();
     // Callback method to report modification of diagram state
     // @param selector - the diagram selector
     // @param state - "true" content was modified
-    //                "false" content was not modified
+    //            "false" content was not modified
     //
     onContentModifiedStateChanged: function(selector, state) {
       if (this.contents[selector].isModified != state) {
@@ -1627,7 +1569,7 @@ var text1 = $(this).val();
         var hhh = $(window).height() - $(this.options.top).outerHeight(true) - 5 - $("#"+this.options.content+"-bottom").outerHeight(true);
 
         var $ch1 = $("#" + this.options.content).height(hhh)  // set height of middle:  #content
-        .children("DIV").height(hhh)              // #content-left; #content-right; #content-left-right-resize;  No border for this items available
+        .children("DIV").height(hhh)          // #content-left; #content-right; #content-left-right-resize;  No border for this items available
         .children(".ui-scrollable-tabs").height(hhh - 2)    // 1px solid border defined for .ui-scrollable-tabs
         .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
 
@@ -1641,7 +1583,7 @@ var text1 = $(this).val();
           // Check that is it no full screen mode for printing
           // Or if it is first-start page !!!
           if (this.options.notabs == undefined || !this.options.notabs)
-            hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
+        hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
 
           // Mess hapens only because of wrong in-visible elements !!!
           $ch = $ch1.children(".ui-tabs-panel").filter(':visible').height(hhh)
@@ -1651,7 +1593,7 @@ var text1 = $(this).val();
           // Update the markdown text area
           $md = $(".us-markdown-editor");
           if ($md.length != 0) {
-            $md.height(hhh-$("span.us-toolbox-header ul li a").height()-35);
+        $md.height(hhh-$("span.us-toolbox-header ul li a").height()-35);
           }
         }
 
@@ -1667,16 +1609,16 @@ var text1 = $(this).val();
         var canvas = window.document.getElementById('SingleCanvas');
         if (canvas) {
           if ($ch) {
-            var s = $ch.offset();
-            if (s) {
-              $(canvas).offset(s);
-            }
+        var s = $ch.offset();
+        if (s) {
+          $(canvas).offset(s);
+        }
           }
           canvas.height = hhh - 11; // 11-is scroll element size
           if ($(".us-diagram").length) {
-            canvas.width = ($(".us-diagram").width() - 12);
+        canvas.width = ($(".us-diagram").width() - 12);
           } else {
-            canvas.width = wd - 40 - 12;
+        canvas.width = wd - 40 - 12;
           }
         }
       }
@@ -1693,9 +1635,9 @@ var text1 = $(this).val();
         if (canvas) {
           canvas.width = $("#content").width() - $("#content-left").width() - 40;
           if ($(".us-diagram").length) {
-            canvas.width = ($(".us-diagram").width() - 12);
+        canvas.width = ($(".us-diagram").width() - 12);
           } else {
-            canvas.width = wd - 40 - 12;
+        canvas.width = wd - 40 - 12;
           }
         }
 
@@ -1727,9 +1669,9 @@ var text1 = $(this).val();
           fw.CtrlDown = true;
         } else if (e.keyCode == 46) { // Del
           if (($(".editablefield input").length == 0) && (fw.diagrams[fw.selectedContentId] != undefined))  {
-            if (fw.diagrams[fw.selectedContentId]) {
-              fw.diagrams[fw.selectedContentId].removeSelectedElements();
-            }
+        if (fw.diagrams[fw.selectedContentId]) {
+          fw.diagrams[fw.selectedContentId].removeSelectedElements();
+        }
           }
         } else if (e.keyCode == 27) { // Esc
           var e = jQuery.Event("blur");
@@ -1739,106 +1681,106 @@ var text1 = $(this).val();
           $(".editablefield input").trigger('blur');
         } else if (e.ctrlKey) {
           switch (e.keyCode) {
-            case 65:// Handle Ctrl-A
-              if (fw.diagrams[fw.selectedContentId]) {
-                fw.diagrams[fw.selectedContentId]._setWidgetsOption("selected", true);
-              }
-              e.preventDefault();
-              break;
+        case 65:// Handle Ctrl-A
+          if (fw.diagrams[fw.selectedContentId]) {
+            fw.diagrams[fw.selectedContentId]._setWidgetsOption("selected", true);
+          }
+          e.preventDefault();
+          break;
 
-            case 67: // Handle Ctrl-C
-              // 1. Get focus manager
-              // 2. if element ? => copy it on clipboard
-              //              stop propagate
-              if (fw.diagrams[fw.selectedContentId])  {
-                $.clippy = fw.diagrams[fw.selectedContentId].getDescription("selected", true);
-              } else {
-                $.clippy = undefined;
-              }
-              break;
-            case 88:
-              // Handle Ctrl-X
-              // 1. Get focus manager
-              // 2. if element ? => copy it on clipboard
-              //              stop propagate
-              // 3. Remove element
-              if (fw.diagrams[fw.selectedContentId])  {
-                if (fw.diagrams[fw.selectedContentId].clickedElement != undefined) {
-                  fw.diagrams[fw.selectedContentId].clickedElement._update();
-                  $.clippy = fw.diagrams[fw.selectedContentId].clickedElement.getDescription();
-                  $("#" + fw.diagrams[fw.selectedContentId].clickedElement.euid + "_Border").remove();
-                } else {
-                  $.clippy = undefined;
-                }
-              } else {
-                $.clippy = undefined;
-              }
-              break;
-            case 86:// Handle Ctrl-V
-              // 1. Get focus manager
-              // 2. if diagram ? => try copy element from clipboard
-              //              stop propagate if success
-              if (($.clippy)  && (fw.diagrams[fw.selectedContentId])) {
-                // Make selected only inserter items
-                fw.diagrams[fw.selectedContentId]._setWidgetsOption("selected", false);
-                fw.diagrams[fw.selectedContentId].multipleSelection = true;
-                var obj = $.parseJSON($.clippy),
-                es = obj["elements"],
-                cs = obj["connectors"];
+        case 67: // Handle Ctrl-C
+          // 1. Get focus manager
+          // 2. if element ? => copy it on clipboard
+          //          stop propagate
+          if (fw.diagrams[fw.selectedContentId])  {
+            $.clippy = fw.diagrams[fw.selectedContentId].getDescription("selected", true);
+          } else {
+            $.clippy = undefined;
+          }
+          break;
+        case 88:
+          // Handle Ctrl-X
+          // 1. Get focus manager
+          // 2. if element ? => copy it on clipboard
+          //          stop propagate
+          // 3. Remove element
+          if (fw.diagrams[fw.selectedContentId])  {
+            if (fw.diagrams[fw.selectedContentId].clickedElement != undefined) {
+              fw.diagrams[fw.selectedContentId].clickedElement._update();
+              $.clippy = fw.diagrams[fw.selectedContentId].clickedElement.getDescription();
+              $("#" + fw.diagrams[fw.selectedContentId].clickedElement.euid + "_Border").remove();
+            } else {
+              $.clippy = undefined;
+            }
+          } else {
+            $.clippy = undefined;
+          }
+          break;
+        case 86:// Handle Ctrl-V
+          // 1. Get focus manager
+          // 2. if diagram ? => try copy element from clipboard
+          //          stop propagate if success
+          if (($.clippy)  && (fw.diagrams[fw.selectedContentId])) {
+            // Make selected only inserter items
+            fw.diagrams[fw.selectedContentId]._setWidgetsOption("selected", false);
+            fw.diagrams[fw.selectedContentId].multipleSelection = true;
+            var obj = $.parseJSON($.clippy),
+            es = obj["elements"],
+            cs = obj["connectors"];
+            for (var j in es) {
+              es[j].pageX = parseInt(es[j].pageX) + 10;
+              $.log("pzgeX: " + es[j].pageX);
+              es[j].pageY = parseInt(es[j].pageY) + 10;
+              fw.diagrams[fw.selectedContentId].Element(es[j].type, es[j], function(obj) {
+                es[j].euid = obj.euid;
+                  });
+            }
+
+            dm.dm.loader.OnLoadComplete(function() {
+              for (var c in cs) {
                 for (var j in es) {
-                  es[j].pageX = parseInt(es[j].pageX) + 10;
-                  $.log("pzgeX: " + es[j].pageX);
-                  es[j].pageY = parseInt(es[j].pageY) + 10;
-                  fw.diagrams[fw.selectedContentId].Element(es[j].type, es[j], function(obj) {
-                        es[j].euid = obj.euid;
-                      });
-                }
-
-                dm.dm.loader.OnLoadComplete(function() {
-                  for (var c in cs) {
-                    for (var j in es) {
-                      if (es[j].id == cs[c].fromId) {
-                          cs[c].fromId = es[j].euid;
-                      }
-                      // Can not use else because of selfassociation connector
-                      if (es[j].id == cs[c].toId) {
-                          cs[c].toId = es[j].euid;
-                      }
-
-                    }
-                    fw.diagrams[fw.selectedContentId].Connector(cs[c].type, cs[c]);
+                  if (es[j].id == cs[c].fromId) {
+                  cs[c].fromId = es[j].euid;
                   }
-                });
+                  // Can not use else because of selfassociation connector
+                  if (es[j].id == cs[c].toId) {
+                  cs[c].toId = es[j].euid;
+                  }
 
-                //for (j in cs)
-                //fw.diagrams[fw.selectedContentId].Connector(cs[j].type, cs[j]);
-                $.clippy = undefined;
+                }
+                fw.diagrams[fw.selectedContentId].Connector(cs[c].type, cs[c]);
               }
-              break;
-            case 90:// Handle Ctrl-Z
-              // 1. Get focus manager
-              // 2. if diagram => get operation sequence manager
-              //             -> goBack()
-              if (fw.diagrams[fw.selectedContentId])  {
-                fw.diagrams[fw.selectedContentId].opman.revertOperation();
-              }
-              break;
-            case 89:// Handle Ctrl-Y
-              // 1. Get focus manager
-              // 2. if diagram => get operation sequence manager
-              //             -> goForward()
-              if (fw.diagrams[fw.selectedContentId])  {
-                fw.diagrams[fw.selectedContentId].opman.repeatOperation();
-              }
-              break;
-            case 83:// Handle Ctrl-S
-              if (fw.selectedContentId)
-                fw.saveContent(fw.selectedContentId);
-              e.preventDefault();
-              e.stopPropagation();
-              break;
-            default:
-              break;
+            });
+
+            //for (j in cs)
+            //fw.diagrams[fw.selectedContentId].Connector(cs[j].type, cs[j]);
+            $.clippy = undefined;
+          }
+          break;
+        case 90:// Handle Ctrl-Z
+          // 1. Get focus manager
+          // 2. if diagram => get operation sequence manager
+          //         -> goBack()
+          if (fw.diagrams[fw.selectedContentId])  {
+            fw.diagrams[fw.selectedContentId].opman.revertOperation();
+          }
+          break;
+        case 89:// Handle Ctrl-Y
+          // 1. Get focus manager
+          // 2. if diagram => get operation sequence manager
+          //         -> goForward()
+          if (fw.diagrams[fw.selectedContentId])  {
+            fw.diagrams[fw.selectedContentId].opman.repeatOperation();
+          }
+          break;
+        case 83:// Handle Ctrl-S
+          if (fw.selectedContentId)
+            fw.saveContent(fw.selectedContentId);
+          e.preventDefault();
+          e.stopPropagation();
+          break;
+        default:
+          break;
           }
         }
       }
@@ -1875,62 +1817,62 @@ var text1 = $(this).val();
   There are two menus required for editable:
   one for text edit
     another for element/connector edit
-                    <button class="ui-button"><span class="ui-icon ui-icon-align-left"/></button>\
-                    <button class="ui-button"><span class="ui-icon ui-icon-align-center"/></button>\
-                    <button class="ui-button"><span class="ui-icon ui-icon-align-right"/></button>\
-                    <button class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>
+                <button class="ui-button"><span class="ui-icon ui-icon-align-left"/></button>\
+                <button class="ui-button"><span class="ui-icon ui-icon-align-center"/></button>\
+                <button class="ui-button"><span class="ui-icon ui-icon-align-right"/></button>\
+                <button class="ui-button"><span class="ui-icon ui-icon-valign-bottom"/></button>
            */
 
           $("#context-toolbox").click(function(){ $(".context-menu").hide();});
-          //                    $("#vp_main_menu_ref").click(function(){
-          //                    $( "#vp_main_menu" ).dialog( "open" );
-          //                  });
+          //                $("#vp_main_menu_ref").click(function(){
+          //                $( "#vp_main_menu" ).dialog( "open" );
+          //              });
 
           var allFonts = ["arial", "san serif", "serif", "wide", "narrow", "comic sans ms", "Courier New", "Geramond", "Georgia", "Tahoma", "Trebuchet MS", "Verdana"];
           for (var loop=0; loop<allFonts.length; loop++) {
-            var rrr = "<option value=\""+allFonts[loop] +"\">" +allFonts[loop]+"</font></option>";
-            $(rrr).css("font-family", allFonts[loop]).appendTo('select#speedAa');
+        var rrr = "<option value=\""+allFonts[loop] +"\">" +allFonts[loop]+"</font></option>";
+        $(rrr).css("font-family", allFonts[loop]).appendTo('select#speedAa');
           }
 
           for (var i=1; i<11;++i) {
-            $("#borderWidth").append("<option value='"+ i+"'>" + i +"px</option>");
+        $("#borderWidth").append("<option value='"+ i+"'>" + i +"px</option>");
           }
 
           $('button#color5').simpleColorPicker({ 'onChangeColor': function(color) {
-            if (fw.diagrams[fw.selectedContentId])  {
-              fw.diagrams[fw.selectedContentId]._setWidgetsOption("color", color);
-            }
+        if (fw.diagrams[fw.selectedContentId])  {
+          fw.diagrams[fw.selectedContentId]._setWidgetsOption("color", color);
+        }
           } }).click(function() { $(".context-menu").hide();});
 
           $('button#color6').simpleColorPicker({ 'onChangeColor': function(color) {
-            if (fw.diagrams[fw.selectedContentId])  {
-              fw.diagrams[fw.selectedContentId]._setWidgetsOption("font-color", color);
-            }
+        if (fw.diagrams[fw.selectedContentId])  {
+          fw.diagrams[fw.selectedContentId]._setWidgetsOption("font-color", color);
+        }
           } }).click(function() { $(".context-menu").hide();});
           
           $('button#vatop').click(function() {
-            if (fw.diagrams[fw.selectedContentId])  {
-              fw.diagrams[fw.selectedContentId]._setWidgetsOption("z-index", "front");
-            }
+        if (fw.diagrams[fw.selectedContentId])  {
+          fw.diagrams[fw.selectedContentId]._setWidgetsOption("z-index", "front");
+        }
           });
           $('button#vabottom').click(function() {
-            if (fw.diagrams[fw.selectedContentId])  {
-              fw.diagrams[fw.selectedContentId]._setWidgetsOption("z-index", "back");
-            }
+        if (fw.diagrams[fw.selectedContentId])  {
+          fw.diagrams[fw.selectedContentId]._setWidgetsOption("z-index", "back");
+        }
           });
 
           $("#borderWidth").change(function() {
-            if (fw.diagrams[fw.selectedContentId])  {
-              $.log("diagram ok");
-              fw.diagrams[fw.selectedContentId]._setWidgetsOption("borderwidth", $(this).val() + "px");
-            }
+        if (fw.diagrams[fw.selectedContentId])  {
+          $.log("diagram ok");
+          fw.diagrams[fw.selectedContentId]._setWidgetsOption("borderwidth", $(this).val() + "px");
+        }
           });
 
           $("select#speedAa").change(function() {
-            $.log("diagram ok");
-            if (fw.diagrams[fw.selectedContentId])  {
-              fw.diagrams[fw.selectedContentId]._setWidgetsOption("font-family", $(this).val());
-            }
+        $.log("diagram ok");
+        if (fw.diagrams[fw.selectedContentId])  {
+          fw.diagrams[fw.selectedContentId]._setWidgetsOption("font-family", $(this).val());
+        }
           });
 
 
