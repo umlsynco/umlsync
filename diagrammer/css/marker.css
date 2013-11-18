@@ -1,0 +1,67 @@
+#us-marker {
+    left: 58px;
+    top: 76px;
+}
+
+.marker.notail:before, .marker.notail:after {
+    display: none;
+}
+
+.marker:before, .marker:after {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #29AAE1 transparent transparent;
+    border-right: 6px solid transparent;
+    border-style: solid;
+    border-width: 7px 6px 6px;
+    content: "";
+    height: 0;
+    left: 50%;
+    margin-left: -6px;
+    position: absolute;
+    top: 20px;
+    width: 0;
+}
+
+.marker:before {
+    border-top-color: #0788BF;
+    top: 21px;
+}
+
+.marker:before, .marker:after {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #29AAE1 transparent transparent;
+    border-right: 6px solid transparent;
+    border-style: solid;
+    border-width: 7px 6px 6px;
+    content: "";
+    height: 0;
+    left: 50%;
+    margin-left: -6px;
+    position: absolute;
+    top: 20px;
+    width: 0;
+}
+
+.marker {
+    -moz-box-sizing: border-box;
+    background: none repeat scroll 0 0 #29AAE1;
+    border: 1px solid #0788BF;
+    border-radius: 12px 12px 12px 12px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+    width: 24px;
+}

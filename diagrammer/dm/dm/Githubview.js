@@ -209,6 +209,10 @@
 
           if (title == 'Yours') {
             if (githubView != null) {
+              // Do nothing for the same repository
+              if (githubView.activeRepo == repo) {
+                  return;
+              }
 
               // First activation of repository
               if (githubView.activeRepo == null) {
@@ -216,6 +220,7 @@
                 updateWidgetsStatus();
                 return;
               }
+
 
               // Skipped repo change during modified content
               // save dialog opening
@@ -646,22 +651,21 @@
               }
               else if (params.absPath) {
                 var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
-                repo.contents(cPath,  function(err, retObj, response) {
-                  var data = retObj.data;
+                repo.contents(cPath,  function(err, data, response) {
                   if (err != null) {
-        callback.error(err);
-        return;
+                    callback.error(err);
+                    return;
                   }
                   if (data.message) {
-        callback.error(data.message);
-        return;
+                    callback.error(data.message);
+                    return;
                   }
 
                   var decodedData = (data.encoding == "base64") ? decodeContent(data) : data;
 
                   if (!decodedData) {
-        callback.error("No data found in: " + cPath);
-        return;
+                    callback.error("No data found in: " + cPath);
+                    return;
                   }
                   self.contentCachedNum++;
                   params.sha = data.sha;
@@ -895,6 +899,7 @@
                      var path;
                      var contents = [],
                      repo = self.repositories[self.activeRepo].repo;
+                     var rrrrrrrrrrrrr = self.repositories[self.activeRepo];
                      for (path in items) {
                        contents.push({
                          'path': path.toString().substring(1),

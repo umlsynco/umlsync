@@ -180,7 +180,7 @@ Version:
           <div id="us-viewmanager"><span id="us-github">Github</span><span style="float:right;" id="us-eclipse">Eclipse</span></div>\
           <div id="us-repo-select"></div>\
           <div id="us-toolbox"></div>\
-          <div id="treetabs"></div>\
+          <div id="us-treetabs"></div>\
           </div>\
           </div>\
           <div id="'+ this.options.content +'-left-right-resize" style="width:6px;left:200px;height:100%;position:absolute;padding:0;margin:0;border:0px solid gray;background-color:gray;cursor: col-resize;"></div>\
@@ -327,13 +327,13 @@ Version:
         
           });
 
-          var $treetabs = $("#treetabs");
+          var $treetabs = $("#us-treetabs");
           //.tabs({tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
           //'scrollable': true}).css({'background-color':"#7E8380", 'background':"none"});
 
 
 
-          /*          $('#treetabs span.ui-test').live('click', function() {
+          /*          $('#us-treetabs span.ui-test').live('click', function() {
         var index = $('li', $treetabs).index($(this).parent());
         ///$treetabs.tabs('remove', index);
           });
@@ -423,8 +423,8 @@ Version:
       //    it could help to prevent some mess with localhost views
       var id = this.options.tabLeft+ this.left_counter;
       this.left_counter++;
-      $("#treetabs").children("DIV").hide();
-      $("#treetabs").append("<div id='"+id+"'></div>");
+      $("#us-treetabs").children("DIV").hide();
+      $("#us-treetabs").append("<div id='"+id+"'></div>");
 
       if (name != "Eclipse") {
         $("#us-repo .js-select-button").text(IView.getActiveRepository() != null ? IView.getActiveRepository(): "none");
@@ -432,7 +432,7 @@ Version:
      }
 
      id = "DIV#" + id;
-     var $treetabs = $("#treetabs");
+     var $treetabs = $("#us-treetabs");
 
      $(id).append("<div id='tree'></div>");
      var self = this;
@@ -485,7 +485,7 @@ Version:
     addView: function(name, options, toolbox) {
       var id = "#" + this.options.tabLeft+ this.left_counter;
       this.left_counter++;
-      $("#treetabs").tabs("add", id, name);
+      $("#us-treetabs").tabs("add", id, name);
       $(id).append("<div id='tree'></div>");
       var dt = $(id + " #tree").dynatree(options).dynatree("getTree");
 
@@ -1541,7 +1541,7 @@ var text1 = $(this).val();
         // content left maximize treetabs area
         var repoH = $("#switcher #reponav").height(),
         toolboxH = $("#switcher #toolbox").height();
-        $("#switcher #treetabs").height(hhh - repoH - toolboxH-2);
+        $("#switcher #us-treetabs").height(hhh - repoH - toolboxH-2);
 
         var $ch, $md;
         if ($ch1.children(".ui-tabs-panel").filter(':visible').length) {
@@ -1620,7 +1620,7 @@ var text1 = $(this).val();
       .children("DIV")
       .width($("#content").width() - $("#content-left").width() - 32);
       //.height($(window).height() - $("#content").position().top - 55 -  $(this.options.bottom).height());
-      //$("#treetabs .ui-tabs-panel").height(tabsHeight-45);
+      //$("#us-treetabs .ui-tabs-panel").height(tabsHeight-45);
 
     },
     //

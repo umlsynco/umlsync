@@ -17,10 +17,7 @@
 
     function _request(method, path, data, cb, dataType) {
 
-    var raw = dataType == "raw",
-        isJsonp = dataType == "jsonp",
-        jsonpCallbackId = "";
-
+    var raw = dataType == "raw";
     // Work-around for demo mode
     if (options.token == null || options.token == undefined) {
         function decodeMDContent(data) {
@@ -50,12 +47,7 @@
         return;
     } // Work-around for local pages loading
 
-      function getURL(isJsonp) {
-        if (isJsonp) {
-          jsonpCallbackId = "cb" + (new Date()).getTime();
-          var url = API_URL + path;
-          return url + ((/\?/).test(url) ? "&" : "?callback=") + jsonpCallbackId;
-        }
+      function getURL() {
         var url = API_URL + path;
         return url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
       }
@@ -63,30 +55,26 @@
       var xhr = new XMLHttpRequest();
       if (!raw) {xhr.dataType = "json";}
 
-      xhr.open(method, getURL(isJsonp));
+      xhr.open(method, getURL());
       xhr.onreadystatechange = function () {
         if (this.readyState == 4) {
           if (this.status >= 200 && this.status < 300 || this.status === 304) {
             // Extract x-rate-limit-remaning
             Github.xRateLimitRemaining = this.getResponseHeader('X-RateLimit-Remaining');
-
-            if (isJsonp) {
-                var subResponse = this.responseText.substr(jsonpCallbackId.length + 1, this.responseText.length-jsonpCallbackId.length - 3);
-                cb(null, subResponse ? JSON.parse(subResponse) : true);
-            } else {
-              cb(null, raw ? this.responseText : this.responseText ? JSON.parse(this.responseText) : true);
-            }
+            cb(null, raw ? this.responseText : this.responseText ? JSON.parse(this.responseText) : true);
           } else {
             cb({request: this, error: this.status});
           }
         }
       };
-      if (!isJsonp) {
-        xhr.setRequestHeader('Accept','application/vnd.github.raw');
-        xhr.setRequestHeader('Content-Type','application/json');
-      } else {
-        xhr.setRequestHeader('Content-Type','application/jsonp');
+
+      if (raw) {
+        xhr.setRequestHeader('Accept','application/vnd.github.v3.raw');
       }
+      else {
+        xhr.setRequestHeader('Accept','application/vnd.github.v3+json');
+      }
+      xhr.setRequestHeader('Content-Type','application/json');
 
 
       if (
@@ -338,23 +326,15 @@
       // Update an existing tree adding a new blob object getting a tree SHA back
       // -------
 
-      this.removeTree = function(baseTree, path, blob, cb) {
+      this.removeTree = function(baseTree, cb) {
         var data = {
-          "base_tree": baseTree,
-          "tree": [
-            {
-              "path": path,
-              "mode": "100644",
-              "type": "blob",
-              "sha": blob
-            }
-          ],
-          "message": "test commit"
+          "tree": baseTree
         };
-        _request("DELETE", repoPath + "/git/trees", data, function(err, res) {
+        _request("POST", repoPath + "/git/trees", data, function(err, res) {
           if (err) return cb(err);
           cb(null, res.sha);
         });
+
       };
 
 
@@ -396,10 +376,14 @@
               // Expand tree with newly created
               // context blobs
               for (iter in blobs) {
+                  var magic = "100644";
+                  if (blobs[iter].type == "tree") {
+                    magic = "040000";
+                  }
                   newTree.push({
                     "path": iter,
-                    "mode": "100644",
-                    "type": "blob",
+                    "mode": magic,
+                    "type": blobs[iter].type,
                     "sha": blobs[iter]
                   });
               }
@@ -421,9 +405,15 @@
             var item;
             // Remove item if content is empty
             if (blobs[p].sha != null) {
+              var magic = "100644";
+              var treePath = p;
+              if (blobs[p].type == "tree") {
+                magic = "040000";
+                treePath = treePath.substring(0, treePath.lastIndexOf("/")+1);
+              }
               item = {
-                "path": p,
-                "mode": "100644",
+                "path": treePath,
+                "mode": magic,
                 "type": blobs[p].type,
                 "sha": blobs[p].sha
               };
@@ -515,7 +505,7 @@
       // --------
 
       this.contents = function(path, cb) {
-        _request("GET", repoPath + "/contents/" + path, null, cb, "jsonp");
+        _request("GET", repoPath + "/contents/" + path, null, cb, "json");
       };
 
       this.deleteContents = function(branch, path, sha, cb) {
@@ -648,24 +638,14 @@
                     that.postBlob(nextBlob.content, nextBlobOrTree);
                   }
                   else {
-                      /*
-                    for (var xxx in tree) {
+                    // Remove blob from the tree
+                    for (var xxx in nextBlob.tree) {
                       if (nextBlob.tree[xxx].sha == nextBlob.sha) {
                               delete nextBlob.tree[xxx];
                               nextBlob.tree.splice(xxx, 1);
                       }
                     }
-                    var treeData = {
-                       "base_tree": nextBlob.baseTree,
-                       "tree": nextBlob.tree
-                        };
-                    // remove item if content is empty
-                    that.postBlob(treeData, function(err, blob) {
-                       nextBlobOrTree(err, blob, 'tree');
-                    });
-                    */
-                    statusCallback("Removing  " + nextBlob.path);
-                    that.removeTree(nextBlob.baseTree, nextBlob.path, nextBlob.sha, function(err, blob) {
+                    that.removeTree(nextBlob.tree, function(err, blob) {
                        nextBlobOrTree(err, blob, 'tree');
                     });
                   }
