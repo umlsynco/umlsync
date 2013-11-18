@@ -367,7 +367,7 @@
 
 
           function loadPath() {
-            if (path != "") {
+            if (path != undefined && path != "") {
               var splitted_path = path.split("/"),
                 repo_path = splitted_path.slice(0, 2).join("/"),
                 branch = splitted_path[2],//master
