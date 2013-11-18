@@ -520,41 +520,6 @@ Version:
 //           Repositories and branches
 //////////////////////////////////////////////////////////////
     //
-    // Add the number of repositories into the repo selection dialog
-    // @param title - the title of tab in dialog
-    // @param IViewsManager - view manager object
-    // @param descr - repositories description object
-    //
-    addRepositories: function(title, IViewsManager, descr) {
-      if (dm.dm.dialogs) {
-        dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
-      }
-    },
-    //
-    // Add the number of repositories into the repo selection dialog
-    // @param title - the title of tab in dialog
-    // @param repoUrl - url of repository
-    // @param IBranchSelectObserver - on branch select observer object
-    // @param desc - branches description object
-    //
-    addBranch: function(title, repoUrl, IBranchSelectObserver, desc) {
-      var repoId = repoUrl.replace("/", "-");
-      if (dm.dm.dialogs) {
-        dm.dm.dialogs['ChangeBranchDialog'](title, desc, repoId, IBranchSelectObserver);
-      }
-    },
-    //
-    // Callback method to setup parameter of repo and branch
-    // Work-around to change text of
-    // selected repository
-    // 
-    onRepoSelect: function(view, text) {
-      if (view.euid == "github") {
-        $("#us-repo .js-select-button").text(view.getActiveRepository());
-        $("#us-branch .js-select-button").text(view.activeBranch);
-      }
-    },
-    //
     // Return an active repository under the current active view
     //
     getActiveRepository: function() {

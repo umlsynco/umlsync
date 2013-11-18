@@ -158,6 +158,41 @@
         };
 
         //
+        // Add the number of repositories into the repo selection dialog
+        // @param title - the title of tab in dialog
+        // @param IViewsManager - view manager object
+        // @param descr - repositories description object
+        //
+        this._activateRepoDialogWidget = function(title, IViewsManager, descr) {
+          if (dm.dm.dialogs) {
+            dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
+          }
+        },
+        //
+        // Add the number of repositories into the repo selection dialog
+        // @param title - the title of tab in dialog
+        // @param repoUrl - url of repository
+        // @param IBranchSelectObserver - on branch select observer object
+        // @param desc - branches description object
+        //
+        this.addBranchDialogWidget = function(title, repoUrl, IBranchSelectObserver, desc) {
+          var repoId = repoUrl.replace("/", "-");
+          if (dm.dm.dialogs) {
+            dm.dm.dialogs['ChangeBranchDialog'](title, desc, repoId, IBranchSelectObserver);
+          }
+        },
+
+        //
+        // Callback method to setup parameter of repo and branch
+        // Work-around to change text of
+        // selected repository
+        // 
+        this.onRepoSelect2 = function(view, text) {
+          if (view.euid == "github") {
+          }
+        },
+
+        //
         //  Callback method which indicates that user has changed the
         //  repository.
         //  1. Check for the modifications in current repository
@@ -165,13 +200,20 @@
         //
         this.onRepoSelect = function(title, repo) {
           var githubView = this.githubView;
+          var self = this;
+
+           function updateWidgetsStatus() {
+               $("#us-repo .js-select-button").text(self.githubView.activeRepo);
+               $("#us-branch .js-select-button").text(self.githubView.activeBranch);
+           }
+
           if (title == 'Yours') {
             if (githubView != null) {
 
               // First activation of repository
               if (githubView.activeRepo == null) {
                 githubView.openRepository(repo, true);
-                dm.dm.fw.onRepoSelect(githubView, repo);
+                updateWidgetsStatus();
                 return;
               }
 
@@ -185,27 +227,26 @@
                 if (githubView.hasModifications()) {
                   dm.dm.dialogs['ConfirmationDialog'](
                   {
-        title:"Change repository?",
-        description: "Modified files will be removed on repository change.",
-        buttons:
-          {
-        "ok": function() {
-          githubView.openRepository(repo, true);
-          dm.dm.fw.onRepoSelect(githubView, repo);
-          $( this ).dialog( "close" );
-        },
-        "cancel": function() {
-          $( this ).dialog( "close" );
-        },
-        "commit...":function() {
-          $( this ).dialog( "close" );
-        }
-          }
-                  });
+                    title:"Change repository?",
+                    description: "Modified files will be removed on repository change.",
+                    buttons: {
+                      "ok": function() {
+                        githubView.openRepository(repo, true);
+                        updateWidgetsStatus();
+                        $( this ).dialog( "close" );
+                      },
+                      "cancel": function() {
+                        $( this ).dialog( "close" );
+                      },
+                      "commit...":function() {
+                        $( this ).dialog( "close" );
+                      }
+                    }
+                  });// Confirmation dialog
                 }
                 else {
                   githubView.openRepository(repo, true);
-                  dm.dm.fw.onRepoSelect(githubView, repo);
+                  updateWidgetsStatus();
                 }
               });
             }
@@ -288,6 +329,22 @@
           return data;
         };
 
+        //
+        // Decode the "base64" content
+        // @param data - data to decode
+        // @return - the decoded content
+        //
+        function decodeContent(data) {
+          if (data.encoding == "base64") {
+            var splitted = data.content.split('\n');
+            var decoded = "";
+            for (s in splitted) {
+              decoded += $.base64.decode(splitted[s]);
+            }
+            return decoded;
+          }
+          return null;
+        };
 
         //
         //  List of user repositories
@@ -317,7 +374,7 @@
             }
           }
 
-          function showRepos(err, repos) {
+          function showRepos(err, repos, title) {
             if (err != null) {
                 dm.dm.fw.loadError("repos", err);
                 return;
@@ -325,7 +382,7 @@
             // Repositories are loaded successfully
             // Now loading the content
             loadPath();
-            dm.dm.fw.addRepositories("Yours", ISelectionObserver, repos);
+            ISelectionObserver._activateRepoDialogWidget(title, ISelectionObserver, repos);
             for (var r in repos) {
               userRepositories.push(repos[r]['full_name']);
             }
@@ -334,35 +391,18 @@
           if (!isLocal) {
             // Server-based use-case
             var user = github().getUser();
-            user.repos(function(err, repos){ showRepos(err, repos) });
+            user.repos(function(err, repos){ showRepos(err, repos, "Yours") });
           }
           else {
             // Local files access without service ON
-            showRepos([{full_name: 'umlsynco/diagrams'},
-           {full_name: 'umlsynco/websync'},
-           {full_name: 'umlsynco/umlsync'},
-           {full_name: 'kalaidin/octotest'},
-           {full_name: 'umlsynco/GIST'}]);
+            showRepos(null, 
+                      [{full_name: 'umlsynco/diagrams'},
+                       {full_name: 'umlsynco/websync'},
+                       {full_name: 'kalaidin/octotest'},
+                       {full_name: 'umlsynco/GIST'}], "Yours");
           }
           this.githubView = new IGithubView(null, false);
           dm.dm.fw.addView2('github', this.githubView); // repoid + view
-        };
-
-        //
-        // Decode the "base64" content
-        // @param data - data to decode
-        // @return - the decoded content
-        //
-        function decodeContent(data) {
-          if (data.encoding == "base64") {
-            var splitted = data.content.split('\n');
-            var decoded = "";
-            for (s in splitted) {
-              decoded += $.base64.decode(splitted[s]);
-            }
-            return decoded;
-          }
-          return null;
         };
 
         //
@@ -462,11 +502,11 @@
               var repo = self.repositories[repoId].repo;
               repo.listBranches(
                 function(err, branches) {
-                  dm.dm.fw.addBranch("Branches", repoId, self, branches);
+                  ISelectionObserver.addBranchDialogWidget("Branches", repoId, self, branches);
                   repo.listTags(
-        function(err, tags) {
-          dm.dm.fw.addBranch("Tags", repoId, self, tags);
-        }
+                    function(err, tags) {
+                      ISelectionObserver.addBranchDialogWidget("Tags", repoId, self, tags);
+                    }
                   );
                 }
               );
@@ -484,14 +524,17 @@
         //////////////////////////////////////////////////////////////
         //           Content managment
         //////////////////////////////////////////////////////////////
+
             //
             // defines the cached content data limit
             //
             contentCacheLimit:40,
+
             //
             // The number of cached contents
             //
             contentCachedNum:0,
+
             //
             // Save content if it is belog to the active branch and repository
             // otherwise throw an exception
@@ -547,6 +590,7 @@
                 self.contentCachedNum--;
               }
             },
+
             //
             // Load content or get it from cache:
             //
@@ -655,6 +699,7 @@
                 }
               } // If got cache limit
             },
+
             //
             // Release the reference count on content
             //
@@ -674,6 +719,7 @@
               },
               "title");
             },
+
             //
             // Convert a relative path to the absolute path
             //
@@ -715,6 +761,7 @@
               return "/" + valid_path_array.join("/");
 
             },
+
             //
             // return the list of subfolders for a given path
             //
@@ -751,6 +798,7 @@
               },
               "title");
             },
+
             //
             // Check the content name:
             //
@@ -775,8 +823,10 @@
 
               return "ok";
             },
+
             //
-            // remove content
+            // Mark the content as removed
+            // or drop a newly created content
             //
             removeContentByNode: function(node) {
               var absPath,
@@ -798,6 +848,7 @@
                 self.repositories[self.activeRepo].updated[absPath] = {content :null, parent_sha:sha, sha:node.data.sha};
               }
             },
+
             //
             // revert content revert the content changes
             // @node - folder or content file
@@ -824,12 +875,14 @@
                 self.rmNodeStatus(node, "modified");
               }
             },
+
             //
-            // Reload the tree HEAD, and check for the conflicts
+            // Reload the tree HEAD, and check for a conflicts
             //
             reloadTree: function() {
                 self.initTree(self.treeParentSelector, true);
             },
+
             //
             // Comit content
             // @node - folder or content file
@@ -838,36 +891,37 @@
               if (dm.dm.dialogs) {
                 dm.dm.dialogs['CommitDataDialog']
                   (self.repositories[self.activeRepo].updated,
-           function(message, items, onComplete, onStatusChange) {
-         var path;
-         var contents = [],
-           repo = self.repositories[self.activeRepo].repo;
-         for (path in items) {
-           contents.push({
-             'path': path.toString().substring(1),
-             'sha':items[path].sha,
-             'baseTree':items[path].parent_sha,
-             'content': (items[path].content == null) ? null :items[path].content,
-             'tree':self.repositories[self.activeRepo].tree[items[path].parent_sha]
-           });
-         };
-         // second call won't work as we need to update the tree
-         repo.multipleCommit(self.activeBranch, contents, message, function(err, res, status) {
-             if (err != null) {
-               onComplete(err);
-               return;
-             }
-             for (path in items) {
-               // Remove the commited content from updated list
-               delete self.repositories[self.activeRepo].updated[path];
-             };
-             self.initTree(self.treeParentSelector, true);
-             // Callbacks to the dialog
-             onStatusChange("Updating the tree");
-             onComplete(err);
-         }, onStatusChange);
-           });
-        }
+                   function(message, items, onComplete, onStatusChange) {
+                     var path;
+                     var contents = [],
+                     repo = self.repositories[self.activeRepo].repo;
+                     for (path in items) {
+                       contents.push({
+                         'path': path.toString().substring(1),
+                         'sha':items[path].sha,
+                         'baseTree':items[path].parent_sha,
+                         'content': (items[path].content == null) ? null :items[path].content,
+                         'tree':self.repositories[self.activeRepo].tree[items[path].parent_sha]
+                       });
+                     };
+                     // second call won't work as we need to update the tree
+                     repo.multipleCommit(self.activeBranch, contents, message, function(err, res, status) {
+                       if (err != null) {
+                         onComplete(err);
+                         return;
+                       }
+                       for (path in items) {
+                         // Remove the commited content from updated list
+                         delete self.repositories[self.activeRepo].updated[path];
+                       };
+                       self.initTree(self.treeParentSelector, true);
+                       // Callbacks to the dialog
+                       onStatusChange("Updating the tree");
+                       onComplete(err);
+                      },
+                      onStatusChange);
+                   });
+                }
             },
         //////////////////////////////////////////////////////////////
         //           Context menu extention
@@ -895,23 +949,23 @@
 
                 var params =
                   {
-        viewid:self.euid,
-        sha:node.data.sha,
-        title:node.data.title,
-        absPath:node.getAbsolutePath(),
-        branch:"master",
-        repoId:self.activeRepo,
-        editable:false
+                    viewid:self.euid,
+                    sha:node.data.sha,
+                    title:node.data.title,
+                    absPath:node.getAbsolutePath(),
+                    branch:"master",
+                    repoId:self.activeRepo,
+                    editable:false
                   };
 
                 if (ext == "JSON" || ext == "UMLSYNC") {
-        params.contentType = "dm";
+                  params.contentType = "dm";
                 }
                 else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-        params.contentType = "md";
+                  params.contentType = "md";
                 }
                 else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
-        params.contentType = "code";
+                  params.contentType = "code";
                 }
                 if (params.contentType != undefined)
                   dm.dm.fw.loadContent(params);
@@ -990,49 +1044,49 @@
               }
 
               var repo = self.repositories[self.activeRepo].repo;
-        self.treeParentSelector = parentSelector;
-        function updateTree(tree) {
-          var datax = {};
-          datax["tree"] = tree;
-          var real_tree = {}
-          real_tree = processTree(datax);
-          if (isReload) {
-            var $root = $(parentSelector).dynatree("getTree");
-            $root.options.children = real_tree;
-            $root.reload();
-            return;
-          }
-          $(parentSelector).dynatree('destroy').empty();
-          self.$tree = $(parentSelector).dynatree(
-              {
-                persist: false,
-                children: real_tree,
-                onCreate: function(node, span) {
-                $.log("onCreate()");
-                $(span).bind('contextmenu', function(e) {
-                  var node = $.ui.dynatree.getNode(e.currentTarget);
-                  dm.dm.fw.ShowContextMenu(self.euid, e, node);
-                  e.preventDefault();
-                });
-              },
-              onLazyRead: function(node) {
-                $.log("onLazyRead()");
-                if (node.data.isFolder) {
-                  repo.getTree(node.data.sha, function(err, tree) {
-        self.repositories[self.activeRepo].tree[node.data.sha] = tree;
-        datax = {};
-        datax["tree"] = tree;
-        real_tree = {}
-        real_tree = processTree(datax);
-        if (err) {
-          $.log("Failed to update SHA tree for a git repo: " + err);
-        }
-        else {
-          node.append(real_tree);
-        }
-                  }); // getTree
-                }// IsFolder
-              },
+              self.treeParentSelector = parentSelector;
+
+              function updateTree(tree) {
+                var datax = {};
+                datax["tree"] = tree;
+                var real_tree = {}
+                real_tree = processTree(datax);
+                if (isReload) {
+                  var $root = $(parentSelector).dynatree("getTree");
+                  $root.options.children = real_tree;
+                  $root.reload();
+                  return;
+                }
+
+                $(parentSelector).dynatree('destroy').empty();
+                self.$tree = $(parentSelector).dynatree(
+                  {
+                    persist: false,
+                    children: real_tree,
+                    onCreate: function(node, span) {
+                      $(span).bind('contextmenu', function(e) {
+                        var node = $.ui.dynatree.getNode(e.currentTarget);
+                        dm.dm.fw.ShowContextMenu(self.euid, e, node);
+                        e.preventDefault();
+                      });
+                    },
+                   onLazyRead: function(node) {
+                     if (node.data.isFolder) {
+                       repo.getTree(node.data.sha, function(err, tree) {
+                         self.repositories[self.activeRepo].tree[node.data.sha] = tree;
+                         var datax = {};
+                         datax["tree"] = tree;
+                         var real_tree = {}
+                         real_tree = processTree(datax);
+                         if (err) {
+                           $.log("Failed to update SHA tree for a git repo: " + err);
+                         }
+                         else {
+                           node.append(real_tree);
+                         }
+                       }); // getTree
+                     }// IsFolder
+                   },
               onFocus: function(node) {
                 if (node.data.isFolder) {
                   self.active = node.getAbsolutePath();
@@ -1068,19 +1122,18 @@
                   dm.dm.fw.loadContent(params);
                 }
               }
-            }
-          );
+                  }); // dynatree
         };
 
-        repo.getTree(self.activeBranch , function(err, tree) {
-          if (err) {
-            $.log("Failed to load a git repo: " + err);
-          }
-          else {
-            updateTree(tree);
-          }
-        });
-          }
+              repo.getTree(self.activeBranch , function(err, tree) {
+                if (err) {
+                  $.log("Failed to load a git repo's tree: " + err);
+                }
+                else {
+                  updateTree(tree);
+                }
+              });
+            }// initTree method
           };
         //////////////////////////////////////////////////////////////
         //           Initialization
@@ -1096,9 +1149,3 @@
         };
           };
         })(jQuery, dm);
-
-
-
-
-
-
