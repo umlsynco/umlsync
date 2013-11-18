@@ -1539,16 +1539,17 @@ var text1 = $(this).val();
         .children(".ui-tabs").height(hhh - 8);        // 3px border defined for .ui-tabs BUT if we will shift it than it is possible to observe cool effect
 
         // content left maximize treetabs area
-        var repoH = $("#switcher #reponav").height(),
-        toolboxH = $("#switcher #toolbox").height();
-        $("#switcher #us-treetabs").height(hhh - repoH - toolboxH-2);
+        var repoH = $("#switcher #us-repo-select").height(),
+          toolboxH = $("#switcher #us-toolbox").height(),
+          vmH =  $("#switcher #us-viewmanager").height();
+        $("#switcher #us-treetabs").height(hhh - repoH - toolboxH-vmH-2);
 
         var $ch, $md;
         if ($ch1.children(".ui-tabs-panel").filter(':visible').length) {
           // Check that is it no full screen mode for printing
           // Or if it is first-start page !!!
           if (this.options.notabs == undefined || !this.options.notabs)
-        hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
+            hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
 
           // Mess hapens only because of wrong in-visible elements !!!
           $ch = $ch1.children(".ui-tabs-panel").filter(':visible').height(hhh)

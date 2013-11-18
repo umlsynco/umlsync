@@ -1028,12 +1028,12 @@ span.cfolder span.dynatree-icon {
   background-color:green;
 }
 
-#treetabs > DIV {
+#us-treetabs > DIV {
   height:100%;
   overflow:auto;
 }
 
-#treetabs DIV DIV UL {
+#us-treetabs DIV DIV UL {
   overflow: visible;
 }
 
