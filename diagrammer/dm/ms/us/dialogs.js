@@ -49,6 +49,7 @@
       $( "#" + name ).dialog( "open" );
     }
   },
+
   //
   // Dialog which contain all available types of diagrams
   // and input area for diagram name.
@@ -235,6 +236,7 @@
         $(this).removeClass('hover');
       });
   },
+
   //
   // Dialog to select repository from different sources.
   // It is consists of tabs and list of repositories
@@ -307,6 +309,7 @@
       ISelectObserver.onRepoSelect(title, text);
     });
   },
+
   // Create the branch select dialog for the selected repository and append tabs to it.
   // It should append tab only if dialog already exist
   // params:
@@ -373,6 +376,7 @@
       $("#us-branch .js-select-button").text(text);
     });
   },
+  
   //
   // Save diagram dialog which propose to user save change
   //
@@ -452,6 +456,51 @@
       }
     });
   },
+
+  //
+  // Localhost configuration dialog
+  // @result-host - host address
+  // @result-secret - secret key
+  //
+  'ConfigureLocalhost': function(title, callback) {
+    var innerHtml = '<p id="dl-validation-tip" style="color:red;"></p>\
+	  <form>\
+	  <fieldset>\
+      <div style="display:inline;"><label for="host" style="float:left;">Host:</label><input type="text" value="http://localhost:8000" name="host" id="us-host-input" class="text ui-widget-content ui-corner-all" style="float:right;width:250px;" /></div><br><br>\
+      <div style="display:inline;"><label for="key" style="float:left;">Secret key:</label><input type="text" value="180070104577213587621384870490287" name="key" id="us-key-input" class="text ui-widget-content ui-corner-all" style="float:right;width:250px;"/></div>\
+      </fieldset>\
+      </form>';
+      var self = this;
+
+      $('<div id="configure-localhost-dialog" title="'+title+'"></div>').appendTo('body');
+      $(innerHtml).appendTo("#configure-localhost-dialog");
+
+      $("#configure-localhost-dialog").dialog({
+        autoOpen: false,
+        height: 154,
+        width: 350,
+        modal: true,
+        buttons: {
+        "Connect": function() {
+          var host = $("#us-host-input").val();
+		  var key = $("#us-key-input").val();
+		  if (callback && callback.OnConfigSetup) {
+		    callback.OnConfigSetup(host, key);
+		  }
+
+          $( this ).dialog( "close" );
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        $("#configure-localhost-dialog input").val("");
+        $("#configure-localhost-dialog #dl-validation-tip").text("");
+      }
+    });
+  },
+  
   //
   // Create new folder dialog.
   //
@@ -491,6 +540,7 @@
       }
       });
   },
+
   //
   // Commit data selection dialog. It is provide the list of modified files
   // and allow user to select files for commit.
@@ -565,6 +615,7 @@
       });
 
   },
+
   //
   // Modal dialog.
   //

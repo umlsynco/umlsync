@@ -158,6 +158,8 @@
 	//fw.addViewManager('Github', dm.dm.IGithubViewsManager);
     dm.dm.IGithubViewsManager.init();
     dm.dm.IGithubViewsManager.onRepoSelect("Yours", "umlsynco/diagrams");
+	dm.dm.ILocalhostViewsManager = new dm.base.LocalhostViewsManager();
+	dm.dm.ILocalhostViewsManager.init();
 
 //    dm.dm.IFilesView = new dm.base.SelfAnalysisView("./tests/"); //LocalFilesView
 //	dm.dm.IFilesView.euid = 'Github';
