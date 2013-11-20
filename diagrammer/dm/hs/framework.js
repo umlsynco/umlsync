@@ -276,24 +276,29 @@ Version:
 				    var fw = e.data;
 					// Check the registered view
 					if (fw.viewmanagers[this.id]) {
+					  var viewman = fw.viewmanagers[this.id],
+					    viewmanId = this.id;
+
 					  // Do nothing for the same view manager
 					  if (fw.activeViewManagerId == this.id) {
+					    // notify handler on click again
+			            viewman.onViewManagerChange(viewmanId, function() {
+						  fw._helperUpdateFrameWork(true);});
 					    return;
 					  }
 
 					  // Activate view manager is no view manager activated before
 					  if (fw.activeViewManagerId == null) {
-					    fw.viewmanagers[this.id].onViewManagerChange(this.id);
+					    fw.viewmanagers[this.id].onViewManagerChange(this.id, function() { fw._helperUpdateFrameWork(true);});
 						return;
 					  }
-					  
-					  var viewman = fw.viewmanagers[this.id],
-					    viewmanId = this.id;
 					  
 					  fw.viewmanagers[fw.activeViewManagerId]
 					    .onViewManagerChange(this.id, function(isAccepted) {
 						  if (isAccepted) {
-						    viewman.onViewManagerChange(viewmanId);
+						    viewman.onViewManagerChange(viewmanId, function() {
+							  fw._helperUpdateFrameWork(true);
+							});
 							fw.activeViewManagerId = viewmanId;
 						  }
 						});
@@ -315,11 +320,6 @@ Version:
                     $("#us-treetabs").children("DIV").hide();
                     $("#us-treetabs").append("<div id='"+id+"'></div>");
 
-                    if (name != "Eclipse") {
-                        $("#us-repo .js-select-button").text(IView.getActiveRepository() != null ? IView.getActiveRepository(): "none");
-                        $("#us-branch .js-select-button").text("master");
-                    }
-
                     id = "DIV#" + id;
                     var $treetabs = $("#us-treetabs");
 
@@ -334,13 +334,12 @@ Version:
                             data:items,
                             onSelect: function(item) {
                                 if (item.click) {
-                                    item.click(activeNode, view)
-                $(".context-menu").hide();
-                                    $("#context-toolbox").hide();
+                                  item.click(activeNode, view)
+                                  $(".context-menu").hide();
+                                  $("#context-toolbox").hide();
                                 }
                             }
                         });
-                        $.log("ADD: view-" + vid);
                     }
 
                     self.views = self.views || {};
@@ -348,7 +347,7 @@ Version:
                     self.views[IView.euid]['view'] = IView;
 
                     if (IView.ctx_menu) {
-                        initCtxMenu(IView.euid, IView.ctx_menu, IView);
+                        initCtxMenu(IView.euid+this.left_counter, IView.ctx_menu, IView);
 
                         if (IView['element_menu']) {
                             self.views[IView.euid]['element_menu'] = {};

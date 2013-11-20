@@ -495,7 +495,6 @@
         }
       },
       close: function() {
-        $("#configure-localhost-dialog input").val("");
         $("#configure-localhost-dialog #dl-validation-tip").text("");
       }
     });

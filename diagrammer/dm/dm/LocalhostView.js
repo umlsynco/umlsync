@@ -69,19 +69,23 @@
           secretKey = secret; // magic seqeunce to identify the client
           var self = this;
 
+		  // Drop the existing tree
+          $("#us-treetabs").children().remove();
+          $('<img id="puh" src="images/Puh.gif"/>').appendTo("#us-treetabs");
+
           $.ajax({
             'url': host + "/vm/getviews",
             'dataType': 'jsonp',
             'success':  function(json) {
-			  var ssss =self;
+			  $("#us-treetabs #puh").remove();
               self._activateViewSelectWidget(json);
             },
             'error': function(err) {
+			  self.activated = false;
+              $("#us-treetabs #puh").remove();
               self._handleError(err);
             }
           });
-
-            
         };
 
         //
@@ -94,7 +98,10 @@
             // is similar to close all content and commit for the
             // opened repository
             if (this.id != id) {
-			    $("#us-treetab").children().remove();
+			    // Drop all content because there is no commit for localhost
+			    $("#us-treetabs").children().remove();
+				$("#us-toolbox").children().remove();
+				$("#us-repo-select").children().remove();
 				if (callback) {
 				  callback(true);
 				}
@@ -122,7 +129,7 @@
         this._activateViewSelectWidget = function(json) {
 		  // do not add view select dialog if it is single view mode
 		  if (Object.keys(json).length < 10) {
-		    dm.dm.fw.addView2('Eclipse', new dm.base.LocalhostView("http://localhost:8000/vm/cp"));
+		    dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/cp"));
 		    return
 		  }
           var self = this,

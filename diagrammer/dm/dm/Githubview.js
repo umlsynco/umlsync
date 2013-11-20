@@ -60,9 +60,14 @@
                 this.onRepoSelect("Yours", null);
                 this._activateRepoWidget("#us-repo-select", false);
                 this._activateToolboxWidget("#us-toolbox", false);
+
+				// Drop the repository tree widget
+				$("#us-treetabs").children().remove();
+
 				if (callback) {
 				  callback(true);
 				}
+				this.activated = false;
 				return;
             }
             // Do nothing if already active
@@ -70,7 +75,10 @@
                 return;
             }
 
-            // A lot of initialization stuff is here !
+			// Initialize widgets
+            this._activateRepoWidget("#us-repo-select", true);
+            this._activateToolboxWidget("#us-toolbox", true);
+
             this.activated = true;
         };
 
@@ -117,6 +125,7 @@
             });
 
         };
+
         //
         // Helper method to create the drop down selector with tabs
         // param - element id to attach widget
@@ -144,6 +153,7 @@
                 }
             });
         };
+
         //
         // IViewManager::onViewManagerChange - activate the toolbox area helper
         // ------
@@ -209,6 +219,7 @@
                 dm.dm.dialogs['SelectRepoDialog'](title, IViewsManager, descr);
             }
         },
+
         //
         // Add the number of repositories into the repo selection dialog
         // @param title - the title of tab in dialog
@@ -232,30 +243,38 @@
         this.onRepoSelect = function(title, repo) {
             var githubView = this.githubView;
             var self = this;
+			var isOwner = false; // Following repos
 
             function updateWidgetsStatus() {
-                $("#us-repo .js-select-button").text(self.githubView.activeRepo);
-                $("#us-branch .js-select-button").text(self.githubView.activeBranch);
+			    var repoId = (self.githubView.activeRepo == null) ? "none" : self.githubView.activeRepo,
+				  branchId = (self.githubView.activeBranch == null) ? "none" : self.githubView.activeBranch;
+
+                $("#us-repo .js-select-button").text(repoId);
+                $("#us-branch .js-select-button").text(branchId);
             }
 
-            if (title == 'Yours') {
-                if (githubView != null) {
-                    // Do nothing for the same repository
-                    if (githubView.activeRepo == repo) {
-                        return;
-                    }
+            if (title == 'Yours' || title == 'GIST') {
+			  isOwner = true;
+			}
+            
+			if (githubView != null) {
+              // Do nothing for the same repository was selected
+              if (githubView.activeRepo == repo) {
+                return;
+              }
 
-                    // First activation of repository
-                    if (githubView.activeRepo == null) {
-                        githubView.openRepository(repo, true);
-                        updateWidgetsStatus();
-                        return;
-                    }
+              // First activation of repository
+			  // after switch to another view
+              if (githubView.activeRepo == null) {
+                githubView.openRepository(repo, isOwner);
+				dm.dm.fw.addView2(self, githubView);
+                updateWidgetsStatus();
+                return;
+              }
 
-
-                    // Skipped repo change during modified content
-                    // save dialog opening
-                    dm.dm.fw.handleModifiedContentOnRepoChange(githubView.activeRepo, function(isAccepted) {
+			  // Skipped repo change during modified content
+              // save dialog opening
+              dm.dm.fw.handleModifiedContentOnRepoChange(githubView.activeRepo, function(isAccepted) {
                         if (!isAccepted) {
                             return;
                         }
@@ -285,10 +304,10 @@
                             updateWidgetsStatus();
                         }
                     });
-                }
-                else {
-                    alert("Internal site ERROR");
-                }
+            }
+            else {
+              this.githubView = new IGithubView(repo, isOwner);
+              dm.dm.fw.addView2(this.id, this.githubView);
             }
         };
 
@@ -443,8 +462,6 @@
                          {full_name: 'umlsynco/GIST'}], "Yours");
             }
 
-            this.githubView = new IGithubView(null, false);
-            dm.dm.fw.addView2('github', this.githubView); // repoid + view
         };
 
         //
@@ -517,9 +534,15 @@
                         if (repoId == self.activeRepo) {
                             return;
                         }
+						
+						if (repoId == null) {
+						  self.activeRepo = null;
+						  self.activeBranch = null;
+						  return;
+						}
 
                         var newRepo = self.repositories[repoId],
-                                activeRepo = self.repositories[self.activeRepo];
+                            activeRepo = self.repositories[self.activeRepo];
 
                         if (activeRepo != null && Object.keys(activeRepo.updated).length > 0) {
                             alert("All modified files will be lost !!!");
