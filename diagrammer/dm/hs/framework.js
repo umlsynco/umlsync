@@ -207,7 +207,6 @@ Version:
                         }
                     }
                 });// dialog
-
             });
 
             var $treetabs = $("#us-treetabs");
@@ -292,16 +291,30 @@ Version:
                         fw.viewmanagers[this.id].onViewManagerChange(this.id, function() { fw._helperUpdateFrameWork(true);});
                         return;
                       }
-                      
-                      fw.viewmanagers[fw.activeViewManagerId]
-                        .onViewManagerChange(this.id, function(isAccepted) {
-                          if (isAccepted) {
-                            viewman.onViewManagerChange(viewmanId, function() {
-                              fw._helperUpdateFrameWork(true);
-                            });
-                            fw.activeViewManagerId = viewmanId;
+
+                      dm.dm.dialogs['ConfirmationDialog'](
+                      {
+                        title:"Data provider change:",
+                        description: 'Would you like to switch to  "' + fw.viewmanagers[this.id].getTitle() + '" ?',
+                        buttons:
+                        {
+                          "Yes": function() {
+                            $( this ).dialog( "close" );
+                            fw.viewmanagers[fw.activeViewManagerId]
+                              .onViewManagerChange(viewmanId, function(isAccepted) {
+                                if (isAccepted) {
+                                  viewman.onViewManagerChange(viewmanId, function() {
+                                    fw._helperUpdateFrameWork(true);
+                                  });
+                                  fw.activeViewManagerId = viewmanId;
+                                }
+                              });
+                          },
+                          "Cancel":function() {
+                            $( this ).dialog( "close" );
                           }
-                        });
+                        }
+                      });// dialog
                     }
                     else {
                       alert("Absolutely unexpected error: viewmanager not found!");
@@ -312,6 +325,14 @@ Version:
                     this.activeViewManagerId = viewmanager.getId();
                   }
                 },
+
+                //
+                // Register the IView object
+				// and initiate element for tree insertion 
+				// Note: Today it looks stuipid but previously it was an idea to
+				//       support multiple trees and switch between them on repo change or on switch to Eclipse
+				//       and keep all modifications in buffer(for GitHubView only because for an Eclipse we always POST changes)
+                //
                 addView2: function(name, IView) {
                     //TODO: don't load view if name/euid is reserved yet !
                     //    it could help to prevent some mess with localhost views
@@ -370,33 +391,7 @@ Version:
 
                     return id;
                 },
-                addView: function(name, options, toolbox) {
-                    var id = "#" + this.options.tabLeft+ this.left_counter;
-                    this.left_counter++;
-                    $("#us-treetabs").tabs("add", id, name);
-                    $(id).append("<div id='tree'></div>");
-                    var dt = $(id + " #tree").dynatree(options).dynatree("getTree");
 
-
-                    // Create toolbox
-                    if (toolbox != undefined) {
-                        var tb = toolbox;
-                        var innerHtml = "<div style=\"position:absolute;right:10px;top:37px;\">";
-                        for (i in toolbox.items) {
-                            innerHtml += "<button id=\"toolboxitem" + i+ "\" class=\"ui-button\" title=\"" + (toolbox.items[i]).title +"\"><span class=\"ui-icon " + (toolbox.items[i]).button+ "\"/></button>";
-                        }
-                        innerHtml += "</div>";
-
-                        $(innerHtml).appendTo(id);
-                        for (i in toolbox.items) {
-                            $("#toolboxitem" + i).click(i, function(e) {
-                                if (tb.items[e.data] && tb.items[e.data].method)
-                                    tb.items[e.data].method(dt.getActiveNode());}
-                            );
-                        }
-                    }
-                    return id;
-                },
                 //
                 //  Return the active view unique id
                 //  see addView2 for more details

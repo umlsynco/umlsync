@@ -53,21 +53,23 @@
         // ------
         //
         this.onViewManagerChange = function(id, callback) {
+		    var self = this;
             // Switch to null repository
             // is similar to close all content and commit for the
             // opened repository
             if (this.id != id) {
-                this.onRepoSelect("Yours", null);
-                this._activateRepoWidget("#us-repo-select", false);
-                this._activateToolboxWidget("#us-toolbox", false);
+                this.onRepoSelect("Yours", null, function() {
+                  self._activateRepoWidget("#us-repo-select", false);
+                  self._activateToolboxWidget("#us-toolbox", false);
 
-                // Drop the repository tree widget
-                $("#us-treetabs").children().remove();
+                  // Drop the repository tree widget
+                  $("#us-treetabs").children().remove();
 
-                if (callback) {
-                  callback(true);
-                }
-                this.activated = false;
+                  if (callback) {
+                    callback(true);
+                  }
+                  self.activated = false;
+				});
                 return;
             }
             // Do nothing if already active
@@ -240,7 +242,7 @@
         //  1. Check for the modifications in current repository
         //  2. Commit changes or reject them
         //
-        this.onRepoSelect = function(title, repo) {
+        this.onRepoSelect = function(title, repo, callback) {
             var githubView = this.githubView;
             var self = this;
             var isOwner = false; // Following repos
@@ -260,6 +262,7 @@
             if (githubView != null) {
               // Do nothing for the same repository was selected
               if (githubView.activeRepo == repo) {
+			    if (callback) { callback();}
                 return;
               }
 
@@ -269,6 +272,7 @@
                 githubView.openRepository(repo, isOwner);
                 dm.dm.fw.addView2(self, githubView);
                 updateWidgetsStatus();
+			    if (callback) { callback();}
                 return;
               }
 
@@ -280,26 +284,28 @@
                         }
 
                         if (githubView.hasModifications()) {
-                            dm.dm.dialogs['ConfirmationDialog'](
-                                    {
-                                title:"Change repository?",
-                                description: "Modified files will be removed on repository change.",
-                                buttons: {
+                            dm.dm.dialogs['ConfirmationDialog']({
+                              title:"Change repository?",
+                              description: "Modified files will be removed on repository change.",
+                              buttons: {
                                     "ok": function() {
                                         githubView.openRepository(repo, true);
                                         updateWidgetsStatus();
+										if (callback) { callback();}
                                         $( this ).dialog( "close" );
                                     },
                                     "cancel": function() {
+									    if (callback) { callback();}
                                         $( this ).dialog( "close" );
                                     },
                                     "commit...":function() {
                                         $( this ).dialog( "close" );
                                     }
                                 }
-                                    });// Confirmation dialog
+                            });// Confirmation dialog
                         }
                         else {
+						    if (callback) { callback();}
                             githubView.openRepository(repo, true);
                             updateWidgetsStatus();
                         }
@@ -308,6 +314,7 @@
             else {
               this.githubView = new IGithubView(repo, isOwner);
               dm.dm.fw.addView2(this.id, this.githubView);
+			  if (callback) { callback();}
             }
         };
 
