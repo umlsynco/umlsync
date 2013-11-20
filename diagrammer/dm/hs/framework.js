@@ -21,11 +21,11 @@ Version:
         var activeNode;
         var converter = new Showdown.converter({ extensions: ['umlsync'] });
 
-		//
+        //
         // Singleton wrapper for the framework instance
-		// dm.dm.fw - singletone object
-		// ----
-		//
+        // dm.dm.fw - singletone object
+        // ----
+        //
         function getInstance(options) {
             dm.dm = dm.dm || {};
             if (!dm.dm['fw']) {
@@ -37,10 +37,10 @@ Version:
             return dm.dm['fw'];
         }
 
-		//
+        //
         // Framework object
-		// ----
-		//
+        // ----
+        //
         var framework = function(options) {
             var tmp_opt = $.extend(true, {}, this.options, options);
             this.options = tmp_opt;
@@ -75,7 +75,7 @@ Version:
                       <div id="tabs"><ul></ul></div>\
                     </div>');
 
-			var self = this;
+            var self = this;
             self._helperUpdateFrameWork(true); // $(window).trigger("resize"); ?
 
             $(window).resize(function(e) {
@@ -84,14 +84,14 @@ Version:
                 }
             });
 
-			// Coloring the switcher widget according to jQuery ui color-scheema
+            // Coloring the switcher widget according to jQuery ui color-scheema
             var $switcher = $('#switcher');
             $switcher.addClass('ui-switcher ui-widget ui-helper-reset ui-switcher-icons');
 
             var $tabs = $("#tabs")
               .tabs(
-			    {
-			    'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
+                {
+                'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
                 'scrollable': true,
                 'add': function(event, ui) {
                       if (self.diagrams) {
@@ -131,11 +131,11 @@ Version:
             });
             $("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
 
-			// Stupid initialization of single cancas
+            // Stupid initialization of single cancas
             var canvasTop = (this.options.notabs) ? 13:44;
             $("#tabs").append('<canvas id="SingleCanvas" class="us-canvas" style="left:18px;top:'+canvasTop+'px;" width="1040" height="600">YOUR BROWSER DOESN\'t SUPPORT CANVAS !!!</canvas>');
 
-			// Depricated for a while
+            // Depricated for a while
             if (this.options.notabs)
                 $("#tabs ul.ui-tabs-nav").hide();
 
@@ -151,11 +151,11 @@ Version:
                 var index = $('li', $tabs).index($(this).parent().parent()),
                         ahref = $(this).parent().parent().children("A:not(.ui-corner-all)").attr("href");
 
-				//
-				// Close the content which was opened
-				// TODO: move it to the content section
-				// ----
-				//
+                //
+                // Close the content which was opened
+                // TODO: move it to the content section
+                // ----
+                //
                 function closeContent(saveIt) {
                     $(".diagram-menu").hide();
 
@@ -212,11 +212,11 @@ Version:
 
             var $treetabs = $("#us-treetabs");
 
-			// Draggable border for between left and right content areas
+            // Draggable border for between left and right content areas
             $("#content-left-right-resize")
-			.draggable({
-			  axis: 'x',
-			  'drag': function(ui) {
+            .draggable({
+              axis: 'x',
+              'drag': function(ui) {
                 self._helperUpdateFrameWork(false, ui);
               },
               stop: function(ui) {
@@ -251,66 +251,66 @@ Version:
                 //////////////////////////////////////////////////////////////
                 // an array with views
                 viewmanagers:{},
-				// an active view manager
-				activeViewManagerId: null,
+                // an active view manager
+                activeViewManagerId: null,
                 // an array with views
                 views:{},
                 //
                 // Register IViewManager
                 //
                 registerViewManager: function(viewmanager, isDefault) {
-				  var floatStyle = "";
-				  if (Object.keys(this.viewmanagers).length > 0) {
-				    floatStyle = 'style="float:right;"';
-				  }
-				  this.viewmanagers[viewmanager.getId()] = viewmanager;
-				  $("#us-viewmanager").append('<span id="'+viewmanager.getId()+'" '+ floatStyle +'>'+viewmanager.getTitle()+'</span>');
+                  var floatStyle = "";
+                  if (Object.keys(this.viewmanagers).length > 0) {
+                    floatStyle = 'style="float:right;"';
+                  }
+                  this.viewmanagers[viewmanager.getId()] = viewmanager;
+                  $("#us-viewmanager").append('<span id="'+viewmanager.getId()+'" '+ floatStyle +'>'+viewmanager.getTitle()+'</span>');
 
-				  //
-				  // On view manager change handler
-				  // 1. Notify an active view manager
-				  // 2. Open new view manager
-				  // ----
-				  //
-				  $("#"+viewmanager.getId()).click(this, function(e) {
-				    var fw = e.data;
-					// Check the registered view
-					if (fw.viewmanagers[this.id]) {
-					  var viewman = fw.viewmanagers[this.id],
-					    viewmanId = this.id;
+                  //
+                  // On view manager change handler
+                  // 1. Notify an active view manager
+                  // 2. Open new view manager
+                  // ----
+                  //
+                  $("#"+viewmanager.getId()).click(this, function(e) {
+                    var fw = e.data;
+                    // Check the registered view
+                    if (fw.viewmanagers[this.id]) {
+                      var viewman = fw.viewmanagers[this.id],
+                        viewmanId = this.id;
 
-					  // Do nothing for the same view manager
-					  if (fw.activeViewManagerId == this.id) {
-					    // notify handler on click again
-			            viewman.onViewManagerChange(viewmanId, function() {
-						  fw._helperUpdateFrameWork(true);});
-					    return;
-					  }
+                      // Do nothing for the same view manager
+                      if (fw.activeViewManagerId == this.id) {
+                        // notify handler on click again
+                        viewman.onViewManagerChange(viewmanId, function() {
+                          fw._helperUpdateFrameWork(true);});
+                        return;
+                      }
 
-					  // Activate view manager is no view manager activated before
-					  if (fw.activeViewManagerId == null) {
-					    fw.viewmanagers[this.id].onViewManagerChange(this.id, function() { fw._helperUpdateFrameWork(true);});
-						return;
-					  }
-					  
-					  fw.viewmanagers[fw.activeViewManagerId]
-					    .onViewManagerChange(this.id, function(isAccepted) {
-						  if (isAccepted) {
-						    viewman.onViewManagerChange(viewmanId, function() {
-							  fw._helperUpdateFrameWork(true);
-							});
-							fw.activeViewManagerId = viewmanId;
-						  }
-						});
-					}
-					else {
-					  alert("Absolutely unexpected error: viewmanager not found!");
-					}
-				  });
-				  
-				  if (isDefault) {
-				    this.activeViewManagerId = viewmanager.getId();
-				  }
+                      // Activate view manager is no view manager activated before
+                      if (fw.activeViewManagerId == null) {
+                        fw.viewmanagers[this.id].onViewManagerChange(this.id, function() { fw._helperUpdateFrameWork(true);});
+                        return;
+                      }
+                      
+                      fw.viewmanagers[fw.activeViewManagerId]
+                        .onViewManagerChange(this.id, function(isAccepted) {
+                          if (isAccepted) {
+                            viewman.onViewManagerChange(viewmanId, function() {
+                              fw._helperUpdateFrameWork(true);
+                            });
+                            fw.activeViewManagerId = viewmanId;
+                          }
+                        });
+                    }
+                    else {
+                      alert("Absolutely unexpected error: viewmanager not found!");
+                    }
+                  });
+                  
+                  if (isDefault) {
+                    this.activeViewManagerId = viewmanager.getId();
+                  }
                 },
                 addView2: function(name, IView) {
                     //TODO: don't load view if name/euid is reserved yet !

@@ -33,7 +33,7 @@
         // ------
         //
         this.getId = function() {return this.id;}
-		
+        
         //
         // IViewManager::getTitle for the div#reponav element insertion
         // ------
@@ -61,21 +61,21 @@
                 this._activateRepoWidget("#us-repo-select", false);
                 this._activateToolboxWidget("#us-toolbox", false);
 
-				// Drop the repository tree widget
-				$("#us-treetabs").children().remove();
+                // Drop the repository tree widget
+                $("#us-treetabs").children().remove();
 
-				if (callback) {
-				  callback(true);
-				}
-				this.activated = false;
-				return;
+                if (callback) {
+                  callback(true);
+                }
+                this.activated = false;
+                return;
             }
             // Do nothing if already active
             if (this.activated) {
                 return;
             }
 
-			// Initialize widgets
+            // Initialize widgets
             this._activateRepoWidget("#us-repo-select", true);
             this._activateToolboxWidget("#us-toolbox", true);
 
@@ -87,16 +87,16 @@
         // ------
         //
         this._activateToolboxWidget = function(selector, flag) {
-		    var item = $(selector + " #us-github-list");
-		    if (item.length > 0){
-			  if (flag) {
-			    item.show();
-			  }
-			  else {
-			    item.hide();
-			  }
-			  return;
-			}
+            var item = $(selector + " #us-github-list");
+            if (item.length > 0){
+              if (flag) {
+                item.show();
+              }
+              else {
+                item.hide();
+              }
+              return;
+            }
 
             var self = this;
             // Append HTML code
@@ -159,19 +159,19 @@
         // ------
         //
         this._activateRepoWidget = function(selector, flag) {
-		    var item = $("#switcher #us-repo-select #us-repo"),
-			  item2 = $("#switcher #us-repo-select #us-branch");
-			if (item.length > 0 || item2.length > 0) {
-			  if (flag) {
-			    item.show();
-				item2.show();
-			  }
-			  else {
-			    item.hide();
-				item2.hide();
-			  }
-			  return;
-			}
+            var item = $("#switcher #us-repo-select #us-repo"),
+              item2 = $("#switcher #us-repo-select #us-branch");
+            if (item.length > 0 || item2.length > 0) {
+              if (flag) {
+                item.show();
+                item2.show();
+              }
+              else {
+                item.hide();
+                item2.hide();
+              }
+              return;
+            }
 
             // Init repo selection widget (not dialog)
             this._helperInitDropDownSelector('#switcher #us-repo-select', "us-repo",
@@ -186,7 +186,7 @@
                                 else if (selectedTab == 'Follow') {
                                     // open folow repository
                                 }
-								else if (selectedTab == 'GIST') {
+                                else if (selectedTab == 'GIST') {
                                     // open gists
                                 }
                             }//onSelect
@@ -243,36 +243,36 @@
         this.onRepoSelect = function(title, repo) {
             var githubView = this.githubView;
             var self = this;
-			var isOwner = false; // Following repos
+            var isOwner = false; // Following repos
 
             function updateWidgetsStatus() {
-			    var repoId = (self.githubView.activeRepo == null) ? "none" : self.githubView.activeRepo,
-				  branchId = (self.githubView.activeBranch == null) ? "none" : self.githubView.activeBranch;
+                var repoId = (self.githubView.activeRepo == null) ? "none" : self.githubView.activeRepo,
+                  branchId = (self.githubView.activeBranch == null) ? "none" : self.githubView.activeBranch;
 
                 $("#us-repo .js-select-button").text(repoId);
                 $("#us-branch .js-select-button").text(branchId);
             }
 
             if (title == 'Yours' || title == 'GIST') {
-			  isOwner = true;
-			}
+              isOwner = true;
+            }
             
-			if (githubView != null) {
+            if (githubView != null) {
               // Do nothing for the same repository was selected
               if (githubView.activeRepo == repo) {
                 return;
               }
 
               // First activation of repository
-			  // after switch to another view
+              // after switch to another view
               if (githubView.activeRepo == null) {
                 githubView.openRepository(repo, isOwner);
-				dm.dm.fw.addView2(self, githubView);
+                dm.dm.fw.addView2(self, githubView);
                 updateWidgetsStatus();
                 return;
               }
 
-			  // Skipped repo change during modified content
+              // Skipped repo change during modified content
               // save dialog opening
               dm.dm.fw.handleModifiedContentOnRepoChange(githubView.activeRepo, function(isAccepted) {
                         if (!isAccepted) {
@@ -411,15 +411,15 @@
         // for logged-in user
         //
         this.init = function(path) {
-		    // Show repo title on the top
-			dm.dm.fw.registerViewManager(this, true);
+            // Show repo title on the top
+            dm.dm.fw.registerViewManager(this, true);
 
             // This is the default view
             this._activateRepoWidget("#us-repo-select");
             this._activateToolboxWidget("#us-toolbox");
 
-			// activated by default
-			this.activated = true;
+            // activated by default
+            this.activated = true;
 
             function loadPath() {
                 if (path != undefined && path != "") {
@@ -534,12 +534,12 @@
                         if (repoId == self.activeRepo) {
                             return;
                         }
-						
-						if (repoId == null) {
-						  self.activeRepo = null;
-						  self.activeBranch = null;
-						  return;
-						}
+                        
+                        if (repoId == null) {
+                          self.activeRepo = null;
+                          self.activeBranch = null;
+                          return;
+                        }
 
                         var newRepo = self.repositories[repoId],
                             activeRepo = self.repositories[self.activeRepo];

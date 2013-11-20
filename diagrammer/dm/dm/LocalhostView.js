@@ -27,14 +27,14 @@
         this.title = "Eclipse";
         this.activated = false;
         var secretKey = null,
-		  hostUrl = "http://localhost:8000/";
+          hostUrl = "http://localhost:8000/";
 
         //
         // IViewManager::getId for the div#reponav element insertion
         // ------
         //
         this.getId = function() {return this.id;};
-		
+        
         //
         // IViewManager::getTitle for the div#reponav element insertion
         // ------
@@ -55,7 +55,7 @@
             if (dm.dm.dialogs) {
                 dm.dm.dialogs['ConfigureLocalhost']("Offline plug-in connection...", this);
             }
-			dm.dm.fw.registerViewManager(this);
+            dm.dm.fw.registerViewManager(this);
         };
 
         //
@@ -69,7 +69,7 @@
           secretKey = secret; // magic seqeunce to identify the client
           var self = this;
 
-		  // Drop the existing tree
+          // Drop the existing tree
           $("#us-treetabs").children().remove();
           $('<img id="puh" src="images/Puh.gif"/>').appendTo("#us-treetabs");
 
@@ -77,11 +77,11 @@
             'url': host + "/vm/getviews",
             'dataType': 'jsonp',
             'success':  function(json) {
-			  $("#us-treetabs #puh").remove();
+              $("#us-treetabs #puh").remove();
               self._activateViewSelectWidget(json);
             },
             'error': function(err) {
-			  self.activated = false;
+              self.activated = false;
               $("#us-treetabs #puh").remove();
               self._handleError(err);
             }
@@ -98,19 +98,19 @@
             // is similar to close all content and commit for the
             // opened repository
             if (this.id != id) {
-			    // Drop all content because there is no commit for localhost
-			    $("#us-treetabs").children().remove();
-				$("#us-toolbox").children().remove();
-				$("#us-repo-select").children().remove();
-				if (callback) {
-				  callback(true);
-				}
+                // Drop all content because there is no commit for localhost
+                $("#us-treetabs").children().remove();
+                $("#us-toolbox").children().remove();
+                $("#us-repo-select").children().remove();
+                if (callback) {
+                  callback(true);
+                }
                 return;
             }
 
-			if (dm.dm.dialogs) {
-			  dm.dm.dialogs.Activate("configure-localhost-dialog");
-			}
+            if (dm.dm.dialogs) {
+              dm.dm.dialogs.Activate("configure-localhost-dialog");
+            }
 
             // Do nothing if already active
             if (this.activated) {
@@ -127,13 +127,13 @@
         // ----
         //
         this._activateViewSelectWidget = function(json) {
-		  // do not add view select dialog if it is single view mode
-		  if (Object.keys(json).length < 10) {
-		    dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/cp"));
-		    return
-		  }
+          // do not add view select dialog if it is single view mode
+          if (Object.keys(json).length < 10) {
+            dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/cp"));
+            return
+          }
           var self = this,
-		    innerHtml = "",
+            innerHtml = "",
             selectHtml = "";
           for (i in json) {
             innerHtml += "<li><a href='#'>" + json[i]['title']+ "</a></li>";
@@ -829,8 +829,7 @@
                     initTree: function (parentSelector) {
                         this.treeParentSelector = parentSelector;
                         $(parentSelector)
-                        .dynatree(
-                                {
+                        .dynatree({
                             title:name,
                             autoFocus: false,
                             initAjax: {
@@ -913,8 +912,7 @@
                                     return true;
                                 }
                             }
-                                }
-                        );
+                        });//dynatree
                     }
             }; //self= {...}
             return self;
