@@ -300,6 +300,11 @@
                                     },
                                     "commit...":function() {
                                         $( this ).dialog( "close" );
+									    githubView.commitContent(null, function() {
+										  if (callback) {
+										    callback();
+										  }
+										});
                                     }
                                 }
                             });// Confirmation dialog
@@ -979,11 +984,11 @@
                     // @node - folder or content file
                     // ----
                     //
-                    commitContent: function(node) {
+                    commitContent: function(node, callback) {
                         if (dm.dm.dialogs) {
-                            dm.dm.dialogs['CommitDataDialog']
-                                          (self.repositories[self.activeRepo].updated,
-                                                  function(message, items, onComplete, onStatusChange) {
+                            dm.dm.dialogs['CommitDataDialog'](
+							  self.repositories[self.activeRepo].updated,
+                              function(message, items, onComplete, onStatusChange) {
                                 var path;
                                 var contents = [],
                                         repo = self.repositories[self.activeRepo].repo;
@@ -1011,9 +1016,11 @@
                                     // Callbacks to the dialog
                                     onStatusChange("Updating the tree");
                                     onComplete(err);
-                                },
-                                onStatusChange);
-                            });
+									if (callback) {
+									  callback();
+									}
+                                }, onStatusChange);
+                              });
                         }
                     },
 //////////////////////////////////////////////////////////////

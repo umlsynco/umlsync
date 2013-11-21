@@ -457,6 +457,27 @@ dm['at'] = dm.at; //automated testing
   };
 //@endif
 
+  dm.base.chain = function(handler, object, method, data) {
+    this.handler = handler;
+	this.object = object;
+	this.method = method;
+	this.data = data;
+  };
+  
+  dm.base.chain.prototype = {
+    run:function() {
+	  if (this.handler != null && !this.handler.run()) {
+	    return false;
+	  }
+
+	  // return false if chain have to be canceled
+	  if (this.object && this.object[this.method]) {
+        return this.object[this.method](data);
+      }
+	  return false;
+	}
+  };
+
   //@export:dm.base.diagram:plain
   dm.base.diagram = function( name, base, prototype ) {
     var ns = name.split( "." ),
