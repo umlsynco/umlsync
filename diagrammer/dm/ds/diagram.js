@@ -457,25 +457,45 @@ dm['at'] = dm.at; //automated testing
   };
 //@endif
 
-  dm.base.chain = function(handler, object, method, data) {
+  dm.base.chain = function(handler, object, method, data, sync) {
     this.handler = handler;
-	this.object = object;
-	this.method = method;
-	this.data = data;
+    this.object = object;
+    this.method = method;
+    this.data = data;
+    this.sync = sync;
   };
   
   dm.base.chain.prototype = {
-    run:function() {
-	  if (this.handler != null && !this.handler.run()) {
-	    return false;
-	  }
+    run:function(callback) {
+      var result = true,
+	    self = this;
+	  
+      do {
+        if (this.sync) {
+          // return false if chain have to be canceled
+          if (this.object && this.object[this.method]) {
+            result = this.object[this.method](data);
+            break;
+          }
+        }
+        else {
+          if (this.object && this.object[this.method]) {
+            this.object[this.method](data, function(result) {
+			  if (result && self.handler) {
+			    self.handler.run();
+			  }
+			});
+            
+          };
+		  result = false;
+          break;
+        }
+      } while(false);
 
-	  // return false if chain have to be canceled
-	  if (this.object && this.object[this.method]) {
-        return this.object[this.method](data);
-      }
-	  return false;
-	}
+      if (result && self.handler) { 
+	    this.handler.run();
+	  }
+    }
   };
 
   //@export:dm.base.diagram:plain
@@ -726,7 +746,7 @@ dm['at'] = dm.at; //automated testing
     //<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
     //this.options.multicanvas = true; ~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USES for DROP SOME NODES FROM DYNATREE
     if (this.options.multicanvas) {
-	  this.canvasEuid = this.euid +'_Canvas';
+      this.canvasEuid = this.euid +'_Canvas';
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
           <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
           <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
@@ -736,7 +756,7 @@ dm['at'] = dm.at; //automated testing
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
           <div class="us-canvas-bg" style="width:100%;height:100%;">\
           </div></div>');
-		  this.canvasEuid = 'SingleCanvas';
+          this.canvasEuid = 'SingleCanvas';
     }
     this.canvas = window.document.getElementById(this.canvasEuid);
     this.max_zindex = 100;
@@ -750,112 +770,112 @@ dm['at'] = dm.at; //automated testing
 
     $("#" + this.euid + ".us-diagram").scroll(function() {iDiagram.draw();});
 //@ifdef EDITOR
-	if ($("#" + this.canvasEuid).attr("init") != "true") {
-		$("#" + this.canvasEuid).droppable({
-		  drop: function( event, ui ) {
-			var iDiagram = dm.dm.fw.getActiveDiagram();
-			// do nothing
-			if (iDiagram == null)
-			  return;
+    if ($("#" + this.canvasEuid).attr("init") != "true") {
+        $("#" + this.canvasEuid).droppable({
+          drop: function( event, ui ) {
+            var iDiagram = dm.dm.fw.getActiveDiagram();
+            // do nothing
+            if (iDiagram == null)
+              return;
 
-			var source = ui.helper.data("dtSourceNode"); // dynatree node
-			var thisOffset = $(this).offset();
-			if (!source)
-			  return;
-			$.log("source: " + source.data.addClass);
-			if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
-			  var key = "",
-				  separator = "",
-				  filenode = source,
-				  isInterface = source.data.addClass == "iconinterface";
-			  if (source.data.description) {
-				key = source.data.description;
-			  }
-			  else {
-				while ((filenode.data.addClass == 'iconinterface')
-					|| (filenode.data.addClass == 'iconclass')
-					|| (filenode.data.addClass == 'namespace')) {
-				  key = filenode.data.title + separator + key;
-				  separator = "::";
-				  filenode = filenode.parent;
-				}
-			  }
+            var source = ui.helper.data("dtSourceNode"); // dynatree node
+            var thisOffset = $(this).offset();
+            if (!source)
+              return;
+            $.log("source: " + source.data.addClass);
+            if (source.data.addClass == "iconclass" || source.data.addClass == "iconinterface") {
+              var key = "",
+                  separator = "",
+                  filenode = source,
+                  isInterface = source.data.addClass == "iconinterface";
+              if (source.data.description) {
+                key = source.data.description;
+              }
+              else {
+                while ((filenode.data.addClass == 'iconinterface')
+                    || (filenode.data.addClass == 'iconclass')
+                    || (filenode.data.addClass == 'namespace')) {
+                  key = filenode.data.title + separator + key;
+                  separator = "::";
+                  filenode = filenode.parent;
+                }
+              }
 
-			if (iDiagram.options['type'] == "sequence") {
-			  var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Object Instance"), {'viewid':source.data.viewid});
-			  element.pageX = ui.position.left - thisOffset.left;
-			  element.left = element.pageX;
-			  element.name = key;
-			  element.filepath = filenode.getAbsolutePath();
-			  var ename = iDiagram.Element(element.type, element);
-			  return;
-			}
+            if (iDiagram.options['type'] == "sequence") {
+              var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Object Instance"), {'viewid':source.data.viewid});
+              element.pageX = ui.position.left - thisOffset.left;
+              element.left = element.pageX;
+              element.name = key;
+              element.filepath = filenode.getAbsolutePath();
+              var ename = iDiagram.Element(element.type, element);
+              return;
+            }
 
-			if (iDiagram.options['type'] == "component") {
-			  var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
-			  element.pageX = ui.position.left - thisOffset.left;
-			  element.pageY = ui.position.top - thisOffset.top;
-			  element.left = element.pageX;
-			  element.top = element.pageY;
-			  element.name = key;
-			  element.filepath = filenode.getAbsolutePath();
-			  var ename = iDiagram.Element(element.type, element);
-			  return;
-			}
-			if (iDiagram.menuIcon != undefined) {
-			  var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':source.data.viewid});
+            if (iDiagram.options['type'] == "component") {
+              var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
+              element.pageX = ui.position.left - thisOffset.left;
+              element.pageY = ui.position.top - thisOffset.top;
+              element.left = element.pageX;
+              element.top = element.pageY;
+              element.name = key;
+              element.filepath = filenode.getAbsolutePath();
+              var ename = iDiagram.Element(element.type, element);
+              return;
+            }
+            if (iDiagram.menuIcon != undefined) {
+              var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':source.data.viewid});
 
-			  if (element != undefined) {
-				element.pageX = ui.position.left - thisOffset.left;
-				element.pageY = ui.position.top - thisOffset.top;
-				element.left = element.pageX;
-				element.top = element.pageY;
-				element.name = key;
-				if (isInterface) element.aux = "interface";
-				element.filepath = filenode.getAbsolutePath();
-				var ename = iDiagram.Element(element.type, element);
-			  }
-			} else {
-			  iDiagram.Element("class", {name:source.data.title, filepath:source.getAbsolutePath(),editable:true,'viewid':source.data.viewid});
-			}
-		  } else if (source.data.addClass == "diagramclass") {
-			// Add sub-diagram to element
-			$.eee = ui;
-			$.uuu = event;
-			iDiagram._dropSubDiagram(source.getAbsolutePath(), event, ui);
-		  } else if (source.data.isFs) {
-			if (iDiagram.options['type'] == "component") {
-			  var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Component"), {'viewid':source.data.viewid});
-			  if (element != undefined) {
-				var x = element.pageX,
-				y = element.pageY;
-				element.pageX = ui.position.left - thisOffset.left;
-				element.pageY = ui.position.top - thisOffset.top;
-				element.left = element.pageX;
-				element.top = element.pageY;
-				element.name = source.data.title;
-				element.filepath = source.getAbsolutePath();
-				var ename = iDiagram.Element(element.type, element);   
-				return;
-			  }
-			}
-			var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Package"), {'viewid':source.data.viewid});
+              if (element != undefined) {
+                element.pageX = ui.position.left - thisOffset.left;
+                element.pageY = ui.position.top - thisOffset.top;
+                element.left = element.pageX;
+                element.top = element.pageY;
+                element.name = key;
+                if (isInterface) element.aux = "interface";
+                element.filepath = filenode.getAbsolutePath();
+                var ename = iDiagram.Element(element.type, element);
+              }
+            } else {
+              iDiagram.Element("class", {name:source.data.title, filepath:source.getAbsolutePath(),editable:true,'viewid':source.data.viewid});
+            }
+          } else if (source.data.addClass == "diagramclass") {
+            // Add sub-diagram to element
+            $.eee = ui;
+            $.uuu = event;
+            iDiagram._dropSubDiagram(source.getAbsolutePath(), event, ui);
+          } else if (source.data.isFs) {
+            if (iDiagram.options['type'] == "component") {
+              var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Component"), {'viewid':source.data.viewid});
+              if (element != undefined) {
+                var x = element.pageX,
+                y = element.pageY;
+                element.pageX = ui.position.left - thisOffset.left;
+                element.pageY = ui.position.top - thisOffset.top;
+                element.left = element.pageX;
+                element.top = element.pageY;
+                element.name = source.data.title;
+                element.filepath = source.getAbsolutePath();
+                var ename = iDiagram.Element(element.type, element);   
+                return;
+              }
+            }
+            var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Package"), {'viewid':source.data.viewid});
 
-			if (element != undefined) {
-			  var x = element.pageX,
-			  y = element.pageY;
-				element.pageX = ui.position.left - thisOffset.left;
-				element.pageY = ui.position.top - thisOffset.top;
-				element.left = element.pageX;
-				element.top = element.pageY;
-			  element.name = source.data.title;
-			  element.filepath = source.getAbsolutePath();
-			  var ename = iDiagram.Element(element.type, element);   
-			}
+            if (element != undefined) {
+              var x = element.pageX,
+              y = element.pageY;
+                element.pageX = ui.position.left - thisOffset.left;
+                element.pageY = ui.position.top - thisOffset.top;
+                element.left = element.pageX;
+                element.top = element.pageY;
+              element.name = source.data.title;
+              element.filepath = source.getAbsolutePath();
+              var ename = iDiagram.Element(element.type, element);   
+            }
 
-		  }
-		}
-		})
+          }
+        }
+        })
         .attr("init", "true");
     } 
 //@endif
@@ -937,9 +957,9 @@ dm['at'] = dm.at; //automated testing
         y = dm.at.mouse.y;
       }
 
-	  if (e.which != 3) {
+      if (e.which != 3) {
         diag.startConnectorTransform(x,y);
-	  }
+      }
 
       if ((diag.selectedconntector)
           && (!dm['dm']['fw']['CtrlDown'])) {
@@ -2107,7 +2127,7 @@ dm['at'] = dm.at; //automated testing
 
       })
       .append("<img id='" + this.euid + "_REF' title='REFERENCE' src='./images/reference.png' class='us-element-ref' style='z-index:99999;visibility:hidden;'></img>")
-	  .parent()
+      .parent()
       .append(subDiagramRefs);
 
       for (var g in subDiagramPaths) {
@@ -2148,8 +2168,8 @@ dm['at'] = dm.at; //automated testing
       //if (this.options['subdiagram'])
        {
         $("img#" + this.euid + "_REF")
-		.attr('title', this.options['subdiagrams'])
-		.click(self, function(event) {
+        .attr('title', this.options['subdiagrams'])
+        .click(self, function(event) {
           var element = event.data;
           var isShown = $("#" + element.euid + " .us-references").css('display') == "none";
 
@@ -2175,9 +2195,9 @@ dm['at'] = dm.at; //automated testing
       // 
       if (!this.parrent.options['editable']) {
         $.each($("#" + this.euid + "_Border .editablefield"),
-		       function(index, item) {
-			     $(item).editable("disable");
-			   });
+               function(index, item) {
+                 $(item).editable("disable");
+               });
       }
 //@endif
       if (this.options['color']) 
@@ -2306,10 +2326,10 @@ dm['at'] = dm.at; //automated testing
 
         // Work-around for elements without editable fields
         if ($("#" + this.euid + "_Border .editablefield").length) {
-		  $.each($("#" + this.euid + "_Border .editablefield"),
-		         function(index, item) {
-				   $(item).editable(value ? "enable":"disable");
-			     });
+          $.each($("#" + this.euid + "_Border .editablefield"),
+                 function(index, item) {
+                   $(item).editable(value ? "enable":"disable");
+                 });
           $("#" + this.euid + "_Border #reference-new").css("display", value ? "block":"none");//css("visibility", value ?  "visible":"hidden");
         }
 
@@ -2579,10 +2599,10 @@ dm['at'] = dm.at; //automated testing
       else if (key == "editable") {
          for (var i in this.labels) {
            $.each(this.labels[i],
-		     function(index, item) {
+             function(index, item) {
                $(item).draggable("option", "disabled", !value)
                       .editable(value ? "enable":"disable");
-			 });
+             });
          }
       }
 //@endif
