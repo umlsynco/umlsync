@@ -53,7 +53,7 @@
         // ------
         //
         this.onViewManagerChange = function(id, callback) {
-		    var self = this;
+            var self = this;
             // Switch to null repository
             // is similar to close all content and commit for the
             // opened repository
@@ -64,12 +64,14 @@
 
                   // Drop the repository tree widget
                   $("#us-treetabs").children().remove();
+                  delete self.githubView;
+                  self.githubView = null;
 
                   if (callback) {
                     callback(true);
                   }
                   self.activated = false;
-				});
+                });
                 return;
             }
             // Do nothing if already active
@@ -248,6 +250,10 @@
             var isOwner = false; // Following repos
 
             function updateWidgetsStatus() {
+                if (self.githubView == null) {
+                    return;
+                }
+
                 var repoId = (self.githubView.activeRepo == null) ? "none" : self.githubView.activeRepo,
                   branchId = (self.githubView.activeBranch == null) ? "none" : self.githubView.activeBranch;
 
@@ -262,7 +268,7 @@
             if (githubView != null) {
               // Do nothing for the same repository was selected
               if (githubView.activeRepo == repo) {
-			    if (callback) { callback();}
+                if (callback) { callback();}
                 return;
               }
 
@@ -272,7 +278,7 @@
                 githubView.openRepository(repo, isOwner);
                 dm.dm.fw.addView2(self, githubView);
                 updateWidgetsStatus();
-			    if (callback) { callback();}
+                if (callback) { callback();}
                 return;
               }
 
@@ -286,40 +292,44 @@
                         if (githubView.hasModifications()) {
                             dm.dm.dialogs['ConfirmationDialog']({
                               title:"Change repository?",
-                              description: "Modified files will be removed on repository change.",
+                              description: "All modified files will be removed:",
                               buttons: {
-                                    "ok": function() {
+                                    "remove": function() {
                                         githubView.openRepository(repo, true);
                                         updateWidgetsStatus();
-										if (callback) { callback();}
+                                        if (callback) { callback();}
                                         $( this ).dialog( "close" );
                                     },
                                     "cancel": function() {
-									    if (callback) { callback();}
+                                        // Do not continue if case of issues
                                         $( this ).dialog( "close" );
                                     },
                                     "commit...":function() {
                                         $( this ).dialog( "close" );
-									    githubView.commitContent(null, function() {
-										  if (callback) {
-										    callback();
-										  }
-										});
+                                        githubView.commitContent(null, function(isOk) {
+                                          if (isOk) {
+                                            githubView.openRepository(repo, true);
+                                            updateWidgetsStatus();
+                                          }
+                                          if (callback) {callback();}
+                                        });
                                     }
                                 }
                             });// Confirmation dialog
                         }
                         else {
-						    if (callback) { callback();}
+                            if (callback) { callback();}
                             githubView.openRepository(repo, true);
                             updateWidgetsStatus();
+
                         }
                     });
             }
             else {
               this.githubView = new IGithubView(repo, isOwner);
               dm.dm.fw.addView2(this.id, this.githubView);
-			  if (callback) { callback();}
+              updateWidgetsStatus();
+              if (callback) { callback();}
             }
         };
 
@@ -547,6 +557,8 @@
                             return;
                         }
                         
+                        dm.dm.fw.switchToEditable(this.euid, this.activeRepo, this.activeBranch, false);
+                        
                         if (repoId == null) {
                           self.activeRepo = null;
                           self.activeBranch = null;
@@ -577,6 +589,8 @@
                         // Update tree
                         self.initTree(self.treeParentSelector);
                         self.initBranches(repoId);
+                        
+                        dm.dm.fw.switchToEditable(this.euid, this.activeRepo, this.activeBranch, true);
                     },
 
                     //
@@ -602,12 +616,14 @@
                     // ----
                     //
                     onBranchSelected: function(tab, branch) {
-                        self.activeBranch = branch;
-                        //$(self.treeParentSelector).children().empty(); // Remove the previous tree content. It is important to hide previous tree to provide feedback to user ASAP
-
-                        // Init tree
-                        self.initTree(self.treeParentSelector);
+                        if (self.activeBranch != branch) {
+                            dm.dm.fw.switchToEditable(this.euid, this.activeRepo, this.activeBranch, false);
+                            self.activeBranch = branch;
+                            self.initTree(self.treeParentSelector);
+                            dm.dm.fw.switchToEditable(this.euid, this.activeRepo, this.activeBranch, true);
+                        }
                     },
+
                     //////////////////////////////////////////////////////////////
                     //           Content managment
                     //////////////////////////////////////////////////////////////
@@ -987,7 +1003,7 @@
                     commitContent: function(node, callback) {
                         if (dm.dm.dialogs) {
                             dm.dm.dialogs['CommitDataDialog'](
-							  self.repositories[self.activeRepo].updated,
+                              self.repositories[self.activeRepo].updated,
                               function(message, items, onComplete, onStatusChange) {
                                 var path;
                                 var contents = [],
@@ -1016,9 +1032,9 @@
                                     // Callbacks to the dialog
                                     onStatusChange("Updating the tree");
                                     onComplete(err);
-									if (callback) {
-									  callback();
-									}
+                                    if (callback) {
+                                      callback();
+                                    }
                                 }, onStatusChange);
                               });
                         }

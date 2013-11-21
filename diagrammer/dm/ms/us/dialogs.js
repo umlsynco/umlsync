@@ -167,10 +167,12 @@
           var params =
           {
             title:isNamed ? diagram_name.split("/").pop() : diagram_name,
-            repoId:dm.dm.fw.getActiveRepository(),
-            viewid:dm.dm.fw.getActiveView(),
-            branch:dm.dm.fw.getActiveBranch(),
+            repoId:isNamed ? dm.dm.fw.getActiveRepository() : null,
+            viewid:isNamed ? dm.dm.fw.getActiveView() : null,
+            branch:isNamed ? dm.dm.fw.getActiveBranch() : null,
+            absPath: isNamed ? diagram_name : null,
             contentType:"dm",
+            isOwner: true,
             editable:true,
             isNewOne:!isNamed
           };

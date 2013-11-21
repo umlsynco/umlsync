@@ -327,11 +327,36 @@ Version:
                 },
 
                 //
+                // Switch all opened content to editable or non editable
+                // ----
+                //
+                switchToEditable: function(viewId, repoId, branchId, isEditable) {
+                  for (var t in this.contents) {
+                      if (this.contents[t]
+                        && this.contents[t].repoId == repoId
+                        && this.contents[t].branch == branchId
+                        && this.contents[t].viewid == viewId) {
+                        var $edit = $(t+ " #us-diagram-edit");
+                        if (isEditable) {
+                            $edit.parent().show();
+                        }
+                        else {
+                          if ($edit.html() == "View") {
+                            $edit.trigger("click");
+                          }
+                          $edit.parent().hide();
+                        }
+                        
+                      }
+                  }
+                },
+
+                //
                 // Register the IView object
-				// and initiate element for tree insertion 
-				// Note: Today it looks stuipid but previously it was an idea to
-				//       support multiple trees and switch between them on repo change or on switch to Eclipse
-				//       and keep all modifications in buffer(for GitHubView only because for an Eclipse we always POST changes)
+                // and initiate element for tree insertion 
+                // Note: Today it looks stuipid but previously it was an idea to
+                //       support multiple trees and switch between them on repo change or on switch to Eclipse
+                //       and keep all modifications in buffer(for GitHubView only because for an Eclipse we always POST changes)
                 //
                 addView2: function(name, IView) {
                     //TODO: don't load view if name/euid is reserved yet !
@@ -724,7 +749,7 @@ Version:
                     // FULL SCREEN CONTENT
                     if (params.selector == undefined) {
                         var edit = (params.editable == true) || (params.editable == "true"),
-                                editBullet = '<a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>';
+                          editBullet = '<a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>';
 
                         var $selrt = $(selector);
                         // switch elements to the view mode
@@ -741,13 +766,11 @@ Version:
 
                         // It is not possible to edit file if it is defined by sha (and path unknown)
                         // or if user is not owner/commiter of repository
-                        if ((!params.isOwner || params.absPath == undefined) && !params.isNewOne) {
+                        if (!params.isOwner || params.absPath == undefined || params.absPath == null) {
                             $(selector + " #us-diagram-edit").parent().hide();
                         }
 
-                        // It is not possible to provide link
-                        // for a new content.
-                        // TODO: It is possible to provide link for a saved new content !!!
+                        // No path defined
                         if (params.isNewOne) {
                             $(selector + " #us-getlink").parent().hide();
                         }
@@ -795,25 +818,18 @@ Version:
                     else {
                         $(selector).append('<span class="us-diagram-toolbox">\
                                 <a id="us-link"><span id="us-getlink">Get link</span></a>\
-                                <a id="us-link"><span class="us-diagram-edit" edm="false">Full screen</span></a>\
-                                <a id="us-link"><span class="us-diagram-edit">Edit</span></a>\
+                                <a id="us-link"><span class="us-diagram-edit">Open</span></a>\
                                 <br>\
                                 <div id="us-getlink-content"><label>Absolute path:</label><p><input value="'+absPath+'"/></p>\
                                 </p></div>\
                         </span>');
 
-                        // It is not possible to edit file if it is defined by sha (and path unknown)
-                        // or if user is not owner/commiter of repository
-                        if (!params.isOwner || params.absPath == undefined) {
-                            $(selector + " #us-diagram-edit").hide();
-                        }
-
                         $(selector + " .us-diagram-edit").click(params, function(event) {
                             var params = event.data;
                             var clonedParams = $.extend(true, {}, params);
                             delete clonedParams['selector'];
-                            // jquery return string for attibute "edm" therefore we have to compare it with 'false'
-                            clonedParams.editable = params.isOwner ? ($(this).attr("edm") != 'false') : false;
+
+                            clonedParams.editable = params.isOwner && params.editable;
                             self.loadContent(clonedParams);
                         });
                     }
@@ -1049,13 +1065,13 @@ Version:
                         return;
                     }
 
-                    if (params.absPath == undefined && params.relativePath == undefined && params.sha == undefined) {
+                    if ( (params.absPath == undefined || params.absPath == null) && params.relativePath == undefined && params.sha == undefined) {
                         alert("Not enough information about loadble content.");
                         return;
                     }
 
                     // Handle the relative path use-case:
-                    if (parentParams != undefined && params.absPath == undefined && params.relativePath != undefined ) {
+                    if (parentParams != undefined && (params.absPath == undefined || params.absPath == null) && params.relativePath != undefined ) {
                         params.absPath = self.views[viewid].view.getContentPath(params, parentParams);
                     }
 

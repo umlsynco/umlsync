@@ -126,6 +126,9 @@
     dm.dm.IGithubViewsManager =
       new dm.base.GithubViewsManager(username, token);
     dm.dm.IGithubViewsManager.init(path);
+    
+    dm.dm.ILocalhostViewsManager = new dm.base.LocalhostViewsManager();
+    dm.dm.ILocalhostViewsManager.init();
   });
 
 </script>
