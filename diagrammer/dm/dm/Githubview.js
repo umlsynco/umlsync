@@ -644,8 +644,7 @@
                     // ----
                     //
                     saveContent: function(params, data, isNewContent) {
-                        if (params.repoId != self.activeRepo
-                                || params.branch != self.activeBranch) {
+                        if (params.repoId != self.activeRepo) {
                             alert("Attemption to save to the not active repository or branch.");
                             return;
                         }
