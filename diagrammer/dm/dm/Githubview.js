@@ -64,6 +64,8 @@
 
                   // Drop the repository tree widget
                   $("#us-treetabs").children().remove();
+				  $(self.treeCtxSelector).remove();
+				  self.treeCtxSelector = null;
                   delete self.githubView;
                   self.githubView = null;
 
@@ -1149,6 +1151,10 @@
                     hasNodeStatus: function(node, status) {
                         return $(node.span).hasClass("dynatree-ico-" + status);
                     },
+					
+					setTeeContextMenu:function(uid) {
+					  this.treeCtxSelector = "#" + uid;
+					},
                     //
                     // Initialize the dynatree structure
                     // @parentSelector - No idea what is it
@@ -1183,7 +1189,7 @@
                                 onCreate: function(node, span) {
                                     $(span).bind('contextmenu', function(e) {
                                         var node = $.ui.dynatree.getNode(e.currentTarget);
-                                        dm.dm.fw.ShowContextMenu(self.euid, e, node);
+                                        dm.dm.fw.ShowContextMenu(self.treeCtxSelector, e, node);
                                         e.preventDefault();
                                     });
                                 },
@@ -1205,12 +1211,13 @@
                                     }// IsFolder
                                 },
                                 onFocus: function(node) {
-                                    if (node.data.isFolder) {
-                                        self.active = node.getAbsolutePath();
-                                    }
-                                    else {
-                                        // get the neares parent folder or root
-                                    }
+								  $(".context-menu").hide();
+                                  if (node.data.isFolder) {
+                                    self.active = node.getAbsolutePath();
+                                  }
+                                  else {
+                                    // get the neares parent folder or root
+                                  }
                                 },
                                 onActivate: function(node) {
                                     // Nothing to load for folder
