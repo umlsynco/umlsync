@@ -64,7 +64,7 @@ Version:
             $("#" + this.options.content).append('\
                     <div id="'+ this.options.content +'-left" style="width:200px;height:100%;padding:0;margin:0;position:absolute;">\
                       <div id="switcher" style="background-color:gray;">\
-                        <div id="us-viewmanager"></div>\
+                        <div id="us-viewmanager" class="ui-state-default"></div>\
                         <div id="us-repo-select"></div>\
                         <div id="us-toolbox"></div>\
                         <div id="us-treetabs"></div>\
@@ -272,7 +272,8 @@ Version:
                   // ----
                   //
                   $("#"+viewmanager.getId()).click(this, function(e) {
-                    var fw = e.data;
+                    var fw = e.data,
+                    sss = this;
                     // Check the registered view
                     if (fw.viewmanagers[this.id]) {
                       var viewman = fw.viewmanagers[this.id],
@@ -282,13 +283,17 @@ Version:
                       if (fw.activeViewManagerId == this.id) {
                         // notify handler on click again
                         viewman.onViewManagerChange(viewmanId, function() {
-                          fw._helperUpdateFrameWork(true);});
+                          fw._helperUpdateFrameWork(true);
+                        });
+
                         return;
                       }
 
                       // Activate view manager is no view manager activated before
                       if (fw.activeViewManagerId == null) {
-                        fw.viewmanagers[this.id].onViewManagerChange(this.id, function() { fw._helperUpdateFrameWork(true);});
+                        fw.viewmanagers[this.id].onViewManagerChange(this.id, function() { 
+                          fw._helperUpdateFrameWork(true);
+                        });
                         return;
                       }
 
