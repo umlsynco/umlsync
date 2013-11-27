@@ -129,7 +129,7 @@
         this._activateViewSelectWidget = function(json) {
           // do not add view select dialog if it is single view mode
           if (Object.keys(json).length < 10) {
-            dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/cp"));
+            dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/un"));
             return
           }
           var self = this,
@@ -822,7 +822,14 @@
                                                                                           klass: "second-menu-item"
                                                                                   },
                                                                                   ]
+
                     },
+					
+					// Setup the contex menus selector
+					setTeeContextMenu: function(selector) {
+					  this.treeCtxMenuSelector = "#" + selector;
+					},
+
                     //
                     // Tree initialization
                     //
@@ -858,6 +865,7 @@
                                 });
                             }, // onLazyRead
                             onActivate: function(node) {
+								$(".context-menu").hide();
                                 // Nothing to load for folder
                                 if (node.data.isFolder) {
                                     self.active =  node.getAbsolutePath();
@@ -895,11 +903,20 @@
                                     }
                                 }
                             }, // onActivate
+                            onFocus: function(node) {
+								  $(".context-menu").hide();
+                                  if (node.data.isFolder) {
+                                    self.active = node.getAbsolutePath();
+                                  }
+                                  else {
+								    self.active = node.parent.getAbsolutePath();
+                                  }
+                                },
                             onCreate: function(node, span){
                                 $(span).bind('contextmenu',
                                         function(e) {
                                     var node = $.ui.dynatree.getNode(e.currentTarget);
-                                    dm.dm.fw.ShowContextMenu(self.euid, e, node);
+                                    dm.dm.fw.ShowContextMenu(self.treeCtxMenuSelector, e, node);
                                     e.preventDefault();
                                 });
                             },
