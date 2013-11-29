@@ -379,6 +379,8 @@ Version:
 
                     function initCtxMenu(vid, items, view) {
                         $('<ul id="view-'+  vid +'" class="context-menu" ></ul>').hide().appendTo('body');
+						view.setTeeContextMenu("view-"+  vid);
+
                         $("#view-"+vid).listmenu({
                             selector: "menu-item",
                             path:"./",
@@ -557,7 +559,7 @@ Version:
                     $(".context-menu").hide();
                     if (name) {
                         activeNode = node;
-                        $("#view-"+name +".context-menu").css("left", event.clientX).css("top", event.clientY).show();
+                        $(name +".context-menu").css("left", event.clientX).css("top", event.clientY).show();
                     }
                 },
                 'ShowElementContextMenu': function( desc , viewid, data, event) {
