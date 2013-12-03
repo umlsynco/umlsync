@@ -42,6 +42,12 @@
     this.status[name] = true; // active dialog. It is possible to activate dialog before it's creation. in that case it will be shown on creation.
     this.callback[name] = callback;
 
+	if (name == "new-diagram-dialog") {
+	  if ((!dm.dm.fw.getActiveView()) || dm.dm.fw.getActiveRepository() == "none") {
+	    $( "#us-new-diagram-dialog-input").checked(false);
+      }	  
+	}
+
     if ($( "#" + name ).dialog( "isOpen" )) {
       $( "#" + name ).dialog( "close" );
     }
