@@ -913,6 +913,20 @@
                     // ----
                     //
                     checkContentName: function(name) {
+					    var $tree = $(self.treeParentSelector).dynatree("getTree");
+					    var path = name.substring(0, name.lastIndexOf("/"));
+						self.activeStorageNode = null;
+						if (path == "") {
+						  self.activeStorageNode = $tree.tnRoot;
+						}
+						else {
+					      $tree.loadKeyPath(path, function(node, result) {
+						    if (result == "ok") {
+							  self.activeStorageNode = node;
+							}
+						  }, "title");
+						}
+
                         if (!self.activeStorageNode) {
                             return "Wrong path or path was not loaded yet: " + name;
                         }
