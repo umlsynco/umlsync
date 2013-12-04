@@ -111,6 +111,8 @@
               // Prevent multiple request of the same paths
               if (currentStatus != newStatus || Object.keys(currentList).length == 0) {
                 currentStatus = newStatus;
+				delete currentList;
+				currentList = {};
                 dm.dm.fw.getSubPaths(newStatus, function(data) {
                   currentList = data;
                   response(getMatch(match)); // Update search result
