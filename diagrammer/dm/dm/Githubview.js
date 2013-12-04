@@ -878,8 +878,8 @@
                         self.activeStorageNode = null;
 
                         var $tree = $(self.treeParentSelector).dynatree("getTree");
-                        if (path == "/") {
-                            var tmp = $tree.getChildren();
+                        if (path == "") {
+                            var tmp = $tree.tnRoot.getChildren();
                             var res = new Array();
                             for (var r in tmp) {
                                 if (tmp[r].data.isFolder)
