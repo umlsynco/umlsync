@@ -44,8 +44,13 @@
 
 	if (name == "new-diagram-dialog") {
 	  if ((!dm.dm.fw.getActiveView()) || dm.dm.fw.getActiveRepository() == "none") {
-	    $( "#us-new-diagram-dialog-input").checked(false);
-      }	  
+	    $( "#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
+		$("#VP_inputselector").attr('disabled', true);
+      }
+	  else {
+	    $( "#us-new-diagram-dialog-input").attr('disabled', false).attr('checked', true);
+		$("#VP_inputselector").attr('disabled', false);
+	  }
 	}
 
     if ($( "#" + name ).dialog( "isOpen" )) {
