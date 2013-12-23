@@ -1,0 +1,195 @@
+a, abbr, acronym, address, applet, b, big, blockquote, body, caption, center, cite, code, dd, del, dfn, div, dl, dt, em, fieldset, font, form, h1, h2, h3, h4, h5, h6, html, i, iframe, img, ins, kbd, label, legend, li, object, ol, p, pre, q, s, samp, small, span, strike, strong, sub, sup, table, tbody, td, tfoot, th, thead, tr, tt, u, ul, var {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    margin: 0;
+    outline: 0 none;
+    padding: 0;
+    vertical-align: baseline;
+}
+body {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 10px;
+}
+ol, ul {
+    list-style: none outside none;
+}
+.Z-FIXED-COMPS {
+    z-index: 2;
+}
+.Z-WIX-ADS > * {
+    z-index: 3;
+}
+.richTextContainer ol {
+    list-style: decimal inside none;
+}
+.richTextContainer ul {
+    list-style: disc inside none;
+}
+.richTextContainer li {
+    margin-bottom: 12px;
+}
+blockquote, q {
+    quotes: none;
+}
+.clearfix:after, .clearfix:before {
+    content: "";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+.clearfix {
+}
+:focus {
+    outline: 0 none;
+}
+ins {
+    text-decoration: none;
+}
+del {
+    text-decoration: line-through;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+a {
+    cursor: pointer;
+    text-decoration: none;
+}
+body, html {
+    height: 100%;
+}
+body {
+    overflow-x: auto;
+    overflow-y: scroll;
+}
+body[contenteditable] {
+    overflow: auto;
+}
+body[device="mobile"] {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+body[preview="edit"] {
+    overflow: hidden;
+}
+body[preview="view"] {
+    overflow-x: auto;
+    overflow-y: scroll;
+}
+body[preview="view"][device="mobile"] {
+    overflow: hidden;
+}
+body[device="mobile"] .SITE_STRUCTURE {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+body[preview="edit"][device="mobile"] .SITE_STRUCTURE {
+    overflow: visible;
+}
+body[preview="view"][device="mobile"] .SITE_STRUCTURE {
+    overflow: hidden;
+}
+body.fullScreenMode {
+    overflow: hidden !important;
+}
+body.wixappsFullScreenMode {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+body.wixappsFullScreenMode[preview="view"][device="mobile"] {
+    overflow: hidden !important;
+}
+body.wixappsFullScreenMode[device="mobile"] .SITE_STRUCTURE {
+    min-height: 100px !important;
+    overflow: hidden !important;
+}
+body.wixappsFullScreenMode[device="mobile"] #mobile_bgNode {
+    display: none;
+}
+.fixedPosition {
+    position: fixed !important;
+    z-index: 1 !important;
+}
+#SITE_FOOTER.fixedPosition {
+    top: auto !important;
+}
+.SITE_STRUCTURE {
+    margin: 0 auto;
+    min-height: 100%;
+    position: relative;
+    width: 1000px;
+}
+.blockSelection *:not(input):not(textarea) {
+    -moz-user-select: -moz-none;
+}
+.TransitionSize {
+    -moz-transition: all 0.4s ease 0s;
+}
+input, select, textarea {
+    -moz-box-sizing: border-box;
+    font-family: Arial,sans-serif;
+}
+.hidden {
+    display: none !important;
+}
+[comp="core.components.Page"], [comp="wixapps.integration.components.AppPage"] {
+    overflow: visible;
+}
+.bold {
+    font-weight: 700;
+}
+.italic {
+    font-style: italic;
+}
+.underline {
+    text-decoration: underline;
+}
+.lineThrough {
+    text-decoration: line-through;
+}
+.singleLineText {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.alignLeft {
+    text-align: left;
+}
+.alignCenter {
+    text-align: center;
+}
+.alignRight {
+    text-align: right;
+}
+.alignJustify {
+    text-align: justify;
+}
+ol.font_100, ul.font_100 {
+    color: #080808;
+    font-family: 'Arial, Helvetica, sans-serif',serif;
+    font-size: 10px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    letter-spacing: normal;
+    line-height: normal;
+    margin: 0;
+    text-decoration: none;
+}
+.font_100 li {
+    margin-bottom: 12px;
+}
+.wixAppsInRenderPreventReflow {
+    overflow: hidden;
+    position: absolute;
+}
+.wixAppsInRenderPreventOnlyOverflow {
+    overflow: hidden;
+}
+.flex_hbox {
+    white-space: nowrap;
+}
+.flex_vbox {
+    padding-top: 0.01em;
+}
