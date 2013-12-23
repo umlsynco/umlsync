@@ -42,6 +42,17 @@
     this.status[name] = true; // active dialog. It is possible to activate dialog before it's creation. in that case it will be shown on creation.
     this.callback[name] = callback;
 
+	if (name == "new-diagram-dialog") {
+	  if ((!dm.dm.fw.getActiveView()) || dm.dm.fw.getActiveRepository() == "none") {
+	    $( "#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
+		$("#VP_inputselector").attr('disabled', true);
+      }
+	  else {
+	    $( "#us-new-diagram-dialog-input").attr('disabled', false).attr('checked', true);
+		$("#VP_inputselector").attr('disabled', false);
+	  }
+	}
+
     if ($( "#" + name ).dialog( "isOpen" )) {
       $( "#" + name ).dialog( "close" );
     }
@@ -98,8 +109,10 @@
               }
 
               // Prevent multiple request of the same paths
-              if (currentStatus != newStatus) {
+              if (currentStatus != newStatus || Object.keys(currentList).length == 0) {
                 currentStatus = newStatus;
+				delete currentList;
+				currentList = {};
                 dm.dm.fw.getSubPaths(newStatus, function(data) {
                   currentList = data;
                   response(getMatch(match)); // Update search result
