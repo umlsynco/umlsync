@@ -1,8 +1,0 @@
-The pupose of this document is to describe the procedure of WEB site setup on bluehost:
-
-1. Django installation and configuration:
-http://www.bluehostforum.com/showthread.php?715-DJANGO-%28not-supported%29
-
-
-2. Social authentication setup:
-https://github.com/omab/django-social-auth/
