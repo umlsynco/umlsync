@@ -80,7 +80,7 @@ IMAGES_URL = '/images/'
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    UMLSYNC_HOME + "/umlsync/django/3pp",
+    UMLSYNC_HOME + "/umlsync/django_server/3pp",
     UMLSYNC_HOME + "/umlsync/diagrammer"
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -120,7 +120,7 @@ ROOT_URLCONF = 'github.urls'
 WSGI_APPLICATION = 'github.wsgi.application'
 
 TEMPLATE_DIRS = (
-    UMLSYNC_HOME + "/umlsync/django/github/templates",
+    UMLSYNC_HOME + "/umlsync/django_server/github/templates",
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
