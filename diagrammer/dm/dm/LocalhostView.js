@@ -129,7 +129,13 @@
         this._activateViewSelectWidget = function(json) {
           // do not add view select dialog if it is single view mode
           if (Object.keys(json).length < 10) {
-            dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/un"));
+		    for (var t in json) {
+			  if (json[t].isdefault) {
+			    dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/" + json[t].id));
+				return;
+			  }
+			}
+			dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/un"));
             return
           }
           var self = this,
@@ -875,7 +881,7 @@
                                     while (!par.data.isFolder) {
                                         par = par.parent;
                                     }
-                                    self.active =  par ? par.getAbsolutePath() : "/";
+                                    self.active =  (par && par != null) ? par.getAbsolutePath() : "/";
                                 }
 
                                 var title = node.data.title;

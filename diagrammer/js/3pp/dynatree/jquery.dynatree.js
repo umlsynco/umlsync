@@ -781,7 +781,8 @@ DynaTreeNode.prototype = {
 				}
 				this.tree.persistence.activeKey = null;
 				this.tree.activeNode = null;
-				if ( fireEvents && opts.onDeactivate ){
+				if ( fireEvents && opts.onDeactivate && opts.onDeactivate != undefined){
+				    var bublik = opts.onDeactivate;
 					opts.onDeactivate.call(this.tree, this);
 				}
 			}
