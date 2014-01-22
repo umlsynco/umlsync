@@ -378,10 +378,10 @@ Version:
                     var self = this;
 
                     function initCtxMenu(vid, items, view) {
-                        $('<ul id="view-'+  vid +'" class="context-menu" ></ul>').hide().appendTo('body');
-						view.setTeeContextMenu("view-"+  vid);
+                        $('<ul id="'+ vid +'" class="context-menu" ></ul>').hide().appendTo('body');
+						
 
-                        $("#view-"+vid).listmenu({
+                        $("#"+vid).listmenu({
                             selector: "menu-item",
                             path:"./",
                             data:items,
@@ -400,7 +400,9 @@ Version:
                     self.views[IView.euid]['view'] = IView;
 
                     if (IView.ctx_menu) {
-                        initCtxMenu(IView.euid+this.left_counter, IView.ctx_menu, IView);
+					    var treeCtxMenu = "view-" + IView.euid+this.left_counter;
+                        initCtxMenu(treeCtxMenu, IView.ctx_menu, IView);
+						IView.setTeeContextMenu(treeCtxMenu);
 
                         if (IView['element_menu']) {
                             self.views[IView.euid]['element_menu'] = {};
@@ -411,7 +413,7 @@ Version:
                                 for (var h in rs) {
                                     self.views[IView.euid]['element_menu'][rs[h]] = nm;
                                 }
-                                initCtxMenu(nm, IView['element_menu'][r], IView);
+                                initCtxMenu("view-" + nm, IView['element_menu'][r], IView);
                                 counter++;
                             }
                         }
@@ -567,9 +569,10 @@ Version:
                     var self = dm.dm.fw;
                     desc = data.options.title;
                     $.log("ShowElementContextMenu: " + desc + "   VID: " + viewid + "  DATA: " + data.options + "  TYPE: " + data.options.title + " DESC:" + data.options.description);
-                    if (self.views && self.views[viewid]
-                                                 && self.views[viewid]['element_menu']
-                                                                       && self.views[viewid]['element_menu'][desc]) {
+                    if (self.views
+					    && self.views[viewid]
+                        && self.views[viewid]['element_menu']
+                        && self.views[viewid]['element_menu'][desc]) {
                         // Enable the context menu for element
                         var uniqueName = "#view-";
                         uniqueName += self.views[viewid]['element_menu'][desc];// Id of the menu

@@ -45,7 +45,7 @@
             if (element.addAttribute != undefined) 
                 element.addAttribute({text:"private int newfield"});
             }
-        }/*,
+        },
         
         {
             title: 'View specific >>',
@@ -57,7 +57,7 @@
                                   dm.dm.fw.ShowElementContextMenu( element.options.title , viewid, element, {clientX:p.left + $(event.currentTarget).width(), clientY:p.top});
                                 }
             }
-        }*/
+        }
         ]);
     };
 })(jQuery, dm);
