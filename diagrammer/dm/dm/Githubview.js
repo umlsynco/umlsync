@@ -107,11 +107,11 @@
             var self = this;
             // Append HTML code
             $(selector).append('<ul id="us-github-list" style="list-style:none;">\
-                    <li id="us-github-commit" class="us-left" title="Commit changes"><img src="/images/commit.png" class="ui-icon"></li>\
-                    <li id="us-github-reload" class="us-left" title="Reload tree"><img src="/images/reload.png" class="ui-icon"></li>\
-                    <li id="us-github-newdoc" title="New diagram"><img src="/images/newdoc.png" class="ui-icon"></li>\
-                    <li id="us-github-revertdoc" title="Revert diagram"><img src="/images/revertdoc.png" class="ui-icon"></li>\
-                    <li id="us-github-removedoc" title="Remove diagram"><img src="/images/deldoc.png" class="ui-icon"></li>\
+                    <li id="us-github-commit" class="us-left" title="Commit changes"><img src="http://umlsync.org/static/images/commit.png" class="ui-icon"></li>\
+                    <li id="us-github-reload" class="us-left" title="Reload tree"><img src="http://umlsync.org/static/images/reload.png" class="ui-icon"></li>\
+                    <li id="us-github-newdoc" title="New diagram"><img src="http://umlsync.org/static/images/newdoc.png" class="ui-icon"></li>\
+                    <li id="us-github-revertdoc" title="Revert diagram"><img src="http://umlsync.org/static/images/revertdoc.png" class="ui-icon"></li>\
+                    <li id="us-github-removedoc" title="Remove diagram"><img src="http://umlsync.org/static/images/deldoc.png" class="ui-icon"></li>\
             </ul>');
             // Initialize handlers
             $("#us-github-newdoc").click(function() {
