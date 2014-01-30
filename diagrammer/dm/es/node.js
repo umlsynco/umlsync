@@ -25,9 +25,9 @@ dm.base.diagram("es.node", dm.es.element, {
                         </tr>\
                         <tr>\
                             <td width="13px"></td>\
-                       </tr></table><img src="images/line45_lt.png" style="left:0px;top:0px;position:absolute;"></img>\
-                       <img src="images/line45.png" style="right:0px;top:0px;position:absolute;"></img>\
-                       <img src="images/line45_rb.png" style="right:0px;bottom:0px;position:absolute;"></img>\
+                       </tr></table><img src="http://umlsync.org/sttaic/images/line45_lt.png" style="left:0px;top:0px;position:absolute;"></img>\
+                       <img src="http://umlsync.org/sttaic/images/line45.png" style="right:0px;top:0px;position:absolute;"></img>\
+                       <img src="http://umlsync.org/sttaic/images/line45_rb.png" style="right:0px;bottom:0px;position:absolute;"></img>\
                        </div>';
       $("#" + this.parrent.euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);

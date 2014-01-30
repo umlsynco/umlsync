@@ -3,9 +3,12 @@
  * the main purpose of this class is to avoid
  * dialogs creation in the functional areas.
  * 
- * Copyright: Copyright (c) 2012-2013 UMLSync Inc. All rights reserved.
+ * It was an idea to create a dialog manager instance
+ * and specify interfaces between dialogs and [IFramework, IViewManager, IView]
+ * 
+ * 
+ * Copyright: Copyright (c) 2012-2014 UMLSync Inc. All rights reserved.
  * URL: http://umlsync.org/about
- * Last Modified Date: 2013-01-24
  *
  */
 (function($, dm, undefined) {

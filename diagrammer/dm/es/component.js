@@ -23,7 +23,7 @@ dm.base.diagram("es.component", dm.es.element, {
     '_create': function() {
       // HTML for class structure creation
       this.innerHtml = '<div id="' + this.euid + '" class="us-component grElement">\
-                        <img src="./images/component.png" style="position:absolute;top:3px;right:17px"></img>\
+                        <img src="http://umlsync.org/static/images/component.png" style="position:absolute;top:3px;right:17px"></img>\
                         <a id="stereotype" class="editablefield" style="text-align:left;position:relative;top:30%">&laquo;interface&raquo;</a><br>\
                         <a id="name" class="editablefield Name" style="text-align:left;position:relative;top:30%">' + this.options.name + '</a>\
                         </div>';

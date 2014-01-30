@@ -57,7 +57,7 @@ dm.base.diagram("es.llalt", dm.es.element, {
       this.innerHtml = '<div id="' + this.euid + '" class="us-package">\
             <div class="us-alt-body us-element-resizable-area">'+
 			this.getCond() +
-            '</div><div class="us-alt-tab"><b>'+this.getAlt()+'</b><img src="images/cornerb.png" style="position:absolute;bottom:-1px;right:-1px;"></div>\
+            '</div><div class="us-alt-tab"><b>'+this.getAlt()+'</b><img src="http://umlsync.org/sttaic/images/cornerb.png" style="position:absolute;bottom:-1px;right:-1px;"></div>\
             </div>';
 
       $("#" + this.parrent.euid).append(this.innerHtml);

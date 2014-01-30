@@ -369,7 +369,7 @@ dm.base.diagram("es.lldel", dm.es.element, {
 	},
 	_create: function() {
 	  // HTML for class structure creation
-      this.innerHtml = '<img id="' + this.euid + '" class="us-element-resizable-area" src="images/lldel.png">\
+      this.innerHtml = '<img id="' + this.euid + '" class="us-element-resizable-area" src="http://umlsync.org/sttaic/images/lldel.png">\
 						</img>';
 	  $("#" + this.parrent.euid).append(this.innerHtml);
 	  this.element = $("#"  + this.euid);

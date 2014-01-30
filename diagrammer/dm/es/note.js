@@ -14,7 +14,7 @@ dm.base.diagram("es.note", dm.es.element, {
       // HTML for class structure creation
       this.innerHtml = '<div id="' + this.euid + '" class="us-note grElement">\
                         <a id="name" class="editablefield Name">' + this.options['name'] + '</a>\
-                        <img src="/images/corner.png" class="us-note-corner">\
+                        <img src="http://umlsync.org/static/images/corner.png" class="us-note-corner">\
     </div>';
       $("#" + this['parrent'].euid).append(this.innerHtml);
       this.element = $("#"  + this.euid);
