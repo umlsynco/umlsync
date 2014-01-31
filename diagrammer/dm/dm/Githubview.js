@@ -931,7 +931,7 @@
                             return "Wrong path or path was not loaded yet: " + name;
                         }
 
-                        if (self.activeStorageNode.getAbsolutePath() != name.substring(0, name.lastIndexOf("/"))) {
+                        if (path != "" && self.activeStorageNode.getAbsolutePath() != name.substring(0, name.lastIndexOf("/"))) {
                             return "Wrong path, expected: " + self.activeStorageNode.getAbsolutePath();
                         }
 
