@@ -97,6 +97,7 @@
         {
           source:function(request, response) {
             if (response) {
+			  $.log("REQ:"  + request + "  RESPONSE:" + response);
               var val = $("#new-diagram-dialog input#VP_inputselector").val();
               var newStatus = val.substr(0, val.lastIndexOf('/'));
               var match = val.split("/").pop();
@@ -124,7 +125,10 @@
                 response(getMatch(match));
               }
             }
-          }
+          },
+		  select: function(event, ui) {
+		    $(this).autocomplete('search');
+		  }
         }
       );
       
