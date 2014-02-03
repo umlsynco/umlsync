@@ -22,6 +22,12 @@
     // status of modal dialogs
     this.status = new Array();
     this.callback = new Array();
+	var self = this;
+	$(document).bind("us-dialog-newdiagram", function(event, data) {
+	  if (data) {
+		self['Activate']("new-diagram-dialog");
+	  }
+	});
   };
 
 

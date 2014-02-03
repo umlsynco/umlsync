@@ -115,7 +115,7 @@
             </ul>');
             // Initialize handlers
             $("#us-github-newdoc").click(function() {
-                dm.dm.dialogs['Activate']("new-diagram-dialog");
+				$(document).trigger("us-dialog-newdiagram", self.githubView);
             });
 
             $("#us-github-commit").click(function() {
