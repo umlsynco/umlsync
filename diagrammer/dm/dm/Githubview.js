@@ -115,7 +115,7 @@
             </ul>');
             // Initialize handlers
             $("#us-github-newdoc").click(function() {
-				$(document).trigger("us-dialog-newdiagram", self.githubView);
+				$(document).trigger("us-dialog-newdiagram", {view:self.githubView, path:"/"});
             });
 
             $("#us-github-commit").click(function() {

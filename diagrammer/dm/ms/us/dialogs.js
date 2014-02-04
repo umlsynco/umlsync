@@ -24,9 +24,7 @@
     this.callback = new Array();
 	var self = this;
 	$(document).bind("us-dialog-newdiagram", function(event, data) {
-	  if (data) {
-		self['Activate']("new-diagram-dialog");
-	  }
+      self['Activate']("new-diagram-dialog", null, data);
 	});
   };
 
@@ -45,27 +43,25 @@
   //   name - the HTML id of dialog widget
   //   callback - call on activate comple
   // 
-  'Activate': function(name, callback) {
+  'Activate': function(name, callback, data) {
     if (!name)
       return;
     this.status[name] = true; // active dialog. It is possible to activate dialog before it's creation. in that case it will be shown on creation.
     this.callback[name] = callback;
 
 	if (name == "new-diagram-dialog") {
-	  if ((!dm.dm.fw.getActiveView()) || dm.dm.fw.getActiveRepository() == "none") {
+	  if (data.view == null) {
 	    $( "#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
 		$("#VP_inputselector").attr('disabled', true);
       }
 	  else {
 	    $( "#us-new-diagram-dialog-input").attr('disabled', false).attr('checked', true);
-		$("#VP_inputselector").attr('disabled', false);
+		$("#VP_inputselector").attr('disabled', false).val(data.path);
+		$("#VP_inputselector").autocomplete("option", "view", data.view);
 	  }
 	}
 
-    if ($( "#" + name ).dialog( "isOpen" )) {
-      $( "#" + name ).dialog( "close" );
-    }
-    else {
+    if (!$( "#" + name ).dialog( "isOpen" )) {
       $( "#" + name ).dialog( "open" );
     }
   },
@@ -123,7 +119,8 @@
                 currentStatus = newStatus;
 				delete currentList;
 				currentList = {};
-                dm.dm.fw.getSubPaths(newStatus, function(data) {
+				var IView = this.options.view;
+                IView && IView.getSubPaths(newStatus, function(data) {
                   currentList = data;
                   response(getMatch(match)); // Update search result
                 });
