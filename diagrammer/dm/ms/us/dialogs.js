@@ -134,6 +134,8 @@
 				delete this.options.currentList;
 				this.options.currentList = {};
 
+				$(this).addClass('ui-autocomplete-loading');
+
 				var IView = this.options.view;
                 if (IView) {
 				  this.options.waitPathLoad = true;
@@ -143,6 +145,7 @@
 				      // Reset wait status and list
 				      selfA.options.waitPathLoad = false;
 				      selfA.options.currentList = data;
+					  $(selfA).removeClass('ui-autocomplete-loading');
                       response(getMatch(match)); // Update search result
 	  			    }
    				    else if (status == "loaded") {
@@ -151,6 +154,7 @@
 					else {
 					  // Reset wait status and list
 				      selfA.options.waitPathLoad = false;
+					  $(selfA).removeClass('ui-autocomplete-loading');
 				      $.log("Error:" + data);
   				    }
 				  });
