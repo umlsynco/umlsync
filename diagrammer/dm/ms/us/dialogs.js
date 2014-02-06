@@ -51,7 +51,7 @@
 
 	if (name == "new-diagram-dialog") {
 	  if (data.view == null) {
-	    $( "#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
+	    $("#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
 		$("#VP_inputselector").attr('disabled', true);
       }
 	  else {
@@ -97,34 +97,67 @@
       $("#VP_inputselector")
       .autocomplete(
         {
+		  currentStatus: "",
+		  currentList: null,
+		  waitPathLoad: false,
           source:function(request, response) {
             if (response) {
-			  $.log("REQ:"  + request + "  RESPONSE:" + response);
+			  // Read value
               var val = $("#new-diagram-dialog input#VP_inputselector").val();
+			  // Get path by folders
               var newStatus = val.substr(0, val.lastIndexOf('/'));
+			  // Get user input
               var match = val.split("/").pop();
+			  // Self reference
+			  var selfA = this;
 
+			  // Mrthod to resuce show values
               function getMatch(descr) {
                 var retList = new Array();
-                for (var t in currentList) {
-                    if (currentList[t].indexOf(descr) !== -1) {
-                        retList.push(currentStatus + "/" + currentList[t] + "/");
+                for (var t in selfA.options.currentList) {
+                    if (selfA.options.currentList[t].indexOf(descr) !== -1) {
+                        retList.push(selfA.options.currentStatus + "/" + selfA.options.currentList[t] + "/");
                     }
                 }
                 return retList;
               }
 
               // Prevent multiple request of the same paths
-              if (currentStatus != newStatus || Object.keys(currentList).length == 0) {
-                currentStatus = newStatus;
-				delete currentList;
-				currentList = {};
+			  // Or request if paths was not loaded yet
+              if (!this.options.waitPathLoad
+			     && (this.options.currentStatus != newStatus
+				     || this.options.currentList == null
+					 || Object.keys(this.options.currentList).length == 0)) {
+                
+				this.options.currentStatus = newStatus;
+				// Refresh result list:
+				delete this.options.currentList;
+				this.options.currentList = {};
+
 				var IView = this.options.view;
-                IView && IView.getSubPaths(newStatus, function(data) {
-                  currentList = data;
-                  response(getMatch(match)); // Update search result
-                });
-              } else {
+                if (IView) {
+				  this.options.waitPathLoad = true;
+				  IView.getSubPaths(newStatus, function(status, data) {
+					// Handle results
+				    if (status == "ok") {
+				      // Reset wait status and list
+				      selfA.options.waitPathLoad = false;
+				      selfA.options.currentList = data;
+                      response(getMatch(match)); // Update search result
+	  			    }
+   				    else if (status == "loaded") {
+					  $.log("print status:" + data);
+					}
+					else {
+					  // Reset wait status and list
+				      selfA.options.waitPathLoad = false;
+				      $.log("Error:" + data);
+  				    }
+				  });
+				}
+              }
+			  else {
+			    // return nothing is path was not load yet
                 response(getMatch(match));
               }
             }

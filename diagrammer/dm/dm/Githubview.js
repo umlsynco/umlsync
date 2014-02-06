@@ -871,13 +871,19 @@
                     },
 
                     //
-                    // return the list of subfolders for a given path
+                    // Load the provided path and provide the result to the callback function
+					// 
                     // ----
                     //
                     getSubPaths: function(path, sp_callback) {
+					    // Reset actve node
                         self.activeStorageNode = null;
 
-                        var $tree = $(self.treeParentSelector).dynatree("getTree");
+                        // get Dynatree object
+						var $tree = $(self.treeParentSelector).dynatree("getTree");
+
+						// Check if it is root.
+						// There is no good handling of root path in dynatree
                         if (path == "") {
                             var tmp = $tree.tnRoot.getChildren();
                             var res = new Array();
@@ -886,12 +892,15 @@
                                     res.push(tmp[r].data.title);
                             }
                             if (sp_callback) {
-                                sp_callback(res);
+                                sp_callback("ok", res);
                             }
                             return;
                         }
 
-                        $tree.loadKeyPath(path, function(node, result) {
+						// Load path by title of folders.
+						// It could be asynchronius call
+						// in case of request of nodes from GitHub
+                        $tree.loadKeyPath(path, function(node, result, msg) {
                             if (result == "ok") {
                                 self.activeStorageNode = node;
                                 var tmp = node.getChildren();
@@ -901,9 +910,16 @@
                                         res.push(tmp[r].data.title);
                                 }
                                 if (sp_callback) {
-                                    sp_callback(res);
+                                    sp_callback(result, res);
                                 }
                             }
+							else if (result == "loaded") {
+							  sp_callback(result, node.data.title);
+							}
+							else { // Error is left
+							  $.log(result);
+							  sp_callback(result, msg);
+							}
                         },
                         "title");
                     },

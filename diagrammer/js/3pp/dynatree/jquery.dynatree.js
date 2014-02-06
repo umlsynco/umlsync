@@ -1550,6 +1550,7 @@ DynaTreeNode.prototype = {
 		}
 		// Could not find key
 		tree.logWarning("Node not found: " + seg);
+		callback.call(tree, null, "error", "Node not found: " + seg);
 		return;
 	},
 
