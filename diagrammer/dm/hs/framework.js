@@ -233,6 +233,8 @@ Version:
             this._helperUpdateFrameWork(true);
 
             self.wdddd = true;
+			
+			self.initializeHandlers();
         }
 
         framework.prototype = {
@@ -252,8 +254,27 @@ Version:
                 viewmanagers:{},
                 // an active view manager
                 activeViewManagerId: null,
-                // an array with views
+                //
+				// List of registered views
+				//
                 views:{},
+				//
+				// List of format handlers
+				//
+				formatHandlers: {},
+				//
+				// Initiazlize all registered handlres
+				//
+				initializeHandlers: function() {
+				   var obj = new dm.hs.umlsync();
+				   this.formatHandlers[obj.getUid()] = obj;
+
+				   obj = new dm.hs.mdeditor();
+				   this.formatHandlers[obj.getUid()] = obj;
+
+				   obj = new dm.hs.mdviewer();
+				   this.formatHandlers[obj.getUid()] = obj;
+				},
                 //
                 // Register IViewManager
                 //
@@ -1021,6 +1042,21 @@ Version:
                 getContentType: function(title) {
                     var tt = title.split(".");
                     var ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+
+				    for (var t in this.formatHandlers) {
+					  // Check if view functionality supported
+					  if (this.formatHandlers[t].options.view) {
+					    var hr = this.formatHandlers[t].getExtensionList();
+					    for (var r in hr) {
+					      if (hr[r] == ext) {
+						    return this.formatHandlers[t].getUid();
+						  }
+					    }
+					  }
+					}
+					return null;
+
+
                     if (ext == "JSON" || ext == "UMLSYNC") {
                         return "dm";
                     }
@@ -1103,11 +1139,10 @@ Version:
                                     && (d.repoId == params.repoId)   // userid/repo
                                     && (d.branch == params.branch) // tree/master
                                     && (d.absPath == params.absPath) // path from root
-                            )
-                            { // if
+                            ) {
                                 $("#tabs").tabs('select', r);
                                 return;
-                            } // end if
+                            }
                         }
                     }
 
@@ -1147,8 +1182,18 @@ Version:
                                     $(tabname + " #puh").remove();
 
                                     var ct = params.contentType;
+									if (params.contentType && self.formatHandlers[params.contentType]) {
+									  self.formatHandlers[params.contentType].open(tabname, params, data);
+									  // Update the framework sizes
+                                      self._helperUpdateFrameWork(true);
+									  return;
+									}
+									else {
+									 alert("Cant find the corresponding handler for the " + params.contentType);
+									}
 
                                     if (params.contentType == "dm") {
+									    
                                         self.loadDiagram(tabname, params, data);
                                     }
                                     else if (params.contentType == "md") {
