@@ -562,4 +562,6 @@ div.color-picker {
   font-weight: bold;
 }
 
-.ui-autocomplete-loading { background:url('http://umlsync.org/static/images/Puh.gif') no-repeat right center }
+.ui-autocomplete-loading {
+  background:url('http://umlsync.org/static/images/Puh.gif') no-repeat right center;
+}

@@ -50,6 +50,8 @@
     this.callback[name] = callback;
 
 	if (name == "new-diagram-dialog") {
+	  $("#VP_error").text("Select the name of the new file:");
+	  
 	  if (data.view == null) {
 	    $("#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
 		$("#VP_inputselector").attr('disabled', true);
@@ -77,7 +79,9 @@
 
     var innerHtml = '<form id="us-dialog-newdiagram">\
       <fieldset><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div>\
-      <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p><br><p><span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
+      <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p>\
+	  <br><p><label id="VP_error" style="margin-top:0px;float:left;font-color:red;">Select the name of the new file:</label></p>\
+	  <br><p><span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
       </span>\
       </p></fieldset></form>';
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
@@ -145,17 +149,18 @@
 				      // Reset wait status and list
 				      selfA.options.waitPathLoad = false;
 				      selfA.options.currentList = data;
-					  $(selfA).removeClass('ui-autocomplete-loading');
+					  $("#VP_inputselector").removeClass("ui-autocomplete-loading");
+					  $("#VP_error").text("Select the name of the new file:");
                       response(getMatch(match)); // Update search result
 	  			    }
    				    else if (status == "loaded") {
-					  $.log("print status:" + data);
+					  $("#VP_error").text("Loading: " + data);
 					}
 					else {
 					  // Reset wait status and list
 				      selfA.options.waitPathLoad = false;
-					  $(selfA).removeClass('ui-autocomplete-loading');
-				      $.log("Error:" + data);
+					  $("#VP_inputselector").removeClass("ui-autocomplete-loading");
+					  $("#VP_error").text("Error: " + data);
   				    }
 				  });
 				}
