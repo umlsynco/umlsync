@@ -1096,26 +1096,27 @@ dm['at'] = dm.at; //automated testing
     dm['dm']['loader']['Element'](type, options, this, function(obj) {
       if (obj != undefined)
         self.elements[obj.euid] = obj;
-//@ifdef EDITOR
+
       self.opman.reportShort("add", obj.euid, true);
-//@endif
+
       if (callback)
         callback(obj);
     });
-//@ifdef EDITOR
+
     // If it is editable diagram
     if (this.options['editable']) {
-      // Load the context menu for element
-      if ((this.menuCtx) && (options['ctx_menu'])) {
-        // mini
-        $.log("LOAD :" + options['ctx_menu']);
-        this.menuCtx['load'](options['ctx_menu']);
+
+	// Load the context menu for element
+      if (this.menuCtx) {
+        this.menuCtx['load'](options.type, this);
       }
+
       // Load the icons menu for element
-      if ((this.menuIcon != undefined) && (options['menu'] != undefined))
-        this.menuIcon['load'](options['menu']);
+      if (this.menuIcon != undefined) {
+        this.menuIcon['load'](options.type, this);
+	  }
     }
-//@endif
+
     return options.euid;
   },
 
@@ -1675,7 +1676,7 @@ dm['at'] = dm.at; //automated testing
    */
   
   _mouseClick: function(refElement) {
-    var mtype = (refElement == undefined) ? undefined : refElement.options['menu'];
+    var mtype = (refElement == undefined) ? undefined : refElement.options['type'];
     var ctrlDown = dm['dm']['fw']['CtrlDown'];
     this.clickedElement = refElement;
 
