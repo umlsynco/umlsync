@@ -1,7 +1,7 @@
 /*
-Class: editor and viewer functionality for diagrams
+Class: viewer functionality for the markdown
 
-View and edit diagrams
+View markdown
 
 Author:
   Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
@@ -14,45 +14,91 @@ URL:
  */
 
 (function($, dm, undefined) {
-	dm.hs.mdeditor = function() {
+	dm.hs.markdown = function() {
+        var converter = new Showdown.converter({ extensions: ['umlsync'] });
 
 		// singleton
 		function getInstance() {
 			dm.dm = dm.dm || {};
-			if (!dm.dm['mdeditor']) {
+			if (!dm.dm['markdown']) {
 				// create a instance
-				dm.dm['mdeditor'] = new mdeditor();
+				dm.dm['markdown'] = new markdown();
 			}
 
 			// return the instance of the singletonClass
-			return dm.dm['mdeditor'];
+			return dm.dm['markdown'];
 		}
 
-		var mdeditor = function() {
+		var markdown = function() {
 		}
 
-		mdeditor.prototype = {
-				options: {
+		markdown.prototype = {
+		options: {
 			mime_types:"application/vnd.umlsync.md",
 			extensions:"MD",
-			uid:"mdeditor",
+			uid:"markdown",
 			edit:true,
-			view:false
+			view:true
 		},
+		//
+		// The cached content values for a corresponding tabs
+		//
+		contentCache: {},
+		//
+		// Unique id for this editor/viewer
+		//
 		getUid: function() {
-			return this.options.uid;
+		  return this.options.uid;
 		},
+		//
+		// List of supported extensions
+		//
 		getExtensionList: function() {
 			return this.options.extensions.split(";");
 		},
+		//
+		// List of supported mime types
+		//
 		getMimeTypeList: function() {
 			return this.options.mime_types.split(";");
 		},
-		open: function(parent, params, contentData) {
+		//
+		// Open method, works in view mode by default (if view supported)
+		// parentSelector - selector of parent frame
+		// contentInfo    - information about content
+		// contentData    - raw or JSON data
+		//
+		open: function(parentSelector, contentInfo, contentData) {
+		    this.contentCache[parentSelector] = {info: contentInfo, data:contentData};
+			this._viewMarkdown(parentSelector, contentInfo, contentData);
+		},
+		//
+		// Destroy the content edit/view area,
+		// before the corresponding tab closing
+		//
+		close: function(parentSelector) {
+		  delete this.contentCache[parentSelector];
+		  $(parentSelector + " div#readme").remove();
+		},
+		//
+		// Helper method to open  markdown in view mode
+		//
+		_viewMarkdown: function(parentSelector, contentInfo, contentData) {
+			var innerHtml = '<div class="us-diagram announce instapaper_body md" data-path="/" id="readme"><span class="name">\
+					<span class="mini-icon mini-icon-readme"></span> '+contentInfo.absPath+'</span>\
+					<article class="markdown-body entry-content" itemprop="mainContentOfPage">\
+					'+converter.makeHtml(contentData)+'\
+					</article></div>';
+			$(parentSelector).append(innerHtml); // Markdown loaded
+		},
+		//
+		// Helper method to open  markdown in edit mode
+		//
+		_editMarkdown: function(parentSelector, contentInfo, contentData) {
 			// Hide/Show editor menu
-			if ($(parent + " #markdown").length > 0) {
-				$(parent + " span.us-toolbox-header").show();
-				$(parent + " #markdown").show();
+			if ($(parentSelector + " #markdown").length > 0) {
+				$(parentSelector + " span.us-toolbox-header").show();
+				$(parentSelector + " #markdown").show();
 				return;
 			}
 
@@ -90,15 +136,15 @@ URL:
 					<li class="us-toolbox-separator">&nbsp</li>\
 					</ul></span><textarea rows="20" cols="80" id="markdown" class="us-markdown-editor"></textarea>';
 
-					$(rrrr).appendTo(parent);
+					$(rrrr).appendTo(parentSelector);
 
 					//self._helperUpdateFrameWork(true); // Make text area to fit size of content
 
-					$(parent + " span.us-toolbox-header ul li.us-toolbox-button a")
-					.click(params, function(e) {
-						var params = e.data;
-						var sel = $(parent + " #markdown").getSelection();
-						//$(parent + " #markdown").getSelection();
+					$(parentSelector + " span.us-toolbox-header ul li.us-toolbox-button a")
+					.click(contentInfo, function(e) {
+						var contentInfo = e.data;
+						var sel = $(parentSelector + " #markdown").getSelection();
+						//$(parentSelector + " #markdown").getSelection();
 						//alert("CLICKED !!! " + sel.text);
 						var prefix = $(this).attr("prefix") || "",
 								postfix = $(this).attr("postfix") || "";
@@ -106,14 +152,14 @@ URL:
 						if (prefix == "diagram") {
 							prefix = "";
 							if (self.cachedLink && self.cachedLink.title.split(".").pop() == "umlsync") {
-								var params2 = self.cachedLink;
+								var contentInfo2 = self.cachedLink;
 								var path;
 								// Use relative paths inside repository
-								if (params2.repoId == params.repoId
-										&& params2.viewid == params.viewid
-										&& params2.branch == params.branch) {
-									var p1 = params.absPath.split("/"),
-											p2 = params2.absPath.split("/"),
+								if (contentInfo2.repoId == contentInfo.repoId
+										&& contentInfo2.viewid == contentInfo.viewid
+										&& contentInfo2.branch == contentInfo.branch) {
+									var p1 = contentInfo.absPath.split("/"),
+											p2 = contentInfo2.absPath.split("/"),
 											p3 = "",
 											idx = 0,
 											idx2 = 0;
@@ -136,7 +182,7 @@ URL:
 								}
 								// and absolute path for external references
 								else {
-									path = "/" + params2.repoId + "/" + params2.branch + "/" + params2.absPath;
+									path = "/" + contentInfo2.repoId + "/" + contentInfo2.branch + "/" + contentInfo2.absPath;
 								}
 								prefix = '![Diagram: ] (http://umlsync.org/github' + path + ' "';
 								postfix = '")';
@@ -147,16 +193,16 @@ URL:
 							}
 						}
 
-						$(parent + " #markdown").wrapSelection(prefix, postfix);
+						$(parentSelector + " #markdown").wrapSelection(prefix, postfix);
 
 						e.preventDefault();
 						e.stopPropagation();
 					});
 
                     // Insert test into the editable area
-					$(parent + " #markdown")
+					$(parentSelector + " #markdown")
 					.text(contentData)
-					.bind("keyup paste", parent, function(e) {
+					.bind("keyup paste", parentSelector, function(e) {
 					// TODO: HANDLE modification state
 					
 						//var parent = e.data;
@@ -173,20 +219,35 @@ URL:
 
 					// Update the framework sizes
 					self._helperUpdateFrameWork(true);
+		},
+		//
+		// Switch between edit and view mode
+		// mode - boolean flag:  true - edit; false - view;
+		//
+		switchMode: function(parentSelector, mode) {
+  	      if (this.contentCache[parentSelector]) {
+		    if (mode) {
+			  // Remove the view part, because it could change anyway
+			  $(parentSelector + " div#readme").remove();
+			  // Open/Show edit part. There is no need to destroy edit part because it could be reusable
+			  this._editMarkdown(parentSelector, this.contentCache[parentSelector]["info"], this.contentCache[parentSelector]["data"]);
+			}
+			else {
+			  // Cache could be changed in editor and could not in view mode
+			  this.contentCache[parentSelector]["data"] = $(parentSelector + " #markdown").val();
+			  // Hide the edit part if available
+			  $(parentSelector + " #markdown").hide();
+              $(parentSelector + " span.us-toolbox-header").hide();
+			  // Construct a new view
+			  this._viewMarkdown(parentSelector, this.contentCache[parentSelector]["info"], this.contentCache[parentSelector]["data"]);
+			}
+		  }
 		}
-		},
-		hasModification: function(parent) {
-			return true;
-		},
-		getDescription: function(parent) {
-			return $(parent + " #markdown").val();
-		},
-		close: function(parent) {
-		}
+		};
+
+		// return a singletone object in the dm.dm.markdown
+		return getInstance();
+
 	};
-
-	return getInstance();
-
-};
 
 })(jQuery, dm);

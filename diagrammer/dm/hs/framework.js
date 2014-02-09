@@ -269,10 +269,7 @@ Version:
 				   var obj = new dm.hs.umlsync();
 				   this.formatHandlers[obj.getUid()] = obj;
 
-				   obj = new dm.hs.mdeditor();
-				   this.formatHandlers[obj.getUid()] = obj;
-
-				   obj = new dm.hs.mdviewer();
+				   obj = new dm.hs.markdown();
 				   this.formatHandlers[obj.getUid()] = obj;
 				},
                 //
@@ -777,7 +774,9 @@ Version:
                     var self = this,
                             absPath = "http://umlsync.org/github/" + params.repoId + "/" + params.branch + "/" + params.absPath;
 
-                    // FULL SCREEN CONTENT
+					// 
+                    // Not embedded content use-case
+					//
                     if (params.selector == undefined) {
                         var edit = (params.editable == true) || (params.editable == "true"),
                           editBullet = '<a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>';
@@ -806,8 +805,13 @@ Version:
                             $(selector + " #us-getlink").parent().hide();
                         }
 
+						//
+						// Edit/View switcher
+						//
                         $(selector + " #us-diagram-edit").click(function() {
-                            // switch from editable to static and back
+						    //
+                            // Handle the UI button elements
+							//
                             var text = $(this).text(),
                                     editFlag = false;
                             if (text == "Edit") {
@@ -817,8 +821,14 @@ Version:
                             else {
                                 $(this).text("Edit");
                             }
+							
+							//
+							// Handle the content modes
+							//
+                            self.formatHandlers[params.contentType].switchMode(selector, editFlag);
+                            return;
 
-                            // If content is diagram
+                            /* If content is diagram
                             if (params.contentType == "dm") { 
                                 var did = self.diagrams[self.selectedContentId];
                                 if (did != undefined) {
@@ -841,7 +851,7 @@ Version:
                             // if content is markdown code
                             else if (params.contentType == "md") { 
                                 self.editMarkdown(selector, params);
-                            }
+                            }*/
                         });
 
                     }

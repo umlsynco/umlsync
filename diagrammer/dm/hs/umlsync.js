@@ -39,15 +39,34 @@ URL:
 			edit:true,
 			view:true
 		},
+		//
+		// The cached content values for a corresponding tabs
+		//
+		contentCache: {},
+		//
+		// Unique id of this editor/viewer
+		//
 		getUid: function() {
 		  return this.options.uid;
 		},
+		//
+		// List of supported extensions
+		//
 		getExtensionList: function() {
 			return this.options.extensions.split(";");
 		},
+		//
+		// List of supported mime types
+		//
 		getMimeTypeList: function() {
 			return this.options.mime_types.split(";");
 		},
+		//
+		// Open method, works in view mode by default (if view supported)
+		// parentSelector - selector of parent frame
+		// contentInfo    - information about content
+		// contentData    - raw or JSON data
+		//
 		open: function(parent, contentInfo, contentData) {
 			var jsonData = (typeof contentData === "string") ? $.parseJSON(contentData) : contentData,
 					viewid = contentInfo.viewid,
@@ -58,6 +77,7 @@ URL:
 			// enable diagram menu
 			if (contentInfo.selector == undefined) {
 				$(parent).attr("edm", contentInfo.editable)
+				this.contentCache[parent] = {data:contentData};
 			}
 			else {
 				self.embeddedContents[parent] = contentInfo;
@@ -65,6 +85,8 @@ URL:
 
 			jsonData['fullname'] = contentInfo.absPath;
 			jsonData['editable'] = true;
+
+			
 
 			dm.dm.loader.Diagram(
 					jsonData.type,
@@ -84,9 +106,13 @@ URL:
 						});
 
 						if (obj.options.multicanvas) {
-							self['ActivateDiagramMenu'](obj.options['type']);
+							//self['ActivateDiagramMenu'](obj.options['type']);
 							obj.draw();
 						}
+
+						// keep the object reference in cache
+						self.contentCache[parent]["diagram"] = obj;
+
 						obj.options['viewid'] = viewid;
 						dm.dm.loader.OnLoadComplete(
 								function() {
@@ -95,12 +121,40 @@ URL:
 						);
 					});
 		},
-		hasModification: function(parent) {
-		  return true;
+		//
+		// Switch between edit and view mode
+		// mode - boolean flag:  true - edit; false - view;
+		//
+		switchMode: function(parentSelector, mode) {
+  	      if (this.contentCache[parentSelector]) {
+		    var did = this.contentCache[parentSelector]["diagram"];
+			did._setWidgetsOption("editable", mode);
+
+			// Handle the diagram menu status
+			var $selrt = $(parentSelector).attr("edm", mode);
+			if (mode) {
+				$(".diagram-menu").show();
+				// Show the refernces close-icons
+				$selrt.removeClass("us-view-mode");
+				$(parentSelector + " div#us-references .ui-icon-close").show();
+				//self['ActivateDiagramMenu'](did.options['type']);
+			} else {
+				$(".diagram-menu").hide();
+				// Hide the refernces close-icons
+				$selrt.addClass("us-view-mode");
+			}
+		  }
 		},
+		//
+		// Get the cached value of current content
+		//
 		getDescription: function(parent) {
 		  return null;
 		},
+		//
+		// Destroy the content edit/view area,
+		// before the corresponding tab closing
+		//
 		close: function(parent) {
 		  $(parent).destroy();
 		}
