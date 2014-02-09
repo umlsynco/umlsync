@@ -242,6 +242,15 @@ URL:
 			  this._viewMarkdown(parentSelector, this.contentCache[parentSelector]["info"], this.contentCache[parentSelector]["data"]);
 			}
 		  }
+		},
+		//
+		// Notify on tab in focus, when we need to re-draw picture
+		//
+		// parentSelector - CSS selector of parent id
+		// isInFocus      - in focus(true) or focus left(false)
+		//
+		onFocus: function(parentSelector, isInFocus) {
+		  // Empty
 		}
 		};
 

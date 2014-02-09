@@ -77,7 +77,7 @@ URL:
 			// enable diagram menu
 			if (contentInfo.selector == undefined) {
 				$(parent).attr("edm", contentInfo.editable)
-				this.contentCache[parent] = {data:contentData};
+				this.contentCache[parent] = {data:contentData, mode:false};
 			}
 			else {
 				self.embeddedContents[parent] = contentInfo;
@@ -94,8 +94,8 @@ URL:
 					jsonData,
 					parent,
 					function(obj) {
-					    // TODO: Keep diagram info in a framework ?
-						//self.diagrams[parent] = obj; 
+						// keep the object reference in cache
+						self.contentCache[parent]["diagram"] = obj;
 
 						obj.onDestroy(function() {
 						    // TODO: release content in the IView
@@ -109,9 +109,6 @@ URL:
 							//self['ActivateDiagramMenu'](obj.options['type']);
 							obj.draw();
 						}
-
-						// keep the object reference in cache
-						self.contentCache[parent]["diagram"] = obj;
 
 						obj.options['viewid'] = viewid;
 						dm.dm.loader.OnLoadComplete(
@@ -130,6 +127,11 @@ URL:
 		    var did = this.contentCache[parentSelector]["diagram"];
 			did._setWidgetsOption("editable", mode);
 
+            if (this.contentCache[parentSelector]["mode"] == mode)
+			  return;
+			
+			this.contentCache[parentSelector]["mode"] = mode;
+
 			// Handle the diagram menu status
 			var $selrt = $(parentSelector).attr("edm", mode);
 			if (mode) {
@@ -137,12 +139,78 @@ URL:
 				// Show the refernces close-icons
 				$selrt.removeClass("us-view-mode");
 				$(parentSelector + " div#us-references .ui-icon-close").show();
-				//self['ActivateDiagramMenu'](did.options['type']);
+
+                // Enable diagram for menu the corresponding item
+				this.ActivateDiagramMenu(did.options['type']);
 			} else {
 				$(".diagram-menu").hide();
 				// Hide the refernces close-icons
 				$selrt.addClass("us-view-mode");
 			}
+		  }
+		},
+		//
+		// Notify on tab in focus, when we need to re-draw picture
+		//
+		// parentSelector - CSS selector of parent id
+		// isInFocus      - in focus(true) or focus left(false)
+		//
+		onFocus: function(parentSelector, isInFocus) {
+          if (this.contentCache[parentSelector]) {
+		    var did = this.contentCache[parentSelector]["diagram"];
+			// Diagram is loading
+			// do nothing
+			if (!did) {
+			  return;
+			}
+			// diagram was loaded
+			if (isInFocus) {
+			  // enable  diagram menu if item is editable
+			  // and switch to the corresponding elements
+			  if (this.contentCache[parentSelector]["mode"]) {
+			    $(".diagram-menu").show();
+			    this.ActivateDiagramMenu(did.options['type']);
+			  }
+
+			  // redraw
+              did.draw();
+			}
+			else {
+			  $(".diagram-menu").hide();
+			}
+		  }
+		},
+		//
+		//  Switch to the corresponding
+		//  menu item
+		//
+		ActivateDiagramMenu:function(type) {
+			var menuIsActive = false;
+			var len = $("#accordion").length;
+			if (len) {
+				var idx = -1;
+				len = 0; // Wrong length earlier, have to re-calculate it again
+				$("#accordion").find("h3").each(function(index) {
+					++len;
+					if ($(this).attr("aux") == type) {
+						idx = index;
+						menuIsActive = true;
+					}
+				});
+
+				if (idx >=0) {
+					$("#accordion").accordion({'active': idx});
+				}
+			}
+			$("#accordion").children("DIV").css("width", "");
+			return menuIsActive;
+		},
+		//
+		// Work around for a while
+		//
+		_getContentObject: function(parentSelector) {
+          if (this.contentCache[parentSelector]) {
+		    return this.contentCache[parentSelector]["diagram"];
 		  }
 		},
 		//

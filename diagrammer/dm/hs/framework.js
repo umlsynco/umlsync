@@ -94,41 +94,37 @@ Version:
                 'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
                 'scrollable': true,
                 'add': function(event, ui) {
-                      if (self.diagrams) {
+                      if (self.contents) {
                           self.selectedContentId = "#" + ui.panel.id;
                       }
                       $tabs.tabs('select', '#' + ui.panel.id);
-                  },
-                  'select': function(event, ui) {
-                      if (self.diagrams) {
+                },
+                'select': function(event, ui) {
+                      if (self.contents) {
                           self.selectedContentId = "#" + ui.panel.id;
-
-                          // Show/hide diagram menu to tabs change
-                          if ($(self.selectedContentId).attr('edm') == "true") {
-                              $(".diagram-menu").show();
-                              var did = self.diagrams[self.selectedContentId];
-                              if (did) {
-                                  //@ifdef EDITOR
-                                  self['ActivateDiagramMenu'](did.options['type']);
-                                  //@endif
-                                  did.draw();
-                              }
-                          } else {
-                              $(".diagram-menu").hide();
-                          }
+                          
+						  var params = self.contents[self.selectedContentId];
+						  if (params && params.contentType) {
+						    self.formatHandlers[params.contentType].onFocus(self.selectedContentId, true);
+							return;
+						  }
                       }
                       self._helperUpdateFrameWork(true);
                   },
                   'show': function(event, ui) {
-                      if (self.diagrams) {
+                      if (self.contents) {
                           self.selectedContentId = "#" + ui.panel.id;
-                          var did = self.diagrams[self.selectedContentId];
-                          if (did) {
-                              did.draw();
-                          }
+                          var params = self.contents[self.selectedContentId];
+
+                          // onFocus handler
+						  if (params && params.contentType) {
+						    self.formatHandlers[params.contentType].onFocus(self.selectedContentId, true);
+							return;
+						  }
                       }
                   }
             });
+
             $("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
 
             // Stupid initialization of single cancas
@@ -509,8 +505,16 @@ Version:
                 //           Menus main, diagram, context
                 //////////////////////////////////////////////////////////////
                 //
-                // Loading the main menu JSON description and put it as argument
-                // to callback function
+                // Create the diagram accordion menu
+				//
+				// Why it is here ? 
+				// It could be a common approach for the menu element creation.
+				// innerHtml indicates that menu could contain any 3pp items.
+				//
+				// The major idea is to split items by vendors and categories and 
+				// select the vendors/category dynamically on tab activation.
+				// For example: type - umlsync/packages - indicates that vendor is "umlsync" and category is "packages"
+				//              Therefore it is up to format handler provider what to show: it could be all "umlsync" menus or only "packages".
                 //
                 CreateDiagramMenu:function(type, innerHtml, callback) {
                     var len = $("#accordion").length;
@@ -1381,8 +1385,11 @@ Version:
                 // therefore we have two arrays: contents & diagrams
                 //
                 getActiveDiagram:function() {
-                    if (this.diagrams && this.selectedContentId) {
-                        return this.diagrams[this.selectedContentId];
+                    if (this.contents && this.selectedContentId) {
+					    var params = this.contents[this.selectedContentId];
+						if (params && params.contentType) {
+                          return  this.formatHandlers[params.contentType]._getContentObject(this.selectedContentId);
+						}
                     }
                     return null;
                 },
