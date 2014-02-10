@@ -245,12 +245,14 @@
           if (isNamed)
             params.absPath = diagram_name;
         if (self.selected != "markdown") {
-          dm.dm.fw['addDiagramContent']("base", self.selected, params);
+		  // Work-around for the sequence diagrams
+		  var baseType = (self.selected == "sequence") ? "sequence": "base";
+          dm.dm.fw['addNewContent'](params, {baseType:baseType,type:self.selected});
         }
         else {
           params.contentType = "markdown";
           params.editable = false;
-          dm.dm.fw['addMarkdownContent'](params);
+          dm.dm.fw['addNewContent'](params, "Goodby Word!");
         }
         $(this).dialog("close");
       },

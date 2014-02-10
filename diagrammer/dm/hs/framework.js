@@ -276,6 +276,7 @@ Version:
 				formatHandlers: {},
 				//
 				// Initiazlize all registered handlres
+				// TODO: load the list of format handlers dynamically
 				//
 				initializeHandlers: function() {
 				   var obj = new dm.hs.umlsync();
@@ -283,9 +284,12 @@ Version:
 
 				   obj = new dm.hs.markdown();
 				   this.formatHandlers[obj.getUid()] = obj;
+				   
+				   obj = new dm.hs.codeview();
+				   this.formatHandlers[obj.getUid()] = obj;
 				},
                 //
-                // Register IViewManager
+                // Register IViewManager (Github, Bitbucket, Eclipse)
                 //
                 registerViewManager: function(viewmanager, isDefault) {
                   var floatStyle = "";
@@ -628,6 +632,47 @@ Version:
                 //////////////////////////////////////////////////////////////
                 selectedContentId:null,
                 //
+                // add new content
+                // @param params - the description of content
+				// @data - initial values
+                //
+				addNewContent: function(params, data) {
+                    var tabname = this.options.tabRight + this.counter;
+
+                    $("#" + this.options.tabs)
+                    .append('<div id="'+tabname+'"></div>')
+                    .tabs('add','#'+tabname,params.title);
+                    tabname = "#" + tabname;
+
+                    // Enable diagram menu
+                    //$(tabname).attr("edm", true);
+                    //$(".diagram-menu").show();
+
+                    //tabs("add", tabname, name);
+                    this.counter++;
+
+                    //this.openDiagramMenuOnFirstInit = true;
+
+                    if (params.absPath) {
+                        // Save an empty diagram. It could be new diagram or 
+                        this.views[params.viewid].view.saveContent(params, data, true);
+                    }
+
+                    // Add content to cache
+                    this.contents[tabname] = params;
+
+					// Open content as regular one, but with predefined values
+					this.formatHandlers[params.contentType].open(tabname, params, data);
+					
+					// Switch to editable
+					this.formatHandlers[params.contentType].switchMode(tabname, true);
+
+                    // Simple toolbox for each document
+                    this.appendContentToolbox(tabname, params);
+
+                    this._helperUpdateFrameWork(true);
+				},
+                //
                 // add new markdown content
                 // @param params - the description of content
                 //
@@ -685,22 +730,21 @@ Version:
                     this.counter++;
                     if (type == "sequence")
                         baseType = "sequence";
-                    var self = this;
 
                     this.openDiagramMenuOnFirstInit = true;
 
                     if (params.absPath) {
                         // Save an empty diagram. It could be new diagram or 
-                        self.views[params.viewid].view.saveContent(params, "{baseType:'"+baseType+"',type:'"+type+"'}", true);
+                        this.views[params.viewid].view.saveContent(params, "{baseType:'"+baseType+"',type:'"+type+"'}", true);
                     }
 
                     // Add content to cache
-                    self.contents[tabname] = params;
+                    this.contents[tabname] = params;
 
-                    self.loadDiagram(tabname, params, {type:type, base_type:baseType});
+					this.formatHandlers[params.contentType].open(tabname, params, {type:type, base_type:baseType});
 
                     // Simple toolbox for each document
-                    self.appendContentToolbox(tabname, params);
+                    this.appendContentToolbox(tabname, params);
 
                     this._helperUpdateFrameWork(true);
                 },
@@ -816,7 +860,7 @@ Version:
 
                         // It is not possible to edit file if it is defined by sha (and path unknown)
                         // or if user is not owner/commiter of repository
-                        if (!params.isOwner || params.absPath == undefined || params.absPath == null) {
+                        if ((!params.isOwner || params.absPath == undefined || params.absPath == null) && !params.isNewOne) {
                             $(selector + " #us-diagram-edit").parent().hide();
                         }
 
@@ -1085,18 +1129,6 @@ Version:
 					  }
 					}
 					return null;
-
-
-                    if (ext == "JSON" || ext == "UMLSYNC") {
-                        return "dm";
-                    }
-                    else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-                        return "md";
-                    }
-                    else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
-                        return "code";
-                    }
-                    return undefined;
                 },
                 //
                 // Load content by internal reference
@@ -1221,20 +1253,6 @@ Version:
 									else {
 									 alert("Cant find the corresponding handler for the " + params.contentType);
 									}
-
-                                    if (params.contentType == "dm") {
-									    
-                                        self.loadDiagram(tabname, params, data);
-                                    }
-                                    else if (params.contentType == "md") {
-                                        self.loadMarkdown(tabname, params, data);
-                                    }
-                                    else if (params.contentType == "code") {
-                                        self.loadCode(tabname, params, data);
-                                    }
-                                    else {
-                                        alert("Unknown content type: " + params.contentType);
-                                    }
 
                                     // Update the framework sizes
                                     self._helperUpdateFrameWork(true);

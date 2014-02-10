@@ -216,9 +216,6 @@ URL:
 //							self.onContentModifiedStateChanged(parent, false);
 	//					}
 					});
-
-					// Update the framework sizes
-					self._helperUpdateFrameWork(true);
 		},
 		//
 		// Switch between edit and view mode

@@ -481,9 +481,8 @@
                 // Local files access without service ON
                 showRepos(null, 
                         [{full_name: 'umlsynco/diagrams'},
-                         {full_name: 'umlsynco/websync'},
-                         {full_name: 'kalaidin/octotest'},
-                         {full_name: 'umlsynco/GIST'}], "Yours");
+                         {full_name: 'umlsynco/amaterasuml'},
+                         {full_name: 'umlsynco/github'}], "Yours");
             }
 
         };
