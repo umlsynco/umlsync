@@ -171,13 +171,13 @@ URL:
 			    $(".diagram-menu").show();
 			    this.ActivateDiagramMenu(did.options['type']);
 			  }
-
-			  // redraw
-              did.draw();
 			}
 			else {
 			  $(".diagram-menu").hide();
 			}
+
+		    // redraw
+            did.onFocus(isInFocus);
 		  }
 		},
 		//

@@ -1107,9 +1107,9 @@ dm['at'] = dm.at; //automated testing
     if (this.options['editable']) {
 
 	// Load the context menu for element
-      if (this.menuCtx) {
-        this.menuCtx['load'](options.type, this);
-      }
+      //if (this.menuCtx) {
+      //  this.menuCtx['load'](options.type, this);
+      //}
 
       // Load the icons menu for element
       if (this.menuIcon != undefined) {
@@ -1753,6 +1753,26 @@ dm['at'] = dm.at; //automated testing
   saveState: function() {
     // Save the current position
     this.opman.saveNewPosition();
+  },
+  //
+  // on focus handler
+  //
+  onFocus: function(flag) {
+    if (flag) {
+	  this.draw();
+	  if (this.menuIcon) {
+	    if (this.selectedElement) {
+	      this.menuIcon['Enable'](this.selectedElement.euid,
+		                          this.selectedElement.options.type,
+								  this.selectedElement);
+		}
+	  }
+	}
+	else {
+	  if (this.selectedElement) {
+	      this.menuIcon['Disable'](this.selectedElement.euid);
+	  }
+	}
   }
 //@endif
   });
@@ -2078,7 +2098,7 @@ dm['at'] = dm.at; //automated testing
       .click(self,function(event) {
 //@ifdef EDITOR
         var element = event.data;
-        element.parrent._mouseClick(element, element.options['menu']);
+        element.parrent._mouseClick(element);
         event.stopPropagation();
 //@endif
         // Hide previous references

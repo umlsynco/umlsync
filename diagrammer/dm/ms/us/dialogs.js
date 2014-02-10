@@ -236,7 +236,7 @@
             viewid:isNamed ? dm.dm.fw.getActiveView() : null,
             branch:isNamed ? dm.dm.fw.getActiveBranch() : null,
             absPath: isNamed ? diagram_name : null,
-            contentType:"dm",
+            contentType:"umlsync",
             isOwner: true,
             editable:true,
             isNewOne:!isNamed
@@ -248,7 +248,7 @@
           dm.dm.fw['addDiagramContent']("base", self.selected, params);
         }
         else {
-          params.contentType = "md";
+          params.contentType = "markdown";
           params.editable = false;
           dm.dm.fw['addMarkdownContent'](params);
         }

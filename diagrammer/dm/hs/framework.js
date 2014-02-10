@@ -101,9 +101,17 @@ Version:
                 },
                 'select': function(event, ui) {
                       if (self.contents) {
-                          self.selectedContentId = "#" + ui.panel.id;
+					      var params = null;
+					      if (self.selectedContentId) {
+						     params = self.contents[self.selectedContentId];
+                            if (params && params.contentType) {
+						      self.formatHandlers[params.contentType].onFocus(self.selectedContentId, false);
+							}
+						  }
                           
-						  var params = self.contents[self.selectedContentId];
+						  self.selectedContentId = "#" + ui.panel.id;
+                          params = self.contents[self.selectedContentId];
+						  
 						  if (params && params.contentType) {
 						    self.formatHandlers[params.contentType].onFocus(self.selectedContentId, true);
 							return;
@@ -113,6 +121,14 @@ Version:
                   },
                   'show': function(event, ui) {
                       if (self.contents) {
+					      var params = null;
+					      if (self.selectedContentId) {
+						     params = self.contents[self.selectedContentId];
+                            if (params && params.contentType) {
+						      self.formatHandlers[params.contentType].onFocus(self.selectedContentId, false);
+							}
+						  }
+
                           self.selectedContentId = "#" + ui.panel.id;
                           var params = self.contents[self.selectedContentId];
 
