@@ -3,81 +3,74 @@
    "elements": [
 	{"type": "component",
 	 "title": "Component",
-	 "menu":"us-component-menu",
 	 "icon": "./dm/icons/us/es/component/Component.png"
 	},
 	{"type": "interface",
 	 "title": "Interface",
-	 "lable":"true",
-	 "menu":"us-component-menu",
+	 "options": {"lable":"true"},
 	 "icon": "./dm/icons/us/es/component/Interface.png"
 	},
 	{"type": "port",
 	 "title": "Port",
-	 "menu":"us-component-menu",
 	 "icon": "./dm/icons/us/es/component/Port.png"
 	},
 	{"type": "empty",
 	 "title": "Empty",
-	 "menu":"us-component-menu",
 	 "hidden": true
 	},
 	{"type": "instance",
 	 "title": "Instance Specification",
-	 "ctx_menu": "instance",
-	 "menu":"us-component-menu",
 	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
 	},
 	{"type": "note",
 	 "title": "Note",
-	 "menu": "us-note-menu",
 	 "icon": "./dm/icons/us/es/common/Note.png"
 	}
     ],
     "connectors": [
-      {"connector":"dependency",
+      {"type":"dependency",
 	   "title":"Dependency",
 	   "icon": "./dm/icons/us/cs/dependency.png"
 	  },
-      {"connector":"arc",
+      {"type":"arc",
 	   "title":"Interface Observer",
 	   "icon": "./dm/icons/us/cs/interface_required.png"
 	  },
-      {"connector":"realization",
+      {"type":"realization",
 	   "title":"Realization",
 	   "icon": "./dm/icons/us/cs/realization.png"
 	  },
-      {"connector":"association",
+      {"type":"association",
 	   "title":"Association",
 	   "icon": "./dm/icons/us/cs/association.png"
 	  },
-      {"connector":"aggregation",
+      {"type":"aggregation",
 	   "title":"Aggregation",
 	   "icon": "./dm/icons/us/cs/aggregation.png"
 	  },
-      {"connector":"composition",
+      {"type":"composition",
 	   "title":"Composition",
 	   "icon": "./dm/icons/us/cs/composition.png"
 	  },
-      {"connector":"anchor",
+      {"type":"anchor",
 	   "title":"Anchor",
 	   "icon": "./dm/icons/us/cs/AnchorToNote.png"
 	  },
-      {"connector":"anchor",
+      {"type":"anchor",
 	   "title":"Constraint",
 	   "icon": "./dm/icons/us/cs/Constrain.png"
 	  },
-      {"connector":"nested",
+      {"type":"nested",
 	   "title":"Containment",
 	   "icon": "./dm/icons/us/cs/nested.png"
 	  }
     ],
-    "menus": [
-	  {"id":"us-note-menu",
+    "icon_menus": [
+	  {"id":"us-component-note-menu",
 	   "items": [
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
+				{"element":{"type":"note"},
+				 "connector":[
+						{"type":"anchor",
 						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}
@@ -85,43 +78,43 @@
 	  },
 	  {"id":"us-component-menu",
 	   "items": [
-				{"el":"Component",
-				 "cs":[
-						{"connector":"association",
+				{"element":{"type":"component"},
+				 "connector":[
+						{"type":"association",
 						 "icon":"dm/icons/us/cs/association.png"
 						},
-						{"connector":"aggregation",
+						{"type":"aggregation",
 						 "icon":"dm/icons/us/cs/aggregation.png"
 						},
-						{"connector":"composition",
+						{"type":"composition",
 						 "icon":"dm/icons/us/cs/composition.png"
 						}
 					  ]
 				},
-				{"el":"Interface",
-				 "cs":[
-						{"connector":"association",
+				{"element":{"type":"interface"},
+				 "connector":[
+						{"type":"association",
 						 "icon":"dm/icons/us/cs/interface.png"
 						}
 					  ]
 				},
-				{"el":"Empty",
-				 "cs":[
-                        {"connector":"arc",
+				{"element":{"type":"empty"},
+				 "connector":[
+                        {"type":"arc",
 						 "icon":"dm/icons/us/cs/interface_required.png"
 						}
 					  ]
 				},
-				{"el":"Port",
-				 "cs":[
-						{"connector":"association",
+				{"element":{"type":"port"},
+				 "connector":[
+						{"type":"association",
 						 "icon":"dm/icons/us/cs/association.gif"
 						}
 					  ]
 				},
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
+				{"element":{"type":"note"},
+				 "connector":[
+						{"type":"anchor",
 						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}

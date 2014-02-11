@@ -50,8 +50,10 @@
     this.callback[name] = callback;
 
 	if (name == "new-diagram-dialog") {
+	  $("#VP_error").text("Select the name of the new file:");
+	  
 	  if (data.view == null) {
-	    $( "#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
+	    $("#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
 		$("#VP_inputselector").attr('disabled', true);
       }
 	  else {
@@ -77,7 +79,9 @@
 
     var innerHtml = '<form id="us-dialog-newdiagram">\
       <fieldset><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div>\
-      <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p><br><p><span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
+      <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p>\
+	  <br><p><label id="VP_error" style="margin-top:0px;float:left;font-color:red;">Select the name of the new file:</label></p>\
+	  <br><p><span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
       </span>\
       </p></fieldset></form>';
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
@@ -97,34 +101,70 @@
       $("#VP_inputselector")
       .autocomplete(
         {
+		  currentStatus: "",
+		  currentList: null,
+		  waitPathLoad: false,
           source:function(request, response) {
             if (response) {
-			  $.log("REQ:"  + request + "  RESPONSE:" + response);
               var val = $(this).val();
               var newStatus = val.substr(0, val.lastIndexOf('/'));
+			  // Get user input
               var match = val.split("/").pop();
+			  // Self reference
+			  var selfA = this;
 
+			  // Mrthod to resuce show values
               function getMatch(descr) {
                 var retList = new Array();
-                for (var t in currentList) {
-                    if (currentList[t].indexOf(descr) !== -1) {
-                        retList.push(currentStatus + "/" + currentList[t] + "/");
+                for (var t in selfA.options.currentList) {
+                    if (selfA.options.currentList[t].indexOf(descr) !== -1) {
+                        retList.push(selfA.options.currentStatus + "/" + selfA.options.currentList[t] + "/");
                     }
                 }
                 return retList;
               }
 
               // Prevent multiple request of the same paths
-              if (currentStatus != newStatus || Object.keys(currentList).length == 0) {
-                currentStatus = newStatus;
-				delete currentList;
-				currentList = {};
+			  // Or request if paths was not loaded yet
+              if (!this.options.waitPathLoad
+			     && (this.options.currentStatus != newStatus
+				     || this.options.currentList == null
+					 || Object.keys(this.options.currentList).length == 0)) {
+                
+				this.options.currentStatus = newStatus;
+				// Refresh result list:
+				delete this.options.currentList;
+				this.options.currentList = {};
+
+				$(this).addClass('ui-autocomplete-loading');
+
 				var IView = this.options.view;
-                IView && IView.getSubPaths(newStatus, function(data) {
-                  currentList = data;
-                  response(getMatch(match)); // Update search result
-                });
-              } else {
+                if (IView) {
+				  this.options.waitPathLoad = true;
+				  IView.getSubPaths(newStatus, function(status, data) {
+					// Handle results
+				    if (status == "ok") {
+				      // Reset wait status and list
+				      selfA.options.waitPathLoad = false;
+				      selfA.options.currentList = data;
+					  $("#VP_inputselector").removeClass("ui-autocomplete-loading");
+					  $("#VP_error").text("Select the name of the new file:");
+                      response(getMatch(match)); // Update search result
+	  			    }
+   				    else if (status == "loaded") {
+					  $("#VP_error").text("Loading: " + data);
+					}
+					else {
+					  // Reset wait status and list
+				      selfA.options.waitPathLoad = false;
+					  $("#VP_inputselector").removeClass("ui-autocomplete-loading");
+					  $("#VP_error").text("Error: " + data);
+  				    }
+				  });
+				}
+              }
+			  else {
+			    // return nothing is path was not load yet
                 response(getMatch(match));
               }
             }
@@ -194,7 +234,7 @@
             viewid:isNamed ? dm.dm.fw.getActiveView() : null,
             branch:isNamed ? dm.dm.fw.getActiveBranch() : null,
             absPath: isNamed ? diagram_name : null,
-            contentType:"dm",
+            contentType:"umlsync",
             isOwner: true,
             editable:true,
             isNewOne:!isNamed
@@ -203,12 +243,14 @@
           if (isNamed)
             params.absPath = diagram_name;
         if (self.selected != "markdown") {
-          dm.dm.fw['addDiagramContent']("base", self.selected, params);
+		  // Work-around for the sequence diagrams
+		  var baseType = self.selected;
+          dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
         }
         else {
-          params.contentType = "md";
+          params.contentType = "markdown";
           params.editable = false;
-          dm.dm.fw['addMarkdownContent'](params);
+          dm.dm.fw['addNewContent'](params, "Goodby Word!");
         }
         $(this).dialog("close");
       },

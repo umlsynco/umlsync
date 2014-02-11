@@ -8,14 +8,12 @@ Author:
   Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
 
 Copyright:
-  Copyright (c) 2012 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com).
+  Copyright (c) 2013 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com).
   All rights reserved. 
 
 URL:
   http://umlsync.org/about
 
-Version:
-  2.0.0 (2012-07-17)
  */
 
 //@aspect
@@ -73,7 +71,7 @@ Version:
     this['Show'] = function(element, x, y) {
       $(".context-menu").hide();
       //show element context menu
-      var $did = $("#" + menuBuilder.diagramId);
+      var $did = $("#" + element.parrent.euid);
       var pz = $did.offset();
       var scrollTop = $did.scrollTop(),
       scrollLeft = $did.scrollLeft();
@@ -106,217 +104,330 @@ Version:
 //param diagram.id - diagram unique DIV id 
 //diagram - the diagram class
 
-  //@export:dm.ms.ContextMenuBuilder:plain
-  dm.ms.ContextMenuBuilder = function(loader, diagram, dmb) {
-    this.diagram = diagram;
-    this.dmb = dmb;
-    this.diagramId = diagram.euid;
-    this.currentMenu = undefined;
-    this.currentElement = undefined;
-    this.loader = loader;
-    this.menus = [];
+  dm.ms.ContextMenuBuilder = function(loader) {
+	// singleton
+	function getInstance() {
+		dm.dm = dm.dm || {};
+		if (!dm.dm['ContextMenuBuilder']) {
+			// create a instance
+			dm.dm['ContextMenuBuilder'] = new ContextMenuBuilder(loader);
+			// load the connector context mennu on initialization
+		    dm.dm['ContextMenuBuilder'].load('connector');	
+		}
 
-    this.load = function(name) {
-      if (this.menus[name] == undefined)
-        dm.dm.loader.CreateContextMenu(name, this);
-    }
+		// return the instance of the singletonClass
+		return dm.dm['ContextMenuBuilder'];
+	}
 
-    this.append = function(obj, id) {
-      this.menus[id] = obj;
-    }
+	var ContextMenuBuilder = function(loader) {
+	  this.loader = loader;
+	  $(document).bind("us-ms-ctx", function(event, data) {
+	  }, this);
 
-    this.visit = function(element, x, y) {
-      if (this.currentMenu != undefined) {
-        this.currentMenu['Hide']();
-        this.currentMenu = undefined;
-        this.currentElement = undefined;
-      }
+	  $(document).bind("us-ms-ctx-load", function(event, data) {
+	  }, this);
+	};
 
-      if (element.options.ctx_menu == undefined)
-        return;
+	ContextMenuBuilder.prototype = {
+        menus : [],
+		// load the context menu JS
+		load : function(name, diagram) {
+		  this.diagram = diagram;
+		  if (this.menus[name] == undefined)
+			dm.dm.loader.CreateContextMenu(name, this);
+		},
+        // callback on creation
+		append : function(obj, id) {
+		  this.menus[id] = obj;
+		},
+        // click on element + coordinates
+		visit : function(element, x, y) {
+		  if (this.currentMenu != undefined) {
+			this.currentMenu['Hide']();
+			this.currentMenu = undefined;
+			this.currentElement = undefined;
+		  }
 
-      this.currentMenu = this.menus[element.options.ctx_menu];
-      this.currentElement = element;
-      if (this.currentMenu != undefined)
-        this.currentMenu['Show'](element, x, y); // TODO: relocate to element position  
-    }
+		  if (this.menus[element.options.type] == undefined)
+			return;
 
-    this['HideAll'] = function() {
-      if (this.currentMenu != undefined)
-        this.currentMenu['Hide']();
-      this.currentMenu = undefined;
-      this.currentElement = undefined;
-    };
+		  this.currentMenu = this.menus[element.options.type] || this.menus['common'];
+		  this.currentElement = element;
+		  if (this.currentMenu != undefined)
+			this.currentMenu['Show'](element, x, y); // TODO: relocate to element position  
+		},
+        //
+		// Hide all context menus
+		//
+		HideAll : function() {
+		  if (this.currentMenu != undefined)
+			this.currentMenu['Hide']();
+		  this.currentMenu = undefined;
+		  this.currentElement = undefined;
+		}
+		};
 
-    diagram.setMenuBuilder("context", this);
-    // Ugly hacking to have context menu for all connectors
-    this.load('connector');
+		return getInstance();
   }
 
-  //@print
 
   //Common element menu loader
-  //@export:dm.ms.IconMenuBuilder:plain
-  dm.ms.IconMenuBuilder = function(hmenus, diagram, dmb) {
-    this.menus = [];
-    this.diagram = diagram;
-    this.currentMenu = undefined;
-    this.currentElement = undefined;
-    this.dmb = dmb;
+  dm.ms.IconMenuBuilder = function(hmenus) {
+  
+	// singleton
+	function getInstance(hmenus) {
+		dm.dm = dm.dm || {};
+		if (!dm.dm['IconMenuBuilder']) {
+			// create a instance
+			dm.dm['IconMenuBuilder'] = new IconMenuBuilder(hmenus);
+		}
+		else {
+		  dm.dm['IconMenuBuilder'].extendMenus(hmenus);
+		}
 
-    // Prepared the list of connectors for menus 
-    for (var dd in hmenus) {
-      this.menus[hmenus[dd]['id']] = [];
-      for (var tt in hmenus[dd]['items']) {
-        this.menus[hmenus[dd]['id']][hmenus[dd]['items'][tt]['el']] = [];
-        var connectors = hmenus[dd]['items'][tt]['cs'];
-        for (var cc in connectors) {
-          this.menus[hmenus[dd]['id']][hmenus[dd]['items'][tt]['el']][connectors[cc]['connector']] = connectors[cc]['icon'];
-        }
-      }     
-    }
+		// return the instance of the singletonClass
+		return dm.dm['IconMenuBuilder'];
+	}
 
-    this.load = function(menu_id) {
-      // Check that menu type is defined
-      // And that it was not load before
+	var IconMenuBuilder = function(hmenus) {
+	  this.extendMenus(hmenus);
+	};
 
-      if ((this.menus[menu_id] == undefined)
-          || ($("#" + this.diagram.euid + " .elmenu-" + menu_id).is("div")))
-        return;
+	IconMenuBuilder.prototype = {
+       menus : [],
+	   //
+	   // extend the descriptions of icon menus
+	   //
+	   extendMenus : function(hmenus) {
+         // Prepared the list of connectors for menus 
+		for (var dd in hmenus) {
+		  var menu = hmenus[dd];
+		  this.menus[menu['id']] = [];
+		  var items = menu['items'];
+		  for (var tt in items) {
+			this.menus[menu['id']][items[tt]['element']['type']] = [];
+			var connectors = items[tt]['connector'];
+			for (var cc in connectors) {
+			  this.menus[menu['id']][items[tt]['element']['type']][connectors[cc]['type']] = connectors[cc]['icon'];
+			}
+		  }     
+		}
+	  },
+	  //
+	  // Create an instance of menus element
+	  //
+      load : function(type, diagram) {
 
-      // lets create the menu
-      var menu_items = [];
-      for (var c in this.menus[menu_id])       // element descriptor
-        for (var r in this.menus[menu_id][c])  // connector descriptor
-          menu_items.push("<img src='" + dm.dm.loader.url + this.menus[menu_id][c][r] +"' id='" + r +"' title='"+ r + "' aux='" + c + "' style='padding:1px;'></img>");
+          this.diagram = diagram;
 
-      var cells = menu_items.join('');
+		  // Check that menu type is defined
+		  // And that it was not load before
 
-      // Append menu to the diagram
-      $("#" + this.diagram.euid).append("<div style='position:absolute;left:200px;z-index:19999998;' class='elmenu-" + menu_id +"'>" + cells + "</div>");
+		  var menu_id = "us-"+type+"-menu"
+		  if ((this.menus[menu_id] == undefined)
+			  || ($(" .elmenu-" + menu_id).is("div")))
+			return;
 
-      // Hide the element
-      $(' .elmenu-' + menu_id).css({opacity:"0"});
+		  // lets create the menu
+		  var menu_items = [];
+		  for (var c in this.menus[menu_id])       // element descriptor
+			for (var r in this.menus[menu_id][c])  // connector descriptor
+			  menu_items.push("<img src='" + dm.dm.loader.url + this.menus[menu_id][c][r] +"' id='" + r +"' title='"+ r + "' aux='" + c + "' style='padding:1px;'></img>");
 
-      var iconMenuBuilder = this;
+		  var cells = menu_items.join('');
 
-      // Make it possible to click + drag images 
-      // ==========================================================================
-      //               THERE ARE TWO CALL's HERE FOR DRAGGABLE!!!!!
-      //               IT IS NECESSARY TO JOIN THEM - OR DESCRIBE THE DIFFERENCE :)
-      //               ONE FOR USUAL MENU AND ANOTHER ONE FOR SELF-CONNECTABLE ITEMS
-      //               WHICH DOESN'T REQUIRE THE 2-nd ELEMENT
-      var kl;
-      $("#" + this.diagram.euid + " .elmenu-" + menu_id + " img").draggable({
-        'appendTo': "#" + iconMenuBuilder.diagram.euid,
-        'helper': function(event) {
-        // Use the double wrapper because of element's structrure
-        return $("<div id='ConnectionHelper_Border' style='border:solid black;border-width:1px;'>" + 
-        "<div id='ConnectionHelper' style='border:solid yellow;border-width:1px;'> [ x ]</div></div>");
+		  // Append menu to the diagram
+		  $("#tabs").append("<div style='position:absolute;left:200px;z-index:19999998;' class='elmenu-" + menu_id +"'>" + cells + "</div>");
+
+		  // Hide the element
+		  $(' .elmenu-' + menu_id).css({opacity:"0"});
+
+		  var iconMenuBuilder = this;
+
+		  // Make it possible to click + drag images 
+		  // ==========================================================================
+		  //               THERE ARE TWO CALL's HERE FOR DRAGGABLE!!!!!
+		  //               IT IS NECESSARY TO JOIN THEM - OR DESCRIBE THE DIFFERENCE :)
+		  //               ONE FOR USUAL MENU AND ANOTHER ONE FOR SELF-CONNECTABLE ITEMS
+		  //               WHICH DOESN'T REQUIRE THE 2-nd ELEMENT
+		  var kl;
+		  $("#tabs .elmenu-" + menu_id + " img").draggable({
+			'appendTo': "#tabs",
+			'helper': function(event) {
+			   // Use the double wrapper because of element's structrure
+			   return $("<div id='ConnectionHelper_Border' style='border:solid black;border-width:1px;'>" + 
+			            "<div id='ConnectionHelper' style='border:solid yellow;border-width:1px;'> [ x ]</div></div>");
+		    },
+		    'start': function(event) {
+			  if (iconMenuBuilder.diagram) {
+				  var tid = $(this).attr("aux");
+				  
+				  var element = tid, //iconMenuBuilder.dmb.getElementById(tid),
+				  lcon = this.id; //iconMenuBuilder.dmb.getConnectorById(this.id);
+
+				  if (element != undefined)
+					 dm.dm.loader.LoadElement(element);
+	//			if ((lcon != undefined) && (lcon['oneway'])) {
+		//		  $.log("CONNECTOR: " + lcon.connector);
+			//	  iconMenuBuilder.diagram.Connector(lcon.connector,
+				//	  {'fromId': iconMenuBuilder.currentElement,
+					//'toId': iconMenuBuilder.currentElement});
+	//			} else {
+				  iconMenuBuilder.diagram.Connector(this.id, {'fromId': iconMenuBuilder.currentElement, 'toId': "ConnectionHelper"});
+		//		}
+			}
+			else {
+			  return false;
+			}
+		  },
+		  'drag': function(event, ui) {
+			if (iconMenuBuilder.diagram) {
+			  iconMenuBuilder.diagram.draw();
+			}
+		  },
+		  'stop': function(event, ui) {
+  		    if (!iconMenuBuilder.diagram)
+			  return false;
+
+			var tid = $(this).attr("aux"),
+			element = {type: tid}, //$.extend({}, iconMenuBuilder.dmb.getElementById(tid)),
+			lcon = this.id;//iconMenuBuilder.dmb.getConnectorById(this.id);
+
+			if ((element != undefined) && ((lcon == undefined) || (!lcon['oneway']))) {
+			  // Remove the temporary connector
+			  iconMenuBuilder.diagram.removeConnector(iconMenuBuilder.currentElement, "ConnectionHelper", this.id);
+			  element.left = ui.position.left;
+			  element.top = ui.position.top;
+			  var fromElement = iconMenuBuilder.refEl;
+			  var thisid = this.id;
+			  var expected_type = element.type;
+
+			  //
+			  // Local helper method
+			  //
+			  var handleConnector = function(toElement, isElFound) {
+				iconMenuBuilder.diagram.Connector(thisid,
+					{'fromId': fromElement.euid, 'toId': toElement.euid},
+					function(connector) {
+					  if (fromElement.dropHelper)
+						fromElement.dropHelper(ui, connector, {isElFound:true});
+					  if (toElement.dropHelper)
+						toElement.dropHelper(ui, connector, {isElFound:isElFound, expected:expected_type});
+					  if (connector._updateEPoints)
+						connector._updateEPoints(ui);
+					}); // Connector
+			  };
+			  // Create an element or get element which was drop on
+			  var el = iconMenuBuilder.diagram._dropConnector(ui);
+			  if (el != undefined) {
+				handleConnector(el, true);
+			  }
+			  else {
+				iconMenuBuilder.diagram.Element(element.type, element, handleConnector);
+			  }
+			}
+		  }})
+		  .parent()
+		  .mouseenter(function() {
+			$(this).stop().animate({opacity:"1"});
+		  })
+		  .mouseleave(function() {$(this).stop().animate({opacity:"0"});});
+	  },
+	  //
+	  // Enable menu showing for a diagram element.
+	  // There are two use-cases for that:
+	  //
+      Enable : function(id, menu, el) {
+        this.currentMenu = menu;
+        this.currentElement = id;
+		var menu_id = "us-" + menu + "-menu";
+        this.refEl = el;
+		this.diagram = el.parrent;
+		$("#tabs .elmenu-" + menu_id + " img").draggable('option', 'appendTo', "#" + this.diagram.euid);
+		
+		// Allows to prevent menus showing of mouse over icons
+		// on diagram change
+        $(".elmenu-" + menu_id).css({display:"block"});
       },
-      'start': function(event) {
-        var tid = $(this).attr("aux");
-        var element = iconMenuBuilder.dmb.getElementById(tid),
-        lcon = iconMenuBuilder.dmb.getConnectorById(this.id);
+	  //
+	  // Disable menu showing for a diagram element id.
+	  //
+      Disable : function(id) {
+	    var menu_id = "us-" + this.currentMenu + "-menu";
 
-        if ((element != undefined) && (element.element != undefined))
-          dm.dm.loader.LoadElement(element.element);
-        if ((lcon != undefined) && (lcon['oneway'])) {
-          $.log("CONNECTOR: " + lcon.connector);
-          iconMenuBuilder.diagram.Connector(lcon.connector,
-              {'fromId': iconMenuBuilder.currentElement,
-            'toId': iconMenuBuilder.currentElement});
-        } else {
-          iconMenuBuilder.diagram.Connector(this.id, {'fromId': iconMenuBuilder.currentElement, 'toId': "ConnectionHelper"});
-        }
+        // Allows to prevent menus showing of mouse over icons
+		// on diagram change
+		$(".elmenu-" + menu_id).css({display:"none"});
+
+        // Prevent usage of icons over the wrong diagram		
+		$("#tabs .elmenu-" + menu_id + " img").draggable('option', 'appendTo', "#tabs");
+        this.currentMenu = undefined;
       },
-      'drag': function(event, ui) {
-        iconMenuBuilder.diagram.draw();
-      },
-      'stop': function(event, ui) {
+	  //
+	  // Show an icon menu on mouse enter to element
+	  //
+      Show: function(id, x, y) {
+        var menu_id = "us-" + this.currentMenu + "-menu";
 
-        var tid = $(this).attr("aux"),
-        element = $.extend({}, iconMenuBuilder.dmb.getElementById(tid)),
-        lcon = iconMenuBuilder.dmb.getConnectorById(this.id);
+		if (this.currentElement == id) {
+			if (y == undefined) {
+			  this.refEl = x;
+			  this.diagram = x.parrent;
+			  x = undefined;
+		    }
+			var $el = $('#'+ id + "_Border");
+			var pz = $el.position(),
+			$did = $el.parent();
+			var dpz = $did.offset();
+			var scrollTop = $did.scrollTop(),
+			scrollLeft = $did.scrollLeft();
+			x = x || pz.left + 20;
+			y = y || pz.top;
 
-        if ((element != undefined) && ((lcon == undefined) || (!lcon['oneway']))) {
-          // Remove the temporary connector
-          iconMenuBuilder.diagram.removeConnector(iconMenuBuilder.currentElement, "ConnectionHelper", this.id);
-          element.left = ui.position.left;
-          element.top = ui.position.top;
-          var fromElement = iconMenuBuilder.refEl;
-          var thisid = this.id;
-          var expected_type = element.type;
-          var handleConnector = function(toElement, isElFound) {
-            iconMenuBuilder.diagram.Connector(thisid,
-                {'fromId': fromElement.euid, 'toId': toElement.euid},
-                function(connector) {
-                  if (fromElement.dropHelper)
-                    fromElement.dropHelper(ui, connector, {isElFound:true});
-                  if (toElement.dropHelper)
-                    toElement.dropHelper(ui, connector, {isElFound:isElFound, expected:expected_type});
-                  if (connector._updateEPoints)
-                    connector._updateEPoints(ui);
-                }); // Connector
-          };
-          // Create an element or get element which was drop on
-          var el = iconMenuBuilder.diagram._dropConnector(ui);
-          if (el != undefined) {
-            handleConnector(el, true);
-          }
-          else {
-            iconMenuBuilder.diagram.Element(element.type, element, handleConnector);
-          }
-        }
-      }})
-      .parent().mouseenter(function() {
-        $(this).stop().animate({opacity:"1"});
-      })
-      .mouseleave(function() {$(this).stop().animate({opacity:"0"});});
-      this.menus[menu_id].loaded = true;
-    }
-    this['Enable'] = function(id, menu, el) {
-      this.currentMenu = menu;
-      this.currentElement = id;
-      this.refEl = el;
-      $(".elmenu-" + this.currentMenu).css({display:"block"});
-    }
-    this['Disable'] = function(id) {
-      $(".elmenu-" + this.currentMenu).css({display:"none"});     
-      this.currentMenu = undefined;
-    }
-    this['Show'] = function(id, x, y) {
-      if (this.currentElement == id) {
-        if (y == undefined) {
-          this.refEl = x;
-          x = undefined;
-
-        }
-        var $el = $('#'+ id + "_Border");
-        var pz = $el.position(),
-        $did = $el.parent();
-        var dpz = $did.offset();
-        var scrollTop = $did.scrollTop(),
-        scrollLeft = $did.scrollLeft();
-        x = x || pz.left + scrollLeft + 20;
-        y = y || pz.top  + scrollTop  - 20;
-
-        $(".elmenu-" + this.currentMenu).stop().css("left", x).css("top", y).animate({opacity:"1"});
+			$(".elmenu-" + menu_id).stop().css("left", x).css("top", y).animate({opacity:"1"});
+		  }
+	  },
+	  //
+	  // Hide menu on mouse exit from element
+	  //
+      Hide : function(id) {
+        if (this.currentElement == id)
+          $(".elmenu-us-" + this.currentMenu+"-menu").stop().animate({opacity:"0"});
       }
-    }
-    this['Hide'] = function(id) {
-      if (this.currentElement == id)
-        $(".elmenu-" + this.currentMenu).stop().animate({opacity:"0"});
-    };
-    diagram.setMenuBuilder("icon", this);
+	};
+
+    return getInstance(hmenus);
   }
 
-  //@print
-
-  //Common diagram menu loader
+  //
+  //Common diagram menu namespace
+  //
   dm.ms['ds'] = dm.ms.ds;
-  dm.dm.dmc = 0; // Diagram menus counter 
+  // 
+  // Diagram menus counter  - GLOBAL OBJECT
+  //
+  dm.dm.dmc = 0;
+  
+  //
+  // COMMON functionality for the ACCORDION MENU and icon and context menu loading on diagram-type activation
+  // STEPS:
+  // 1. Load the diagram description menu (if not available)
+  // 2. Initiate an element context menu and icon menu for all available elements
+  // 3. Setup menus handlers for the accordion
+  // 
   dm.ms.ds['common'] = function(type, diagram, loader) {
+    //
+    // Do nothing if menus was loaded before
+	//
+    if (dm.ms.ds[type]) {
+      // Initialize the context menu for Element 
+      var iconMenuBuilder = new dm.ms.IconMenuBuilder(null),
+      ctxMenuBuilder = new dm.ms.ContextMenuBuilder(loader);
+
+	  diagram.setMenuBuilder("context", ctxMenuBuilder);
+	  diagram.setMenuBuilder("icon", iconMenuBuilder);
+	  return;
+	}
 
     //elements counter
     this.ec = 0;
@@ -324,133 +435,112 @@ Version:
     this.menus = [];  //elmenu[state] [state] [connector]  = image;
 
     var diagramMenuBuilder = this;
-
+	
+    // Load the JSON description of the 'type' diagram
     dm.dm.loader.LoadDiagramMenuData(type, function(json) {
+	  // Do nothing in case of wrong JSON
+	  if (!json || !json[0]) {
+	    return;
+	  }
+
+	  var accept = json["diagram"] ? json["diagram"]["accept"]: undefined;
+	  // JSON description was loaded, setup the menu builder for the diagram
+	  dm.ms.ds[type] = {
+	    main: diagramMenuBuilder,
+		accept: accept
+	  };
+	
+	  // Unique id's for the accordion menu
       var euid = "element-menu-" + dm.dm.dmc,
       ulid = "element-item-" + dm.dm.dmc;
       var innerHtml = "<div id='"+euid+"' class='toobox-item' style='padding-left:0;'><ul id='"+ulid+"' style='overflow:hidden;'>";
+
+	  // Increase global counter
       dm.dm.dmc++;
 
-      var ddata = json;
-      var elements = ddata[0]['elements'],
-      connectors = ddata[0]['connectors'],
-      hmenus = ddata[0]['menus'];
+      var ddata = json[0];
       var items = [];
 
-      diagramMenuBuilder.elements = [];
-      diagramMenuBuilder.connectors = [];
-
-      // Prepare the list of elements. Clickable left side menu 
-      for (var d in elements) {
-        // the list of elements
-        diagramMenuBuilder.elements[elements[d].title] = elements[d];
-        diagramMenuBuilder.elements[elements[d].title].editable = true;
-        /*
-                var image = (elements[d]['image'][0]["small"]) ? "list-style-image:url(\'" +dm.dm.loader.url +  elements[d]['image'][0]["small"] + "\')" : "list-style-type:none";
-                items.push('<li class="elementSelector" style="cursor:pointer;' + image
-    + ';" id="'  + elements[d].description +'" imgpath="' + elements[d].image_path + '">' +
-    elements[d].description + '</li>');
-  //<li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>
-         */
-      }
-
-      var self = this;
-
-      // Prepare the list of connectors. Clickable left side menu 
-      for (var d in connectors) {
-        var desc = connectors[d].connector;
-        if (connectors[d]['oneway'])
-          desc = connectors[d].title;
-
-        diagramMenuBuilder.connectors[desc] = connectors[d];
-        diagramMenuBuilder.connectors[desc].editable = true;
-        /*
-                var image = (connectors[d]['image'][0]["small"]) ? "list-style-image:url(\'" + dm.dm.loader.url + connectors[d]['image'][0]["small"] + "\')" : "list-style-type:none";
-                items.push('<li class="connectorSelector" style="cursor:pointer;' + image
-    + ';" id="'  + connectors[d].connector +'">' +
-    connectors[d].description + '</li>');
-  //<li style="list-style:none;width:80%;border-top:1px solid black;border-bottom:1px solid #6B6B6B;height:1px;background-color:3px solid #888888;"></li>
-         */
-      }
+      diagramMenuBuilder.elements = ddata['elements'];
+      diagramMenuBuilder.connectors = ddata['connectors'];
 
       //innerHtml += items.join('');
       innerHtml += "</ul></div>";
 
 
-      // Append menu to diagram
-      //$("#" + diagram.euid).append(innerHtml);
-
-      // Identify the parrent class for diagram
-      // TODO:   Prvide class reference as argument instead for diagram.id
-      // var d1 = diagram.id;
-      // var dd = $("#" + d1).parrent().get(0).id;
-      // self.diagram = $("#" + dd).data(d1);
-      // var diagram = self.diagram;
-
       // TODO: disable menu items if loader failed to load element or connector type
       diagram.setMenuBuilder("main", diagramMenuBuilder);
 
-      diagramMenuBuilder.getElementById = function(id) {
-        return diagramMenuBuilder.elements[id];
+      diagramMenuBuilder.getElementByKey = function(id, key) {
+	    for (var v in diagramMenuBuilder.elements) {
+		  if (diagramMenuBuilder.elements[v][key] == id) {
+		    return diagramMenuBuilder.elements[v];
+		  }
+		}
+        return null;
       }
 
-      diagramMenuBuilder.getConnectorById = function(id) {
-        return diagramMenuBuilder.connectors[id];
+      diagramMenuBuilder.getConnectorByKey = function(id, key) {
+	    for (var v in diagramMenuBuilder.connectors) {
+		  if (diagramMenuBuilder.connectors[v][key] == id) {
+		    return diagramMenuBuilder.connectors[v];
+		  }
+		}
+        return null;
       }
 
       // Initialize the context menu for Element 
-      // TODO: if not editable ? 
-      // TODO: put both menu builders to the 
-      var iconMenuBuilder = new dm.ms.IconMenuBuilder(hmenus, diagram, diagramMenuBuilder),
-      ctxMenuBuilder = new dm.ms.ContextMenuBuilder(loader, diagram, diagramMenuBuilder);
+      var iconMenuBuilder = new dm.ms.IconMenuBuilder(ddata['icon_menus']),
+      ctxMenuBuilder = new dm.ms.ContextMenuBuilder(loader);
+
+	  diagram.setMenuBuilder("context", ctxMenuBuilder);
+	  diagram.setMenuBuilder("icon", iconMenuBuilder);
 
       var fw = dm.dm.fw;
-      if (!fw['ActivateDiagramMenu'](type)) {
+		fw['CreateDiagramMenu'](type, innerHtml, function() { 
+		  $("#"+ulid).listmenu({
+			selector: "element-selector",
+			urlPrefix: dm.dm.loader.getUrl(),
+			selectable: false,
+			path:"./",
+			data: diagramMenuBuilder.elements,
+			onSelect: function(item) {
+			  self.ec++;
+			  var menus = [];
+			  var fw = dm.dm.fw;
+			  var diagram = fw.getActiveDiagram();
 
-        fw['CreateDiagramMenu'](type, innerHtml, function() { 
-          $("#"+ulid).listmenu({
-            selector: "element-selector",
-            urlPrefix: dm.dm.loader.getUrl(),
-            selectable: false,
-            path:"./",
-            data:elements,
-            onSelect: function(item) {
-            self.ec++;
-            var menus = [];
-            var fw = dm.dm.fw;
-            var diagram = fw.getActiveDiagram();
-            if (diagram) {
-              diagram.setDropHelper();
-            }
-            var loadElement = diagramMenuBuilder.getElementById(item.title);
+			  if (diagram) {
+			    diagram.setDropHelper();
+			  }
 
-            if (loadElement != undefined) {
-              if  (loadElement.menu != undefined)
-                iconMenuBuilder.load(item.title, loadElement);
-              if (diagram)
-                diagram.Element(loadElement.type, loadElement);
-            }
-          }
-          });
+			  if (item != undefined) {
+			    // Load icon menu for a specific element type
+			    iconMenuBuilder.load(item.type, diagram);
+				// Create an Element on active diagram
+			    if (diagram)
+				  diagram.Element(item.type, item.options);
+			  }
+		    }
+		  });
 
-          $("#"+ulid).listmenu({
-            selector: "connector-selector",
-            selectable: true,
-            urlPrefix: dm.dm.loader.getUrl(),
-            path:"./",
-            data:connectors,
-            onSelect: function(item) {
-            var selConn = item["connector"];
-            var fw = dm.dm.fw;
-            var diagram = fw.getActiveDiagram();
+		  $("#"+ulid).listmenu({
+			selector: "connector-selector",
+			selectable: true,
+			urlPrefix: dm.dm.loader.getUrl(),
+			path:"./",
+			data:diagramMenuBuilder.connectors,
+			onSelect: function(item) {
+			var selConn = item["type"];
+			var fw = dm.dm.fw;
+			var diagram = fw.getActiveDiagram();
 
-            if (diagram) {
-              diagram.setDropHelper(selConn);
-            }
-          }
-          });
+			if (diagram) {
+			  diagram.setDropHelper(selConn);
+			}
+		  }
+		  });
         }); // CreateDiagramMenu
-      } // if !ActivateDiagramMenu
     });
   }
 //@aspect

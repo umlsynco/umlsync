@@ -94,41 +94,53 @@ Version:
                 'tabTemplate': '<li><a href="#{href}"><span>#{label}</span></a><a class="ui-corner-all"><span class="ui-test ui-icon ui-icon-close"></span></a></li>',
                 'scrollable': true,
                 'add': function(event, ui) {
-                      if (self.diagrams) {
+                      if (self.contents) {
                           self.selectedContentId = "#" + ui.panel.id;
                       }
                       $tabs.tabs('select', '#' + ui.panel.id);
-                  },
-                  'select': function(event, ui) {
-                      if (self.diagrams) {
-                          self.selectedContentId = "#" + ui.panel.id;
-
-                          // Show/hide diagram menu to tabs change
-                          if ($(self.selectedContentId).attr('edm') == "true") {
-                              $(".diagram-menu").show();
-                              var did = self.diagrams[self.selectedContentId];
-                              if (did) {
-                                  //@ifdef EDITOR
-                                  self['ActivateDiagramMenu'](did.options['type']);
-                                  //@endif
-                                  did.draw();
-                              }
-                          } else {
-                              $(".diagram-menu").hide();
-                          }
+                },
+                'select': function(event, ui) {
+                      if (self.contents) {
+					      var params = null;
+					      if (self.selectedContentId) {
+						     params = self.contents[self.selectedContentId];
+                            if (params && params.contentType) {
+						      self.formatHandlers[params.contentType].onFocus(self.selectedContentId, false);
+							}
+						  }
+                          
+						  self.selectedContentId = "#" + ui.panel.id;
+                          params = self.contents[self.selectedContentId];
+						  
+						  if (params && params.contentType) {
+						    self.formatHandlers[params.contentType].onFocus(self.selectedContentId, true);
+							return;
+						  }
                       }
                       self._helperUpdateFrameWork(true);
                   },
                   'show': function(event, ui) {
-                      if (self.diagrams) {
+                      if (self.contents) {
+					      var params = null;
+					      if (self.selectedContentId) {
+						     params = self.contents[self.selectedContentId];
+                            if (params && params.contentType) {
+						      self.formatHandlers[params.contentType].onFocus(self.selectedContentId, false);
+							}
+						  }
+
                           self.selectedContentId = "#" + ui.panel.id;
-                          var did = self.diagrams[self.selectedContentId];
-                          if (did) {
-                              did.draw();
-                          }
+                          var params = self.contents[self.selectedContentId];
+
+                          // onFocus handler
+						  if (params && params.contentType) {
+						    self.formatHandlers[params.contentType].onFocus(self.selectedContentId, true);
+							return;
+						  }
                       }
                   }
             });
+
             $("#tabs").css({'background-color':'#7E8380'}).css({'background':"none"});
 
             // Stupid initialization of single cancas
@@ -233,6 +245,8 @@ Version:
             this._helperUpdateFrameWork(true);
 
             self.wdddd = true;
+			
+			self.initializeHandlers();
         }
 
         framework.prototype = {
@@ -252,10 +266,30 @@ Version:
                 viewmanagers:{},
                 // an active view manager
                 activeViewManagerId: null,
-                // an array with views
-                views:{},
                 //
-                // Register IViewManager
+				// List of registered views
+				//
+                views:{},
+				//
+				// List of format handlers
+				//
+				formatHandlers: {},
+				//
+				// Initiazlize all registered handlres
+				// TODO: load the list of format handlers dynamically
+				//
+				initializeHandlers: function() {
+				   var obj = new dm.hs.umlsync();
+				   this.formatHandlers[obj.getUid()] = obj;
+
+				   obj = new dm.hs.markdown();
+				   this.formatHandlers[obj.getUid()] = obj;
+				   
+				   obj = new dm.hs.codeview();
+				   this.formatHandlers[obj.getUid()] = obj;
+				},
+                //
+                // Register IViewManager (Github, Bitbucket, Eclipse)
                 //
                 registerViewManager: function(viewmanager, isDefault) {
                   var floatStyle = "";
@@ -491,8 +525,16 @@ Version:
                 //           Menus main, diagram, context
                 //////////////////////////////////////////////////////////////
                 //
-                // Loading the main menu JSON description and put it as argument
-                // to callback function
+                // Create the diagram accordion menu
+				//
+				// Why it is here ? 
+				// It could be a common approach for the menu element creation.
+				// innerHtml indicates that menu could contain any 3pp items.
+				//
+				// The major idea is to split items by vendors and categories and 
+				// select the vendors/category dynamically on tab activation.
+				// For example: type - umlsync/packages - indicates that vendor is "umlsync" and category is "packages"
+				//              Therefore it is up to format handler provider what to show: it could be all "umlsync" menus or only "packages".
                 //
                 CreateDiagramMenu:function(type, innerHtml, callback) {
                     var len = $("#accordion").length;
@@ -556,7 +598,10 @@ Version:
                     dm.dm.dialogs['NewFolder']();
                     dm.dm.dialogs['SaveAs']();
                 },
-                'ShowContextMenu': function(name, event, node) {
+                //
+				// Show the context menu for the file tree
+				//
+				'ShowContextMenu': function(name, event, node) {
                     $.log("SHOW: " + name);
                     $(".context-menu").hide();
                     if (name) {
@@ -564,7 +609,10 @@ Version:
                         $(name +".context-menu").css("left", event.clientX).css("top", event.clientY).show();
                     }
                 },
-                'ShowElementContextMenu': function( desc , viewid, data, event) {
+                //
+				// Show the context menu extension for the diagram elements
+				//
+				'ShowElementContextMenu': function( desc , viewid, data, event) {
                     activeNode = data;
                     var self = dm.dm.fw;
                     desc = data.options.title;
@@ -589,6 +637,47 @@ Version:
                 //            Content managment
                 //////////////////////////////////////////////////////////////
                 selectedContentId:null,
+                //
+                // add new content
+                // @param params - the description of content
+				// @data - initial values
+                //
+				addNewContent: function(params, data) {
+                    var tabname = this.options.tabRight + this.counter;
+
+                    $("#" + this.options.tabs)
+                    .append('<div id="'+tabname+'"></div>')
+                    .tabs('add','#'+tabname,params.title);
+                    tabname = "#" + tabname;
+
+                    // Enable diagram menu
+                    //$(tabname).attr("edm", true);
+                    //$(".diagram-menu").show();
+
+                    //tabs("add", tabname, name);
+                    this.counter++;
+
+                    //this.openDiagramMenuOnFirstInit = true;
+
+                    if (params.absPath) {
+                        // Save an empty diagram. It could be new diagram or 
+                        this.views[params.viewid].view.saveContent(params, data, true);
+                    }
+
+                    // Add content to cache
+                    this.contents[tabname] = params;
+
+					// Open content as regular one, but with predefined values
+					this.formatHandlers[params.contentType].open(tabname, params, data);
+					
+					// Switch to editable
+					this.formatHandlers[params.contentType].switchMode(tabname, true);
+
+                    // Simple toolbox for each document
+                    this.appendContentToolbox(tabname, params);
+
+                    this._helperUpdateFrameWork(true);
+				},
                 //
                 // add new markdown content
                 // @param params - the description of content
@@ -647,22 +736,21 @@ Version:
                     this.counter++;
                     if (type == "sequence")
                         baseType = "sequence";
-                    var self = this;
 
                     this.openDiagramMenuOnFirstInit = true;
 
                     if (params.absPath) {
                         // Save an empty diagram. It could be new diagram or 
-                        self.views[params.viewid].view.saveContent(params, "{baseType:'"+baseType+"',type:'"+type+"'}", true);
+                        this.views[params.viewid].view.saveContent(params, "{baseType:'"+baseType+"',type:'"+type+"'}", true);
                     }
 
                     // Add content to cache
-                    self.contents[tabname] = params;
+                    this.contents[tabname] = params;
 
-                    self.loadDiagram(tabname, params, {type:type, base_type:baseType});
+					this.formatHandlers[params.contentType].open(tabname, params, {type:type, base_type:baseType});
 
                     // Simple toolbox for each document
-                    self.appendContentToolbox(tabname, params);
+                    this.appendContentToolbox(tabname, params);
 
                     this._helperUpdateFrameWork(true);
                 },
@@ -756,7 +844,9 @@ Version:
                     var self = this,
                             absPath = "http://umlsync.org/github/" + params.repoId + "/" + params.branch + "/" + params.absPath;
 
-                    // FULL SCREEN CONTENT
+					// 
+                    // Not embedded content use-case
+					//
                     if (params.selector == undefined) {
                         var edit = (params.editable == true) || (params.editable == "true"),
                           editBullet = '<a id="us-link"><span id="us-diagram-edit">' + (edit ? "View":"Edit")+ '</span></a>';
@@ -776,7 +866,7 @@ Version:
 
                         // It is not possible to edit file if it is defined by sha (and path unknown)
                         // or if user is not owner/commiter of repository
-                        if (!params.isOwner || params.absPath == undefined || params.absPath == null) {
+                        if ((!params.isOwner || params.absPath == undefined || params.absPath == null) && !params.isNewOne) {
                             $(selector + " #us-diagram-edit").parent().hide();
                         }
 
@@ -785,8 +875,13 @@ Version:
                             $(selector + " #us-getlink").parent().hide();
                         }
 
+						//
+						// Edit/View switcher
+						//
                         $(selector + " #us-diagram-edit").click(function() {
-                            // switch from editable to static and back
+						    //
+                            // Handle the UI button elements
+							//
                             var text = $(this).text(),
                                     editFlag = false;
                             if (text == "Edit") {
@@ -796,8 +891,14 @@ Version:
                             else {
                                 $(this).text("Edit");
                             }
+							
+							//
+							// Handle the content modes
+							//
+                            self.formatHandlers[params.contentType].switchMode(selector, editFlag);
+                            return;
 
-                            // If content is diagram
+                            /* If content is diagram
                             if (params.contentType == "dm") { 
                                 var did = self.diagrams[self.selectedContentId];
                                 if (did != undefined) {
@@ -820,7 +921,7 @@ Version:
                             // if content is markdown code
                             else if (params.contentType == "md") { 
                                 self.editMarkdown(selector, params);
-                            }
+                            }*/
                         });
 
                     }
@@ -1015,22 +1116,25 @@ Version:
                     this.saveContent();
                 },
                 //
-                // Get the content type by title
+                // Get the content type by extension
                 // Return undefined if content not supported
                 //
                 getContentType: function(title) {
                     var tt = title.split(".");
                     var ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
-                    if (ext == "JSON" || ext == "UMLSYNC") {
-                        return "dm";
-                    }
-                    else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-                        return "md";
-                    }
-                    else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
-                        return "code";
-                    }
-                    return undefined;
+
+				    for (var t in this.formatHandlers) {
+					  // Check if view functionality supported
+					  if (this.formatHandlers[t].options.view) {
+					    var hr = this.formatHandlers[t].getExtensionList();
+					    for (var r in hr) {
+					      if (hr[r] == ext) {
+						    return this.formatHandlers[t].getUid();
+						  }
+					    }
+					  }
+					}
+					return null;
                 },
                 //
                 // Load content by internal reference
@@ -1103,11 +1207,10 @@ Version:
                                     && (d.repoId == params.repoId)   // userid/repo
                                     && (d.branch == params.branch) // tree/master
                                     && (d.absPath == params.absPath) // path from root
-                            )
-                            { // if
+                            ) {
                                 $("#tabs").tabs('select', r);
                                 return;
-                            } // end if
+                            }
                         }
                     }
 
@@ -1147,19 +1250,15 @@ Version:
                                     $(tabname + " #puh").remove();
 
                                     var ct = params.contentType;
-
-                                    if (params.contentType == "dm") {
-                                        self.loadDiagram(tabname, params, data);
-                                    }
-                                    else if (params.contentType == "md") {
-                                        self.loadMarkdown(tabname, params, data);
-                                    }
-                                    else if (params.contentType == "code") {
-                                        self.loadCode(tabname, params, data);
-                                    }
-                                    else {
-                                        alert("Unknown content type: " + params.contentType);
-                                    }
+									if (params.contentType && self.formatHandlers[params.contentType]) {
+									  self.formatHandlers[params.contentType].open(tabname, params, data);
+									  // Update the framework sizes
+                                      self._helperUpdateFrameWork(true);
+									  return;
+									}
+									else {
+									 alert("Cant find the corresponding handler for the " + params.contentType);
+									}
 
                                     // Update the framework sizes
                                     self._helperUpdateFrameWork(true);
@@ -1326,8 +1425,11 @@ Version:
                 // therefore we have two arrays: contents & diagrams
                 //
                 getActiveDiagram:function() {
-                    if (this.diagrams && this.selectedContentId) {
-                        return this.diagrams[this.selectedContentId];
+                    if (this.contents && this.selectedContentId) {
+					    var params = this.contents[this.selectedContentId];
+						if (params && params.contentType) {
+                          return  this.formatHandlers[params.contentType]._getContentObject(this.selectedContentId);
+						}
                     }
                     return null;
                 },
@@ -1434,7 +1536,6 @@ Version:
                 //
                 // update framework sizes
                 //
-                //////////////////////////////////////////////////////////////
                 _helperUpdateFrameWork: function(resizeAll, ui) {
                     if (resizeAll) {
                         // setup height for content and left - resize -right conent DIV's

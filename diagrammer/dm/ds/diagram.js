@@ -1085,6 +1085,14 @@ dm['at'] = dm.at; //automated testing
    */
   
   Element: function (type, options, callback) {
+    if (this.options.acceptElements) {
+	  if (this.options.acceptElements.indexOf(type) >= 0) {
+	    $.log("In the list of accepted elements");
+	  }
+	  else {
+	    return;
+	  }
+	}
     dm.ds.diagram.ec++;
     options = options || {};
 
@@ -1096,26 +1104,27 @@ dm['at'] = dm.at; //automated testing
     dm['dm']['loader']['Element'](type, options, this, function(obj) {
       if (obj != undefined)
         self.elements[obj.euid] = obj;
-//@ifdef EDITOR
+
       self.opman.reportShort("add", obj.euid, true);
-//@endif
+
       if (callback)
         callback(obj);
     });
-//@ifdef EDITOR
+
     // If it is editable diagram
     if (this.options['editable']) {
-      // Load the context menu for element
-      if ((this.menuCtx) && (options['ctx_menu'])) {
-        // mini
-        $.log("LOAD :" + options['ctx_menu']);
-        this.menuCtx['load'](options['ctx_menu']);
-      }
+
+	// Load the context menu for element
+      //if (this.menuCtx) {
+      //  this.menuCtx['load'](options.type, this);
+      //}
+
       // Load the icons menu for element
-      if ((this.menuIcon != undefined) && (options['menu'] != undefined))
-        this.menuIcon['load'](options['menu']);
+      if (this.menuIcon != undefined) {
+        this.menuIcon['load'](options.type, this);
+	  }
     }
-//@endif
+
     return options.euid;
   },
 
@@ -1675,7 +1684,7 @@ dm['at'] = dm.at; //automated testing
    */
   
   _mouseClick: function(refElement) {
-    var mtype = (refElement == undefined) ? undefined : refElement.options['menu'];
+    var mtype = (refElement == undefined) ? undefined : refElement.options['type'];
     var ctrlDown = dm['dm']['fw']['CtrlDown'];
     this.clickedElement = refElement;
 
@@ -1752,6 +1761,40 @@ dm['at'] = dm.at; //automated testing
   saveState: function() {
     // Save the current position
     this.opman.saveNewPosition();
+  },
+  //
+  // on focus handler
+  //
+  onFocus: function(flag) {
+    if (flag) {
+	  this.draw();
+	  if (this.menuIcon) {
+	    if (this.selectedElement) {
+	      this.menuIcon['Enable'](this.selectedElement.euid,
+		                          this.selectedElement.options.type,
+								  this.selectedElement);
+		}
+	  }
+	}
+	else {
+	  if (this.selectedElement) {
+	      this.menuIcon['Disable'](this.selectedElement.euid);
+	  }
+	}
+  },
+  
+  getElementMenu:function(menu, element) {
+    if (menu == "icon") {
+	    if (element.options.type == "note") {
+	      return "us-"+this.options.type + "-" + element.options.type+"-menu";
+		}
+		else {
+		  return "us-"+ element.options.type+"-menu";
+		}
+    }
+    if (menu == "context") {
+	  return "us-ctx-common-menu";
+    }
   }
 //@endif
   });
@@ -2077,7 +2120,7 @@ dm['at'] = dm.at; //automated testing
       .click(self,function(event) {
 //@ifdef EDITOR
         var element = event.data;
-        element.parrent._mouseClick(element, element.options['menu']);
+        element.parrent._mouseClick(element);
         event.stopPropagation();
 //@endif
         // Hide previous references

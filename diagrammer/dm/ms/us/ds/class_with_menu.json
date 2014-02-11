@@ -3,119 +3,116 @@
    "elements": [
 	{"type": "class",
 	 "title": "Class",
-	 "menu": "us-class-menu",
-	 "ctx_menu": "class",
 	 "icon": "/dm/icons/us/es/class/Class.png"
 	},
 	{"type": "class",
 	 "title": "Interface",
-	 "aux": "Interface",
-	 "nameTemplate": "Interface",
-	 "menu": "us-class-menu",
-	 "ctx_menu": "class",
+	 "options": {
+  	   "aux": "Interface",
+	   "nameTemplate": "Interface"
+	 },
 	 "icon": "/dm/icons/us/es/class/ClassInterface.png"
 	},
 	{"type": "class",
 	 "title": "Enumeration",
-	 "aux": "Enumeration",
-	 "menu": "us-class-menu",
-	 "ctx_menu": "class",
+	 "options":{
+	   "aux": "Enumeration"
+	 },
 	 "icon": "/dm/icons/us/es/class/ClassEnumeration.png"
 	},
 	{"type": "class",
 	 "title": "Template",
-	 "aux": "Template",
-	 "menu": "us-class-menu",
-	 "ctx_menu": "class",
+	 "options": {
+	   "aux": "Template"
+	 },
 	 "icon": "/dm/icons/us/es/class/ClassTemplate.png"
 	},
 	{"type": "note",
 	 "title": "Note",
-	 "menu": "us-note-menu",
 	 "icon": "/dm/icons/us/es/common/Note.png"
 	}
     ],
     "connectors": [
-      {"connector":"aggregation",
+      {"type":"aggregation",
 	   "title":"Aggregation",
 	   "icon": "/dm/icons/us/cs/aggregation.png"
 	  },
-      {"connector":"realization",
+      {"type":"realization",
 	   "title":"Realization",
 	   "icon": "/dm/icons/us/cs/realization.png"
 	  },
-      {"connector":"selfassociation",
+      {"type":"selfassociation",
 	   "title":"Self Association",
 	   "oneway":"true",
 	   "icon": "/dm/icons/us/cs/composition.png"
 	  },
-      {"connector":"dependency",
+      {"type":"dependency",
 	   "title":"Dependency",
 	   "icon": "/dm/icons/us/cs/dependency.png"
 	  },
-      {"connector":"generalization",
+      {"type":"generalization",
 	   "title":"Generalization",
 	   "icon": "/dm/icons/us/cs/generalization.png"
 	  },
-      {"connector":"nested",
+      {"type":"nested",
 	   "title":"Nested",
 	   "icon": "/dm/icons/us/cs/nested.png"
 	  },
-      {"connector":"composition",
+      {"type":"composition",
 	   "title":"Composition",
 	   "icon": "/dm/icons/us/cs/composition.png"
 	  }
     ],
-	"menus": [
+	"icon_menus": [
 	  {"id":"us-class-menu",
 	   "items": [
-				{"el":"Class",
-				 "cs":[
-						{"connector":"association",
+				{"element":{"type": "class"},
+				 "connector":[
+						{"type":"association",
 						 "icon":"dm/icons/us/cs/class/class/association.png"
 						},
-						{"connector":"aggregation",
+						{"type":"aggregation",
 						 "icon":"dm/icons/us/cs/class/class/aggregation.png"
 						},
-						{"connector":"composition",
+						{"type":"composition",
 						 "icon":"dm/icons/us/cs/class/class/composition.png"
 						},
-						{"connector":"Self Association",
+						{"type":"selfassociation",
 						 "icon":"dm/icons/us/cs/class/class/self-association.png"
 						},
-						{"connector":"dependency",
+						{"type":"dependency",
 						 "icon":"dm/icons/us/cs/class/class/dependency.png"
 						},
-						{"connector":"realization",
+						{"type":"realization",
 						 "icon":"dm/icons/us/cs/class/class/realization.png"
 						},
-						{"connector":"generalization",
+						{"type":"generalization",
 						 "icon":"dm/icons/us/cs/class/class/generalization.png"
 						},
-						{"connector":"nested",
+						{"type":"nested",
 						 "icon":"dm/icons/us/cs/class/class/nested.png"
 						}
 					  ]
 				},
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
+				{"element":{"type":"note"},
+				 "connector":[
+						{"type":"anchor",
 						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}
 			 ]
 	  },
-	  {"id":"us-note-menu",
+	  {"id":"us-class-note-menu",
 	   "items": [
-				{"el":"Class",
-				 "cs":[
-						{"connector":"anchor",
+				{"element":{"type":"class"},
+				 "connector":[
+						{"type":"anchor",
 						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				},
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
+				{"element":{"type":"note"},
+				 "connector":[
+						{"type":"anchor",
 						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}

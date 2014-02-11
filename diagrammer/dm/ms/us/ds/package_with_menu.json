@@ -3,79 +3,75 @@
    "elements": [
 	{"type": "package",
 	 "title": "Package",
-	 "menu":"us-package-menu",
 	 "icon": "./dm/icons/us/es/package/Package.png"
 	},
 	{"type": "package",
-	 "aux": "subsystem",
 	 "title": "Subsystem",
-	 "menu":"us-package-menu",
-	 "dropable":"package",
-	 "icon": "./dm/icons/us/es/package/Subsystem.png"
+	 "options": {"aux": "subsystem","dropable":"package"},
+ 	 "icon": "./dm/icons/us/es/package/Subsystem.png"
 	},
 	{"type": "note",
 	 "title": "Note",
-	 "menu":"us-note-menu",
 	 "icon": "./dm/icons/us/es/common/note.png"
 	}
     ],
     "connectors": [
-      {"connector":"dependency",
+      {"type":"dependency",
 	   "title":"Dependency",
 	   "icon": "./dm/icons/us/cs/dependency.png"
 	  },
-      {"connector":"dependency",
+      {"type":"dependency",
 	   "title":"Import",
 	   "icon": "./dm/icons/us/cs/Import.png"
 	  },
-      {"connector":"dependency",
+      {"type":"dependency",
 	   "title":"Access",
 	   "icon": "./dm/icons/us/cs/Access.png"
 	  },
-      {"connector":"generalization",
+      {"type":"generalization",
 	   "title":"Generalization",
 	   "icon": "./dm/icons/us/cs/generalization.png"
 	  },
-      {"connector":"dependency",
+      {"type":"dependency",
 	   "title":"Merge",
 	   "icon": "./dm/icons/us/cs/Merge.png"
 	  },
-      {"connector":"nested",
+      {"type":"nested",
 	   "title":"Containment",
 	   "icon": "./dm/icons/us/cs/nested.png"
 	  }
     ],
-    "menus": [
+    "icon_menus": [
 	  {"id":"us-package-menu",
 	   "items": [
-				{"el":"Package",
-				 "cs":[
-						{"connector":"dependency",
+				{"element":{"type":"package"},
+				 "connector":[
+						{"type":"dependency",
 						 "icon":"dm/icons/us/cs/dependency.png"
 						},
-						{"connector":"access",
+						{"type":"access",
 						 "icon":"dm/icons/us/cs/access.png"
 						},
-						{"connector":"import",
+						{"type":"import",
 						 "icon":"dm/icons/us/cs/import.png"
 						},
-						{"connector":"generalization",
+						{"type":"generalization",
 						 "icon":"dm/icons/us/cs/generalization.png"
 						},
-						{"connector":"realization",
+						{"type":"realization",
 						 "icon":"dm/icons/us/cs/realization.png"
 						},
-						{"connector":"dependency",
+						{"type":"dependency",
 						 "icon":"dm/icons/us/cs/merge.png"
 						},
-						{"connector":"nested",
+						{"type":"nested",
 						 "icon":"dm/icons/us/cs/nested.png"
 						}
 					  ]
 				},
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
+				{"element":{"type":"note"},
+				 "connector":[
+						{"type":"anchor",
 						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}
@@ -83,9 +79,9 @@
 	  },
 	  {"id":"us-note-menu",
 	   "items": [
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
+				{"element":{"type":"note"},
+				 "connector":[
+						{"type":"anchor",
 						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}
