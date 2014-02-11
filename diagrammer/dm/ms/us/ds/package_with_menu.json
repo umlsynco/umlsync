@@ -40,53 +40,6 @@
 	   "title":"Containment",
 	   "icon": "./dm/icons/us/cs/nested.png"
 	  }
-    ],
-    "icon_menus": [
-	  {"id":"us-package-menu",
-	   "items": [
-				{"element":{"type":"package"},
-				 "connector":[
-						{"type":"dependency",
-						 "icon":"dm/icons/us/cs/dependency.png"
-						},
-						{"type":"access",
-						 "icon":"dm/icons/us/cs/access.png"
-						},
-						{"type":"import",
-						 "icon":"dm/icons/us/cs/import.png"
-						},
-						{"type":"generalization",
-						 "icon":"dm/icons/us/cs/generalization.png"
-						},
-						{"type":"realization",
-						 "icon":"dm/icons/us/cs/realization.png"
-						},
-						{"type":"dependency",
-						 "icon":"dm/icons/us/cs/merge.png"
-						},
-						{"type":"nested",
-						 "icon":"dm/icons/us/cs/nested.png"
-						}
-					  ]
-				},
-				{"element":{"type":"note"},
-				 "connector":[
-						{"type":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-					  ]
-				}
-			 ]
-	  },
-	  {"id":"us-note-menu",
-	   "items": [
-				{"element":{"type":"note"},
-				 "connector":[
-						{"type":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-					  ]
-				}
-			 ]
-	  }
-	]
+    ]
    }
 ]

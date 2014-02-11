@@ -64,62 +64,6 @@
 	   "title":"Containment",
 	   "icon": "./dm/icons/us/cs/nested.png"
 	  }
-    ],
-    "icon_menus": [
-	  {"id":"us-component-note-menu",
-	   "items": [
-				{"element":{"type":"note"},
-				 "connector":[
-						{"type":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-					  ]
-				}
-			 ]
-	  },
-	  {"id":"us-component-menu",
-	   "items": [
-				{"element":{"type":"component"},
-				 "connector":[
-						{"type":"association",
-						 "icon":"dm/icons/us/cs/association.png"
-						},
-						{"type":"aggregation",
-						 "icon":"dm/icons/us/cs/aggregation.png"
-						},
-						{"type":"composition",
-						 "icon":"dm/icons/us/cs/composition.png"
-						}
-					  ]
-				},
-				{"element":{"type":"interface"},
-				 "connector":[
-						{"type":"association",
-						 "icon":"dm/icons/us/cs/interface.png"
-						}
-					  ]
-				},
-				{"element":{"type":"empty"},
-				 "connector":[
-                        {"type":"arc",
-						 "icon":"dm/icons/us/cs/interface_required.png"
-						}
-					  ]
-				},
-				{"element":{"type":"port"},
-				 "connector":[
-						{"type":"association",
-						 "icon":"dm/icons/us/cs/association.gif"
-						}
-					  ]
-				},
-				{"element":{"type":"note"},
-				 "connector":[
-						{"type":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-					  ]
-				}
-			 ]
-	  }
-	]
+    ]
    }
 ]

@@ -62,62 +62,6 @@
 	   "title":"Composition",
 	   "icon": "/dm/icons/us/cs/composition.png"
 	  }
-    ],
-	"icon_menus": [
-	  {"id":"us-class-menu",
-	   "items": [
-				{"element":{"type": "class"},
-				 "connector":[
-						{"type":"association",
-						 "icon":"dm/icons/us/cs/class/class/association.png"
-						},
-						{"type":"aggregation",
-						 "icon":"dm/icons/us/cs/class/class/aggregation.png"
-						},
-						{"type":"composition",
-						 "icon":"dm/icons/us/cs/class/class/composition.png"
-						},
-						{"type":"selfassociation",
-						 "icon":"dm/icons/us/cs/class/class/self-association.png"
-						},
-						{"type":"dependency",
-						 "icon":"dm/icons/us/cs/class/class/dependency.png"
-						},
-						{"type":"realization",
-						 "icon":"dm/icons/us/cs/class/class/realization.png"
-						},
-						{"type":"generalization",
-						 "icon":"dm/icons/us/cs/class/class/generalization.png"
-						},
-						{"type":"nested",
-						 "icon":"dm/icons/us/cs/class/class/nested.png"
-						}
-					  ]
-				},
-				{"element":{"type":"note"},
-				 "connector":[
-						{"type":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-					  ]
-				}
-			 ]
-	  },
-	  {"id":"us-class-note-menu",
-	   "items": [
-				{"element":{"type":"class"},
-				 "connector":[
-						{"type":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-					  ]
-				},
-				{"element":{"type":"note"},
-				 "connector":[
-						{"type":"anchor",
-						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-					  ]
-				}
-			 ]
-	  }
-	]
+    ]
    }
 ]
