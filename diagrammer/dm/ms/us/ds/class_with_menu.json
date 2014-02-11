@@ -102,7 +102,7 @@
 				}
 			 ]
 	  },
-	  {"id":"us-note-menu",
+	  {"id":"us-class-note-menu",
 	   "items": [
 				{"element":{"type":"class"},
 				 "connector":[

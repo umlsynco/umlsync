@@ -4,10 +4,9 @@
 (function( $, dm, undefined ) {
 dm.base.diagram("ds.component", dm.ds.diagram, {
     diagramName: "ComponentDiagram",
-    diagramEventPrefix: "CompD",
     options: {
-        lazyload: false,
-        type: 'component'
+        type: 'component',
+		acceptElements:'component,interface,port,empty,instance,note,package'
     },
     _init: function() {
     }

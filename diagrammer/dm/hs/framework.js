@@ -598,7 +598,10 @@ Version:
                     dm.dm.dialogs['NewFolder']();
                     dm.dm.dialogs['SaveAs']();
                 },
-                'ShowContextMenu': function(name, event, node) {
+                //
+				// Show the context menu for the file tree
+				//
+				'ShowContextMenu': function(name, event, node) {
                     $.log("SHOW: " + name);
                     $(".context-menu").hide();
                     if (name) {
@@ -606,7 +609,10 @@ Version:
                         $(name +".context-menu").css("left", event.clientX).css("top", event.clientY).show();
                     }
                 },
-                'ShowElementContextMenu': function( desc , viewid, data, event) {
+                //
+				// Show the context menu extension for the diagram elements
+				//
+				'ShowElementContextMenu': function( desc , viewid, data, event) {
                     activeNode = data;
                     var self = dm.dm.fw;
                     desc = data.options.title;
@@ -1110,7 +1116,7 @@ Version:
                     this.saveContent();
                 },
                 //
-                // Get the content type by title
+                // Get the content type by extension
                 // Return undefined if content not supported
                 //
                 getContentType: function(title) {
@@ -1530,7 +1536,6 @@ Version:
                 //
                 // update framework sizes
                 //
-                //////////////////////////////////////////////////////////////
                 _helperUpdateFrameWork: function(resizeAll, ui) {
                     if (resizeAll) {
                         // setup height for content and left - resize -right conent DIV's

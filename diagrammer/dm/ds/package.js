@@ -16,12 +16,9 @@ Version:
 (function( $, dm, undefined ) {
 dm.base.diagram("ds.package", dm.ds.diagram, {
     diagramName: "PackageDiagram",
-    diagramEventPrefix: "PD",
     options: {
-        lazyload: false,
-        type: 'package'
-    },
-    _init: function() {
+        type: 'package',
+		acceptElements: ['class','package','note']
     }
 });
 })(jQuery, dm);

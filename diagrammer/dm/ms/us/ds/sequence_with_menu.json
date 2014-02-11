@@ -3,151 +3,130 @@
    "elements": [
 	{"type": "objinstance",
 	 "title": "Object Instance",
-	 "menu":"us-objinstance-menu",
-	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/component/InstanceSpecification.png"
 	},
 	{"type": "llport",
 	 "title": "Port",
-	 "menu":"us-objinstance-menu",
-	 "ctx_menu":"sequence",
 	 "hidden": true
 	},
-	{"type": "interface",
+	{"type": "message",
 	 "title": "Lost/Found Message",
-	 "width":"20",
-	 "height":"20",
-	 "background-color":"black",
-	 "nameTemplate": "Message",
-	 "menu":"us-message-menu",
-	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/common/message.png"
 	},
 	{"type": "lldel",
 	 "title": "Del object",
-	 "ctx_menu":"sequence",
-	 "hidden": true,
+	 "options":{"hidden": true},
 	 "icon": "./dm/icons/us/es/common/del.png"
 	},
 	{"type": "llalt",
 	 "title": "Alt",
-	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/common/alt.png"
 	},
 	{"type": "llalt",
 	 "title": "Option",
-	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/common/opt.png"
 	},
 	{"type": "llalt",
 	 "title": "Loop",
-	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/common/loop.png"
 	},
 	{"type": "llalt",
 	 "title": "Break",
-	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/common/break.png"
 	},
 	{"type": "llalt",
 	 "title": "Parallel",
-	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/common/par.png"
 	},
 	{"type": "llalt",
 	 "title": "Strict",
-	 "ctx_menu":"sequence",
 	 "icon": "./dm/icons/us/es/common/strict.png"
 	},
-	{"type": "image",
-	 "image_path":"/images/actor3.svg",
-	 "width":"40",
+	{"type": "actor",
 	 "title": "Actor",
-	 "menu":"us-message-menu",
 	 "icon": "./dm/icons/us/es/sequence/Actor.png"
 	},
 	{"type": "note",
 	 "title": "Note",
-	 "menu": "us-note-menu",
 	 "icon": "/dm/icons/us/es/common/Note.png"
 	}
 
     ],
     "connectors": [
-      {"connector":"llsequence",
+      {"type":"llsequence",
 	   "title":"Life Line Sequence",
 	   "createObject": true,
 	   "icon": "./dm/icons/us/cs/dependency.png"
 	  },
-      {"connector":"llselfcall",
+      {"type":"llselfcall",
 	   "title":"Self Call",
 	   "icon": "./dm/icons/us/cs/composition.png"
 	  },
-      {"connector":"generalization",
+      {"type":"generalization",
 	   "title":"Generalization",
 	   "icon": "./dm/icons/us/cs/generalization.png"
 	  },
-      {"connector":"realization",
+      {"type":"realization",
 	   "title":"Realization",
 	   "icon": "./dm/icons/us/cs/realization.png"
 	  },
-      {"connector":"association",
+      {"type":"association",
 	   "title":"Association",
 	   "icon": "./dm/icons/us/cs/association.png"
 	  },
-      {"connector":"aggregation",
+      {"type":"aggregation",
 	   "title":"Aggregation",
 	   "icon": "./dm/icons/us/cs/aggregation.png"
 	  },
-      {"connector":"composition",
+      {"type":"composition",
 	   "title":"Composition",
 	   "icon": "./dm/icons/us/cs/composition.png"
 	  },
-      {"connector":"anchor",
+      {"type":"anchor",
 	   "title":"Anchor",
 	   "icon": "./dm/icons/us/cs/AnchorToNote.png"
 	  },
-      {"connector":"anchor",
+      {"type":"anchor",
 	   "title":"Constraint",
 	   "icon": "./dm/icons/us/cs/Constrain.png"
 	  },
-      {"connector":"nested",
+      {"type":"nested",
 	   "title":"Containment",
 	   "icon": "./dm/icons/us/cs/nested.png"
 	  }
     ],
-    "menus": [
+    "icon_menus": [
 	  {"id":"us-objinstance-menu",
 	   "items": [
-				{"el":"Object Instance",
-				 "cs":[
-						{"connector":"llsequence",
+				{"element":{"type":"objinstance"},
+				 "connector":[
+						{"type":"llsequence",
 						 "icon":"dm/icons/us/cs/createobject.png"
 						},
-						{"connector":"llreturn",
+						{"type":"llreturn",
 						 "icon":"dm/icons/us/cs/return.png"
 						}
 					  ]
 				},
-				{"el":"Port",
-				 "cs":[
-						{"connector":"llsequence",
+				{"element":{"type":"port"},
+				 "connector":[
+						{"type":"llsequence",
 						 "icon":"dm/icons/us/cs/sequence.png"
 						},
-						{"connector":"llselfcall",
+						{"type":"llselfcall",
 						 "icon":"dm/icons/us/cs/self-call.png"
 						}
 					  ]
 				},
-				{"el":"Del object",
-				 "cs":[
-						{"connector":"llsequence",
+				{"element":{"type":"lldel"},
+				 "connector":[
+						{"type":"llsequence",
 						 "icon":"dm/icons/us/cs/killobject.png"}
 					  ]
 				},
-				{"el":"Lost/Found Message",
-				 "cs":[
-						{"connector":"llsequence",
+				{"element":{"type":"message"},
+				 "connector":[
+						{"type":"llsequence",
 						 "icon":"dm/icons/us/cs/lostmessage.png"}
 					  ]
 				}
@@ -155,27 +134,27 @@
 	  },
 	  {"id":"us-message-menu",
 	   "items": [
-				{"el":"Object Instance",
-				 "cs":[
-						{"connector":"llsequence",
+				{"element":{"type":"objinstance"},
+				 "connector":[
+						{"type":"llsequence",
 						 "icon":"dm/icons/us/cs/createobject.png"
 						}
 					  ]
 				},
-				{"el":"Port",
-				 "cs":[
-						{"connector":"llsequence",
+				{"element":{"type":"port"},
+				 "connector":[
+						{"type":"llsequence",
 						 "icon":"dm/icons/us/cs/sequence.png"
 						}
 					  ]
 				}
 			 ]
 	  },
-	  {"id":"us-note-menu",
+	  {"id":"us-sequence-note-menu",
 	   "items": [
-				{"el":"Note",
-				 "cs":[
-						{"connector":"anchor",
+				{"element":{"type":"note"},
+				 "connector":[
+						{"type":"anchor",
 						 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
 					  ]
 				}

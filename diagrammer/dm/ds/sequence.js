@@ -1,6 +1,27 @@
 
 (function( $, dm, undefined ) {
 dm.base.diagram("ds.sequence", dm.ds.base, {
+    options: {
+        type: 'sequence',
+		acceptElements: ['objinstance','llport','lldel','message','llalt','actor','note']
+    },
+	getElementMenu:function(menu, element) {
+	  if (menu == "icon") {
+	    if (element.options.type == "note") {
+	      return "us-"+this.options.type + "-" + element.options.type+"-menu";
+		}
+		if (element.options.type == "message") {
+		  return "us-" + element.options.type+"-menu"
+		}
+		else {
+		  return "us-objinstance-menu"
+		}
+	  }
+	  if (menu == "context") {
+	    return "us-ctx-common-menu";
+	  }
+	},
+
     onElementDragStart: function(el, ui, isConnector) {
 
      this.opman.startTransaction();

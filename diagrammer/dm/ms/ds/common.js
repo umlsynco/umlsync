@@ -443,8 +443,12 @@ URL:
 	    return;
 	  }
 
+	  var accept = json["diagram"] ? json["diagram"]["accept"]: undefined;
 	  // JSON description was loaded, setup the menu builder for the diagram
-	  dm.ms.ds[type] = {main: diagramMenuBuilder};
+	  dm.ms.ds[type] = {
+	    main: diagramMenuBuilder,
+		accept: accept
+	  };
 	
 	  // Unique id's for the accordion menu
       var euid = "element-menu-" + dm.dm.dmc,

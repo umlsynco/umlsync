@@ -246,8 +246,8 @@
             params.absPath = diagram_name;
         if (self.selected != "markdown") {
 		  // Work-around for the sequence diagrams
-		  var baseType = (self.selected == "sequence") ? "sequence": "base";
-          dm.dm.fw['addNewContent'](params, {baseType:baseType,type:self.selected});
+		  var baseType = self.selected;
+          dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
         }
         else {
           params.contentType = "markdown";

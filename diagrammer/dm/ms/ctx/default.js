@@ -26,9 +26,9 @@ dm.ms.ctx['default'] = function(menuBuilder) {
             {
                 title: 'Remove Del',
                 click: function(element) {  // element is the jquery obj clicked on when context menu launched
-                    menuBuilder.diagram.removeConnector(element.euid, undefined,undefined);
-                    menuBuilder.diagram.removeConnector(undefined, element.euid, undefined);
-                    menuBuilder.diagram.removeElement(element.euid);
+                    element.parrent.removeConnector(element.euid, undefined,undefined);
+                    element.parrent.removeConnector(undefined, element.euid, undefined);
+                    element.parrent.removeElement(element.euid);
                     //$('#' +   + '_Border').remove();
                 }
             }/*,

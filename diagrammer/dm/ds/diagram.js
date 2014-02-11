@@ -1085,6 +1085,14 @@ dm['at'] = dm.at; //automated testing
    */
   
   Element: function (type, options, callback) {
+    if (this.options.acceptElements) {
+	  if (this.options.acceptElements.indexOf(type) >= 0) {
+	    $.log("In the list of accepted elements");
+	  }
+	  else {
+	    return;
+	  }
+	}
     dm.ds.diagram.ec++;
     options = options || {};
 
@@ -1773,6 +1781,20 @@ dm['at'] = dm.at; //automated testing
 	      this.menuIcon['Disable'](this.selectedElement.euid);
 	  }
 	}
+  },
+  
+  getElementMenu:function(menu, element) {
+    if (menu == "icon") {
+	    if (element.options.type == "note") {
+	      return "us-"+this.options.type + "-" + element.options.type+"-menu";
+		}
+		else {
+		  return "us-"+ element.options.type+"-menu";
+		}
+    }
+    if (menu == "context") {
+	  return "us-ctx-common-menu";
+    }
   }
 //@endif
   });
