@@ -14,15 +14,18 @@ URL:
  */
 
 (function($, dm, undefined) {
-	dm.hs.umlsync = function() {
+	dm.hs.umlsync = function(options) {
 
 	    // singleton
-		function getInstance() {
+		function getInstance(options) {
 			dm.dm = dm.dm || {};
 			if (!dm.dm['umlsync']) {
 				// create a instance
 				dm.dm['umlsync'] = new umlsync();
 			}
+
+			// extend the default options
+            dm.dm['umlsync'].options = $.extend({}, dm.dm['umlsync'].options, options);
 
 			// return the instance of the singletonClass
 			return dm.dm['umlsync'];
@@ -86,8 +89,6 @@ URL:
 			jsonData['fullname'] = contentInfo.absPath;
 			jsonData['editable'] = true;
 
-			
-
 			dm.dm.loader.Diagram(
 					jsonData.type,
 					jsonData.base_type || "base",
@@ -96,6 +97,11 @@ URL:
 					function(obj) {
 						// keep the object reference in cache
 						self.contentCache[parent]["diagram"] = obj;
+
+						obj.options.onModified = function(selector, flag) {
+						  	if (self.options.onModified)
+						       self.options.onModified(selector, flag);
+						};
 
 						obj.onDestroy(function() {
 						    // TODO: release content in the IView
@@ -216,7 +222,7 @@ URL:
 		//
 		// Get the cached value of current content
 		//
-		getDescription: function(parentSelector) {
+		getDescription: function(parentSelector, flag) {
           if (this.contentCache[parentSelector] && this.contentCache[parentSelector]["diagram"]) {
 		    return this.contentCache[parentSelector]["diagram"].getDescription();
 		  }
@@ -230,7 +236,7 @@ URL:
 		}
 		};
 
-		return getInstance();
+		return getInstance(options);
 
 	};
 

@@ -92,7 +92,7 @@ dm['at'] = dm.at; //automated testing
     // report state change
     if (this.lastReportedState != this._hasModification(newReported)) {
       this.lastReportedState = this._hasModification(newReported);
-      dm.dm.fw.onContentModifiedStateChanged(this.diagram.parrent, this.lastReportedState);
+	  this.diagram.onModified(this.lastReportedState);
     }
    },
    saveNewPosition: function() {
@@ -638,6 +638,11 @@ dm['at'] = dm.at; //automated testing
     return item;
   },
   
+  onModified: function(flag) {
+    if (this.options.onModified) {
+	  this.options.onModified(this.parrent, flag);
+	}
+  },
   _update: function() {
     $.log("_update");
   },

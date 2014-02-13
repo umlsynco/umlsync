@@ -279,10 +279,17 @@ Version:
 				// TODO: load the list of format handlers dynamically
 				//
 				initializeHandlers: function() {
-				   var obj = new dm.hs.umlsync();
+				   var self = this;
+				   var obj = new dm.hs.umlsync({onModified: function(selector, flag) {
+				     self.onContentModifiedStateChanged(selector, flag);
+					 }
+				   });
 				   this.formatHandlers[obj.getUid()] = obj;
 
-				   obj = new dm.hs.markdown();
+				   obj = new dm.hs.markdown({onModified: function(selector, flag) {
+				     self.onContentModifiedStateChanged(selector, flag);
+					 }
+				   });
 				   this.formatHandlers[obj.getUid()] = obj;
 				   
 				   obj = new dm.hs.codeview();
@@ -807,7 +814,7 @@ Version:
 
 					var params = self.contents[tabid];
 					if (params && params.contentType) {
-					  var data = self.formatHandlers[params.contentType].getDescription(tabid);
+					  var data = self.formatHandlers[params.contentType].getDescription(tabid, isTabClosed); // isTabClosed == updateCache ?
 					  //
 					  // data is null/undefined if there is no changes
 					  // but framework should not request SAVE in no changes available

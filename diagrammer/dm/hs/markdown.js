@@ -14,16 +14,18 @@ URL:
  */
 
 (function($, dm, undefined) {
-	dm.hs.markdown = function() {
+	dm.hs.markdown = function(options) {
         var converter = new Showdown.converter({ extensions: ['umlsync'] });
 
 		// singleton
-		function getInstance() {
+		function getInstance(options) {
 			dm.dm = dm.dm || {};
 			if (!dm.dm['markdown']) {
 				// create a instance
-				dm.dm['markdown'] = new markdown();
+				dm.dm['markdown'] = new markdown(options);
 			}
+			// extend the default options
+            dm.dm['markdown'].options = $.extend({}, dm.dm['markdown'].options, options);
 
 			// return the instance of the singletonClass
 			return dm.dm['markdown'];
@@ -83,8 +85,20 @@ URL:
 		//
 		// Get the cached value of current content
 		//
-		getDescription: function(parentSelector) {
-		  return $(parentSelector + " #markdown").val();
+		getDescription: function(parentSelector, updateCache) {
+		  var text =  $(parentSelector + " #markdown").val();
+
+		  // Do nothing if not modified
+		  if (self.contentCache[parent].contentData == text) {
+			return null;
+	      }
+
+		  // Update cache, because content was saved in the IView
+		  if (updateCache) {
+		    self.contentCache[parent].contentData = text;
+		  }
+		  return text;
+		  
 		},
 		//
 		// Helper method to open  markdown in view mode
@@ -205,22 +219,24 @@ URL:
 						e.stopPropagation();
 					});
 
+					var self = this;
+
                     // Insert test into the editable area
 					$(parentSelector + " #markdown")
 					.text(contentData)
 					.bind("keyup paste", parentSelector, function(e) {
-					// TODO: HANDLE modification state
-					
-						//var parent = e.data;
+					   // TODO: HANDLE modification state in another way :(
+						var parent = e.data;
+						var text2 = self.markdown[parent];
 
-						//var text2 = self.markdown[parent];
-						//var text1 = $(this).val();
-						//if ($(this).val() != self.markdown[parent]) {
-						//	self.onContentModifiedStateChanged(parent, true);
-						//}
-						//else {
-//							self.onContentModifiedStateChanged(parent, false);
-	//					}
+						if ($(this).val() != self.contentCache[parent].contentData) {
+						   if (self.options.onModified)
+						       self.options.onModified(parent, true);
+						}
+						else {
+						    if (self.options.onModified)
+							    self.options.onModified(parent, false);
+						}
 					});
 		},
 		//
@@ -258,8 +274,7 @@ URL:
 		};
 
 		// return a singletone object in the dm.dm.markdown
-		return getInstance();
-
+		return getInstance(options);
 	};
 
 })(jQuery, dm);
