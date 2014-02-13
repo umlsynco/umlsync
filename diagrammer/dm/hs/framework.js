@@ -805,6 +805,29 @@ Version:
                         return;
                     }
 
+					var params = self.contents[tabid];
+					if (params && params.contentType) {
+					  var data = self.formatHandlers[params.contentType].getDescription(tabid);
+					  //
+					  // data is null/undefined if there is no changes
+					  // but framework should not request SAVE in no changes available
+					  //
+					  if (data) {
+					    self.views[params.viewid].view.saveContent(params, data, params.isNewOne);
+					  }
+					  
+					  // Modify the framework state for the saved content
+                      if (isTabClosed) {
+					    // release content cache
+					    self.views[params.viewid].view.releaseContent(params);
+					  }
+					  else {
+					    // change the state of content
+                        self.onContentModifiedStateChanged(tabid, false);
+					  }
+					  return;
+					}
+
                     // Saved the diagram description:
                     if (self.contents[tabid].contentType == "dm") { // Diagram
                         if (!self.diagrams[tabid])
@@ -830,9 +853,6 @@ Version:
                             self.views[params.viewid].view.releaseContent(params);
                         }
                     }
-
-                    // Modify the framework state
-                    self.onContentModifiedStateChanged(tabid, false);
                 },
                 //
                 // Toolbox for each content type: markdown or diagram.
@@ -1751,10 +1771,11 @@ Version:
                                 }
                                 break;
                             case 83:// Handle Ctrl-S
+							    e.preventDefault();
+                                e.stopPropagation();
+							    e.stopImmediatePropagation();
                                 if (fw.selectedContentId)
                                     fw.saveContent(fw.selectedContentId);
-                                e.preventDefault();
-                                e.stopPropagation();
                                 break;
                             default:
                                 break;

@@ -81,6 +81,12 @@ URL:
 		  $(parentSelector + " div#readme").remove();
 		},
 		//
+		// Get the cached value of current content
+		//
+		getDescription: function(parentSelector) {
+		  return $(parentSelector + " #markdown").val();
+		},
+		//
 		// Helper method to open  markdown in view mode
 		//
 		_viewMarkdown: function(parentSelector, contentInfo, contentData) {

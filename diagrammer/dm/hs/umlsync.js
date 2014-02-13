@@ -216,8 +216,10 @@ URL:
 		//
 		// Get the cached value of current content
 		//
-		getDescription: function(parent) {
-		  return null;
+		getDescription: function(parentSelector) {
+          if (this.contentCache[parentSelector] && this.contentCache[parentSelector]["diagram"]) {
+		    return this.contentCache[parentSelector]["diagram"].getDescription();
+		  }
 		},
 		//
 		// Destroy the content edit/view area,

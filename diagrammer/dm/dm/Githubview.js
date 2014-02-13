@@ -1090,8 +1090,6 @@
                                          alert("You can not open removed content!");
                                          return;
                                      }
-                                     var tt = node.data.title.split(".");
-                                     var title = tt[0].toUpperCase(), ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
 
                                      var params =
                                      {
@@ -1101,18 +1099,10 @@
                                              absPath:node.getAbsolutePath(),
                                              branch:"master",
                                              repoId:self.activeRepo,
+											 contentType: dm.dm.fw.getContentType(node.data.title),
                                              editable:false
                                      };
 
-                                     if (ext == "JSON" || ext == "UMLSYNC") {
-                                         params.contentType = "dm";
-                                     }
-                                     else if (title == "README" ||  ext == "MD" || ext == "rdoc") {
-                                         params.contentType = "md";
-                                     }
-                                     else if ((["C", "CPP", "H", "HPP", "PY", "HS", "JS", "CSS", "JAVA", "RB", "PL", "PHP"]).indexOf(ext) >= 0){
-                                         params.contentType = "code";
-                                     }
                                      if (params.contentType != undefined)
                                          dm.dm.fw.loadContent(params);
                                  }
