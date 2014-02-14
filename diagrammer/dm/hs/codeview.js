@@ -67,12 +67,14 @@ URL:
 			$(parent).append("<div class='us-sourcecode'><pre class='prettyprint linenums:1'>" + contentData + "</pre></div>");
             prettyPrint();
 		},
+
 		//
 		// Switch between edit and view mode
 		// mode - boolean flag:  true - edit; false - view;
 		//
 		switchMode: function(parentSelector, mode) {
 		},
+
 		//
 		// Notify on tab in focus, when we need to re-draw picture
 		//
@@ -81,12 +83,23 @@ URL:
 		//
 		onFocus: function(parentSelector, isInFocus) {
 		},
+
+		//
+		// Handler of custom keys Ctrl-Z/Y/C/V/X,Del
+		// Some of the the sequence should handle framework itself (Ctrl-S and Del)
+		//
+		onKeyPressed: function (parent, e) {
+		  // Empty for a while
+		},
+
 		//
 		// Get the cached value of current content
 		//
-		getDescription: function(parent) {
+		getDescription: function(parent, updateCache) {
+		  // only view mode supported
 		  return null;
 		},
+
 		//
 		// Destroy the content edit/view area,
 		// before the corresponding tab closing

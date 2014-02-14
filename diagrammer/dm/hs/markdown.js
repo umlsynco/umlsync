@@ -89,13 +89,13 @@ URL:
 		  var text =  $(parentSelector + " #markdown").val();
 
 		  // Do nothing if not modified
-		  if (self.contentCache[parent].data == text) {
+		  if (this.contentCache[parentSelector].data == text) {
 			return null;
 	      }
 
 		  // Update cache, because content was saved in the IView
 		  if (updateCache) {
-		    self.contentCache[parent].data = text;
+		    this.contentCache[parentSelector].data = text;
 		  }
 		  return text;
 		  

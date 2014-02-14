@@ -339,7 +339,7 @@ URL:
 				}
 				break;
 			case 83:// Handle Ctrl-S
-                return false;
+                // TODO: Save the current status as default
 				break;
 			default:
 				break;
