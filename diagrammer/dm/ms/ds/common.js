@@ -8,7 +8,7 @@ Author:
   Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
 
 Copyright:
-  Copyright (c) 2013 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com).
+  Copyright (c) 2014 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com).
   All rights reserved. 
 
 URL:
@@ -172,289 +172,322 @@ URL:
 
 
   //Common element menu loader
-  dm.ms.IconMenuBuilder = function(hmenus) {
+  dm.ms.IconMenuBuilder = function() {
   
 	// singleton
-	function getInstance(hmenus) {
+	function getInstance() {
 		dm.dm = dm.dm || {};
 		if (!dm.dm['IconMenuBuilder']) {
 		    
-var icon_menus = [
-  {"id":"us-class-menu",
-   "items": [
-			{"element":{"type": "class"},
-			 "connector":[
-					{"type":"association",
-					 "icon":"dm/icons/us/cs/class/class/association.png"
+		var icon_menus = [
+		  {"id":"us-class-menu",
+		   "items": [
+					{"element":{"type": "class"},
+					 "connector":[
+							{"type":"association",
+							 "icon":"dm/icons/us/cs/class/class/association.png"
+							},
+							{"type":"aggregation",
+							 "icon":"dm/icons/us/cs/class/class/aggregation.png"
+							},
+							{"type":"composition",
+							 "icon":"dm/icons/us/cs/class/class/composition.png"
+							},
+							{"type":"selfassociation",
+							 "icon":"dm/icons/us/cs/class/class/self-association.png"
+							},
+							{"type":"dependency",
+							 "icon":"dm/icons/us/cs/class/class/dependency.png"
+							},
+							{"type":"realization",
+							 "icon":"dm/icons/us/cs/class/class/realization.png"
+							},
+							{"type":"generalization",
+							 "icon":"dm/icons/us/cs/class/class/generalization.png"
+							},
+							{"type":"nested",
+							 "icon":"dm/icons/us/cs/class/class/nested.png"
+							}
+						  ]
 					},
-					{"type":"aggregation",
-					 "icon":"dm/icons/us/cs/class/class/aggregation.png"
-					},
-					{"type":"composition",
-					 "icon":"dm/icons/us/cs/class/class/composition.png"
-					},
-					{"type":"selfassociation",
-					 "icon":"dm/icons/us/cs/class/class/self-association.png"
-					},
-					{"type":"dependency",
-					 "icon":"dm/icons/us/cs/class/class/dependency.png"
-					},
-					{"type":"realization",
-					 "icon":"dm/icons/us/cs/class/class/realization.png"
-					},
-					{"type":"generalization",
-					 "icon":"dm/icons/us/cs/class/class/generalization.png"
-					},
-					{"type":"nested",
-					 "icon":"dm/icons/us/cs/class/class/nested.png"
+					{"element":{"type":"note"},
+					 "connector":[
+							{"type":"anchor",
+							 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						  ]
 					}
-				  ]
-			},
-			{"element":{"type":"note"},
-			 "connector":[
-					{"type":"anchor",
-					 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-				  ]
-			}
-		 ]
-  },
-  {"id":"us-class-note-menu",
-   "items": [
-			{"element":{"type":"class"},
-			 "connector":[
-					{"type":"anchor",
-					 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-				  ]
-			},
-			{"element":{"type":"note"},
-			 "connector":[
-					{"type":"anchor",
-					 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-				  ]
-			}
-		 ]
-  },
-  {"id":"us-component-note-menu",
-   "items": [
-			{"element":{"type":"note"},
-			 "connector":[
-					{"type":"anchor",
-					 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-				  ]
-			}
-		 ]
-  },
-  {"id":"us-component-menu",
-   "items": [
-			{"element":{"type":"component"},
-			 "connector":[
-					{"type":"association",
-					 "icon":"dm/icons/us/cs/association.png"
+				 ]
+		  },
+		  {"id":"us-class-note-menu",
+		   "items": [
+					{"element":{"type":"class"},
+					 "connector":[
+							{"type":"anchor",
+							 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						  ]
 					},
-					{"type":"aggregation",
-					 "icon":"dm/icons/us/cs/aggregation.png"
-					},
-					{"type":"composition",
-					 "icon":"dm/icons/us/cs/composition.png"
+					{"element":{"type":"note"},
+					 "connector":[
+							{"type":"anchor",
+							 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						  ]
 					}
-				  ]
-			},
-			{"element":{"type":"interface"},
-			 "connector":[
-					{"type":"association",
-					 "icon":"dm/icons/us/cs/interface.png"
+				 ]
+		  },
+		  {"id":"us-component-note-menu",
+		   "items": [
+					{"element":{"type":"note"},
+					 "connector":[
+							{"type":"anchor",
+							 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						  ]
 					}
-				  ]
-			},
-			{"element":{"type":"empty"},
-			 "connector":[
-					{"type":"arc",
-					 "icon":"dm/icons/us/cs/interface_required.png"
+				 ]
+		  },
+		  {"id":"us-component-menu",
+		   "items": [
+					{"element":{"type":"component"},
+					 "connector":[
+							{"type":"association",
+							 "icon":"dm/icons/us/cs/association.png"
+							},
+							{"type":"aggregation",
+							 "icon":"dm/icons/us/cs/aggregation.png"
+							},
+							{"type":"composition",
+							 "icon":"dm/icons/us/cs/composition.png"
+							}
+						  ]
+					},
+					{"element":{"type":"interface"},
+					 "connector":[
+							{"type":"association",
+							 "icon":"dm/icons/us/cs/interface.png"
+							}
+						  ]
+					},
+					{"element":{"type":"empty"},
+					 "connector":[
+							{"type":"arc",
+							 "icon":"dm/icons/us/cs/interface_required.png"
+							}
+						  ]
+					},
+					{"element":{"type":"port"},
+					 "connector":[
+							{"type":"association",
+							 "icon":"dm/icons/us/cs/association.gif"
+							}
+						  ]
+					},
+					{"element":{"type":"note"},
+					 "connector":[
+							{"type":"anchor",
+							 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						  ]
 					}
-				  ]
-			},
-			{"element":{"type":"port"},
-			 "connector":[
-					{"type":"association",
-					 "icon":"dm/icons/us/cs/association.gif"
+				 ]
+		  },
+		  {"id":"us-package-menu",
+		   "items": [
+					{"element":{"type":"package"},
+					 "connector":[
+							{"type":"dependency",
+							 "icon":"dm/icons/us/cs/dependency.png"
+							},
+							{"type":"access",
+							 "icon":"dm/icons/us/cs/access.png"
+							},
+							{"type":"import",
+							 "icon":"dm/icons/us/cs/import.png"
+							},
+							{"type":"generalization",
+							 "icon":"dm/icons/us/cs/generalization.png"
+							},
+							{"type":"realization",
+							 "icon":"dm/icons/us/cs/realization.png"
+							},
+							{"type":"dependency",
+							 "icon":"dm/icons/us/cs/merge.png"
+							},
+							{"type":"nested",
+							 "icon":"dm/icons/us/cs/nested.png"
+							}
+						  ]
+					},
+					{"element":{"type":"note"},
+					 "connector":[
+							{"type":"anchor",
+							 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						  ]
 					}
-				  ]
-			},
-			{"element":{"type":"note"},
-			 "connector":[
-					{"type":"anchor",
-					 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-				  ]
-			}
-		 ]
-  },
-  {"id":"us-package-menu",
-   "items": [
-			{"element":{"type":"package"},
-			 "connector":[
-					{"type":"dependency",
-					 "icon":"dm/icons/us/cs/dependency.png"
-					},
-					{"type":"access",
-					 "icon":"dm/icons/us/cs/access.png"
-					},
-					{"type":"import",
-					 "icon":"dm/icons/us/cs/import.png"
-					},
-					{"type":"generalization",
-					 "icon":"dm/icons/us/cs/generalization.png"
-					},
-					{"type":"realization",
-					 "icon":"dm/icons/us/cs/realization.png"
-					},
-					{"type":"dependency",
-					 "icon":"dm/icons/us/cs/merge.png"
-					},
-					{"type":"nested",
-					 "icon":"dm/icons/us/cs/nested.png"
+				 ]
+		  },
+		  {"id":"us-package-note-menu",
+		   "items": [
+					{"element":{"type":"note"},
+					 "connector":[
+							{"type":"anchor",
+							 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						  ]
 					}
-				  ]
-			},
-			{"element":{"type":"note"},
-			 "connector":[
-					{"type":"anchor",
-					 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-				  ]
-			}
-		 ]
-  },
-  {"id":"us-package-note-menu",
-   "items": [
-			{"element":{"type":"note"},
-			 "connector":[
-					{"type":"anchor",
-					 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-				  ]
-			}
-		 ]
-  },
-  {"id":"us-objinstance-menu",
-   "items": [
-			{"element":{"type":"objinstance"},
-			 "connector":[
-					{"type":"llsequence",
-					 "icon":"dm/icons/us/cs/createobject.png"
+				 ]
+		  },
+		  {"id":"us-objinstance-menu",
+		   "items": [
+					{"element":{"type":"objinstance"},
+					 "connector":[
+							{"type":"llsequence",
+							 "icon":"dm/icons/us/cs/createobject.png"
+							},
+							{"type":"llreturn",
+							 "icon":"dm/icons/us/cs/return.png"
+							}
+						  ]
 					},
-					{"type":"llreturn",
-					 "icon":"dm/icons/us/cs/return.png"
-					}
-				  ]
-			},
-			{"element":{"type":"port"},
-			 "connector":[
-					{"type":"llsequence",
-					 "icon":"dm/icons/us/cs/sequence.png"
+					{"element":{"type":"port"},
+					 "connector":[
+							{"type":"llsequence",
+							 "icon":"dm/icons/us/cs/sequence.png"
+							},
+							{"type":"llselfcall",
+							 "icon":"dm/icons/us/cs/self-call.png"
+							}
+						  ]
 					},
-					{"type":"llselfcall",
-					 "icon":"dm/icons/us/cs/self-call.png"
+					{"element":{"type":"lldel"},
+					 "connector":[
+							{"type":"llsequence",
+							 "icon":"dm/icons/us/cs/killobject.png"}
+						  ]
+					},
+					{"element":{"type":"message"},
+					 "connector":[
+							{"type":"llsequence",
+							 "icon":"dm/icons/us/cs/lostmessage.png"}
+						  ]
 					}
-				  ]
-			},
-			{"element":{"type":"lldel"},
-			 "connector":[
-					{"type":"llsequence",
-					 "icon":"dm/icons/us/cs/killobject.png"}
-				  ]
-			},
-			{"element":{"type":"message"},
-			 "connector":[
-					{"type":"llsequence",
-					 "icon":"dm/icons/us/cs/lostmessage.png"}
-				  ]
-			}
-		 ]
-  },
-  {"id":"us-message-menu",
-   "items": [
-			{"element":{"type":"objinstance"},
-			 "connector":[
-					{"type":"llsequence",
-					 "icon":"dm/icons/us/cs/createobject.png"
+				 ]
+		  },
+		  {"id":"us-message-menu",
+		   "items": [
+					{"element":{"type":"objinstance"},
+					 "connector":[
+							{"type":"llsequence",
+							 "icon":"dm/icons/us/cs/createobject.png"
+							}
+						  ]
+					},
+					{"element":{"type":"port"},
+					 "connector":[
+							{"type":"llsequence",
+							 "icon":"dm/icons/us/cs/sequence.png"
+							}
+						  ]
 					}
-				  ]
-			},
-			{"element":{"type":"port"},
-			 "connector":[
-					{"type":"llsequence",
-					 "icon":"dm/icons/us/cs/sequence.png"
+				 ]
+		  },
+		  {"id":"us-sequence-note-menu",
+		   "items": [
+					{"element":{"type":"note"},
+					 "connector":[
+							{"type":"anchor",
+							 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
+						  ]
 					}
-				  ]
-			}
-		 ]
-  },
-  {"id":"us-sequence-note-menu",
-   "items": [
-			{"element":{"type":"note"},
-			 "connector":[
-					{"type":"anchor",
-					 "icon":"dm/icons/us/cs/diagram/anchor_with_note.gif"}
-				  ]
-			}
-		 ]
-  }
-];
+				 ]
+		  }
+		  ];
+		var mapping_icons = {};
+			mapping_icons["note"] = {};
+			// Class diagram
+			mapping_icons["class"] = {icon_menu:"us-class-menu"};
+			mapping_icons["note"]["class"] = {icon_menu:"us-class-note-menu"};
+			//Package diagram
+			mapping_icons["package"] = {icon_menu:"us-package-menu"};
+			mapping_icons["note"]["package"] = {icon_menu:"us-package-note-menu"};
+			// Component diagram
+			mapping_icons["component"] = {icon_menu:"us-component-menu"};
+			mapping_icons["interface"] = {icon_menu:"us-component-menu"};
+			mapping_icons["port"] = {icon_menu:"us-component-menu"};
+			mapping_icons["empty"] = {icon_menu:"us-component-menu"};
+			mapping_icons["note"]["component"] = {icon_menu:"us-component-note-menu"};
+			// Sequence diagram
+			mapping_icons["objinstance"] = {icon_menu:"us-objinstance-menu"};
+			mapping_icons["llport"] = {icon_menu:"us-objinstance-menu"};
+			mapping_icons["lldel"] = {icon_menu:"us-objinstance-menu"};
+			mapping_icons["llalt"] = {icon_menu:"us-objinstance-menu"};
+			mapping_icons["actor"] = {icon_menu:"us-objinstance-menu"};
+			mapping_icons["note"]["sequence"] = {icon_menu:"us-sequence-note-menu"};
 
 			// create a instance
-			dm.dm['IconMenuBuilder'] = new IconMenuBuilder(icon_menus);
-			dm.dm['IconMenuBuilder'].extendMenus(hmenus);
-		}
-		else {
-		  dm.dm['IconMenuBuilder'].extendMenus(hmenus);
+			dm.dm['IconMenuBuilder'] = new IconMenuBuilder(icon_menus, mapping_icons);
 		}
 
 		// return the instance of the singletonClass
 		return dm.dm['IconMenuBuilder'];
 	}
 
-	var IconMenuBuilder = function(hmenus) {
-	  this.extendMenus(hmenus);
+	var IconMenuBuilder = function(hmenus, mapping) {
+	  this.menus = mapping;
+	  this.config = hmenus;
 	};
 
 	IconMenuBuilder.prototype = {
-       menus : [],
-	   //
-	   // extend the descriptions of icon menus
-	   //
-	   extendMenus : function(hmenus) {
-         // Prepared the list of connectors for menus 
-		for (var dd in hmenus) {
-		  var menu = hmenus[dd];
-		  this.menus[menu['id']] = [];
-		  var items = menu['items'];
-		  for (var tt in items) {
-			this.menus[menu['id']][items[tt]['element']['type']] = [];
-			var connectors = items[tt]['connector'];
-			for (var cc in connectors) {
-			  this.menus[menu['id']][items[tt]['element']['type']][connectors[cc]['type']] = connectors[cc]['icon'];
-			}
-		  }     
+      //
+	  // Helper method to get menu id
+	  //
+	  _getMenuId: function(type, dtype) {
+	    if (!this.menus[type]) {
+		  return null;
 		}
+		if (this.menus[type].icon_menu) {
+		  return this.menus[type].icon_menu;
+		}
+		else if (this.menus[type][dtype] && this.menus[type][dtype].icon_menu) {
+		  return this.menus[type][dtype].icon_menu
+		}
+		return null;
 	  },
 	  //
 	  // Create an instance of menus element
 	  //
       load : function(type, diagram) {
+          var menu_id = this._getMenuId(type, diagram.options.type);
+	      if (!menu_id) {
+		    $.log("Error: There is no icon menu for " + type + " and diagram " + diagram.options.type);
+			return;
+		  }
 
           this.diagram = diagram;
 
-		  // Check that menu type is defined
-		  // And that it was not load before
+		  //
+		  // menu was loaded yet, do nothing
+		  //
+		  if ($(" .elmenu-" + menu_id).is("div")) {
+			return menu_id;
+		  }
 
-		  var menu_id = "us-"+type+"-menu"
-		  if ((this.menus[menu_id] == undefined)
-			  || ($(" .elmenu-" + menu_id).is("div")))
-			return;
+		  //
+		  // lets create the icon menu
+		  //
+		  var menu = null;
+		  for (var gg in this.config) {
+		    if (this.config[gg].id == menu_id) {
+			  menu = this.config[gg].items;
+			  break;
+			}
+		  }
+		  // Exit if menu not available
+		  if (!menu) {
+		    return;
+		  }
 
-		  // lets create the menu
-		  var menu_items = [];
-		  for (var c in this.menus[menu_id])       // element descriptor
-			for (var r in this.menus[menu_id][c])  // connector descriptor
-			  menu_items.push("<img src='" + dm.dm.loader.url + this.menus[menu_id][c][r] +"' id='" + r +"' title='"+ r + "' aux='" + c + "' style='padding:1px;'></img>");
+		  var menu_items = [];		  
+		  for (var c in menu) {       // element descriptor
+			for (var r in menu[c]["connector"])  // connector descriptor
+			  menu_items.push("<img src='" + dm.dm.loader.url + menu[c]["connector"][r].icon +"' id='" + menu[c]["connector"][r].type +"' title='"+ menu[c]["connector"][r].type + "' aux='" + menu[c]["element"].type + "' style='padding:1px;'></img>");
+	      }
 
 		  var cells = menu_items.join('');
 
@@ -554,28 +587,35 @@ var icon_menus = [
 			$(this).stop().animate({opacity:"1"});
 		  })
 		  .mouseleave(function() {$(this).stop().animate({opacity:"0"});});
+		  
+		  return menu_id;
 	  },
 	  //
 	  // Enable menu showing for a diagram element.
 	  // There are two use-cases for that:
 	  //
-      Enable : function(id, menu, el) {
-        this.currentMenu = menu;
-        this.currentElement = id;
-		var menu_id = "us-" + menu + "-menu";
-        this.refEl = el;
-		this.diagram = el.parrent;
-		$("#tabs .elmenu-" + menu_id + " img").draggable('option', 'appendTo', "#" + this.diagram.euid);
+      Enable : function(element) {
+        this.currentMenu = this._getMenuId(element.options.type,
+		                                   element.parrent.options.type);
+		if (!this.currentMenu) {
+		    $.log("Error: There is no icon menu for " + type + " and diagram " + diagram.options.type);
+			return;
+		}
+
+        this.currentElement = element.euid;
+        this.refEl = element;
+		this.diagram = element.parrent;
+		$("#tabs .elmenu-" + this.currentMenu + " img").draggable('option', 'appendTo', "#" + this.diagram.euid);
 		
 		// Allows to prevent menus showing of mouse over icons
 		// on diagram change
-        $(".elmenu-" + menu_id).css({display:"block"});
+        $(".elmenu-" + this.currentMenu).css({display:"block"});
       },
 	  //
 	  // Disable menu showing for a diagram element id.
 	  //
-      Disable : function(id) {
-	    var menu_id = "us-" + this.currentMenu + "-menu";
+      Disable : function(element) {
+	    var menu_id = this.currentMenu;
 
         // Allows to prevent menus showing of mouse over icons
 		// on diagram change
@@ -588,16 +628,14 @@ var icon_menus = [
 	  //
 	  // Show an icon menu on mouse enter to element
 	  //
-      Show: function(id, x, y) {
-        var menu_id = "us-" + this.currentMenu + "-menu";
+      Show: function(element, x, y) {
+        var menu_id = this.currentMenu;
 
-		if (this.currentElement == id) {
-			if (y == undefined) {
-			  this.refEl = x;
-			  this.diagram = x.parrent;
-			  x = undefined;
-		    }
-			var $el = $('#'+ id + "_Border");
+		if (this.currentElement == element.euid) {
+		    this.refEl = element;
+			this.diagram = element.parrent;
+
+			var $el = $('#'+ element.euid + "_Border");
 			var pz = $el.position(),
 			$did = $el.parent();
 			var dpz = $did.offset();
@@ -606,19 +644,19 @@ var icon_menus = [
 			x = x || pz.left + 20;
 			y = y || pz.top;
 
-			$(".elmenu-" + menu_id).stop().css("left", x).css("top", y).animate({opacity:"1"});
+			$(".elmenu-" + menu_id).stop().css("left", x).css("top", y+30).animate({opacity:"1"});
 		  }
 	  },
 	  //
 	  // Hide menu on mouse exit from element
 	  //
-      Hide : function(id) {
-        if (this.currentElement == id)
-          $(".elmenu-us-" + this.currentMenu+"-menu").stop().animate({opacity:"0"});
+      Hide : function(element) {
+        if (this.currentElement == element.euid)
+          $(".elmenu-" + this.currentMenu).stop().animate({opacity:"0"});
       }
 	};
 
-    return getInstance(hmenus);
+    return getInstance();
   }
 
   //

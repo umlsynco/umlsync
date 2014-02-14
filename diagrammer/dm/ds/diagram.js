@@ -1126,7 +1126,7 @@ dm['at'] = dm.at; //automated testing
 
       // Load the icons menu for element
       if (this.menuIcon != undefined) {
-        this.menuIcon['load'](options.type, this);
+        this.icon_menu_id = this.menuIcon['load'](this.options.type, this);
 	  }
     }
 
@@ -1200,7 +1200,7 @@ dm['at'] = dm.at; //automated testing
         }
         if (!value) {
            if (this.menuIcon != undefined)
-             this.menuIcon['Disable']();
+             this.menuIcon['Disable'](this.euid);
            if (this.menuCtx != undefined)
              this.menuCtx['HideAll']();
         }
@@ -1741,9 +1741,9 @@ dm['at'] = dm.at; //automated testing
         if (refElement != undefined && this.options.editable) {
           // Enable menu for the newely selected element
           if (mtype != undefined) {
-            this.menuIcon['Enable'](refElement.euid, mtype, refElement);
+            this.menuIcon['Enable'](refElement);
           }
-          this.menuIcon['Show'](refElement.euid, refElement);
+          this.menuIcon['Show'](refElement);
         }
       }
 
@@ -1775,15 +1775,13 @@ dm['at'] = dm.at; //automated testing
 	  this.draw();
 	  if (this.menuIcon) {
 	    if (this.selectedElement) {
-	      this.menuIcon['Enable'](this.selectedElement.euid,
-		                          this.selectedElement.options.type,
-								  this.selectedElement);
+	      this.menuIcon['Enable'](this.selectedElement);
 		}
 	  }
 	}
 	else {
 	  if (this.selectedElement) {
-	      this.menuIcon['Disable'](this.selectedElement.euid);
+	      this.menuIcon['Disable'](this.selectedElement);
 	  }
 	}
   },
@@ -2150,7 +2148,7 @@ dm['at'] = dm.at; //automated testing
         if (element.parrent.menuIcon
           && element.options.selected
           && element.parrent.options.editable) {
-          element.parrent.menuIcon['Show'](this.id, element);
+          element.parrent.menuIcon['Show'](element);
           $('#' + this.id +'_REF').css({'visibility':'visible'});
         }
 //@endif
@@ -2168,7 +2166,7 @@ dm['at'] = dm.at; //automated testing
         //Check if this.euid is the same as selected
         if (element.parrent.menuIcon
           && element.parrent.options.editable) {
-          element.parrent.menuIcon['Hide'](this.id);
+          element.parrent.menuIcon['Hide'](element);
         }
 //@endif
         $('#' + this.id +'_REF').css({'visibility':'hidden'});
