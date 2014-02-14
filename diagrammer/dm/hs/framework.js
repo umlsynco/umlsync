@@ -1669,6 +1669,22 @@ Version:
                     //@ifdef EDITOR
                     var fw = this;
                     $(window).keydown(function(e) {
+						var params = null;
+					    if (!fw.selectedContentId) {
+						  return;
+						}
+						
+						params = fw.contents[fw.selectedContentId];
+						var handler = null;
+                        if (params && params.contentType) {
+						  handler = fw.formatHandlers[params.contentType];
+					    }
+						
+						if (!handler) {
+						  return;
+						}
+
+						
                         if (e.ctrlKey && e.keyCode == 17) {
                             fw.CtrlDown = true;
                         } else if (e.keyCode == 46) { // Del
@@ -1677,13 +1693,22 @@ Version:
                                     fw.diagrams[fw.selectedContentId].removeSelectedElements();
                                 }
                             }
-                        } else if (e.keyCode == 27) { // Esc
+                        }if (e.keyCode == 27) { // Esc
                             var e = jQuery.Event("blur");
                             e.apply = false;      // Do not apply changes
                             $(".editablefield input").trigger(e);
                         } else if (e.keyCode == 13) { // Enter
                             $(".editablefield input").trigger('blur');
-                        } else if (e.ctrlKey) {
+                        }
+						
+						//
+						// Check if editor could handle event itself
+						//
+						if (handler.onKeyPressed(fw.selectedContentId, e)) {
+						  return;
+						}
+						
+						if (e.ctrlKey) {
                             switch (e.keyCode) {
                             case 65:// Handle Ctrl-A
                                 if (fw.diagrams[fw.selectedContentId]) {

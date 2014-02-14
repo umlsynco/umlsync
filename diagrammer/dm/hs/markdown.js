@@ -89,13 +89,13 @@ URL:
 		  var text =  $(parentSelector + " #markdown").val();
 
 		  // Do nothing if not modified
-		  if (self.contentCache[parent].contentData == text) {
+		  if (self.contentCache[parent].data == text) {
 			return null;
 	      }
 
 		  // Update cache, because content was saved in the IView
 		  if (updateCache) {
-		    self.contentCache[parent].contentData = text;
+		    self.contentCache[parent].data = text;
 		  }
 		  return text;
 		  
@@ -225,11 +225,9 @@ URL:
 					$(parentSelector + " #markdown")
 					.text(contentData)
 					.bind("keyup paste", parentSelector, function(e) {
-					   // TODO: HANDLE modification state in another way :(
+					   // TODO: Check for Ctrl-Z & Ctrl-Y & Ctrl-S
 						var parent = e.data;
-						var text2 = self.markdown[parent];
-
-						if ($(this).val() != self.contentCache[parent].contentData) {
+						if ($(this).val() != self.contentCache[parent].data) {
 						   if (self.options.onModified)
 						       self.options.onModified(parent, true);
 						}

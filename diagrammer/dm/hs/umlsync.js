@@ -233,6 +233,119 @@ URL:
 		//
 		close: function(parent) {
 		  $(parent).destroy();
+		},
+		//
+		// Handler of custom keys Ctrl-Z/Y/C/V/X,Del
+		// Some of the the sequence should handle framework itself (Ctrl-S and Del)
+		//
+		onKeyPressed: function (parent, e) {
+		  if (!this.contentCache[parent] || !this.contentCache[parent]["diagram"])
+		    return;
+		  // diagram object
+		  var did = this.contentCache[parent]["diagram"];
+		  
+  		  if (e.ctrlKey) {
+			switch (e.keyCode) {
+			case 65:// Handle Ctrl-A
+				if (did) {
+					did._setWidgetsOption("selected", true);
+				}
+				e.preventDefault();
+				break;
+
+			case 67: // Handle Ctrl-C
+				// 1. Get focus manager
+				// 2. if element ? => copy it on clipboard
+				//          stop propagate
+				if (did)  {
+					this.clippy = did.getDescription("selected", true);
+				} else {
+					this.clippy = undefined;
+				}
+				break;
+			case 88:
+				// Handle Ctrl-X
+				// 1. Get focus manager
+				// 2. if element ? => copy it on clipboard
+				//          stop propagate
+				// 3. Remove element
+				if (did)  {
+					if (did.clickedElement != undefined) {
+						did.clickedElement._update();
+						this.clippy = did.clickedElement.getDescription();
+						$("#" + did.clickedElement.euid + "_Border").remove();
+					} else {
+						this.clippy = undefined;
+					}
+				} else {
+					this.clippy = undefined;
+				}
+				break;
+			case 86:// Handle Ctrl-V
+				// 1. Get focus manager
+				// 2. if diagram ? => try copy element from clipboard
+				//          stop propagate if success
+				if ((this.clippy)  && (did)) {
+					// Make selected only inserter items
+					did._setWidgetsOption("selected", false);
+					did.multipleSelection = true;
+					var obj = $.parseJSON(this.clippy),
+							es = obj["elements"],
+							cs = obj["connectors"];
+					for (var j in es) {
+						es[j].pageX = parseInt(es[j].pageX) + 10;
+						$.log("pzgeX: " + es[j].pageX);
+						es[j].pageY = parseInt(es[j].pageY) + 10;
+						did.Element(es[j].type, es[j], function(obj) {
+							es[j].euid = obj.euid;
+						});
+					}
+
+					dm.dm.loader.OnLoadComplete(function() {
+						for (var c in cs) {
+							for (var j in es) {
+								if (es[j].id == cs[c].fromId) {
+									cs[c].fromId = es[j].euid;
+								}
+								// Can not use else because of selfassociation connector
+								if (es[j].id == cs[c].toId) {
+									cs[c].toId = es[j].euid;
+								}
+
+							}
+							did.Connector(cs[c].type, cs[c]);
+						}
+					});
+
+					//for (j in cs)
+					//did.Connector(cs[j].type, cs[j]);
+					this.clippy = undefined;
+				}
+				break;
+			case 90:// Handle Ctrl-Z
+				// 1. Get focus manager
+				// 2. if diagram => get operation sequence manager
+				//         -> goBack()
+				if (did)  {
+					did.opman.revertOperation();
+				}
+				break;
+			case 89:// Handle Ctrl-Y
+				// 1. Get focus manager
+				// 2. if diagram => get operation sequence manager
+				//         -> goForward()
+				if (did)  {
+					did.opman.repeatOperation();
+				}
+				break;
+			case 83:// Handle Ctrl-S
+                return false;
+				break;
+			default:
+				break;
+			}
+		  }
+		  return true;
 		}
 		};
 
