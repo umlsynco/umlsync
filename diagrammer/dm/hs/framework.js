@@ -1679,140 +1679,72 @@ Version:
                         if (params && params.contentType) {
 						  handler = fw.formatHandlers[params.contentType];
 					    }
-						
-						if (!handler) {
-						  return;
-						}
 
+						var sendToHandler = false;
 						
                         if (e.ctrlKey && e.keyCode == 17) {
                             fw.CtrlDown = true;
                         } else if (e.keyCode == 46) { // Del
-                            if (($(".editablefield input").length == 0) && (fw.diagrams[fw.selectedContentId] != undefined))  {
-                                if (fw.diagrams[fw.selectedContentId]) {
-                                    fw.diagrams[fw.selectedContentId].removeSelectedElements();
-                                }
+						    //
+							// Prevent element remove on edit fields
+							// TODO: check for dialog open
+							//
+                            if ($(".editablefield input").length == 0) {
+                                sendToHandler = true;
                             }
                         }if (e.keyCode == 27) { // Esc
-                            var e = jQuery.Event("blur");
-                            e.apply = false;      // Do not apply changes
-                            $(".editablefield input").trigger(e);
+                            var e1 = jQuery.Event("blur");
+                            e1.apply = false;      // Do not apply changes
+                            $(".editablefield input").trigger(e1);
                         } else if (e.keyCode == 13) { // Enter
                             $(".editablefield input").trigger('blur');
                         }
 						
-						//
-						// Check if editor could handle event itself
-						//
-						if (handler.onKeyPressed(fw.selectedContentId, e)) {
-						  return;
-						}
-						
 						if (e.ctrlKey) {
                             switch (e.keyCode) {
                             case 65:// Handle Ctrl-A
-                                if (fw.diagrams[fw.selectedContentId]) {
-                                    fw.diagrams[fw.selectedContentId]._setWidgetsOption("selected", true);
-                                }
-                                e.preventDefault();
+							    sendToHandler = true;
                                 break;
-
                             case 67: // Handle Ctrl-C
-                                // 1. Get focus manager
-                                // 2. if element ? => copy it on clipboard
-                                //          stop propagate
-                                if (fw.diagrams[fw.selectedContentId])  {
-                                    $.clippy = fw.diagrams[fw.selectedContentId].getDescription("selected", true);
-                                } else {
-                                    $.clippy = undefined;
-                                }
+							    sendToHandler = true;
                                 break;
                             case 88:
-                                // Handle Ctrl-X
-                                // 1. Get focus manager
-                                // 2. if element ? => copy it on clipboard
-                                //          stop propagate
-                                // 3. Remove element
-                                if (fw.diagrams[fw.selectedContentId])  {
-                                    if (fw.diagrams[fw.selectedContentId].clickedElement != undefined) {
-                                        fw.diagrams[fw.selectedContentId].clickedElement._update();
-                                        $.clippy = fw.diagrams[fw.selectedContentId].clickedElement.getDescription();
-                                        $("#" + fw.diagrams[fw.selectedContentId].clickedElement.euid + "_Border").remove();
-                                    } else {
-                                        $.clippy = undefined;
-                                    }
-                                } else {
-                                    $.clippy = undefined;
-                                }
+							    sendToHandler = true;
                                 break;
                             case 86:// Handle Ctrl-V
-                                // 1. Get focus manager
-                                // 2. if diagram ? => try copy element from clipboard
-                                //          stop propagate if success
-                                if (($.clippy)  && (fw.diagrams[fw.selectedContentId])) {
-                                    // Make selected only inserter items
-                                    fw.diagrams[fw.selectedContentId]._setWidgetsOption("selected", false);
-                                    fw.diagrams[fw.selectedContentId].multipleSelection = true;
-                                    var obj = $.parseJSON($.clippy),
-                                            es = obj["elements"],
-                                            cs = obj["connectors"];
-                                    for (var j in es) {
-                                        es[j].pageX = parseInt(es[j].pageX) + 10;
-                                        $.log("pzgeX: " + es[j].pageX);
-                                        es[j].pageY = parseInt(es[j].pageY) + 10;
-                                        fw.diagrams[fw.selectedContentId].Element(es[j].type, es[j], function(obj) {
-                                            es[j].euid = obj.euid;
-                                        });
-                                    }
-
-                                    dm.dm.loader.OnLoadComplete(function() {
-                                        for (var c in cs) {
-                                            for (var j in es) {
-                                                if (es[j].id == cs[c].fromId) {
-                                                    cs[c].fromId = es[j].euid;
-                                                }
-                                                // Can not use else because of selfassociation connector
-                                                if (es[j].id == cs[c].toId) {
-                                                    cs[c].toId = es[j].euid;
-                                                }
-
-                                            }
-                                            fw.diagrams[fw.selectedContentId].Connector(cs[c].type, cs[c]);
-                                        }
-                                    });
-
-                                    //for (j in cs)
-                                    //fw.diagrams[fw.selectedContentId].Connector(cs[j].type, cs[j]);
-                                    $.clippy = undefined;
-                                }
+							    sendToHandler = true;
                                 break;
                             case 90:// Handle Ctrl-Z
-                                // 1. Get focus manager
-                                // 2. if diagram => get operation sequence manager
-                                //         -> goBack()
-                                if (fw.diagrams[fw.selectedContentId])  {
-                                    fw.diagrams[fw.selectedContentId].opman.revertOperation();
-                                }
+                                sendToHandler = true;
                                 break;
                             case 89:// Handle Ctrl-Y
-                                // 1. Get focus manager
-                                // 2. if diagram => get operation sequence manager
-                                //         -> goForward()
-                                if (fw.diagrams[fw.selectedContentId])  {
-                                    fw.diagrams[fw.selectedContentId].opman.repeatOperation();
-                                }
+                                sendToHandler = true;
                                 break;
                             case 83:// Handle Ctrl-S
+							    //
+								// STOP event propagation first, and then handle it
+								//
 							    e.preventDefault();
                                 e.stopPropagation();
 							    e.stopImmediatePropagation();
+
                                 if (fw.selectedContentId)
                                     fw.saveContent(fw.selectedContentId);
+								//
+								// Send to handler to mark the current position as default
+								//
+								sendToHandler = true;
                                 break;
                             default:
                                 break;
                             }
                         }
+						//
+						// Check if editor could handle event itself
+						//
+						if (handler && sendToHandler) {
+						  handler.onKeyPressed(fw.selectedContentId, e);
+						}
                     }
                     )
                     .keyup(function(e) {
@@ -1821,7 +1753,6 @@ Version:
                         }
                     }
                     );
-                    //@endif
                 },
                 //
                 // Initialize toolbox for context menu

@@ -268,6 +268,13 @@ URL:
 		//
 		onFocus: function(parentSelector, isInFocus) {
 		  // Empty
+		},
+		//
+		// Handler of custom keys Ctrl-Z/Y/C/V/X,Del
+		// Some of the the sequence should handle framework itself (Ctrl-S and Del)
+		//
+		onKeyPressed: function (parent, e) {
+		  // Empty for a while
 		}
 		};
 
