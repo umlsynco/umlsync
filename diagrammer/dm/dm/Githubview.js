@@ -64,8 +64,8 @@
 
                   // Drop the repository tree widget
                   $("#us-treetabs").children().remove();
-				  $(self.treeCtxSelector).remove();
-				  self.treeCtxSelector = null;
+                  $(self.treeCtxSelector).remove();
+                  self.treeCtxSelector = null;
                   delete self.githubView;
                   self.githubView = null;
 
@@ -115,7 +115,7 @@
             </ul>');
             // Initialize handlers
             $("#us-github-newdoc").click(function() {
-				$(document).trigger("us-dialog-newdiagram", {view:self.githubView, path:"/"});
+                $(document).trigger("us-dialog-newdiagram", {view:self.githubView, path:"/"});
             });
 
             $("#us-github-commit").click(function() {
@@ -871,18 +871,18 @@
 
                     //
                     // Load the provided path and provide the result to the callback function
-					// 
+                    // 
                     // ----
                     //
                     getSubPaths: function(path, sp_callback) {
-					    // Reset actve node
+                        // Reset actve node
                         self.activeStorageNode = null;
 
                         // get Dynatree object
-						var $tree = $(self.treeParentSelector).dynatree("getTree");
+                        var $tree = $(self.treeParentSelector).dynatree("getTree");
 
-						// Check if it is root.
-						// There is no good handling of root path in dynatree
+                        // Check if it is root.
+                        // There is no good handling of root path in dynatree
                         if (path == "") {
                             var tmp = $tree.tnRoot.getChildren();
                             var res = new Array();
@@ -896,9 +896,9 @@
                             return;
                         }
 
-						// Load path by title of folders.
-						// It could be asynchronius call
-						// in case of request of nodes from GitHub
+                        // Load path by title of folders.
+                        // It could be asynchronius call
+                        // in case of request of nodes from GitHub
                         $tree.loadKeyPath(path, function(node, result, msg) {
                             if (result == "ok") {
                                 self.activeStorageNode = node;
@@ -912,13 +912,13 @@
                                     sp_callback(result, res);
                                 }
                             }
-							else if (result == "loaded") {
-							  sp_callback(result, node.data.title);
-							}
-							else { // Error is left
-							  $.log(result);
-							  sp_callback(result, msg);
-							}
+                            else if (result == "loaded") {
+                              sp_callback(result, node.data.title);
+                            }
+                            else { // Error is left
+                              $.log(result);
+                              sp_callback(result, msg);
+                            }
                         },
                         "title");
                     },
@@ -928,19 +928,19 @@
                     // ----
                     //
                     checkContentName: function(name) {
-					    var $tree = $(self.treeParentSelector).dynatree("getTree");
-					    var path = name.substring(0, name.lastIndexOf("/"));
-						self.activeStorageNode = null;
-						if (path == "") {
-						  self.activeStorageNode = $tree.tnRoot;
-						}
-						else {
-					      $tree.loadKeyPath(path, function(node, result) {
-						    if (result == "ok") {
-							  self.activeStorageNode = node;
-							}
-						  }, "title");
-						}
+                        var $tree = $(self.treeParentSelector).dynatree("getTree");
+                        var path = name.substring(0, name.lastIndexOf("/"));
+                        self.activeStorageNode = null;
+                        if (path == "") {
+                          self.activeStorageNode = $tree.tnRoot;
+                        }
+                        else {
+                          $tree.loadKeyPath(path, function(node, result) {
+                            if (result == "ok") {
+                              self.activeStorageNode = node;
+                            }
+                          }, "title");
+                        }
 
                         if (!self.activeStorageNode) {
                             return "Wrong path or path was not loaded yet: " + name;
@@ -1099,7 +1099,7 @@
                                              absPath:node.getAbsolutePath(),
                                              branch:"master",
                                              repoId:self.activeRepo,
-											 contentType: dm.dm.fw.getContentType(node.data.title),
+                                             contentType: dm.dm.fw.getContentType(node.data.title),
                                              editable:false
                                      };
 
@@ -1170,10 +1170,10 @@
                     hasNodeStatus: function(node, status) {
                         return $(node.span).hasClass("dynatree-ico-" + status);
                     },
-					
-					setTeeContextMenu:function(uid) {
-					  this.treeCtxSelector = "#" + uid;
-					},
+                    
+                    setTeeContextMenu:function(uid) {
+                      this.treeCtxSelector = "#" + uid;
+                    },
                     //
                     // Initialize the dynatree structure
                     // @parentSelector - No idea what is it
@@ -1230,7 +1230,10 @@
                                     }// IsFolder
                                 },
                                 onFocus: function(node) {
-								  $(".context-menu").hide();
+              // hide all context menus
+              $(".context-menu").hide();
+              // hide the color picker's menu
+              $(".us-context-toolbox").hide();
                                   if (node.data.isFolder) {
                                     self.active = node.getAbsolutePath();
                                   }

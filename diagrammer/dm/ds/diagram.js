@@ -904,6 +904,10 @@ dm['at'] = dm.at; //automated testing
       
       // Work-around for references
       $("#" + diag.euid + " .us-references").hide();
+      // hide all context menus
+      $(".context-menu").hide();
+      // hide the color picker's menu
+      $(".us-context-toolbox").hide();
       /*            
            // Hide elements selectors on click
            //$(".ui-resizable-handle").css({'visibility':'hidden'});
