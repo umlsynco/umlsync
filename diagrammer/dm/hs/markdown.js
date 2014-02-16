@@ -211,10 +211,12 @@ URL:
                         var prefix = $(this).attr("prefix") || "",
                                 postfix = $(this).attr("postfix") || "";
 
+////////////////////////////////////////////////////////////////////
+// WORK AROUND FOR DIAGRAM INSERTION BY BUTTON CLICK
                         if (prefix == "diagram") {
                             prefix = "";
-                            if (self.cachedLink && self.cachedLink.title.split(".").pop() == "umlsync") {
-                                var contentInfo2 = self.cachedLink;
+                            if (dm.dm.fw.cachedLink && dm.dm.fw.cachedLink.title.split(".").pop() == "umlsync") {
+                                var contentInfo2 = dm.dm.fw.cachedLink;
                                 var path;
                                 // Use relative paths inside repository
                                 if (contentInfo2.repoId == contentInfo.repoId
@@ -246,14 +248,16 @@ URL:
                                 else {
                                     path = "/" + contentInfo2.repoId + "/" + contentInfo2.branch + "/" + contentInfo2.absPath;
                                 }
-                                prefix = '![Diagram: ] (http://umlsync.org/github' + path + ' "';
+                                prefix = '![mime-type:vnd.umlsync.svg] (http://umlsync.org/github' + path + ' "';
                                 postfix = '")';
                             }
                             else {
-                                prefix = '![Diagram: ] (http://umlsync.org/github/%repo%/%branch%/%path% "';
+                                prefix = '![mime-type:vnd.umlsync.svg] (http://umlsync.org/github/%repo%/%branch%/%path% "';
                                 postfix = '")';
                             }
                         }
+// END OF WORK-AROUND
+////////////////////////////////////////////////////////////////////
 
                         $(parentSelector + " #markdown").wrapSelection(prefix, postfix);
 

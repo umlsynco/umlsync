@@ -9,7 +9,7 @@
         return [
             { type: 'output', filter: function(source){
 
-                return source.replace(/(<img [^>]*alt="Diagram:([^"]*)"[^>]*>)/gi, function(match) {
+                return source.replace(/(<img [^>]*alt="mime-type:vnd.umlsync.svg([^"]*)"[^>]*>)/gi, function(match) {
                     var s = match.split(" "),
                     isDiagram = false,
                     repo = branch = path = title = "";
@@ -17,7 +17,7 @@
                     for (var i in s) {
                       // Check that it is diagram:
                       if (s[i].indexOf('alt="') == 0) {
-                        if (s[i].indexOf('alt="Diagram:') == 0) {
+                        if (s[i].indexOf('alt="mime-type:vnd.umlsync.svg') == 0) {
                           isDiagram = true;
                         }
                         else {
