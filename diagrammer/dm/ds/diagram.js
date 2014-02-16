@@ -975,7 +975,7 @@ dm['at'] = dm.at; //automated testing
     .bind('contextmenu', function(e) {
       $.log("CONTEXT MENU PRESSED !!!");
       if (diag.selectedconntector) {
-        diag.menuCtx['HideAll']();
+        diag.menuCtx['hideAll']();
         diag.menuCtx['visit'](diag.selectedconntector, e.pageX , e.pageY);
         e.preventDefault();
         diag.multipleSelection = true; // work around to hide connector selection on click
@@ -1120,9 +1120,9 @@ dm['at'] = dm.at; //automated testing
     if (this.options['editable']) {
 
 	// Load the context menu for element
-      //if (this.menuCtx) {
-      //  this.menuCtx['load'](options.type, this);
-      //}
+      if (this.menuCtx) {
+        this.menuCtx['load'](options.type, this);
+      }
 
       // Load the icons menu for element
       if (this.menuIcon != undefined) {
@@ -1202,7 +1202,7 @@ dm['at'] = dm.at; //automated testing
            if (this.menuIcon != undefined)
              this.menuIcon['Disable'](this.euid);
            if (this.menuCtx != undefined)
-             this.menuCtx['HideAll']();
+             this.menuCtx['hideAll']();
         }
       }
     }
@@ -1695,7 +1695,7 @@ dm['at'] = dm.at; //automated testing
 
     // Hide all context menus
     if (this.menuCtx)
-      this.menuCtx['HideAll']();
+      this.menuCtx['hideAll']();
 
     // Nothing to add for multiple selection
     if (ctrlDown) {
@@ -2102,7 +2102,7 @@ dm['at'] = dm.at; //automated testing
         // Check that context menu manager already loaded
         var poz = $("#" + self.euid).position();
         if (self.parrent.menuCtx) {
-          self.parrent.menuCtx['HideAll']();
+          self.parrent.menuCtx['hideAll']();
 
           // Prevent the context menu usage
           if (self.parrent && self.parrent.options.editable)

@@ -8,7 +8,7 @@ Author:
   Evgeny Alexeyev (evgeny.alexeyev@googlemail.com)
 
 Copyright:
-  Copyright (c) 2014 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com).
+  Copyright (c) 2010-2014 Evgeny Alexeyev (evgeny.alexeyev@googlemail.com).
   All rights reserved. 
 
 URL:
@@ -16,31 +16,57 @@ URL:
 
  */
 
-//@aspect
+
 (function($, dm, undefined) {
+  //
+  // Unified context menu initializer for diagram elements:
+  //
+  // @param menuBuilder - the context menu builder
+  //
+  // @param options : id  - title of elment
+  //                  uid - uniqie id of HTML element
+  //
+  // @param actions : title - menu title
+  //                  click - on click handler with diagram element as argument
+  //
   dm.ms.ctx['common'] = function(menuBuilder, options, actions) {
     this.options = options;  
-    var menu = $('<ul id="'+options.uid +'" class="context-menu" ></ul>').hide().appendTo("#" + menuBuilder.diagramId);
+    var menu = $('<ul id="' + options.uid + '" class="context-menu" ></ul>').hide().appendTo("#tabs");
     menuBuilder.append(this, options.id); // element Class Context append to diagram
     var self = this;
 
     $(menu).listmenu({
-      data:actions,
-      urlPrefix: dm.dm.loader.getUrl(),
-      onSelect: function(item) {
-      if (item.click)
-        item.click(menuBuilder.currentElement, self.x, self.y);
-      //e.preventDefault();
-      menuBuilder['HideAll']();
-    },
-    onMouseEnter: function(item, evt) {
-      if (item.mouseenter)
-        item.mouseenter(menuBuilder.currentElement, evt);
-    },
-    onMouseLeave: function(item, evt) {
-      if (item.mouseleave)
-        item.mouseleave(menuBuilder.currentElement, evt);
-    }
+	    //
+		// Items and handlers
+		//
+        data:actions,
+		//
+		// TODO: Some usless prefix ? 
+		//
+        urlPrefix: dm.dm.loader.getUrl(),
+		//
+		// On context menu item selct handler
+		// 
+        onSelect: function(item) {
+          if (item.click)
+            item.click(menuBuilder.currentElement, self.x, self.y);
+          //e.preventDefault();
+          menuBuilder['hideAll']();
+        },
+		//
+		// Helper method for a menu extension
+		// 
+        onMouseEnter: function(item, evt) {
+          if (item.mouseenter)
+            item.mouseenter(menuBuilder.currentElement, evt);
+        },
+		//
+		// Helper method for a menu extension
+		// 
+        onMouseLeave: function(item, evt) {
+          if (item.mouseleave)
+            item.mouseleave(menuBuilder.currentElement, evt);
+        }
     });
 
     /*
@@ -68,31 +94,37 @@ URL:
       });
         });*/
 
-    this['Show'] = function(element, x, y) {
+    this['show'] = function(element, x, y) {
       $(".context-menu").hide();
       //show element context menu
-      var $did = $("#" + element.parrent.euid);
+      var $did = $("#tabs");
       var pz = $did.offset();
-      var scrollTop = $did.scrollTop(),
-      scrollLeft = $did.scrollLeft();
+      var scrollTop = 0;//$did.scrollTop(),
+      scrollLeft = 0;//$did.scrollLeft();
       this.x = x - pz.left + scrollTop;
       this.y = y - pz.top + scrollLeft;
 
 
 
       //$("#" + menuBuilder.diagramId + " #" + options.uid).css({"left":x-pz.left, "top":y - pz.top}).show();
-      $("#" + menuBuilder.diagramId + " #" + options.uid).css({"left":x-pz.left + scrollLeft, "top":y - pz.top + scrollTop}).show();
-      $("#context-toolbox").css({"left":x, "top":y-60}).show();
+	  var ttt = "#tabs #" + this.options.uid;
+	  var $ttt = $(ttt);
+      $ttt.css({"left":x-pz.left + scrollLeft, "top":y - pz.top + scrollTop}).show();
+
+	  var ctb = $("#context-toolbox");
+      ctb.css({"left":x, "top":y-ctb.height() -10}).show();
     };
 
-    this['Hide'] = function() {
+    this['hide'] = function() {
       $(".context-menu").hide();
       $("#" + menuBuilder.diagramId + " #" + options.uid).hide();
       $("#context-toolbox").hide();
     };
   };
 
-  //@print
+  //
+  // The context menu namespace
+  //
   dm.ms['ctx'] = dm.ms.ctx;
 
 
@@ -105,7 +137,7 @@ URL:
 //diagram - the diagram class
 
   dm.ms.ContextMenuBuilder = function(loader) {
-	// singleton
+    // singleton
 	function getInstance() {
 		dm.dm = dm.dm || {};
 		if (!dm.dm['ContextMenuBuilder']) {
@@ -121,47 +153,73 @@ URL:
 
 	var ContextMenuBuilder = function(loader) {
 	  this.loader = loader;
-	  $(document).bind("us-ms-ctx", function(event, data) {
-	  }, this);
+      var mapping = {};
+      mapping["class"] = {menu:"class"};
+      mapping["connector"] = {menu:"connector"};
+      mapping["sequence"] = {menu:"sequence"};
 
-	  $(document).bind("us-ms-ctx-load", function(event, data) {
-	  }, this);
+      this.config = mapping;
 	};
 
-	ContextMenuBuilder.prototype = {
+    ContextMenuBuilder.prototype = {
+	    //
+		// The list of loaded menus
+		// [{element.type, diagram.type} -> menu uid]
+		//
         menus : [],
-		// load the context menu JS
-		load : function(name, diagram) {
+		//
+		// Helper method to get the context menu uid
+		// @param type  - the element type
+		// @param dtype - the diagram type
+		//
+		_getMenuId: function(type, dtype) {
+		  if (this.config[type]) {
+		    return this.config[type].menu;
+		  }
+		  return "default";
+		},
+		//
+		// load the context menu handler (JS-handler)
+		//
+		load : function(type, diagram) {
 		  this.diagram = diagram;
+		  var name = this._getMenuId(type, diagram ? diagram.options.type : null);
 		  if (this.menus[name] == undefined)
 			dm.dm.loader.CreateContextMenu(name, this);
 		},
-        // callback on creation
+		//
+        // callback on the concreate menu creation
+		//
 		append : function(obj, id) {
 		  this.menus[id] = obj;
 		},
+		//
         // click on element + coordinates
+		//
 		visit : function(element, x, y) {
 		  if (this.currentMenu != undefined) {
-			this.currentMenu['Hide']();
+			this.currentMenu['hide']();
 			this.currentMenu = undefined;
 			this.currentElement = undefined;
 		  }
 
-		  if (this.menus[element.options.type] == undefined)
+		  var name = this._getMenuId(element.options.type, this.diagram ? this.diagram.options.type : null);
+
+		  // menu was not loaded or has some issues
+		  if (this.menus[name] == undefined)
 			return;
 
-		  this.currentMenu = this.menus[element.options.type] || this.menus['common'];
+		  this.currentMenu = this.menus[name];
 		  this.currentElement = element;
 		  if (this.currentMenu != undefined)
-			this.currentMenu['Show'](element, x, y); // TODO: relocate to element position  
+			this.currentMenu['show'](element, x, y); // TODO: relocate to element position  
 		},
         //
 		// Hide all context menus
 		//
-		HideAll : function() {
+		hideAll : function() {
 		  if (this.currentMenu != undefined)
-			this.currentMenu['Hide']();
+			this.currentMenu['hide']();
 		  this.currentMenu = undefined;
 		  this.currentElement = undefined;
 		}
@@ -680,12 +738,14 @@ URL:
     // Do nothing if menus was loaded before
 	//
     if (dm.ms.ds[type]) {
-      // Initialize the context menu for Element 
+      // Initialize the context menu for Elements of diagram 
       var iconMenuBuilder = new dm.ms.IconMenuBuilder(null),
-      ctxMenuBuilder = new dm.ms.ContextMenuBuilder(loader);
+        ctxMenuBuilder = new dm.ms.ContextMenuBuilder(loader);
 
+	  // Setup menus
 	  diagram.setMenuBuilder("context", ctxMenuBuilder);
 	  diagram.setMenuBuilder("icon", iconMenuBuilder);
+	  diagram.setMenuBuilder("main", dm.ms.ds[type]["main"]);
 	  return;
 	}
 
@@ -703,11 +763,9 @@ URL:
 	    return;
 	  }
 
-	  var accept = json["diagram"] ? json["diagram"]["accept"]: undefined;
 	  // JSON description was loaded, setup the menu builder for the diagram
 	  dm.ms.ds[type] = {
-	    main: diagramMenuBuilder,
-		accept: accept
+	    main: diagramMenuBuilder
 	  };
 	
 	  // Unique id's for the accordion menu
@@ -757,7 +815,10 @@ URL:
 	  diagram.setMenuBuilder("icon", iconMenuBuilder);
 
       var fw = dm.dm.fw;
-		fw['CreateDiagramMenu'](type, innerHtml, function() { 
+		fw['CreateDiagramMenu'](type, innerHtml, function() {
+          //
+          // Element selection menu
+		  //
 		  $("#"+ulid).listmenu({
 			selector: "element-selector",
 			urlPrefix: dm.dm.loader.getUrl(),
@@ -784,6 +845,9 @@ URL:
 		    }
 		  });
 
+		  //
+		  // Connector selection menu
+		  //
 		  $("#"+ulid).listmenu({
 			selector: "connector-selector",
 			selectable: true,
