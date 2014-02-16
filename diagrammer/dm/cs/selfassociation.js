@@ -37,6 +37,7 @@ dm.base.diagram("cs.selfassociation", dm.cs['connector'], {
     },
     '_init': function() {
       var p11 = $('#'+ this['from'] + "_Border").position();
+
       if (!p11) {
          alert("Not found " + this['from']);
          return;

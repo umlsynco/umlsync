@@ -92,7 +92,7 @@ dm['at'] = dm.at; //automated testing
     // report state change
     if (this.lastReportedState != this._hasModification(newReported)) {
       this.lastReportedState = this._hasModification(newReported);
-	  this.diagram.onModified(this.lastReportedState);
+	  this.diagram._onModified(this.lastReportedState);
     }
    },
    saveNewPosition: function() {
@@ -638,9 +638,9 @@ dm['at'] = dm.at; //automated testing
     return item;
   },
   
-  onModified: function(flag) {
-    if (this.options.onModified) {
-	  this.options.onModified(this.parrent, flag);
+  _onModified: function(flag) {
+    if (this.onModified) {
+	  this.onModified(this.parrent, flag);
 	}
   },
   _update: function() {
@@ -974,7 +974,7 @@ dm['at'] = dm.at; //automated testing
     })
     .bind('contextmenu', function(e) {
       $.log("CONTEXT MENU PRESSED !!!");
-      if (diag.selectedconntector) {
+      if (diag.selectedconntector && diag.menuCtx) {
         diag.menuCtx['hideAll']();
         diag.menuCtx['visit'](diag.selectedconntector, e.pageX , e.pageY);
         e.preventDefault();
@@ -1092,9 +1092,9 @@ dm['at'] = dm.at; //automated testing
   Element: function (type, options, callback) {
     if (this.options.acceptElements) {
 	  if (this.options.acceptElements.indexOf(type) >= 0) {
-	    $.log("In the list of accepted elements");
 	  }
 	  else {
+	    $.log(type + " is not in the list of accepted elements");
 	    return;
 	  }
 	}
@@ -1126,7 +1126,7 @@ dm['at'] = dm.at; //automated testing
 
       // Load the icons menu for element
       if (this.menuIcon != undefined) {
-        this.icon_menu_id = this.menuIcon['load'](this.options.type, this);
+        this.menuIcon['load'](type, this);
 	  }
     }
 
@@ -1407,7 +1407,16 @@ dm['at'] = dm.at; //automated testing
     var self = this;
 
     dm['dm']['loader']['Connector'](type, options, this, function(connector) {
-      if (connector != undefined) {
+      if (connector != undefined // Failed to create connector
+         ) {
+        // If something wrong happened to the
+        // connectable elements
+        if (!connector["from"] // Failed to load "from" element
+          || !connector["toId"]) { // Failed to load "to" element
+          delete connector;
+          return;
+        }
+
         self.connectors[connector.euid] = connector;
         if (connector.options.toId != 'ConnectionHelper') {
           $.log("REPORT: " + connector.options.toId + "   FROM : " + connector.options.fromId);
@@ -2675,6 +2684,12 @@ dm['at'] = dm.at; //automated testing
             this['toId'] = this.parrent.elements[i].euid;
           }
         }
+
+        if (!this['toId'] || !this['from']) {
+          $.log("Failed to create " + this.options.type);
+          return false;
+        }
+
         if (this.options['epoints']) {
           dm.debug = dm.debug || {};
           dm.debug[this.euid] = this.options['epoints'];
@@ -2961,6 +2976,9 @@ dm['at'] = dm.at; //automated testing
 ///////////////////////////////////////////    Do not recalculate coordinates for all elements !!!!!!!!! ////////////////////
 ///////////////////////////////////////////    It is necessary for draggable and resizable elements only !!!!!!!!! //////////
       var p11 = $('#'+ fromId + "_Border").position();
+      if (!p11) {
+        return;
+      }
       var p21 = $('#' + toId + "_Border").position();
       var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
       scrollLeft = 0; //$("#" + this.parrent.euid).scrollLeft();

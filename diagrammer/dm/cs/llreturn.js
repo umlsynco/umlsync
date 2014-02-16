@@ -102,6 +102,9 @@ dm.base.diagram("cs.llreturn", dm.cs.connector, {
        var p2 = $('#' + toId).position();
        
        var p11 = $('#'+ fromId + "_Border").position();
+       if (!p11) {
+        return;
+       }
        var p21 = $('#' + toId + "_Border").position(),
        w11 = $('#' + fromId + "_Border").width() + 26,
        w21 = $('#' + toId + "_Border").width() + 26,

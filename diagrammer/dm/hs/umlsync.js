@@ -107,7 +107,7 @@ URL:
 						// keep the object reference in cache
 						self.contentCache[parent]["diagram"] = obj;
 
-						obj.options.onModified = function(selector, flag) {
+						obj.onModified = function(selector, flag) {
 						  	if (self.options.onModified)
 						       self.options.onModified(selector, flag);
 						};

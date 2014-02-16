@@ -43,6 +43,10 @@ URL:
 			view:true
 		},
 		//
+		// Embedded content counter
+		//
+		counter:0,
+		//
 		// The cached content values for a corresponding tabs
 		//
 		contentCache: {},
