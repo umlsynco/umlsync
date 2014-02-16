@@ -602,7 +602,7 @@ dm['at'] = dm.at; //automated testing
     for (var i in this.options) {
       if (this.options[i] != undefined) {
         if (proto.options[i] != undefined) {
-          if ((proto.options[i] != this.options[i]) || (i == 'type')) {
+          if ((proto.options[i] != this.options[i]) || (['type','left','top'].indexOf(i) >= 0)) {
             item += comma + '"' + i + '":"' + this.options[i] + '"';
             comma = ',\n';
           }
