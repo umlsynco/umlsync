@@ -92,7 +92,7 @@ dm['at'] = dm.at; //automated testing
     // report state change
     if (this.lastReportedState != this._hasModification(newReported)) {
       this.lastReportedState = this._hasModification(newReported);
-	  this.diagram._onModified(this.lastReportedState);
+      this.diagram._onModified(this.lastReportedState);
     }
    },
    saveNewPosition: function() {
@@ -468,8 +468,8 @@ dm['at'] = dm.at; //automated testing
   dm.base.chain.prototype = {
     run:function(callback) {
       var result = true,
-	    self = this;
-	  
+        self = this;
+      
       do {
         if (this.sync) {
           // return false if chain have to be canceled
@@ -481,20 +481,20 @@ dm['at'] = dm.at; //automated testing
         else {
           if (this.object && this.object[this.method]) {
             this.object[this.method](data, function(result) {
-			  if (result && self.handler) {
-			    self.handler.run();
-			  }
-			});
+              if (result && self.handler) {
+                self.handler.run();
+              }
+            });
             
           };
-		  result = false;
+          result = false;
           break;
         }
       } while(false);
 
       if (result && self.handler) { 
-	    this.handler.run();
-	  }
+        this.handler.run();
+      }
     }
   };
 
@@ -640,8 +640,8 @@ dm['at'] = dm.at; //automated testing
   
   _onModified: function(flag) {
     if (this.onModified) {
-	  this.onModified(this.parrent, flag);
-	}
+      this.onModified(this.parrent, flag);
+    }
   },
   _update: function() {
     $.log("_update");
@@ -1091,13 +1091,13 @@ dm['at'] = dm.at; //automated testing
   
   Element: function (type, options, callback) {
     if (this.options.acceptElements) {
-	  if (this.options.acceptElements.indexOf(type) >= 0) {
-	  }
-	  else {
-	    $.log(type + " is not in the list of accepted elements");
-	    return;
-	  }
-	}
+      if (this.options.acceptElements.indexOf(type) >= 0) {
+      }
+      else {
+        $.log(type + " is not in the list of accepted elements");
+        return;
+      }
+    }
     dm.ds.diagram.ec++;
     options = options || {};
 
@@ -1119,7 +1119,7 @@ dm['at'] = dm.at; //automated testing
     // If it is editable diagram
     if (this.options['editable']) {
 
-	// Load the context menu for element
+    // Load the context menu for element
       if (this.menuCtx) {
         this.menuCtx['load'](options.type, this);
       }
@@ -1127,7 +1127,7 @@ dm['at'] = dm.at; //automated testing
       // Load the icons menu for element
       if (this.menuIcon != undefined) {
         this.menuIcon['load'](type, this);
-	  }
+      }
     }
 
     return options.euid;
@@ -1781,31 +1781,31 @@ dm['at'] = dm.at; //automated testing
   //
   onFocus: function(flag) {
     if (flag) {
-	  this.draw();
-	  if (this.menuIcon) {
-	    if (this.selectedElement) {
-	      this.menuIcon['Enable'](this.selectedElement);
-		}
-	  }
-	}
-	else {
-	  if (this.selectedElement) {
-	      this.menuIcon['Disable'](this.selectedElement);
-	  }
-	}
+      this.draw();
+      if (this.menuIcon) {
+        if (this.selectedElement) {
+          this.menuIcon['Enable'](this.selectedElement);
+        }
+      }
+    }
+    else {
+      if (this.selectedElement) {
+          this.menuIcon['Disable'](this.selectedElement);
+      }
+    }
   },
   
   getElementMenu:function(menu, element) {
     if (menu == "icon") {
-	    if (element.options.type == "note") {
-	      return "us-"+this.options.type + "-" + element.options.type+"-menu";
-		}
-		else {
-		  return "us-"+ element.options.type+"-menu";
-		}
+        if (element.options.type == "note") {
+          return "us-"+this.options.type + "-" + element.options.type+"-menu";
+        }
+        else {
+          return "us-"+ element.options.type+"-menu";
+        }
     }
     if (menu == "context") {
-	  return "us-ctx-common-menu";
+      return "us-ctx-common-menu";
     }
   }
 //@endif
@@ -2518,8 +2518,8 @@ dm['at'] = dm.at; //automated testing
       'nameTemplate': 'Connector'
     },
     //
-	// Add text label
-	//
+    // Add text label
+    //
     addLabel: function(opt) {
       var self = this,
       lid = opt.lid != undefined ? opt.lid : this.euid + "_l" + this.label_count;  // uniqie label name to simplify revert editable

@@ -77,64 +77,64 @@ dm.base.diagram("cs.llselfcall", dm.cs.connector, {
          alert("Not found " + this.from);
          return;
       }
-	  var self = this, con = this, par = this.parrent;
+      var self = this, con = this, par = this.parrent;
 
-	  /*this.parrent.Element("llport",
-	         {left: p11.left + 10, top: p11.top + 20, "menu":this.options["menu"], level:this.parrent.elements[this.from].options.level+1},
-        		function(element) {
-		          var ui = {};
-		          element.drop_parent = self.euid;
-		          ui.position = $("#" + element.euid+"_Border").position();
+      /*this.parrent.Element("llport",
+             {left: p11.left + 10, top: p11.top + 20, "menu":this.options["menu"], level:this.parrent.elements[this.from].options.level+1},
+                function(element) {
+                  var ui = {};
+                  element.drop_parent = self.euid;
+                  ui.position = $("#" + element.euid+"_Border").position();
                   par._dropElement(element, ui);
-				  // perform some action on completion
- 			      con.toId = element.euid;
-				  con.options.toId = element.euid;
-				  self.parrent.draw();
-		     });
+                  // perform some action on completion
+                   con.toId = element.euid;
+                  con.options.toId = element.euid;
+                  self.parrent.draw();
+             });
       */
 
       this.dleft = 40;
       this.dtop = 20;
       this.dright = 20;
-	  
-	  if (this.toId == "ConnectionHelper") {
-	    $.log("POS1");
-	    var pos = $("#ConnectionHelper_Border").position();
-		$.log("POS IS 2: " + pos );
-	    this.epoints[0] = [[pos.left,pos.top]];
-	  } else {
-	    var el = $("#"+this.toId+"_Border");
-	    var pos = el.position();
-	    this.epoints[0] = [[pos.left+el.width()*3,pos.top-20]];
-	  }
+      
+      if (this.toId == "ConnectionHelper") {
+        $.log("POS1");
+        var pos = $("#ConnectionHelper_Border").position();
+        $.log("POS IS 2: " + pos );
+        this.epoints[0] = [[pos.left,pos.top]];
+      } else {
+        var el = $("#"+this.toId+"_Border");
+        var pos = el.position();
+        this.epoints[0] = [[pos.left+el.width()*3,pos.top-20]];
+      }
     },
     '_getConnectionPoints': function(fromId, toId, epoints) {
-	  var $el = $('#'+ fromId + "_Border");
-	  var $el2 = $('#'+ toId + "_Border");
+      var $el = $('#'+ fromId + "_Border");
+      var $el2 = $('#'+ toId + "_Border");
       var p11 = $el.position(),
-	      p21 = $el2.position(),
-	      ew = $el.width(),
-		  eh = $el.height();
+          p21 = $el2.position(),
+          ew = $el.width(),
+          eh = $el.height();
 
       if (!p11) {
          alert("Not found " + this.from);
          return;
       }
 
-	  var newpoints = [];
-	  if (toId == "ConnectionHelper") {
-	    var pos = $("#ConnectionHelper_Border").position();
-	    newpoints[0] = [p11.left + ew, pos.top];
-		newpoints[1] = [pos.left, pos.top];
-		newpoints[2] = [pos.left, pos.top+10];
-		newpoints[3] = [p11.left + ew, pos.top+10];
-		return newpoints;
-	  } else {
-		var top = (this.epoints[0][1] > p21.top-10) ? p21.top-10: this.epoints[0][1];
-	    newpoints[0] = [p11.left + ew + 3, top];
-		newpoints[1] = [this.epoints[0][0], top];
-		newpoints[2] = [this.epoints[0][0], p21.top+5];
-		newpoints[3] = [p21.left + $el2.width() + 6, p21.top+5];
+      var newpoints = [];
+      if (toId == "ConnectionHelper") {
+        var pos = $("#ConnectionHelper_Border").position();
+        newpoints[0] = [p11.left + ew, pos.top];
+        newpoints[1] = [pos.left, pos.top];
+        newpoints[2] = [pos.left, pos.top+10];
+        newpoints[3] = [p11.left + ew, pos.top+10];
+        return newpoints;
+      } else {
+        var top = (this.epoints[0][1] > p21.top-10) ? p21.top-10: this.epoints[0][1];
+        newpoints[0] = [p11.left + ew + 3, top];
+        newpoints[1] = [this.epoints[0][0], top];
+        newpoints[2] = [this.epoints[0][0], p21.top+5];
+        newpoints[3] = [p21.left + $el2.width() + 6, p21.top+5];
         return newpoints;
       }
     },
@@ -148,10 +148,10 @@ dm.base.diagram("cs.llselfcall", dm.cs.connector, {
         return null;
     },
     '_updateEPoints': function(ui) {
-	  if (this.epoints && this.epoints.legth > 0)
+      if (this.epoints && this.epoints.legth > 0)
         this.epoints = [[ui.position.left, ui.position.top]];
-	  else 
-	    this.epoints = [[ui.position.left, ui.position.top+5]]; // LLPort should be created on the same ui position threfore we have to shift extra point. But it is required for a first time only !!!
+      else 
+        this.epoints = [[ui.position.left, ui.position.top+5]]; // LLPort should be created on the same ui position threfore we have to shift extra point. But it is required for a first time only !!!
       this.cleanOnNextTransform = true;
       this.eppos = 0; // extra point position. Uses for temporary points which should be removed on next transform.
     },
