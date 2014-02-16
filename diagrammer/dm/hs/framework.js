@@ -288,8 +288,12 @@ Version:
 
 				   obj = new dm.hs.markdown({onModified: function(selector, flag) {
 				     self.onContentModifiedStateChanged(selector, flag);
-					 }
-				   });
+					 },
+				     onEmbeddedContentHandler: function(contentParams, parentContentParams) {
+                        self.loadContent(contentParams, parentContentParams);
+				     },
+					 embedded:self.options.embedded
+                   });
 				   this.formatHandlers[obj.getUid()] = obj;
 				   
 				   obj = new dm.hs.codeview();

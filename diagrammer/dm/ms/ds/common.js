@@ -176,6 +176,16 @@ URL:
 		  if (this.config[type]) {
 		    return this.config[type].menu;
 		  }
+		  //
+		  // The list of connectors.
+		  // There is not special mapping for connectors for a while
+		  //
+		  if (["aggregation", "composition", "dependency",
+		    "realization","generalization","association",
+			"composition","anchor","llsequence","llselfcall",
+			"nested"].indexOf(type) >= 0) {
+		    return "connector";
+		  }
 		  return "default";
 		},
 		//

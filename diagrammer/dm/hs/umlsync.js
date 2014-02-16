@@ -47,6 +47,10 @@ URL:
 		//
 		contentCache: {},
 		//
+		// Cache for embedded content
+		//
+		embeddedContents: {},
+		//
 		// Unique id of this editor/viewer
 		//
 		getUid: function() {
@@ -95,6 +99,11 @@ URL:
 					jsonData,
 					parent,
 					function(obj) {
+					    // Embedded content, no handlers required
+					    if (!self.contentCache[parent]) {
+						  return;
+						}
+
 						// keep the object reference in cache
 						self.contentCache[parent]["diagram"] = obj;
 
@@ -179,7 +188,13 @@ URL:
 			  }
 			}
 			else {
+			  // hide the diagram menu
 			  $(".diagram-menu").hide();
+			  // hide all context menus
+			  $(".context-menu").hide();
+			  // hide the color picker's menu
+			  $(".us-context-toolbox").hide();
+			  
 			}
 
 		    // redraw

@@ -2506,10 +2506,11 @@ dm['at'] = dm.at; //automated testing
     dm.base.diagram("cs.connector", {
       'options': {
       'selected': false,
-      'nameTemplate': 'Connector',
-      'ctx_menu': 'connector'
+      'nameTemplate': 'Connector'
     },
-    
+    //
+	// Add text label
+	//
     addLabel: function(opt) {
       var self = this,
       lid = opt.lid != undefined ? opt.lid : this.euid + "_l" + this.label_count;  // uniqie label name to simplify revert editable
@@ -2520,7 +2521,6 @@ dm['at'] = dm.at; //automated testing
       .appendTo("#" + this.parrent.euid)
       .css("left", opt.left)
       .css("top", opt.top)
-//@ifdef EDITOR
       .draggable({
         start: function(event, ui) {
         $(this).data('startPosition', ui.helper.position());
@@ -2548,7 +2548,6 @@ dm['at'] = dm.at; //automated testing
         return true;
       }
       })
-//@endif
       .mouseenter(function() {self.options.selected = true;
       self.parrent.draw();
       for (var i in self.labels) 
@@ -2557,7 +2556,6 @@ dm['at'] = dm.at; //automated testing
         self.parrent.draw();
         for (var i in self.labels) 
           $(self.labels[i]).removeClass("us-connector-hover")});
-//@ifdef EDITOR
       if (opt.idx) {
         // add label to the special place in array
         this.labels.splice(opt.idx, 0, $item);
@@ -2572,9 +2570,7 @@ dm['at'] = dm.at; //automated testing
            text: opt.text,
            lid:lid
           });
-//@endif
     },
-//@ifdef EDITOR
     rmLabel: function(opt) {
       var l = this.labels[opt.idx];
       this.parrent.opman.reportShort("-label", this.euid, {idx:opt.idx, left:l.css("left"), top:l.css("top")});
@@ -2624,7 +2620,6 @@ dm['at'] = dm.at; //automated testing
       item +=  '}';
       return item; 
     },
-//@endif
     _setOption: function( key, value ) {
       if (value == undefined) {
         delete this.options[ key ];
@@ -2641,7 +2636,6 @@ dm['at'] = dm.at; //automated testing
           this.labels[i].css({left:value[i][0], top: value[i][1]});
         }       
       }
-//@ifdef EDITOR
       else if (key == "editable") {
          for (var i in this.labels) {
            $.each(this.labels[i],
@@ -2651,7 +2645,6 @@ dm['at'] = dm.at; //automated testing
              });
          }
       }
-//@endif
       else {
         this.options[ key ] = value;
       }
@@ -2814,7 +2807,6 @@ dm['at'] = dm.at; //automated testing
         return true;
       return false;
     },
-//@ifdef EDITOR
     startTransform: function(x1,y1) {
       if (!this.parrent.options.editable)
         return;
@@ -2958,7 +2950,6 @@ dm['at'] = dm.at; //automated testing
       }
     },
 
-//@endif
     _getConnectionPoints: function(fromId, toId, epoints) {
 
       var p1 = $('#'+ fromId).position();

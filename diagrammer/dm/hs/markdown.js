@@ -110,6 +110,44 @@ URL:
 					'+converter.makeHtml(contentData)+'\
 					</article></div>';
 			$(parentSelector).append(innerHtml); // Markdown loaded
+			//
+			// Handle an embedded content
+			//
+			if (this.options.onEmbeddedContentHandler) {
+                    var self = this;
+                    $(parentSelector + " article.markdown-body .pack-diagram").each(function() {
+                        var newId = self.options.embedded + "-" + self.counter;
+                        self.counter++;
+
+                        var relativePath = $(this).attr("path"),
+                                sum = $(this).attr("sha"),
+                                loadParams;
+
+                        // Initialize load parameter from content or inherit them from parent document
+                        loadParams = {
+                                sha:sum,
+                                relativePath:relativePath,
+                                repoId:$(this).attr("repo") || contentInfo.repoId,
+                                branch:$(this).attr("branch") || contentInfo.branch,
+                                viewid:$(this).attr("source") || contentInfo.viewid,
+                                title: (relativePath == undefined) ? sum : relativePath.split("/").pop(), // title is the last word separated by slash
+
+                                // extra options for content handler
+                                contentType:"umlsync", // means diagram
+                                editable:false,
+                                selector:parentSelector + " #" +  newId
+                        };
+
+                        // TODO: What is this string for ?
+                        $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");
+                        // replace the default id by unique ID
+                        $(this).attr("id", newId);
+
+                        // all these contents should be embedded
+                        // diagrams
+			            self.options.onEmbeddedContentHandler(loadParams, contentInfo);
+                    });
+			}
 		},
 		//
 		// Helper method to open  markdown in edit mode

@@ -6,8 +6,7 @@
 (function( $, dm, undefined ) {
 
 dm.ms.ctx['connector'] = function(menuBuilder) {
-  var self = this;
-  return new dm.ms.ctx['common'](menuBuilder, {id: "connector", uid:"connectorEUI"}, [
+  return new dm.ms.ctx.common(menuBuilder, {id: "connector", uid:"connectorEUI"}, [
            {
                 title: 'Add "Text"',
                 click: function(connector, x, y) {
@@ -28,6 +27,6 @@ dm.ms.ctx['connector'] = function(menuBuilder) {
                 }
             }
         ]);
-}
+};
 //@aspect
 })(jQuery, dm);
