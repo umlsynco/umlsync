@@ -106,7 +106,7 @@
 		  waitPathLoad: false,
           source:function(request, response) {
             if (response) {
-              var val = $(this).val();
+              var val = $("#VP_inputselector").val();
               var newStatus = val.substr(0, val.lastIndexOf('/'));
 			  // Get user input
               var match = val.split("/").pop();
