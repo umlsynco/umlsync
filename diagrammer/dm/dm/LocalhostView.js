@@ -79,11 +79,13 @@
             'success':  function(json) {
               $("#us-treetabs #puh").remove();
               self._activateViewSelectWidget(json);
+			  self._activateToolboxWidget("#us-toolbox", true);
             },
             'error': function(err) {
               self.activated = false;
               $("#us-treetabs #puh").remove();
               self._handleError(err);
+			  self._activateToolboxWidget("#us-toolbox", false);
             }
           });
         };
@@ -131,11 +133,13 @@
           if (Object.keys(json).length < 10) {
 		    for (var t in json) {
 			  if (json[t].isdefault) {
-			    dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/" + json[t].id));
+			    this.activeView = new dm.base.LocalhostView("http://localhost:8000/vm/" + json[t].id);
+			    dm.dm.fw.addView2(this.id, this.activeView);
 				return;
 			  }
 			}
-			dm.dm.fw.addView2(this.id, new dm.base.LocalhostView("http://localhost:8000/vm/un"));
+			this.activeView = new dm.base.LocalhostView("http://localhost:8000/vm/un");
+			dm.dm.fw.addView2(this.id, this.activeView);
             return
           }
           var self = this,
@@ -168,6 +172,42 @@
           }
         };
 
+        //
+        // IViewManager::onViewManagerChange - activate the toolbox area helper
+        // ------
+        //
+        this._activateToolboxWidget = function(selector, flag) {
+            var item = $(selector + " #us-localhost-list");
+            if (item.length > 0){
+              if (flag) {
+                item.show();
+              }
+              else {
+                item.hide();
+              }
+              return;
+            }
+
+            var self = this;
+            // Append HTML code
+            $(selector).append('<ul id="us-localhost-list" style="list-style:none;">\
+                    <li id="us-localhost-reload" class="us-left" title="Reload tree"><img src="http://umlsync.org/static/images/reload.png" class="ui-icon"></li>\
+                    <li id="us-localhost-newdoc" title="New diagram"><img src="http://umlsync.org/static/images/newdoc.png" class="ui-icon"></li>\
+                    <li id="us-localhost-revertdoc" title="Revert diagram"><img src="http://umlsync.org/static/images/revertdoc.png" class="ui-icon"></li>\
+                    <li id="us-localhost-removedoc" title="Remove diagram"><img src="http://umlsync.org/static/images/deldoc.png" class="ui-icon"></li>\
+            </ul>');
+            // Initialize handlers
+            $("#us-localhost-newdoc").click(function() {
+                $(document).trigger("us-dialog-newdiagram", {view:self.activeView, path:"/"});
+            });
+
+            $("#us-localhost-reload").click(function() {
+                if (self.activeView != null) {
+                    self.activeView.reloadTree();
+                }
+            });
+
+        };
         //
         // Helper method to decode a "base64" content
         // @param data - data to decode
@@ -295,11 +335,31 @@
                     // return the list of subfolders for a given path
                     //
                     getSubPaths: function(path, sp_callback) {
+                        // Reset actve node
                         self.activeStorageNode = null;
 
+                        // get Dynatree object
                         var $tree = $(self.treeParentSelector).dynatree("getTree");
 
-                        $tree.loadKeyPath(path, function(node, result) {
+                        // Check if it is root.
+                        // There is no good handling of root path in dynatree
+                        if (path == "") {
+                            var tmp = $tree.tnRoot.getChildren();
+                            var res = new Array();
+                            for (var r in tmp) {
+                                if (tmp[r].data.isFolder)
+                                    res.push(tmp[r].data.title);
+                            }
+                            if (sp_callback) {
+                                sp_callback("ok", res);
+                            }
+                            return;
+                        }
+
+                        // Load path by title of folders.
+                        // It could be asynchronius call
+                        // in case of request of nodes from GitHub
+                        $tree.loadKeyPath(path, function(node, result, msg) {
                             if (result == "ok") {
                                 self.activeStorageNode = node;
                                 var tmp = node.getChildren();
@@ -309,12 +369,21 @@
                                         res.push(tmp[r].data.title);
                                 }
                                 if (sp_callback) {
-                                    sp_callback(res);
+                                    sp_callback(result, res);
                                 }
+                            }
+                            else if (result == "loaded") {
+                              sp_callback(result, node.data.title);
+                            }
+                            else { // Error is left
+                              $.log(result);
+                              sp_callback(result, msg);
                             }
                         },
                         "title");
                     },
+
+					
                     //
                     // Check the content name:
                     //
@@ -392,6 +461,7 @@
                     // Save content to eclipse plugin
                     //
                     saveContent: function(params, data, isNewContent) {
+					    var self = this;
                         var path = params.absPath;
                         $.ajax({
                             'type': 'GET',
@@ -399,7 +469,7 @@
                             'dataType': 'jsonp',
                             'data': {'diagram':data, 'path': path, 'description':"update"},
                             'success': function(ddd) {
-                                var dt = $("#view-2 #tree").dynatree("getTree");
+                                var dt = $(self.treeParentSelector).dynatree("getTree");
                                 dt.loadKeyPath(path, function(t,c,s) {}, "title");
                             }
                         });

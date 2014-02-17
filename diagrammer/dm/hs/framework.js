@@ -830,7 +830,8 @@ Version:
 					  // Modify the framework state for the saved content
                       if (isTabClosed) {
 					    // release content cache
-					    self.views[params.viewid].view.releaseContent(params);
+						if (self.views[params.viewid].view.releaseContent)
+					      self.views[params.viewid].view.releaseContent(params);
 					  }
 					  else {
 					    // change the state of content
