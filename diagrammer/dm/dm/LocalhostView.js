@@ -360,7 +360,7 @@
                             }
                         }
 
-                        if (params.contentType == "md" || params.contentType == "dm" || params.contentType == "code") {
+                        if (params.contentType == "umlsync" || params.contentType == "markdown" || params.contentType == "codeview") {
                             $.ajax({
                                 url: urlArg + '/open?path='+ fullPath,
                                 dataType: 'jsonp',
@@ -531,7 +531,7 @@
                                                 contentType:contentType,
                                                 editable:false
                                         };
-                                        if (params.contentType == "md" || params.contentType == "dm") {
+                                        if (params.contentType == "umlsync" || params.contentType == "markdown" || params.contentType == "code") {
                                             dm.dm.fw.loadContent(params);
                                         }
                                         else {
