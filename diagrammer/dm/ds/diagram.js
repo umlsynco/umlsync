@@ -817,24 +817,21 @@ dm['at'] = dm.at; //automated testing
             }
 
             if (iDiagram.options['type'] == "component") {
-              var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById((isInterface) ? "Interface":"Component"), {'viewid':source.data.viewid});
-              element.pageX = ui.position.left - thisOffset.left;
-              element.pageY = ui.position.top - thisOffset.top;
-              element.left = element.pageX;
-              element.top = element.pageY;
+              var element = {'viewid':source.data.viewid};
+			  element.type = (isInterface) ? "interface":"component";
+              element.left = ui.position.left - thisOffset.left;
+              element.top = ui.position.top - thisOffset.top;
               element.name = key;
               element.filepath = filenode.getAbsolutePath();
               var ename = iDiagram.Element(element.type, element);
               return;
             }
             if (iDiagram.menuIcon != undefined) {
-              var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Class"), {'viewid':source.data.viewid});
+              var element = {'viewid':source.data.viewid, type:"class"};
 
               if (element != undefined) {
-                element.pageX = ui.position.left - thisOffset.left;
-                element.pageY = ui.position.top - thisOffset.top;
-                element.left = element.pageX;
-                element.top = element.pageY;
+                element.left = ui.position.left - thisOffset.left;
+                element.top = ui.position.top - thisOffset.top;
                 element.name = key;
                 if (isInterface) element.aux = "interface";
                 element.filepath = filenode.getAbsolutePath();
@@ -850,32 +847,24 @@ dm['at'] = dm.at; //automated testing
             iDiagram._dropSubDiagram(source.getAbsolutePath(), event, ui);
           } else if (source.data.isFs) {
             if (iDiagram.options['type'] == "component") {
-              var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Component"), {'viewid':source.data.viewid});
+              var element = {'viewid':source.data.viewid, type:"component"};
               if (element != undefined) {
-                var x = element.pageX,
-                y = element.pageY;
-                element.pageX = ui.position.left - thisOffset.left;
-                element.pageY = ui.position.top - thisOffset.top;
-                element.left = element.pageX;
-                element.top = element.pageY;
+                element.left = ui.position.left - thisOffset.left;
+                element.top = ui.position.top - thisOffset.top;
                 element.name = source.data.title;
                 element.filepath = source.getAbsolutePath();
                 var ename = iDiagram.Element(element.type, element);   
                 return;
               }
             }
-            var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Package"), {'viewid':source.data.viewid});
+			var element = {'viewid':source.data.viewid, type:"package"};
 
             if (element != undefined) {
-              var x = element.pageX,
-              y = element.pageY;
-                element.pageX = ui.position.left - thisOffset.left;
-                element.pageY = ui.position.top - thisOffset.top;
-                element.left = element.pageX;
-                element.top = element.pageY;
               element.name = source.data.title;
+              element.left = ui.position.left - thisOffset.left;
+              element.top = ui.position.top - thisOffset.top;
               element.filepath = source.getAbsolutePath();
-              var ename = iDiagram.Element(element.type, element);   
+              var ename = iDiagram.Element(element.type, element);
             }
 
           }
