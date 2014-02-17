@@ -256,7 +256,7 @@ dm.base.diagram("es.class", dm['es']['element'], {
          old_attr = 'attribute-'+this.atrN;
          ++this.atrN;
        }
-       var idx = (opt.idx == undefined) ? this.opN : opt.idx;
+       var idx = (opt.idx == undefined) ? this.atrN : opt.idx;
        var $ch = $('<li id="attribute"><a id="'+ old_attr +'" class="editablefield attribute" >' + opt.text + '</a></li>'),
           $idx = $("#" + this.euid + " .us-class-attributes .us-sortable li:eq("+idx+")");
        
@@ -269,8 +269,8 @@ dm.base.diagram("es.class", dm['es']['element'], {
        }
 
 //@ifdef EDITOR
-       $ch.children("a")
-       .bind('contextmenu', function(e) {
+       $ch = $ch.children("a");
+       $ch.bind('contextmenu', function(e) {
          self.showContextMenu("#" + self.euid + " #" + this.id, e)
        });
 
