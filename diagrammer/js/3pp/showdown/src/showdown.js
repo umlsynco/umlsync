@@ -118,7 +118,6 @@ var g_output_modifiers = [];
 //
 
 if (typeof module !== 'undefind' && typeof exports !== 'undefined' && typeof require !== 'undefind') {
-    alert("Loading: FS");
 	var fs = require('fs');
 
 	if (fs) {
@@ -131,7 +130,6 @@ if (typeof module !== 'undefind' && typeof exports !== 'undefined' && typeof req
 		// Load extensions into Showdown namespace
 		Showdown.forEach(extensions, function(ext){
 			var name = stdExtName(ext);
-            alert("Loading: " + './extensions/' + ext);
 			Showdown.extensions[name] = require('./extensions/' + ext);
 		});
 	}
