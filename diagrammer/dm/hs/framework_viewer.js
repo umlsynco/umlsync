@@ -955,7 +955,7 @@ Version:
             self.markdown[tabname] = self.markdown[tabname] || {repo: repo, fullname : absPath, viewid:viewid};
 
             var count = 0;
-            $(tabname + " article.markdown-body .pack-diagram").each(function() {
+            $(tabname + " article.markdown-body .umlsync-embedded-diagram").each(function() {
               //var repo = $(this).attr("repo"),
               var sum = $(this).attr("sha"),
               relativePath = $(this).attr("path");

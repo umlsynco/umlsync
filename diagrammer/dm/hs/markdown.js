@@ -119,7 +119,7 @@ URL:
             //
             if (this.options.onEmbeddedContentHandler) {
                     var self = this;
-                    $(parentSelector + " article.markdown-body .pack-diagram").each(function() {
+                    $(parentSelector + " article.markdown-body .umlsync-embedded-diagram").each(function() {
                         var newId = self.options.embedded + "-" + self.counter;
                         self.counter++;
 
@@ -293,7 +293,7 @@ URL:
 			  if (mode) {
 			    // Notify framework about embedded content closing
 				if (this.options.onEmbeddedContentHandler) {
-					$(parentSelector + " article.markdown-body .pack-diagram").each(function() {
+					$(parentSelector + " article.markdown-body .umlsync-embedded-diagram").each(function() {
 						var newId = this.id;
 
 						var relativePath = $(this).attr("path"),

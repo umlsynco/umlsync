@@ -1413,7 +1413,7 @@ Version:
                     $(tabname).attr("edm", false);//enable diagram menu is always false for markdown
 
                     var self = this;
-                    $(tabname + " article.markdown-body .pack-diagram").each(function() {
+                    $(tabname + " article.markdown-body .umlsync-embedded-diagram").each(function() {
                         var newId = self.options.embedded + "-" + self.counter;
                         self.counter++;
 

@@ -83,7 +83,7 @@
                     
                     if (isDiagram) {
                       return '<div id="umlsync-embedded-content"\
-                         class="pack-diagram" ' + branch + repo + path + title+style+'></div>'
+                         class="umlsync-embedded-diagram" ' + branch + repo + path + title+style+'></div>'
                     }
                     
                     return match;
