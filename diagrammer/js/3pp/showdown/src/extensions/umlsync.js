@@ -9,21 +9,40 @@
         return [
             { type: 'output', filter: function(source){
 
-                return source.replace(/(<img [^>]*alt="mime-type:vnd.umlsync.svg([^"]*)"[^>]*>)/gi, function(match) {
+                return source.replace(/(<img [^>]*alt="mime-type:application\/vnd.umlsync.([^"]*)"[^>]*>)/gi, function(match) {
                     var s = match.split(" "),
                     isDiagram = false,
                     repo = branch = path = title = "";
+					var style;
 
                     for (var i in s) {
                       // Check that it is diagram:
                       if (s[i].indexOf('alt="') == 0) {
-                        if (s[i].indexOf('alt="mime-type:vnd.umlsync.svg') == 0) {
-                          isDiagram = true;
+					    var si = s[i];
+					    var alt = si.substr(5, si.length -6);
+						var alts = alt.split(";");
+						
+						for (var v in alts) {
+                          if ((alts[v] == "mime-type:application/vnd.umlsync.json")
+						    || (alts[v] == "mime-type:application/vnd.umlsync.svg")) {
+                            isDiagram = true;
+						  }
+						  else if (alts[v].indexOf("width:") == 0) {
+						    style = style ? style + alts[v] : 'style="' + alts[v];
+							style = style + ';';
+						  }
+						  else if (alts[v].indexOf("height:") == 0) {
+						    style = style ? style + alts[v] : 'style="' + alts[v];
+							style = style + ';';
+						  }
                         }
-                        else {
-                          break;
-                        }
+						if (!isDiagram) {
+						  return match;
+						}
+						style = style ? style + '"': '';
                       }
+					  
+					  
 
                       // Detect soruce type
                       if (s[i].indexOf('src="') == 0) {
@@ -63,8 +82,8 @@
                     }
                     
                     if (isDiagram) {
-                      return '<div id="ClassInheritanceExample"\
-                         class="pack-diagram" ' + branch + repo + path + title+'></div>'
+                      return '<div id="umlsync-embedded-content"\
+                         class="pack-diagram" ' + branch + repo + path + title+style+'></div>'
                     }
                     
                     return match;

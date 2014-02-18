@@ -143,7 +143,7 @@ URL:
                         };
 
                         // TODO: What is this string for ?
-                        $(this).css('padding', '20px').width("1200px").height("600px").css("overflow", "none").css("text-align", "center");
+                        $(this).css('padding', '20px').css("overflow", "none").css("text-align", "center");
                         // replace the default id by unique ID
                         $(this).attr("id", newId);
 
@@ -248,11 +248,11 @@ URL:
                                 else {
                                     path = "/" + contentInfo2.repoId + "/" + contentInfo2.branch + "/" + contentInfo2.absPath;
                                 }
-                                prefix = '![mime-type:vnd.umlsync.svg] (http://umlsync.org/github' + path + ' "';
+                                prefix = '![mime-type:application/vnd.umlsync.json] (http://umlsync.org/github' + path + ' "';
                                 postfix = '")';
                             }
                             else {
-                                prefix = '![mime-type:vnd.umlsync.svg] (http://umlsync.org/github/%repo%/%branch%/%path% "';
+                                prefix = '![mime-type:application/vnd.umlsync.json] (http://umlsync.org/github/%repo%/%branch%/%path% "';
                                 postfix = '")';
                             }
                         }
