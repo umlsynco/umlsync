@@ -288,23 +288,54 @@ URL:
         // mode - boolean flag:  true - edit; false - view;
         //
         switchMode: function(parentSelector, mode) {
-            if (this.contentCache[parentSelector]) {
-            if (mode) {
-              // Remove the view part, because it could change anyway
-              $(parentSelector + " div#readme").remove();
-              // Open/Show edit part. There is no need to destroy edit part because it could be reusable
-              this._editMarkdown(parentSelector, this.contentCache[parentSelector]["info"], this.contentCache[parentSelector]["data"]);
-            }
-            else {
-              // Cache could be changed in editor and could not in view mode
-              this.contentCache[parentSelector]["data"] = $(parentSelector + " #markdown").val();
-              // Hide the edit part if available
-              $(parentSelector + " #markdown").hide();
-              $(parentSelector + " span.us-toolbox-header").hide();
-              // Construct a new view
-              this._viewMarkdown(parentSelector, this.contentCache[parentSelector]["info"], this.contentCache[parentSelector]["data"]);
-            }
-          }
+			var self = this;
+			if (this.contentCache[parentSelector]) {
+			  if (mode) {
+			    // Notify framework about embedded content closing
+				if (this.options.onEmbeddedContentHandler) {
+					$(parentSelector + " article.markdown-body .pack-diagram").each(function() {
+						var newId = this.id;
+
+						var relativePath = $(this).attr("path"),
+							sum = $(this).attr("sha"),
+							loadParams;
+						var contentInfo = self.contentCache[parentSelector].info;
+
+						// Initialize load parameter from content or inherit them from parent document
+						loadParams = {
+								sha:sum,
+								relativePath:relativePath,
+								repoId:$(this).attr("repo") || contentInfo.repoId,
+								branch:$(this).attr("branch") || contentInfo.branch,
+								viewid:$(this).attr("source") || contentInfo.viewid,
+								title: (relativePath == undefined) ? sum : relativePath.split("/").pop(), // title is the last word separated by slash
+
+								// extra options for content handler
+								contentType:"umlsync", // means diagram
+								editable:false,
+								selector:parentSelector + " #" +  newId
+						};
+
+						// free an embedded content cache
+						self.options.onEmbeddedContentHandler(loadParams, contentInfo, true);
+					});
+				}
+				// Remove the view part, because it could change anyway
+				$(parentSelector + " div#readme").remove();
+			  
+				// Open/Show edit part. There is no need to destroy edit part because it could be reusable
+				this._editMarkdown(parentSelector, this.contentCache[parentSelector]["info"], this.contentCache[parentSelector]["data"]);
+			  }
+			  else {
+				// Cache could be changed in editor and could not in view mode
+				this.contentCache[parentSelector]["data"] = $(parentSelector + " #markdown").val();
+				// Hide the edit part if available
+				$(parentSelector + " #markdown").hide();
+				$(parentSelector + " span.us-toolbox-header").hide();
+				// Construct a new view
+				this._viewMarkdown(parentSelector, this.contentCache[parentSelector]["info"], this.contentCache[parentSelector]["data"]);
+			  }
+			}
         },
         //
         // Notify on tab in focus, when we need to re-draw picture

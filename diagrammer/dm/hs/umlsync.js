@@ -47,10 +47,6 @@ URL:
         //
         contentCache: {},
         //
-        // Cache for embedded content
-        //
-        embeddedContents: {},
-        //
         // Unique id of this editor/viewer
         //
         getUid: function() {
@@ -84,10 +80,7 @@ URL:
             // enable diagram menu
             if (contentInfo.selector == undefined) {
                 $(parent).attr("edm", contentInfo.editable)
-                this.contentCache[parent] = {data:contentData, mode:false};
-            }
-            else {
-                self.embeddedContents[parent] = contentInfo;
+                this.contentCache[parent] = {mode:false};
             }
 
             jsonData['fullname'] = contentInfo.absPath;
@@ -248,7 +241,9 @@ URL:
         // before the corresponding tab closing
         //
         close: function(parent) {
-          $(parent).destroy();
+		  if (this.contentCache[parent]) {
+		    delete this.contentCache[parent];
+		  }
         },
         //
         // Handler of custom keys Ctrl-Z/Y/C/V/X,Del

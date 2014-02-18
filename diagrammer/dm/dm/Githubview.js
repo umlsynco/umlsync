@@ -693,6 +693,11 @@
                             // Reduced the cached number because now it is in modified list
                             self.contentCachedNum--;
                         }
+						//
+						// Update the status of node
+						//
+						if (params.absPath)
+						  self.addNodeStatus(null, params.absPath, "modified");
                     },
 
                     //
@@ -706,19 +711,24 @@
                         params.isOwner = (userRepositories.indexOf(params.repoId) >= 0);
 
                         // Check modified cache:
+						// All modified files should be stored by absolute path
+						//
                         if (params.absPath && self.repositories[params.repoId].updated[params.absPath]) {
                             callback.success(null, self.repositories[params.repoId].updated[params.absPath].content);
                             return;
                         }
 
-                        // Check cache:
+                        // Check file cache of not modified content
+						// 
                         if (params.sha && self.repositories[params.repoId].contents[params.sha]) {
                             callback.success(null, self.repositories[params.repoId].contents[params.sha].content);
                             self.repositories[params.repoId].contents[params.sha].refCount++;
                             return;
                         }
 
-                        // Try to get by path:
+						// If sha not defined (embedded content use-case)
+						// then we should check that file was not loaded before
+						//
                         if (params.sha == undefined) {
                             for (var g in self.repositories[params.repoId].contents) {
                                 if (self.repositories[params.repoId].contents[g].path == params.absPath) {
@@ -735,6 +745,11 @@
                                 // Editable if only data located on the active repo and branch
                                 isEditable = (params.repoId == self.activeRepo && params.branch == self.activeBranch);
 
+					    //
+						// There are two ways to load content:
+						// By SHA summ - when loading tree blob
+						// By path - when loading embedded content
+						//
                         if (params.sha) {
                             repo.getBlob(params.sha, function(err, data) {
                                 if (data == null) {
@@ -744,11 +759,15 @@
 
                                 self.contentCachedNum++;
                                 self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:data, isOpen:true, refCount:1};
+								self.addNodeStatus(null, params.absPath, "cached");
 
                                 callback.success(err, data);
                                 return;
                             });
                         }
+						//
+						// Load content by path and save SHA on load complete
+						//
                         else if (params.absPath) {
                             var cPath = (params.absPath[0] == '/')? params.absPath.substring(1):params.absPath;
                             repo.contents(cPath,  function(err, data, response) {
@@ -767,8 +786,12 @@
                                     callback.error("No data found in: " + cPath);
                                     return;
                                 }
+								self.addNodeStatus(null, params.absPath, "cached");
                                 self.contentCachedNum++;
                                 params.sha = data.sha;
+								//
+								// CACHE the result
+								//
                                 self.repositories[params.repoId].contents[params.sha] = {path: params.absPath, content:decodedData, isOpen:true, refCount:1};
 
                                 callback.success(err, decodedData);
@@ -816,14 +839,6 @@
                             self.repositories[params.repoId].contents[params.sha].refCount--;
                             self.repositories[params.repoId].contents[params.sha].closeTime = new Date();
                         }
-                        var $tree = $(self.treeParentSelector).dynatree("getTree");
-
-                        $tree.loadKeyPath(params.absPath, function(node, result) {
-                            if (result == "ok") {
-                                self.addNodeStatus(node, "modified");
-                            }
-                        },
-                        "title");
                     },
 
                     //
@@ -983,8 +998,8 @@
                             node.remove();
                         }
                         else {
-                            self.rmNodeStatus(node, "modified");
-                            self.addNodeStatus(node, "removed");
+                            self.rmNodeStatus(node, null, "modified");
+                            self.addNodeStatus(node, null, "removed");
                             self.repositories[self.activeRepo].updated[absPath] = {content :null, parent_sha:sha, sha:node.data.sha};
                         }
                     },
@@ -1013,7 +1028,7 @@
                             node.remove();
                         }
                         else {
-                            self.rmNodeStatus(node, "modified");
+                            self.rmNodeStatus(node, null, "modified");
                         }
                     },
 
@@ -1145,12 +1160,28 @@
                     // @node - the dynatree node
                     // @status - cached, modified, removed, added
                     //
-                    addNodeStatus: function(node, status) {
-                        // Can't change state for new node
-                        if ((status == "cached" || status == "modified") && node.data.sha == undefined) {
-                            return;
-                        }
-                        $(node.span).addClass("dynatree-ico-" + status);
+                    addNodeStatus: function(node, path, status) {
+					    function _addNodeStatus(node, status) {
+						  // Can't change state for new node
+						  if ((status == "cached" || status == "modified") && node.data.sha == undefined) {
+							  return;
+						  }
+						  $(node.span).addClass("dynatree-ico-" + status);
+						}
+
+						if (node) { 
+						  _addNodeStatus(node, status);
+						  return;
+						}
+
+					    var $tree = $(this.treeParentSelector).dynatree("getTree");
+
+                        $tree.loadKeyPath(path, function(node, result) {
+                            if (result == "ok") {
+                               _addNodeStatus(node, status);
+                            }
+                        },  
+                        "title");
                     },
 
                     //
@@ -1158,8 +1189,20 @@
                     // @node - the dynatree node
                     // @status - status string
                     //
-                    rmNodeStatus: function(node, status) {
-                        $(node.span).removeClass("dynatree-ico-" + status);
+                    rmNodeStatus: function(node, path, status) {
+						if (node) { 
+						  $(node.span).removeClass("dynatree-ico-" + status);
+						  return;
+						}
+
+					    var $tree = $(this.treeParentSelector).dynatree("getTree");
+
+                        $tree.loadKeyPath(path, function(node, result) {
+                            if (result == "ok") {
+                               $(node.span).removeClass("dynatree-ico-" + status);
+                            }
+                        },  
+                        "title");
                     },
                     //
                     // Check the node status
@@ -1264,7 +1307,6 @@
                                                 editable:false
                                         };
 
-                                        self.addNodeStatus(node, "cached");
                                         dm.dm.fw.loadContent(params);
                                     }
                                 }

@@ -173,10 +173,29 @@ Version:
 
                     if (self.contents && self.contents[ahref]) {
                         function dropTabAndContent() {
-                            // Drop markdown cache if content is markdown
-                            if (self.contents[ahref].contentType == "md") {
-                                delete self.markdown[ahref];
-                            }
+					        // release content cache
+							var params = self.contents[ahref];
+						    if (self.views[params.viewid].view.releaseContent) {
+							  // Release content counter
+					          self.views[params.viewid].view.releaseContent(params);
+							  // Release embedded content counters
+							  for (var v in self.embeddedContents) {
+							    if (v.indexOf(ahref) >= 0) {
+								  var params2 = self.embeddedContents[v];
+								  // Free cache of handler
+								  if (self.formatHandlers[params2.contentType])
+					                self.formatHandlers[params2.contentType].close(v);
+								  // release content counter for IView cache
+								  self.views[params.viewid].view.releaseContent(params2);
+								  // delete an embedded content cache
+								  delete self.embeddedContents[v];
+								}
+							  }
+						    }
+							// Free content cache for handler
+							if (self.formatHandlers[params.contentType])
+					          self.formatHandlers[params.contentType].close(ahref);
+
                             delete self.contents[ahref];
                             $tabs.tabs('remove', index);
                             $(ahref).remove();
@@ -287,10 +306,29 @@ Version:
 				   this.formatHandlers[obj.getUid()] = obj;
 
 				   obj = new dm.hs.markdown({onModified: function(selector, flag) {
-				     self.onContentModifiedStateChanged(selector, flag);
+				       self.onContentModifiedStateChanged(selector, flag);
 					 },
-				     onEmbeddedContentHandler: function(contentParams, parentContentParams) {
-                        self.loadContent(contentParams, parentContentParams);
+				     onEmbeddedContentHandler: function(contentParams, parentContentParams, isClose) {
+					    if (isClose) {
+                          //Reduce an IView cache content counter
+					      if (self.views[contentParams.viewid].view.releaseContent) {
+					          self.views[contentParams.viewid].view.releaseContent(contentParams);
+						  }
+
+					      // Free content cache for the corresponding handler
+						  if (self.formatHandlers[contentParams.contentType]) {
+					        self.formatHandlers[contentParams.contentType].close(contentParams.selector);
+						  }
+						  
+						  // Destroy the reference from this framwork
+						  if (self.embeddedContents[contentParams.selector]) {
+						    delete self.embeddedContents[contentParams.selector];
+						  }
+						}
+						else {
+						  // Load content
+						  self.loadContent(contentParams, parentContentParams);
+						}
 				     },
 					 embedded:self.options.embedded
                    });
@@ -828,12 +866,7 @@ Version:
 					  }
 					  
 					  // Modify the framework state for the saved content
-                      if (isTabClosed) {
-					    // release content cache
-						if (self.views[params.viewid].view.releaseContent)
-					      self.views[params.viewid].view.releaseContent(params);
-					  }
-					  else {
+                      if (!isTabClosed) {
 					    // change the state of content
                         self.onContentModifiedStateChanged(tabid, false);
 					  }
@@ -1274,6 +1307,9 @@ Version:
                                         params.hasModification = true;
                                         self.contents[tabname] = params;
                                     }
+									else {
+									    self.embeddedContents[params.selector] = params;
+									}
 
                                     // Simple toolbox for each diagram
                                     self.appendContentToolbox(tabname, params);

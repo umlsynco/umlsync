@@ -807,7 +807,7 @@ dm['at'] = dm.at; //automated testing
               }
 
             if (iDiagram.options['type'] == "sequence") {
-              var element = $.extend({}, iDiagram.menuIcon.dmb.getElementById("Object Instance"), {'viewid':source.data.viewid});
+              var element = {'viewid':source.data.viewid, type:"objinstance"};
               element.pageX = ui.position.left - thisOffset.left;
               element.left = element.pageX;
               element.name = key;
