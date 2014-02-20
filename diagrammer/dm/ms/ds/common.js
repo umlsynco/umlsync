@@ -413,7 +413,7 @@ URL:
 							}
 						  ]
 					},
-					{"element":{"type":"port"},
+					{"element":{"type":"llport"},
 					 "connector":[
 							{"type":"llsequence",
 							 "icon":"dm/icons/us/cs/sequence.png"
@@ -446,7 +446,7 @@ URL:
 							}
 						  ]
 					},
-					{"element":{"type":"port"},
+					{"element":{"type":"llport"},
 					 "connector":[
 							{"type":"llsequence",
 							 "icon":"dm/icons/us/cs/sequence.png"

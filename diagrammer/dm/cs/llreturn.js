@@ -134,9 +134,24 @@ dm.base.diagram("cs.llreturn", dm.cs.connector, {
              x1 = (p11.left + 10 );
              x2 = (p21.left + w21 - 20);
            }
-           var newpoints = [[x1,y1+5], [x2,y2+5]];
-         return newpoints;
+		   // Different canvas types
+		   if (this.parrent.options.multicanvas) {
+		     // x,y are relative coordinates and we need to add
+			 // scrolling to them in case individual canvas for diagram
+             var newpoints = [[x1+scrollLeft,y1+5+scrollTop], [x2+scrollLeft,y2+5+scrollTop]];
+             return newpoints;
+		   }
+		   else {
+             var newpoints = [[x1,y1+5], [x2,y2+5]];
+             return newpoints;
+		   }
        } else {
+	   	   if (this.parrent.options.multicanvas) {
+		     scrollTop = 0;
+		   }
+		   else {
+		    scrollLeft = 0;
+		   }
            var y2 = epoints[epoints.length-1][1],
              y1 = y2,
               x1 = 0,
@@ -149,7 +164,7 @@ dm.base.diagram("cs.llreturn", dm.cs.connector, {
              x2 = (p21.left + w21 - 20);
            }
            var newpoints = //[[x1,y1], [x2,y2]];
-             [[x1 - scrollLeft,y1 - scrollTop], [x2 - scrollLeft,y2 - scrollTop]];
+             [[x1 + scrollLeft,y1 - scrollTop], [x2+ scrollLeft,y2 - scrollTop]];
            return newpoints;
        }
      }

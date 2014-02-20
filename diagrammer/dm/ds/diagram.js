@@ -753,7 +753,7 @@ dm['at'] = dm.at; //automated testing
     if (this.options.multicanvas) {
       this.canvasEuid = this.euid +'_Canvas';
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
-          <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + this.options['width'] + 'px height=' + this.options['height'] + 'px>\
+          <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + (this.options['width'] ? this.options['width'] : "1200")  + 'px height=' + (this.options['height'] ? this.options['height'] : "600") + 'px>\
           <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
           <div class="us-canvas-bg" style="width:100%;height:100%;">\
           </div></div>');
@@ -2973,23 +2973,29 @@ dm['at'] = dm.at; //automated testing
         return;
       }
       var p21 = $('#' + toId + "_Border").position();
-      var scrollTop = 0,//$("#" + this.parrent.euid).scrollTop(),
-      scrollLeft = 0; //$("#" + this.parrent.euid).scrollLeft();
-
+	  
+	  var scrollTop = $("#" + this.parrent.euid).scrollTop(),
+        scrollLeft = $("#" + this.parrent.euid).scrollLeft();
+	  
       if ((epoints == undefined) || (epoints.length == 0)) {
         var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width()) ;
         var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height()) ;
 
         var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width());
         var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height());
+		
+		$.log(x1 + ";" + y1 + ";" + x2 + ";" + y2 + ";");
 
-        var newpoints = [[x1 + scrollLeft,y1 + scrollTop], [x2 + scrollLeft,y2 + scrollTop]];
-
-        return newpoints;
+		if (this.parrent.options.multicanvas) {
+          var newpoints = [[x1 + scrollLeft,y1 + scrollTop], [x2 + scrollLeft,y2 + scrollTop]];
+          return newpoints;
+		}
+		else {
+          var newpoints = [[x1,y1], [x2,y2]];
+          return newpoints;
+		}
       }
       else {
-        scrollTop = $("#" + this.parrent.euid).scrollTop();
-        scrollLeft = $("#" + this.parrent.euid).scrollLeft();
         var lln = epoints.length -1;
         var x1 = this._getRValue(p1.left + p11.left, epoints[0][0] - scrollLeft, $('#'+ fromId).width()) ;
         var y1 = this._getRValue(p1.top + p11.top, epoints[0][1] - scrollTop, $('#'+ fromId).height()) ;
@@ -3004,15 +3010,29 @@ dm['at'] = dm.at; //automated testing
          var x2 = p2.left + p21.left;
          var y2 = p2.top + p21.top;
          */      
-        var newpoints = [];
-        newpoints[0] = [x1,y1];
-        for (var i=1;i<=epoints.length;++i) {
-          newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
-          newpoints[i][0] -= scrollLeft;
-          newpoints[i][1] -= scrollTop;
-        }
-        newpoints[epoints.length + 1] = [x2,y2];
-        return newpoints;
+		if (this.parrent.options.multicanvas) {
+			var newpoints = [];
+			newpoints[0] = [x1+scrollLeft,y1+scrollTop];
+			for (var i=1;i<=epoints.length;++i) {
+			  newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
+			}
+			newpoints[epoints.length + 1] = [x2+scrollLeft,y2+scrollTop];
+			return newpoints;
+		}
+		else {
+		    // Canvas doesn't corresponding to diagram type
+			// and not scrollable
+			// therefore keep x,y on place and shift extra points
+			var newpoints = [];
+			newpoints[0] = [x1,y1];
+			for (var i=1;i<=epoints.length;++i) {
+			  newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
+			  newpoints[i][0] -= scrollLeft;
+			  newpoints[i][1] -= scrollTop;
+			}
+			newpoints[epoints.length + 1] = [x2,y2];
+			return newpoints;
+		}
       }
     },
 //@ifdef EDITOR

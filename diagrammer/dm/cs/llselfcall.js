@@ -130,10 +130,12 @@ dm.base.diagram("cs.llselfcall", dm.cs.connector, {
         newpoints[3] = [p11.left + ew, pos.top+10];
         return newpoints;
       } else {
-        var top = (this.epoints[0][1] > p21.top-10) ? p21.top-10: this.epoints[0][1];
+	    var scrollLeft = $("#" + this.parrent.euid).scrollLeft();
+		var scrollTop = $("#" + this.parrent.euid).scrollTop();
+        var top = (this.epoints[0][1] - scrollTop > p21.top-10) ? p21.top-10: this.epoints[0][1] - scrollTop;
         newpoints[0] = [p11.left + ew + 3, top];
-        newpoints[1] = [this.epoints[0][0], top];
-        newpoints[2] = [this.epoints[0][0], p21.top+5];
+        newpoints[1] = [this.epoints[0][0] - scrollLeft, top];
+        newpoints[2] = [this.epoints[0][0] - scrollLeft, p21.top+5];
         newpoints[3] = [p21.left + $el2.width() + 6, p21.top+5];
         return newpoints;
       }
