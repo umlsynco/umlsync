@@ -561,29 +561,29 @@
                      // Extension of element menu
                      //
                      "element_menu": {
-                        "Package,Subsystem": [
-                                              {
+                        "package": [
+                          {
                             title: "Internal packages",
                             click : function(element) {
                                 alert("Not implemented!!!");
                             }
-                                              },
-                                              {
-                                                      title:"Dependency",
-                                                      click: function(element)    {
-                                                          alert("Not implemented!!!");
-                                                      }
-                                              },
-                                              {
-                                                      title:"Usage",
-                                                      click: function(element) {
-                                                          alert("Not implemented!!!");
-                                                      }
-                                              }
-                                              ],
-                                              "Class,Interface,Object Instance": [
-                                                                                  {
-                            title:'Open',
+						  },
+						  {
+								  title:"Dependency",
+								  click: function(element)    {
+									  alert("Not implemented!!!");
+								  }
+						  },
+						  {
+								  title:"Usage",
+								  click: function(element) {
+									  alert("Not implemented!!!");
+								  }
+						  }
+						  ],
+						  "class,objinstance": [
+															  {
+							title:'Open',
                             click: function(element) {
                                 if (element.options.filepath) {
                                     var title = element.options.filepath.split("/").pop();

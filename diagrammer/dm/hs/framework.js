@@ -664,7 +664,7 @@ Version:
 				'ShowElementContextMenu': function( desc , viewid, data, event) {
                     activeNode = data;
                     var self = dm.dm.fw;
-                    desc = data.options.title;
+                    desc = data.options.type;
                     $.log("ShowElementContextMenu: " + desc + "   VID: " + viewid + "  DATA: " + data.options + "  TYPE: " + data.options.title + " DESC:" + data.options.description);
                     if (self.views
 					    && self.views[viewid]
