@@ -117,6 +117,7 @@ Version:
 							return;
 						  }
                       }
+					  self._helperCleanUpCanvas();
                       self._helperUpdateFrameWork(true);
                   },
                   'show': function(event, ui) {
@@ -128,6 +129,8 @@ Version:
 						      self.formatHandlers[params.contentType].onFocus(self.selectedContentId, false);
 							}
 						  }
+
+						  self._helperCleanUpCanvas();
 
                           self.selectedContentId = "#" + ui.panel.id;
                           var params = self.contents[self.selectedContentId];
@@ -199,6 +202,7 @@ Version:
                             delete self.contents[ahref];
                             $tabs.tabs('remove', index);
                             $(ahref).remove();
+							self._helperCleanUpCanvas();
                         }
 
                         if (saveIt) {
@@ -1864,7 +1868,18 @@ Version:
                     });
 
 
-                }
+                },
+				//
+				// Clean up SingleCanvas
+				//
+				_helperCleanUpCanvas: function() {
+					this.canvas = window.document.getElementById('SingleCanvas');
+					if (!this.canvas)
+					  return;
+					var ctx = this.canvas.getContext("2d");
+					ctx.fillStyle = "#EEEEEE";
+					ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				}
         };
         return getInstance(options);
     };
