@@ -548,23 +548,26 @@
         width: 350,
         modal: true,
         buttons: {
-        "Connect": function() {
-          var host = $("#us-host-input").val();
-		  var key = $("#us-key-input").val();
-		  if (callback && callback.OnConfigSetup) {
-		    callback.OnConfigSetup(host, key);
-		  }
+			"Connect": function() {
+			  var host = $("#us-host-input").val();
+			  var key = $("#us-key-input").val();
+			  if (callback && callback.OnConfigSetup) {
+				callback.OnConfigSetup(host, key);
+			  }
 
-          $( this ).dialog( "close" );
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-        }
-      },
-      close: function() {
-        $("#configure-localhost-dialog #dl-validation-tip").text("");
-      }
-    });
+			  $( this ).dialog( "close" );
+			},
+			Cancel: function() {
+			  $( this ).dialog( "close" );
+			},
+			'Info ...': function() {
+				window.open('https://github.com/UmlSync/websync/blob/master/install.md', '_blank');
+			}
+		},
+		close: function() {
+			$("#configure-localhost-dialog #dl-validation-tip").text("");
+		}
+	});
   },
   
   //
