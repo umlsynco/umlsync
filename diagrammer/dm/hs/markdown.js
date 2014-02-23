@@ -125,6 +125,8 @@ URL:
 
                         var relativePath = $(this).attr("path"),
                                 sum = $(this).attr("sha"),
+								width = $(this).attr("width"),
+								height = $(this).attr("height"),
                                 loadParams;
 
                         // Initialize load parameter from content or inherit them from parent document
@@ -135,15 +137,19 @@ URL:
                                 branch:$(this).attr("branch") || contentInfo.branch,
                                 viewid:$(this).attr("source") || contentInfo.viewid,
                                 title: (relativePath == undefined) ? sum : relativePath.split("/").pop(), // title is the last word separated by slash
-
+                                editable:false,
                                 // extra options for content handler
                                 contentType:"umlsync", // means diagram
-                                editable:false,
-                                selector:parentSelector + " #" +  newId
+                                selector:parentSelector + " #" +  newId,
+								options: {
+								   editable:false,
+								   width:width,
+								   height:height
+								}
                         };
 
                         // TODO: What is this string for ?
-                        $(this).css('padding', '20px').css("overflow", "none").css("text-align", "center");
+                        $(this).css('padding', '40px').css("overflow", "none").css("text-align", "center");
                         // replace the default id by unique ID
                         $(this).attr("id", newId);
 

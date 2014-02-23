@@ -75,13 +75,22 @@ URL:
                     viewid = contentInfo.viewid,
                     self = this;
 
+			if (contentInfo.options) {
+			  jsonData = $.extend({}, jsonData, contentInfo.options);
+			}
+
             jsonData.multicanvas = (contentInfo.selector != undefined);
+			// diagram is editable on load and not editable on load complete
+			jsonData.editable = true;
 
             // enable diagram menu
             if (contentInfo.selector == undefined) {
                 $(parent).attr("edm", contentInfo.editable)
                 this.contentCache[parent] = {mode:false};
             }
+			else {
+			  contentInfo.editable = false;
+			}
 
             jsonData['fullname'] = contentInfo.absPath;
             jsonData['editable'] = true;
@@ -92,7 +101,13 @@ URL:
                     jsonData,
                     parent,
                     function(obj) {
-                        // Embedded content, no handlers required
+                        dm.dm.loader.OnLoadComplete(
+							function() {
+								obj._setWidgetsOption("editable", contentInfo.editable);
+							}
+                        );
+
+                        // Embedded content, no more action required
                         if (!self.contentCache[parent]) {
                           return;
                         }
@@ -119,11 +134,6 @@ URL:
                         }
 
                         obj.options['viewid'] = viewid;
-                        dm.dm.loader.OnLoadComplete(
-                                function() {
-                                    obj._setWidgetsOption("editable", contentInfo.editable);
-                                }
-                        );
                     });
         },
         //

@@ -13,7 +13,7 @@
                     var s = match.split(" "),
                     isDiagram = false,
                     repo = branch = path = title = "";
-					var style;
+					var style, width = "", height = "";
 
                     for (var i in s) {
                       // Check that it is diagram:
@@ -28,12 +28,16 @@
                             isDiagram = true;
 						  }
 						  else if (alts[v].indexOf("width:") == 0) {
-						    style = style ? style + alts[v] : 'style="' + alts[v];
-							style = style + ';';
+						    var sss = alts[v].split(":");
+							var w = parseInt(sss[1]);
+						    style = style ? style + "width:"+w+";" : 'style="' + "width:"+w+";";
+							width = ' width="'+w+'px" ';
 						  }
 						  else if (alts[v].indexOf("height:") == 0) {
-						    style = style ? style + alts[v] : 'style="' + alts[v];
-							style = style + ';';
+						    var sss = alts[v].split(":");
+							var h = parseInt(sss[1]);
+						    style = style ? style + "height:"+h+";" : 'style="' + "height:"+h+";";
+							height = ' height="'+h+'px" '
 						  }
                         }
 						if (!isDiagram) {
@@ -83,7 +87,7 @@
                     
                     if (isDiagram) {
                       return '<div id="umlsync-embedded-content"\
-                         class="umlsync-embedded-diagram" ' + branch + repo + path + title+style+'></div>'
+                         class="umlsync-embedded-diagram" ' + branch + repo + path + title+style+width+height+'></div>'
                     }
                     
                     return match;

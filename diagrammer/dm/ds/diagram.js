@@ -751,12 +751,38 @@ dm['at'] = dm.at; //automated testing
     //<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
     //this.options.multicanvas = true; ~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USES for DROP SOME NODES FROM DYNATREE
     if (this.options.multicanvas) {
+	  var p = this._getDiagramSize(this.options);
+      var sx = false, sy = false; // Scroll X and Y correspondingly
+	  // Alignement of the parent frame by width and height
+	  var $par = $(this.parrent);
+	  // if width undefined or smaller than canvas
+	  if (!this.options.width || parseInt(this.options.width) < p.width) {
+	    $par.width(this.options.width);
+		sx = true;
+	  }
+	  else {
+	    $par.width(p.width+30);
+	  }
+	  
+	  if (!this.options.height || parseInt(this.options.height) < p.height -40) {
+	    $par.height(this.options.height);
+		sy = true;
+	  }
+	  else {
+	    $par.height(p.height+40);
+	  }
+	  // Parent setup complete
+	  
       this.canvasEuid = this.euid +'_Canvas';
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
-          <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + (this.options['width'] ? this.options['width'] : "1200")  + 'px height=' + (this.options['height'] ? this.options['height'] : "600") + 'px>\
+          <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + p.width+ 'px height=' + p.height + 'px>\
           <p>Unfortunately your browser doesn\'t support canvas.</p></canvas>\
           <div class="us-canvas-bg" style="width:100%;height:100%;">\
           </div></div>');
+
+	  $.log("=========================== NAME: #" + this.euid + ".us-diagram");
+      $("#" + this.euid + ".us-diagram").css({"overflow-x": (sx ? "scroll":"hidden"), "overflow-y": (sy ? "scroll":"hidden")});
+
     } else {
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
           <div class="us-canvas-bg" style="width:100%;height:100%;">\
@@ -772,7 +798,6 @@ dm['at'] = dm.at; //automated testing
     //       file tree and diagram engine
 
     var iDiagram = this;
-
     $("#" + this.euid + ".us-diagram").scroll(function() {iDiagram.draw();});
 //@ifdef EDITOR
     if ($("#" + this.canvasEuid).attr("init") != "true") {
@@ -1067,6 +1092,40 @@ dm['at'] = dm.at; //automated testing
   },
   onDestroy: function(func) {
     this.onDestroyObserver = func;
+  },
+  //
+  //
+  //
+  _getDiagramSize: function(json) {
+    var w = 100, h = 100;
+    if (json) {
+	  for (var v in json.elements) {
+	    var e = json.elements[v];
+		var tmp = parseInt(e.left) + parseInt(e.width);
+		if (w < tmp) {
+		  w = tmp;
+		}
+		tmp = parseInt(e.top) + parseInt(e.height);
+		if (h < tmp) {
+		  h = tmp;
+		}
+	  }
+	  for (var v in json.connectors) {
+	    for (var c in json.connectors[v].epoints) {
+		  var p = json.connectors[v].epoints[c];
+		  if (w < parseInt(p["0"])) {
+		    w = parseInt(p["0"]);
+		  }
+		  if (h < parseInt(p["1"])) {
+		    h = parseInt(p["1"]);
+		  }
+		}
+	  }
+	}
+	else {
+	  // TODO: redraw.
+	}
+	return {width:w, height:h};
   },
   /**
    * \class Function.
