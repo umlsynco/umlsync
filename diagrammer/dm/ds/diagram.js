@@ -1077,7 +1077,7 @@ dm['at'] = dm.at; //automated testing
 //@ifdef EDITOR
   getSvgDescription: function() {
     this._update();
-	var desc = '<?xml version="1.0" encoding="utf-8" ?>\n<svg umlsync="v1.0">\n<desc>' + this.getDescription(true) + '</desc>\n<g id="elements" fill="#ECF3EC" stroke="black" stroke-width="1" style="font-size:11px;font-family:Verdana,Arial,sans-serif;">\n';
+	var desc = '<?xml version="1.0" encoding="utf-8" ?>\n<svg umlsync="v1.0" baseProfile="full" height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">\n<desc>' + this.getDescription(true) + '</desc>\n<g id="elements" fill="#ECF3EC" stroke="black" stroke-width="1" style="font-size:11px;font-family:Verdana,Arial,sans-serif;">\n';
 					
 	for (var v in this.elements) {
 	  // each element is group
