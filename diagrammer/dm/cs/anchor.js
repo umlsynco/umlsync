@@ -50,11 +50,24 @@ dm.base.diagram("cs.anchor", dm.cs['connector'], {
             y1+= (ey + fy);
         }
     },
-    'draw': function(c, points, color) {
+    'draw': function(c, points, color, isSvg) {
         if ((points == null) || (points.length < 2)) {
             return;
         }
-
+		var ep = points.length-1;
+		// Return SVG connector's group
+		if (isSvg) {
+			var desc = '<polyline stroke-dasharray="7 3" points="';
+			var comma = '';
+			for (var t=0; t < ep; ++t) {
+			  desc += comma + points[t][0] + ' ' + points[t][1];
+			  comma = ', ';
+			}
+			desc += '"/>';
+			desc += '<polyline stroke-dasharray="7 3" fill="black" points="' + points[ep-1][0] + ' ' + points[ep-1][1] + ','
+					+ points[ep][0] + ' ' + points[ep][1] + '"/>';
+			return desc;
+		}
 
         for (var i=0; i<points.length-1; ++i) {
             c.beginPath();

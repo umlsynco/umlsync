@@ -19,7 +19,7 @@ Version:
 (function($, dm, undefined) {
 
 dm.base.diagram("cs.composition", dm.cs['connector'], {
-    'draw': function(context2, points, color) {
+    'draw': function(context2, points, color, isSvg) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -43,6 +43,21 @@ dm.base.diagram("cs.composition", dm.cs['connector'], {
             y4 = y3 - x * cosa/2,
             x5 = x3 - x * sina/2,
             y5 = y3 + x * cosa/2;
+			
+			// Return SVG descriptor
+			if (isSvg) {
+				var desc = '<polyline points="';
+				var comma = '';
+				for (var t=0; t < ep; ++t) {
+				  desc += comma + points[t][0] + ' ' + points[t][1];
+				  comma = ', ';
+				}
+				desc += '"/>';
+				desc += '<polyline fill="black" points="' + points[ep-1][0] + ' ' + points[ep-1][1] + ',' + x6 + ' ' +y6 
+                        + ',' + x4 + ' '+ y4 + ','  + points[ep][0] + ' ' + points[ep][1] + ',' + x5 + ' ' +y5 + ',' + x6 + ' ' +y6 + '"/>';
+				return desc;
+			}
+
             context2.beginPath();
             context2.fillStyle = color;
             context2.strokeStyle = color;

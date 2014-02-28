@@ -349,16 +349,16 @@ dm.base.diagram("es.class", dm['es']['element'], {
     _update: function() {
        var p = $("#" + this.euid + "_Border").position();
 
-       this.options['pageX'] = p.left;
-       this.options['pageY'] = p.top;
-       this.options['left'] = p.left;
-       this.options['top'] = p.top;
-       this.options['width'] = $("#" + this.euid + "_Border").width();
-       this.options['height'] = $("#" + this.euid + "_Border").height();
+       this.options['pageX'] = parseInt(p.left);
+       this.options['pageY'] = parseInt(p.top);
+       this.options['left'] = parseInt(p.left);
+       this.options['top'] = parseInt(p.top);
+       this.options['width'] = parseInt($("#" + this.euid + "_Border").width());
+       this.options['height'] = parseInt($("#" + this.euid + "_Border").height());
 
        // Height of attributes and operations. Width is the same for all components
-       this.options['height_a'] = $("#" + this.euid + "_Border .us-class-attributes").height();
-       this.options['height_o'] = $("#" + this.euid + "_Border .us-class-operations").height();
+       this.options['height_a'] = parseInt($("#" + this.euid + "_Border .us-class-attributes").height());
+       this.options['height_o'] = parseInt($("#" + this.euid + "_Border .us-class-operations").height());
        
        // Operations and attributes should be up to date
 
@@ -565,6 +565,49 @@ dm.base.diagram("es.class", dm['es']['element'], {
     'getAux': function() {
       return $("#" + this.euid + " .us-class-header .us-class-aux").html();
     },
+	getSvgDescription: function() {
+	    var w1 = $("#" + this.euid).width();
+		var h1 = $("#" + this.euid).height();
+		var p1 = $("#" + this.euid + "_Border").position();
+		var desc = '<g id="class-'+this.options.id+'">';
+		    desc += '<desc>' + this.getDescription() + '</desc>';
+			desc += '<rect width="'+w1 + '" height="' + h1 + '" x="' + p1.left + '" y="' + p1.top + '" />';
+		var $name = $("#" + this.euid + " #name"),
+		    p = $name.position();
+		var font_y = p1.top + parseInt($name.css("font-size")) + p.top;
+			desc += '<text id="name" x="' + (p1.left + p.left) + '" y="' + font_y + '" fill="black">'+this.options.name+'</text>';
+		var $attr = $("#" + this.euid + " .us-class-attributes");
+		p = $attr.position();
+		var p2 = p;
+		var ggg = $attr.height();
+			desc += '<rect width="'+w1 + '" height="' + $attr.height() + '" x="' + p1.left + '" y="' + (p1.top + p.top + 2) + '" />';
+		$("#" + this.euid + " .us-class-attributes ul li a").each(function(k, el) {
+			  var p = $(el).position();
+			  var font_y = p1.top + p2.top + parseInt($name.css("font-size")) + p.top;
+			  var ttt = $(el).text();
+			  var t2  = $(el).val();
+			  desc += '<text x="' + (p1.left + p.left) + '" y="' + font_y + '" fill="black">'+$(el).text()+'</text>';
+			}
+		);
+		var $opp = $("#" + this.euid + " .us-class-operations");
+		
+		var p3 = $opp.position();
+		p = p3;
+		var bbb = $opp.height();
+			desc += '<rect width="'+w1+ '" height="' + ($opp.height() + 3) + '" x="' + p1.left + '" y="' + (p1.top + p.top) + '" />';
+
+		$("#" + this.euid + " .us-class-operations ul li a").each(function(k, el) {
+			  var p = $(el).position();
+			  var font_y = p1.top + p3.top + parseInt($name.css("font-size")) + p.top;
+			  var ttt = $(el).text();
+			  var t2  = $(el).val();
+			  desc += '<text x="' + (p1.left + p.left) + '" y="' + font_y + '" fill="black">'+$(el).text()+'</text>';
+			}
+		);
+		desc += '</g>';
+		return desc;
+
+	}, 
 //@endif
     'ec': 0
 });

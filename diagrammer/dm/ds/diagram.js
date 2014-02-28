@@ -591,8 +591,7 @@ dm['at'] = dm.at; //automated testing
       alert("Please, declare method _create() for diagram element " + this.euid);
     }
   },
-
-  
+				
   getDescription: function(key, value) {
     var kv = !(key || value || false);
     var proto = Object.getPrototypeOf(this);
@@ -1069,6 +1068,32 @@ dm['at'] = dm.at; //automated testing
 //@endif
   },
 //@ifdef EDITOR
+  getSvgDescription: function() {
+    this._update();
+	var desc = '<?xml version="1.0" encoding="utf-8" ?>\
+				<svg umlsync="v1.0"><g id="elements" fill="#ECF3EC" stroke="black" stroke-width="1" style="font-size:11px;font-family:Verdana,Arial,sans-serif;">';
+				
+	for (var v in this.elements) {
+	  // each element is group
+	  desc += '<g id="'+this.elements[v].options.type+'-'+this.elements[v].options.id+'">\n<desc>' + this.elements[v].getDescription() + '</desc>';
+	  if(this.elements[v].getSvgDescription) {
+		desc += this.elements[v].getSvgDescription();
+	  }
+	  desc += '</g>';
+	}
+	desc += '</g>';
+	
+	desc += '<g id="connectors" fill="none" stroke="black" stroke-width="1">';
+	for (var v in this.connectors) {
+	  if(this.connectors[v].getSvgDescription) {
+		desc += this.connectors[v].getSvgDescription();
+	  }
+	}
+	desc += '</g>';
+	desc = desc + '</svg>';
+	return desc;
+  }, 
+
   _update: function() {
     this.options['connectors'] = this.connectors;
     var i = 0;
@@ -2641,6 +2666,20 @@ dm['at'] = dm.at; //automated testing
     moveLabel: function(opt) {
       this.labels[opt.idx].css({left:opt.left, top:opt.top});
     },
+
+	getSvgDescription: function() {
+	    var desc;
+        this.points = this['_getConnectionPoints'](this['from'], this['toId'], this.epoints);
+		var rrr = this.draw(null, this.points, this.options.color || "black", true);
+		// Draw method has svg support
+		if (rrr) {
+		  // TODO: fromId and toId
+		  desc = '<g id="'+this.options.type+'-'+this.euid+'"><desc>' + this.getDescription() + '</desc>' + rrr + '</g>';
+		  return desc;
+		}
+		return '';
+	},
+	
     getDescription: function() {
       this.options['fromId'] = this.from;
       this.options['toId'] = this.toId;
@@ -3042,8 +3081,6 @@ dm['at'] = dm.at; //automated testing
 
         var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width());
         var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height());
-		
-		$.log(x1 + ";" + y1 + ";" + x2 + ";" + y2 + ";");
 
 		if (this.parrent.options.multicanvas) {
           var newpoints = [[x1 + scrollLeft,y1 + scrollTop], [x2 + scrollLeft,y2 + scrollTop]];

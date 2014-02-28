@@ -50,7 +50,7 @@ dm.base.diagram("cs.dependency", dm.cs['connector'], {
       }
     
     },
-    'draw': function(c, points, color) {
+    'draw': function(c, points, color, isSvg) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -75,7 +75,22 @@ dm.base.diagram("cs.dependency", dm.cs['connector'], {
             y4 = y3 - x * cosa/2,
             x5 = x3 - x * sina/2,
             y5 = y3 + x * cosa/2;
-            
+
+			// Return SVG connector's group
+			if (isSvg) {
+				var desc = '<polyline stroke-dasharray="7 3" points="';
+				var comma = '';
+				for (var t=0; t < ep; ++t) {
+				  desc += comma + points[t][0] + ' ' + points[t][1];
+				  comma = ', ';
+				}
+				desc += '"/>';
+				desc += '<polyline stroke-dasharray="7 3" points="' + points[ep-1][0] + ' ' + points[ep-1][1] + ','
+				        + points[ep][0] + ' ' + points[ep][1] + '"/>';
+                desc += '<polyline points="' + x4 + ' ' +y4 + ',' + x2 + ' ' +y2 + ',' + x5 + ' ' +y5+ '"/>';
+				return desc;
+			}
+
             c.beginPath();
             c.fillStyle = color;
             c.strokeStyle = color;

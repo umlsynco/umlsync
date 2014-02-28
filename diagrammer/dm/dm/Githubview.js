@@ -344,7 +344,7 @@
         this.loadRightAway = function(repo, branch, path) {
             var title = path.split("/").pop();
             var contentType = dm.dm.fw.getContentType(title);
-            if (contentType != undefined) {
+            if (contentType) {
                 $.log(repo);
                 var params =
                 {
@@ -356,8 +356,8 @@
                         editable: false,
                         contentType: contentType
                 };
+                dm.dm.fw.loadContent(params);
             }
-            dm.dm.fw.loadContent(params);
         };
 
 
@@ -1118,7 +1118,7 @@
                                              editable:false
                                      };
 
-                                     if (params.contentType != undefined)
+                                     if (params.contentType)
                                          dm.dm.fw.loadContent(params);
                                  }
                              }
@@ -1293,7 +1293,7 @@
                                     var title = node.data.title;
                                     var contentType = dm.dm.fw.getContentType(title);
 
-                                    if (contentType != undefined) {
+                                    if (contentType) {
                                         var params =
                                         {
                                                 viewid:self.euid,

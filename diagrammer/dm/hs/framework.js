@@ -807,6 +807,7 @@ Version:
 
                     this._helperUpdateFrameWork(true);
                 },
+
                 //
                 // Save content in the concreate view cache
                 // @param tabid - jquery.ui.tabs id
@@ -1189,15 +1190,16 @@ Version:
                 // Return undefined if content not supported
                 //
                 getContentType: function(title) {
-                    var tt = title.split(".");
-                    var ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+                    //var tt = title.split(".");
+                    //var ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
+                    var ext = title.toUpperCase();
 
 				    for (var t in this.formatHandlers) {
 					  // Check if view functionality supported
 					  if (this.formatHandlers[t].options.view) {
 					    var hr = this.formatHandlers[t].getExtensionList();
 					    for (var r in hr) {
-					      if (hr[r] == ext) {
+					      if (ext.indexOf(hr[r]) == ext.length - hr[r].length) {
 						    return this.formatHandlers[t].getUid();
 						  }
 					    }

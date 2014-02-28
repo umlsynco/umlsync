@@ -36,8 +36,8 @@ URL:
 
         umlsync.prototype = {
         options: {
-            mime_types:"application/vnd.umlsync.uml+json",
-            extensions:"UMLSYNC",
+            mime_types:"application/vnd.umlsync;uml+json,application/vnd.umlsync.uml+svg",
+            extensions:"UMLSYNC;US.SVG",
             uid: "umlsync",
             edit:true,
             view:true
@@ -64,6 +64,75 @@ URL:
         getMimeTypeList: function() {
             return this.options.mime_types.split(";");
         },
+		
+		//
+		// Parse an umlsync/svg format
+		//
+		_parseSvg:function(text) {
+		  var parseXml;
+		  if (typeof window.DOMParser != "undefined") {
+			parseXml = function(xmlStr) {
+				return ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
+			};
+		  } else if (typeof window.ActiveXObject != "undefined" &&
+			   new window.ActiveXObject("Microsoft.XMLDOM")) {
+				parseXml = function(xmlStr) {
+				var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+				xmlDoc.async = "false";
+				xmlDoc.loadXML(xmlStr);
+				return xmlDoc;
+			};
+		  } else {
+			alert("No XML parser found");
+			return;
+		  }
+		  var json = parseXml(text);
+
+		  function xmlToJson(result, elem) {
+		    var ret = result;
+			// Group or SVG
+		    if (elem.localName == "svg") {
+			  var attr = elem.attributes["umlsync"];
+			  if (attr.value != "v1.0") {
+			    return null;
+			  }
+			  else {
+   			    for (var t=0; t<elem.children.length; ++t) {
+				   var tmp = xmlToJson(ret, elem.children[t]);
+				   ret = tmp;
+			    }
+			    return ret;
+			  }
+			}
+
+            if (elem.localName == "g" && (elem.attributes["id"].value == "elements" || elem.attributes["id"].value == "connectors")) {
+			    var res = {};
+				for (var t=0; t<elem.children.length; ++t) {
+				  var e = elem.children[t];
+				  res[t] = xmlToJson({}, e);
+				}
+				ret[elem.attributes["id"].value] = res;
+				return ret;
+			}
+			
+			if (elem.localName == "g") {
+				for (var t=0; t<elem.children.length; ++t) {
+				  var e = elem.children[t];
+				  if (e.localName == "desc") {
+				    return $.parseJSON(e.textContent);
+				  }
+				}
+			}
+		  }
+		  
+		  if (json && json.activeElement) {
+		    var tmp = xmlToJson({}, json.activeElement);
+			return tmp;
+		  }
+
+		  return json;
+		},
+		
         //
         // Open method, works in view mode by default (if view supported)
         // parentSelector - selector of parent frame
@@ -71,6 +140,16 @@ URL:
         // contentData    - raw or JSON data
         //
         open: function(parent, contentInfo, contentData) {
+			var title = contentInfo.title.toUpperCase();
+			var isSvg = false;
+			if (title.indexOf(".US.SVG") == title.length - 7) {
+			  var rrr = this._parseSvg(contentData);
+			  if (!rrr)
+			    return;
+			  isSvg = true;
+			  contentData = rrr;
+			}
+
             var jsonData = (typeof contentData === "string") ? $.parseJSON(contentData) : contentData,
                     viewid = contentInfo.viewid,
                     self = this;
@@ -78,7 +157,7 @@ URL:
 			if (contentInfo.options) {
 			  jsonData = $.extend({}, jsonData, contentInfo.options);
 			}
-
+			
             jsonData.multicanvas = (contentInfo.selector != undefined);
 			// diagram is editable on load and not editable on load complete
 			jsonData.editable = true;
@@ -86,7 +165,7 @@ URL:
             // enable diagram menu
             if (contentInfo.selector == undefined) {
                 $(parent).attr("edm", contentInfo.editable)
-                this.contentCache[parent] = {mode:false};
+                this.contentCache[parent] = {mode:false, isSvg:isSvg};
             }
 			else {
 			  contentInfo.editable = false;
@@ -242,7 +321,11 @@ URL:
         //
         getDescription: function(parentSelector, flag) {
           if (this.contentCache[parentSelector] && this.contentCache[parentSelector]["diagram"]) {
-            // get the diagram description
+            // get the diagram description in SVG format 
+			if (this.contentCache[parentSelector].isSvg) {
+			  return this.contentCache[parentSelector]["diagram"].getSvgDescription();
+			}
+			// get the diagram description in JSON format 
             return this.contentCache[parentSelector]["diagram"].getDescription();
           }
         },

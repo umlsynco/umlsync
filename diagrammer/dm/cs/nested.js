@@ -19,7 +19,7 @@ Version:
 (function($, dm, undefined) {
 
 dm.base.diagram("cs.nested", dm.cs['connector'], {
-    'draw': function(context2, points, color) {
+    'draw': function(context2, points, color, isSvg) {
             if ((points == null) || (points.length < 2)) {
                return;
             }
@@ -46,6 +46,22 @@ dm.base.diagram("cs.nested", dm.cs['connector'], {
             y31 = points[ep][1] - Math.sqrt(z*z*3/4)*sina,
             x61 = points[ep][0] - Math.sqrt(z*z*3)*cosa,
             y61 = points[ep][1] - Math.sqrt(z*z*3)*sina;
+			
+			// Return SVG connector's group
+			if (isSvg) {
+				var desc = '<polyline points="';
+				var comma = '';
+				for (var t=0; t < ep; ++t) {
+				  desc += comma + points[t][0] + ' ' + points[t][1];
+				  comma = ', ';
+				}
+				desc += '"/>';
+				desc += '<polyline points="' + points[ep-1][0] + ' ' + points[ep-1][1] + ','
+				        + points[ep][0] + ' ' + points[ep][1] + '"/>';
+                desc += '<circle fill="white" cx="' + x3 + '" cy="' + y3 + '" r="15"/>';
+                desc += '<polyline  points="' + x4 + ' ' +y4 + ',' + x5 + ' ' +y5 + ',' + x31 + ' ' +y31+ ','  + x61 + ' ' +y61 +'"/>';
+				return desc;
+			}
             
             context2.beginPath();
             context2.fillStyle = color;
