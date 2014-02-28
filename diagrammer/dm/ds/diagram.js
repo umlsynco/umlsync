@@ -594,6 +594,8 @@ dm['at'] = dm.at; //automated testing
 				
   getDescription: function(key, value) {
     var kv = !(key || value || false);
+	var simple = (key && !value);
+
     var proto = Object.getPrototypeOf(this);
     var item = '{',
     comma = '';
@@ -608,6 +610,11 @@ dm['at'] = dm.at; //automated testing
         } else {
           var obj = this.options[i];
           if (obj instanceof Array) {
+		    // simple options only
+		    if (simple) {
+			  continue;
+			}
+
             var c = '';
             item += comma + '"' + i + '":[';
             comma = ',';
@@ -1070,26 +1077,25 @@ dm['at'] = dm.at; //automated testing
 //@ifdef EDITOR
   getSvgDescription: function() {
     this._update();
-	var desc = '<?xml version="1.0" encoding="utf-8" ?>\
-				<svg umlsync="v1.0"><g id="elements" fill="#ECF3EC" stroke="black" stroke-width="1" style="font-size:11px;font-family:Verdana,Arial,sans-serif;">';
-				
+	var desc = '<?xml version="1.0" encoding="utf-8" ?>\n<svg umlsync="v1.0">\n<desc>' + this.getDescription(true) + '</desc>\n<g id="elements" fill="#ECF3EC" stroke="black" stroke-width="1" style="font-size:11px;font-family:Verdana,Arial,sans-serif;">\n';
+					
 	for (var v in this.elements) {
 	  // each element is group
-	  desc += '<g id="'+this.elements[v].options.type+'-'+this.elements[v].options.id+'">\n<desc>' + this.elements[v].getDescription() + '</desc>';
+	  desc += '<g id="'+this.elements[v].options.type+'-'+this.elements[v].options.id+'">\n<desc>' + this.elements[v].getDescription() + '</desc>\n';
 	  if(this.elements[v].getSvgDescription) {
 		desc += this.elements[v].getSvgDescription();
 	  }
-	  desc += '</g>';
+	  desc += '</g>\n';
 	}
-	desc += '</g>';
+	desc += '</g>\n';
 	
-	desc += '<g id="connectors" fill="none" stroke="black" stroke-width="1">';
+	desc += '<g id="connectors" fill="none" stroke="black" stroke-width="1">\n';
 	for (var v in this.connectors) {
 	  if(this.connectors[v].getSvgDescription) {
 		desc += this.connectors[v].getSvgDescription();
 	  }
 	}
-	desc += '</g>';
+	desc += '</g>\n';
 	desc = desc + '</svg>';
 	return desc;
   }, 

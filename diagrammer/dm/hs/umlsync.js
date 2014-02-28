@@ -98,8 +98,14 @@ URL:
 			  }
 			  else {
    			    for (var t=0; t<elem.children.length; ++t) {
-				   var tmp = xmlToJson(ret, elem.children[t]);
-				   ret = tmp;
+				   if (elem.children[t].localName == "desc") {
+				     var tmp = $.extend({}, ret, $.parseJSON(elem.children[t].textContent));
+					 ret = tmp;
+				   }
+				   else {
+				     var tmp = xmlToJson(ret, elem.children[t]);
+				     ret = tmp;
+				   }
 			    }
 			    return ret;
 			  }
