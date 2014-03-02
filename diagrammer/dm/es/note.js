@@ -15,7 +15,7 @@ dm.base.diagram("es.note", dm.es.element, {
 	    var w1 = $("#" + this.euid).width();
 		var h1 = $("#" + this.euid).height();
 		var p1 = $("#" + this.euid + "_Border").position();
-			desc += '<polyline points="'+ p1.left + ' ' + p1.top + ',' +
+		var desc = '<polyline points="'+ p1.left + ' ' + p1.top + ',' +
 			                            p1.left + ' ' + (p1.top + h1) + ',' +
 										(p1.left + w1) + ' ' + (p1.top + h1) + ',' +
 										(p1.left + w1) + ' ' + (p1.top + 20) + ',' +

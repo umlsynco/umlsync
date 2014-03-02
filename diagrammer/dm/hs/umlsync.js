@@ -331,6 +331,9 @@ URL:
 			if (this.contentCache[parentSelector].isSvg) {
 			  return this.contentCache[parentSelector]["diagram"].getSvgDescription();
 			}
+			else {
+			  alert(this.contentCache[parentSelector]["diagram"].getSvgDescription());
+			}
 			// get the diagram description in JSON format 
             return this.contentCache[parentSelector]["diagram"].getDescription();
           }

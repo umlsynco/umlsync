@@ -10,6 +10,15 @@ dm.base.diagram("es.interface", dm.es.element, {
         'width':'30px',
         'height':'30px'
     },
+	getSvgDescription: function() {
+		var w1 = $("#" + this.euid).width()/2;
+		var h1 = $("#" + this.euid).height()/2;
+		var p1 = $("#" + this.euid + "_Border").position();
+		var np = $("#" + this.euid + " #name").position();
+		var desc = '<circle cx="'+ (p1.left + w1) + '" cy="' + (p1.top + h1) + '" r="' +w1 + '"/>';
+		desc += '<text x="' + (p1.left + np.left) + '" y="' + (p1.top + np.top + 11) + '">' + $("#" + this.euid + " #name").text() + "</text>";
+		return desc;
+	},
     '_update': function() {
        var p = $("#" + this.euid + "_Border").position();
        this.options.pageX = p.left;

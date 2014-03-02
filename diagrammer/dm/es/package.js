@@ -29,6 +29,17 @@ dm.base.diagram("es.package", dm.es.element, {
          }
        }
     },
+
+	getSvgDescription: function() {
+		var w1 = $("#" + this.euid).width();
+		var h1 = $("#" + this.euid).height();
+		var p1 = $("#" + this.euid + "_Border").position();
+		var np = $("#" + this.euid + " #name").position();
+		var desc = '<rect x="'+ p1.left + '" y="' + p1.top + '" width="' +(w1*0.15) + '" height="20"/>';
+		desc += '<rect x="'+ p1.left + '" y="' + (p1.top + 20) + '" width="' +w1 + '" height="' + (h1-22) + '"/>';
+		desc += '<text x="' + (p1.left + np.left) + '" y="' + (p1.top + np.top + 34) + '">' + $("#" + this.euid + " #name").text() + "</text>";
+		return desc;
+	},
     '_create': function() {
       // HTML for class structure creation
       var aux = (this.options.aux != undefined) ? "<a>&lt&lt" + this.options.aux + "&gt&gt</a><br><b>" : "";
