@@ -22,6 +22,12 @@ dm.base.diagram("es.empty", dm.es.element, {
 	   this.options.nameY = p.top;
        
     },
+	getSvgDescription: function() {
+		var p1 = $("#" + this.euid + "_Border").position();
+		var np = $("#" + this.euid + " #name").position();
+		return '<text x="' + (p1.left + np.left) + '" y="' + (p1.top + np.top + 11) + '">' + $("#" + this.euid + " #name").text() + "</text>";
+	},
+
     '_create': function() {
       // HTML for class structure creation
       this.innerHtml = '<div id="' + this.euid + '" style="width:100%;height:100%;" class="us-element-resizable-area">&nbsp</div>';

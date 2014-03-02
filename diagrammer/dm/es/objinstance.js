@@ -272,6 +272,16 @@ dm.base.diagram("es.objinstance", dm.es.element, {
       this.options.name = "" + $("#" + this.euid + " .Name" ).html();
       return this.options.name;
 	},
+	getSvgDescription: function() {
+		var w1 = $("#" + this.euid).width();
+		var h1 = $("#" + this.euid).height();
+		var p1 = $("#" + this.euid + "_Border").position();
+		var np = $("#" + this.euid + " #name").position();
+		var	desc = '<rect x="'+ p1.left + '" y="' + p1.top + '" width="' +w1 + '" height="40"/>';
+		desc += '<line stroke="black" stroke-dasharray="7 3" stroke-width="1" x1="'+ (p1.left+w1/2) + '" y1="' + (p1.top+40) + '" x2="' +(p1.left+w1/2) + '" y2="'+(p1.top + h1 -40)+'"/>';
+		desc += '<text x="' + (p1.left + np.left) + '" y="' + (p1.top + np.top + 11) + '">' + $("#" + this.euid + " #name").text() + "</text>";
+		return desc;
+	}
 });
 
 // Drag helper element
@@ -356,6 +366,13 @@ dm.base.diagram("es.llport", dm.es.element, {
               $("#" + this.euid + "_Border").height(pui.top - pos.top);
             else if (pos.top > pui.top)
               $("#" + this.euid + "_Border").css("top", pui.top).height(pos.top - pui.top + h);		
+	},
+	getSvgDescription: function() {
+		var w1 = $("#" + this.euid).width();
+		var h1 = $("#" + this.euid).height();
+		var p1 = $("#" + this.euid + "_Border").position();
+		var	desc = '<rect x="'+ p1.left + '" y="' + p1.top + '" width="' +w1 + '" height="'+h1+'"/>';
+		return desc;
 	}
 });
 
@@ -406,6 +423,13 @@ dm.base.diagram("es.lldel", dm.es.element, {
               $("#" + this.euid + "_Border").height(pui.top - pos.top);
             else if (pos.top > pui.top)
               $("#" + this.euid + "_Border").css("top", pui.top).height(pos.top - pui.top + h);		
+	},
+	getSvgDescription: function() {
+		var w1 = $("#" + this.euid).width();
+		var h1 = $("#" + this.euid).height();
+		var p1 = $("#" + this.euid + "_Border").position();
+		var	desc = '<rect x="'+ p1.left + '" y="' + p1.top + '" width="' +w1 + '" height="'+h1+'"/>';
+		return desc;
 	}
 });
 
