@@ -79,9 +79,14 @@
 
     var innerHtml = '<form id="us-dialog-newdiagram">\
       <fieldset><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div>\
-      <p><input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin-top:0px;"/><label class="left" for="name">Name:</label></p>\
-	  <br><p><label id="VP_error" style="margin-top:0px;float:left;font-color:red;">Select the name of the new file:</label></p>\
-	  <br><p><span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
+	  <br><p id="us-new-diagram-dialog-readio" class="ui-widget-header ui-corner-all"><form>\
+	  <input value="umlsync" type="radio" name="type" checked="true">JSON</input>\
+	  <input value="us.svg" type="radio" name="type" style="margin-left:25px;">SVG</input>\
+	  <input value="text" type="radio" name="type" style="margin-left:25px;" disabled=true>PlantUML</input></p></form>\
+	  <p><label id="VP_error" style="margin-top:0px;float:left;font-color:red;">Select the name of the new file:</label></p>\
+	  <br><p class="ui-widget-header ui-corner-all">\
+	  <input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin: 4px 0px 4px 4px;"/>\
+	  <span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
       </span>\
       </p></fieldset></form>';
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
@@ -203,9 +208,11 @@
           var isNamed = $("#us-new-diagram-dialog-input").is(":checked"),
               diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
          
+		 var type = $("#us-new-diagram-dialog-readio input:checked").val();
+		 
          // Add file extension for diagram files
-         if ((diagram_name.lastIndexOf(".umlsync") != diagram_name.length - 8) && (self.selected != "markdown")) {
-           diagram_name = diagram_name + ".umlsync";
+         if ((diagram_name.lastIndexOf("." + type) != diagram_name.length - 1 -type.length) && (self.selected != "markdown")) {
+           diagram_name = diagram_name + "." + type;
          }
 
          if ((diagram_name.lastIndexOf(".md") != diagram_name.length - 3) && (self.selected == "markdown")) {
@@ -240,16 +247,37 @@
             isNewOne:!isNamed
           };
 
-          if (isNamed)
+          if (isNamed) {
             params.absPath = diagram_name;
+		  }
+		  else {
+		    if (self.selected != "markdown") {
+			  // Keep the content type for a SaveAs dialog for a content without name
+		      params.type = type;
+			}
+		  }
         if (self.selected != "markdown") {
 		  // Work-around for the sequence diagrams
 		  var baseType = self.selected;
-          dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
+		  if (type == "umlsync") {
+		    // Empty diagram in JSON format
+            dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
+		  }
+		  else if (type == "us.svg") {
+		    // Empty diagram in SVG format
+		    var ddd = '<?xml version="1.0" encoding="utf-8" ?>\
+                           <svg umlsync="v1.0" baseProfile="full" height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">\
+                           <desc>{"type":"'+self.selected+'","base_type":"'+baseType+'"}</desc></svg>';
+		    dm.dm.fw['addNewContent'](params, ddd);
+		  }
+		  else {
+		    alert("type - " + type + " not supported.");
+		  }
         }
         else {
           params.contentType = "markdown";
           params.editable = false;
+		  // Empty content of markdown
           dm.dm.fw['addNewContent'](params, "Goodby Word!");
         }
         $(this).dialog("close");
