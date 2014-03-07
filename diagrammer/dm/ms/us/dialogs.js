@@ -190,11 +190,14 @@
           {
             self.selected = item.id;
             var val = $("#new-diagram-dialog input#VP_inputselector").val();
-            if (item.id != "markdown") {
-              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
+            if (item.id == "markdown") {
+			  $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + "Document.md");
+			}
+			else if (item.id == "snippets") {
+              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + "Snippet.us.snippet");
             }
             else {
-              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + "Document.md");
+              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
             }
           }
       });
@@ -211,12 +214,18 @@
 		 var type = $("#us-new-diagram-dialog-readio input:checked").val();
 		 
          // Add file extension for diagram files
-         if ((diagram_name.lastIndexOf("." + type) != diagram_name.length - 1 -type.length) && (self.selected != "markdown")) {
+         if ((diagram_name.lastIndexOf("." + type) != diagram_name.length - 1 -type.length) && (!(["markdown", "snippets"].indexOf(self.selected) >= 0))) {
            diagram_name = diagram_name + "." + type;
          }
 
+		 // markdown extension
          if ((diagram_name.lastIndexOf(".md") != diagram_name.length - 3) && (self.selected == "markdown")) {
            diagram_name = diagram_name + ".md";
+         }
+
+		 // snippets extension
+		 if ((diagram_name.lastIndexOf(".snippet") != diagram_name.length - 8) && (self.selected == "snippets")) {
+           diagram_name = diagram_name + ".snippet";
          }
 
           var fullname = diagram_name;
@@ -251,12 +260,12 @@
             params.absPath = diagram_name;
 		  }
 		  else {
-		    if (self.selected != "markdown") {
+		    if (self.selected != "markdown" && self.selected != "snippets") {
 			  // Keep the content type for a SaveAs dialog for a content without name
 		      params.type = type;
 			}
 		  }
-        if (self.selected != "markdown") {
+        if (self.selected != "markdown" && self.selected != "snippets") {
 		  // Work-around for the sequence diagrams
 		  var baseType = self.selected;
 		  if (type == "umlsync") {
@@ -274,12 +283,17 @@
 		    alert("type - " + type + " not supported.");
 		  }
         }
-        else {
+        else if (self.selected == "markdown") {
           params.contentType = "markdown";
           params.editable = false;
 		  // Empty content of markdown
           dm.dm.fw['addNewContent'](params, "Goodby Word!");
         }
+		else if (self.selected == "snippets") {
+		  params.contentType = "snippets";
+          params.editable = false;
+		  dm.dm.fw['addNewContent'](params, {});
+		}
         $(this).dialog("close");
       },
       'Cancel': function() {

@@ -23,5 +23,9 @@
   {"id": "markdown",
    "title": "Markdown text document",
    "icon": "./dm/icons/us/dss/markDown.png"
+  },
+  {"id": "snippets",
+   "title": "Snippet bubbles",
+   "icon": "./dm/icons/us/dss/snippets.png"
   }
 ]

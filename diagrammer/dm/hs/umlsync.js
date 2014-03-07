@@ -221,6 +221,17 @@ URL:
                         obj.options['viewid'] = viewid;
                     });
         },
+		//
+		// Switch diagram to the snippet mode
+		//
+		snippetMode: function(parentSelector, flag) {
+            if (this.contentCache[parentSelector]) {
+              var did = this.contentCache[parentSelector]["diagram"];
+			  if (did) {
+			    did.setSnippetMode(flag);
+			  }
+			}
+		},
         //
         // Switch between edit and view mode
         // mode - boolean flag:  true - edit; false - view;
@@ -287,6 +298,10 @@ URL:
 
             // redraw
             did.onFocus(isInFocus);
+			var r = did.setSnippetMode(isInFocus);
+			if (!isInFocus && r && r != null && r != "") {
+			  alert(r);
+			}
           }
         },
         //

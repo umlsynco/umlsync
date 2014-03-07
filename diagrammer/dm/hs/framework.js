@@ -690,6 +690,13 @@ Version:
                 //            Content managment
                 //////////////////////////////////////////////////////////////
                 selectedContentId:null,
+				//
+				// add new sippet element
+				// @params - content description
+				// @data - default value
+				//
+				addNewSnippets: function(params, data) {
+				},
                 //
                 // add new content
                 // @param params - the description of content
