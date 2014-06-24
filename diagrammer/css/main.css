@@ -569,3 +569,31 @@ div.color-picker {
 .us-left-button {
   float:left;
 }
+
+div#snippets {
+  min-height:150px;
+  color:#666;
+}
+
+div#us-snippets-toolbox  {
+  z-index:10011;
+  background-color:greenyellow;
+  width:100%;
+}
+
+div#us-snippets-toolbox ul{
+  top:1px;
+  display:inline;
+  margin:0px;
+  padding:0px;
+  float: right;
+}
+
+div#us-snippets-toolbox ul li {
+	margin: 2px;
+	position: relative;
+	padding: 4px 0px;
+	cursor: pointer;
+	float: left;
+	list-style: none outside none;
+}

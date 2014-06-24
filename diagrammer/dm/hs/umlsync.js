@@ -228,7 +228,7 @@ URL:
             if (this.contentCache[parentSelector]) {
               var did = this.contentCache[parentSelector]["diagram"];
 			  if (did) {
-			    did.setSnippetMode(flag);
+			    return did.setSnippetMode(flag);
 			  }
 			}
 		},
@@ -298,10 +298,6 @@ URL:
 
             // redraw
             did.onFocus(isInFocus);
-			var r = did.setSnippetMode(isInFocus);
-			if (!isInFocus && r && r != null && r != "") {
-			  alert(r);
-			}
           }
         },
         //
@@ -475,9 +471,15 @@ URL:
             }
           }
           return true;
-        }
-        };
-
+        },
+		
+		_setWidgetsOption: function(parent, id, value) {
+		  if (this.contentCache[parent]) {
+		    this.contentCache[parent]["diagram"]._setWidgetsOption(id, value);
+		  }
+		}
+		};
+		
         return getInstance(options);
 
     };

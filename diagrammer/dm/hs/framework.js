@@ -100,11 +100,18 @@ Version:
                       $tabs.tabs('select', '#' + ui.panel.id);
                 },
                 'select': function(event, ui) {
-                      if (self.contents) {
+                      /*if (self.contents) {
 					      var params = null;
 					      if (self.selectedContentId) {
 						     params = self.contents[self.selectedContentId];
                             if (params && params.contentType) {
+							  if (self.SnippetMode) {
+							    // Check if snippet available
+							    var snippet = self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, false);
+								if (snippet) {
+								  alert(":" + snippet);
+								}
+							  }
 						      self.formatHandlers[params.contentType].onFocus(self.selectedContentId, false);
 							}
 						  }
@@ -114,9 +121,12 @@ Version:
 						  
 						  if (params && params.contentType) {
 						    self.formatHandlers[params.contentType].onFocus(self.selectedContentId, true);
+							if (self.SnippetMode) {
+							  self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, true);
+							}
 							return;
 						  }
-                      }
+                      }*/
 					  self._helperCleanUpCanvas();
                       self._helperUpdateFrameWork(true);
                   },
@@ -126,21 +136,31 @@ Version:
 					      if (self.selectedContentId) {
 						     params = self.contents[self.selectedContentId];
                             if (params && params.contentType) {
+							  if (self.SnippetMode) {
+							    // Check if snippet available
+							    var snippet = self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, false);
+								if (snippet) {
+								  self.activeSnippet =  self.activeSnippet || new Array();
+								  self.activeSnippet.push(snippet);
+								}
+							  }
 						      self.formatHandlers[params.contentType].onFocus(self.selectedContentId, false);
 							}
 						  }
-
-						  self._helperCleanUpCanvas();
-
-                          self.selectedContentId = "#" + ui.panel.id;
-                          var params = self.contents[self.selectedContentId];
-
-                          // onFocus handler
+                          
+						  self.selectedContentId = "#" + ui.panel.id;
+                          params = self.contents[self.selectedContentId];
+						  
 						  if (params && params.contentType) {
 						    self.formatHandlers[params.contentType].onFocus(self.selectedContentId, true);
+							if (self.SnippetMode) {
+							  self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, true);
+							}
 							return;
 						  }
                       }
+					  self._helperCleanUpCanvas();
+                      self._helperUpdateFrameWork(true);
                   }
             });
 
@@ -696,6 +716,7 @@ Version:
 				// @data - default value
 				//
 				addNewSnippets: function(params, data) {
+					dm.dm.dialogs['SnippetNavigator'](params, this, null);
 				},
                 //
                 // add new content
@@ -1840,25 +1861,45 @@ Version:
                     }
 
                     $('button#color5').simpleColorPicker({ 'onChangeColor': function(color) {
-                        if (fw.diagrams[fw.selectedContentId])  {
-                            fw.diagrams[fw.selectedContentId]._setWidgetsOption("color", color);
+					    if (fw.selectedContentId) {
+					      var params = fw.contents[fw.selectedContentId];
+						  var handler = null;
+                          if (params && params.contentType) {
+						    handler = fw.formatHandlers[params.contentType];
+							handler._setWidgetsOption(fw.selectedContentId, "color", color);
+					      }
                         }
                     } }).click(function() { $(".context-menu").hide();});
 
                     $('button#color6').simpleColorPicker({ 'onChangeColor': function(color) {
-                        if (fw.diagrams[fw.selectedContentId])  {
-                            fw.diagrams[fw.selectedContentId]._setWidgetsOption("font-color", color);
+					    if (fw.selectedContentId) {
+					      var params = fw.contents[fw.selectedContentId];
+						  var handler = null;
+                          if (params && params.contentType) {
+						    handler = fw.formatHandlers[params.contentType];
+							handler._setWidgetsOption(fw.selectedContentId, "font-color", color);
+					      }
                         }
                     } }).click(function() { $(".context-menu").hide();});
 
                     $('button#vatop').click(function() {
-                        if (fw.diagrams[fw.selectedContentId])  {
-                            fw.diagrams[fw.selectedContentId]._setWidgetsOption("z-index", "front");
+					    if (fw.selectedContentId) {
+					      var params = fw.contents[fw.selectedContentId];
+						  var handler = null;
+                          if (params && params.contentType) {
+						    handler = fw.formatHandlers[params.contentType];
+							handler._setWidgetsOption(fw.selectedContentId, "z-index", "front");
+					      }
                         }
                     });
                     $('button#vabottom').click(function() {
-                        if (fw.diagrams[fw.selectedContentId])  {
-                            fw.diagrams[fw.selectedContentId]._setWidgetsOption("z-index", "back");
+					    if (fw.selectedContentId) {
+					      var params = fw.contents[fw.selectedContentId];
+						  var handler = null;
+                          if (params && params.contentType) {
+						    handler = fw.formatHandlers[params.contentType];
+							handler._setWidgetsOption(fw.selectedContentId, "z-index", "back");
+					      }
                         }
                     });
 

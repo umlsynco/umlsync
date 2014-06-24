@@ -591,10 +591,10 @@ dm['at'] = dm.at; //automated testing
       alert("Please, declare method _create() for diagram element " + this.euid);
     }
   },
-				
+                
   getDescription: function(key, value) {
     var kv = !(key || value || false);
-	var simple = (key && !value);
+    var simple = (key && !value);
 
     var proto = Object.getPrototypeOf(this);
     var item = '{',
@@ -610,10 +610,10 @@ dm['at'] = dm.at; //automated testing
         } else {
           var obj = this.options[i];
           if (obj instanceof Array) {
-		    // simple options only
-		    if (simple) {
-			  continue;
-			}
+            // simple options only
+            if (simple) {
+              continue;
+            }
 
             var c = '';
             item += comma + '"' + i + '":[';
@@ -757,28 +757,28 @@ dm['at'] = dm.at; //automated testing
     //<div class="us-canvas-bg" style="width:' + this.options['width'] + 'px;height:' + this.options['height'] + 'px">
     //this.options.multicanvas = true; ~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USES for DROP SOME NODES FROM DYNATREE
     if (this.options.multicanvas) {
-	  var p = this._getDiagramSize(this.options);
+      var p = this._getDiagramSize(this.options);
       var sx = false, sy = false; // Scroll X and Y correspondingly
-	  // Alignement of the parent frame by width and height
-	  var $par = $(this.parrent);
-	  // if width undefined or smaller than canvas
-	  if (!this.options.width || parseInt(this.options.width) < p.width) {
-	    $par.width(this.options.width);
-		sx = true;
-	  }
-	  else {
-	    $par.width(p.width+30);
-	  }
-	  
-	  if (!this.options.height || parseInt(this.options.height) < p.height -40) {
-	    $par.height(this.options.height);
-		sy = true;
-	  }
-	  else {
-	    $par.height(p.height+40);
-	  }
-	  // Parent setup complete
-	  
+      // Alignement of the parent frame by width and height
+      var $par = $(this.parrent);
+      // if width undefined or smaller than canvas
+      if (!this.options.width || parseInt(this.options.width) < p.width) {
+        $par.width(this.options.width);
+        sx = true;
+      }
+      else {
+        $par.width(p.width+30);
+      }
+      
+      if (!this.options.height || parseInt(this.options.height) < p.height -40) {
+        $par.height(this.options.height);
+        sy = true;
+      }
+      else {
+        $par.height(p.height+40);
+      }
+      // Parent setup complete
+      
       this.canvasEuid = this.euid +'_Canvas';
       this.element = $(this.parrent).append('<div id="' + this.euid + '" class="us-diagram" width="100%" height="100%">\
           <canvas id="' + this.euid +'_Canvas" class="us-canvas" width=' + p.width+ 'px height=' + p.height + 'px>\
@@ -786,7 +786,7 @@ dm['at'] = dm.at; //automated testing
           <div class="us-canvas-bg" style="width:100%;height:100%;">\
           </div></div>');
 
-	  $.log("=========================== NAME: #" + this.euid + ".us-diagram");
+      $.log("=========================== NAME: #" + this.euid + ".us-diagram");
       $("#" + this.euid + ".us-diagram").css({"overflow-x": (sx ? "scroll":"hidden"), "overflow-y": (sy ? "scroll":"hidden")});
 
     } else {
@@ -849,7 +849,7 @@ dm['at'] = dm.at; //automated testing
 
             if (iDiagram.options['type'] == "component") {
               var element = {'viewid':source.data.viewid};
-			  element.type = (isInterface) ? "interface":"component";
+              element.type = (isInterface) ? "interface":"component";
               element.left = ui.position.left - thisOffset.left;
               element.top = ui.position.top - thisOffset.top;
               element.name = key;
@@ -888,7 +888,7 @@ dm['at'] = dm.at; //automated testing
                 return;
               }
             }
-			var element = {'viewid':source.data.viewid, type:"package"};
+            var element = {'viewid':source.data.viewid, type:"package"};
 
             if (element != undefined) {
               element.name = source.data.title;
@@ -1077,27 +1077,27 @@ dm['at'] = dm.at; //automated testing
 //@ifdef EDITOR
   getSvgDescription: function() {
     this._update();
-	var desc = '<?xml version="1.0" encoding="utf-8" ?>\n<svg umlsync="v1.0" baseProfile="full" height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">\n<desc>' + this.getDescription(true) + '</desc>\n<g id="elements" fill="#ECF3EC" stroke="black" stroke-width="1" style="font-size:11px;font-family:Verdana,Arial,sans-serif;">\n';
-					
-	for (var v in this.elements) {
-	  // each element is group
-	  desc += '<g id="'+this.elements[v].options.type+'-'+this.elements[v].options.id+'">\n<desc>' + this.elements[v].getDescription() + '</desc>\n';
-	  if(this.elements[v].getSvgDescription) {
-		desc += this.elements[v].getSvgDescription();
-	  }
-	  desc += '</g>\n';
-	}
-	desc += '</g>\n';
-	
-	desc += '<g id="connectors" fill="none" stroke="black" stroke-width="1">\n';
-	for (var v in this.connectors) {
-	  if(this.connectors[v].getSvgDescription) {
-		desc += this.connectors[v].getSvgDescription();
-	  }
-	}
-	desc += '</g>\n';
-	desc = desc + '</svg>';
-	return desc;
+    var desc = '<?xml version="1.0" encoding="utf-8" ?>\n<svg umlsync="v1.0" baseProfile="full" height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">\n<desc>' + this.getDescription(true) + '</desc>\n<g id="elements" fill="#ECF3EC" stroke="black" stroke-width="1" style="font-size:11px;font-family:Verdana,Arial,sans-serif;">\n';
+                    
+    for (var v in this.elements) {
+      // each element is group
+      desc += '<g id="'+this.elements[v].options.type+'-'+this.elements[v].options.id+'">\n<desc>' + this.elements[v].getDescription() + '</desc>\n';
+      if(this.elements[v].getSvgDescription) {
+        desc += this.elements[v].getSvgDescription();
+      }
+      desc += '</g>\n';
+    }
+    desc += '</g>\n';
+    
+    desc += '<g id="connectors" fill="none" stroke="black" stroke-width="1">\n';
+    for (var v in this.connectors) {
+      if(this.connectors[v].getSvgDescription) {
+        desc += this.connectors[v].getSvgDescription();
+      }
+    }
+    desc += '</g>\n';
+    desc = desc + '</svg>';
+    return desc;
   }, 
 
   _update: function() {
@@ -1130,33 +1130,33 @@ dm['at'] = dm.at; //automated testing
   _getDiagramSize: function(json) {
     var w = 100, h = 100;
     if (json) {
-	  for (var v in json.elements) {
-	    var e = json.elements[v];
-		var tmp = parseInt(e.left) + parseInt(e.width);
-		if (w < tmp) {
-		  w = tmp;
-		}
-		tmp = parseInt(e.top) + parseInt(e.height);
-		if (h < tmp) {
-		  h = tmp;
-		}
-	  }
-	  for (var v in json.connectors) {
-	    for (var c in json.connectors[v].epoints) {
-		  var p = json.connectors[v].epoints[c];
-		  if (w < parseInt(p["0"])) {
-		    w = parseInt(p["0"]);
-		  }
-		  if (h < parseInt(p["1"])) {
-		    h = parseInt(p["1"]);
-		  }
-		}
-	  }
-	}
-	else {
-	  // TODO: redraw.
-	}
-	return {width:w, height:h};
+      for (var v in json.elements) {
+        var e = json.elements[v];
+        var tmp = parseInt(e.left) + parseInt(e.width);
+        if (w < tmp) {
+          w = tmp;
+        }
+        tmp = parseInt(e.top) + parseInt(e.height);
+        if (h < tmp) {
+          h = tmp;
+        }
+      }
+      for (var v in json.connectors) {
+        for (var c in json.connectors[v].epoints) {
+          var p = json.connectors[v].epoints[c];
+          if (w < parseInt(p["0"])) {
+            w = parseInt(p["0"]);
+          }
+          if (h < parseInt(p["1"])) {
+            h = parseInt(p["1"]);
+          }
+        }
+      }
+    }
+    else {
+      // TODO: redraw.
+    }
+    return {width:w, height:h};
   },
   /**
    * \class Function.
@@ -1778,43 +1778,43 @@ dm['at'] = dm.at; //automated testing
   
   setSnippetMode: function(mode) {
     if (this.snippetMode != mode && this.snippetMode) {
-	  this.snippetMode = mode;
-	  if (this.activeSnippet) {
-		var val3 = $(this.activeSnippet + " p").text();
-		$(this.activeSnippet).remove();
-	    this.activeSnippet = null;
-		return val3;
-	  }
-	  else {
-	    return null;
-	  }
-	}
+      this.snippetMode = mode;
+      if (this.activeSnippet) {
+        var val3 = $(this.activeSnippet + " p").text();
+        $(this.activeSnippet).remove();
+        this.activeSnippet = null;
+        return val3;
+      }
+      else {
+        return null;
+      }
+    }
     this.snippetMode = mode;
   },
 
   showSnippetBubble: function(activeElement) {
     var update = this.activeSnippet == "#"+activeElement.euid+'_snippet';
     if (this.activeSnippet && !update) {
-	  $(this.activeSnippet).remove();
-	  this.activeSnippet = null;
-	}
+      $(this.activeSnippet).remove();
+      this.activeSnippet = null;
+    }
 
     if (activeElement == undefined) {
-	  return;
-	}
-	var p = $("#" + activeElement.euid + "_Border").position();
-	p.left += $("#" + activeElement.euid + "_Border").width();
-	p.top += $("#" + activeElement.euid + "_Border").height();
-	if (!update) {
-	  $("#" + this.euid).append('<div id="'+activeElement.euid+'_snippet" class="us-snippet"><p class="triangle-border top" id="vrrrrrrrrrrrrrr">&lt;p&gt;[text]&lt;/p&gt;.</p><span style="position:absolute;right:10px;top:15px;" class="ui-icon ui-icon-closethick"></span></div>');
-	  $("#"+activeElement.euid+'_snippet p').editable({type:'textarea'});
-	  $("#"+activeElement.euid+'_snippet').css({left:p.left,top:p.top}).draggable({'containment': "#" + this.euid}).resizable().children("SPAN").click(function() {$(this).parent().remove();});
-	}
-	else {
-	  $("#"+activeElement.euid+'_snippet').css({left:p.left,top:p.top});
-	}
+      return;
+    }
+    var p = $("#" + activeElement.euid + "_Border").position();
+    p.left += $("#" + activeElement.euid + "_Border").width();
+    p.top += $("#" + activeElement.euid + "_Border").height();
+    if (!update) {
+      $("#" + this.euid).append('<div id="'+activeElement.euid+'_snippet" class="us-snippet"><p class="triangle-border top" id="vrrrrrrrrrrrrrr">&lt;p&gt;[text]&lt;/p&gt;.</p><span style="position:absolute;right:10px;top:15px;" class="ui-icon ui-icon-closethick"></span></div>');
+      $("#"+activeElement.euid+'_snippet p').editable({type:'textarea'});
+      $("#"+activeElement.euid+'_snippet').css({left:p.left,top:p.top}).draggable({'containment': "#" + this.euid}).resizable().children("SPAN").click(function() {$(this).parent().remove();});
+    }
+    else {
+      $("#"+activeElement.euid+'_snippet').css({left:p.left,top:p.top});
+    }
     // Cache active snippet
-	this.activeSnippet = "#"+activeElement.euid+'_snippet';
+    this.activeSnippet = "#"+activeElement.euid+'_snippet';
   },
     
   /**
@@ -1826,12 +1826,9 @@ dm['at'] = dm.at; //automated testing
     var ctrlDown = dm['dm']['fw']['CtrlDown'];
     this.clickedElement = refElement;
 
-	if (this.snippetMode) {
-	  this.showSnippetBubble(refElement);
-	}
-	else {
-	  this.snippetMode = true;
-	}
+    if (this.snippetMode) {
+      this.showSnippetBubble(refElement);
+    }
 
     // Hide all context menus
     if (this.menuCtx)
@@ -2141,78 +2138,79 @@ dm['at'] = dm.at; //automated testing
         'grid': [2,2],
         'scroll': true,
         'start': function(event, ui) {
-        self.operation_start = {left: ui.position.left, top: ui.position.top};
+            self.operation_start = {left: ui.position.left, top: ui.position.top};
 
-        if (parrentClass.dropHelper != undefined) {
-          var sel = self.euid;
-          parrentClass.Connector(parrentClass.dropHelper, {fromId: sel, toId: "ConnectionHelper"});
-          return;
-        }
+            if (parrentClass.dropHelper != undefined) {
+              var sel = self.euid;
+              parrentClass.Connector(parrentClass.dropHelper, {fromId: sel, toId: "ConnectionHelper"});
+              return;
+            }
 
-        parrentClass['onElementDragStart'](self, ui);
-        $("#tabs #us-editable").hide();
-      },
-      'drag': function(event, ui) {
-        if (parrentClass != undefined) {
-          parrentClass.draw();
-        }
+            parrentClass['onElementDragStart'](self, ui);
+            $("#tabs #us-editable").hide();
+        },
+        'drag': function(event, ui) {
+            if (parrentClass != undefined) {
+                parrentClass.draw();
+            }
 
-        if (parrentClass.dropHelper) {
-          return;
-        }
-        if (self.$moveit != undefined) {
-          $("#" + self.$moveit).css("left", 200);
-        }
-        parrentClass['onElementDragMove'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
-      },
-      'stop': function(event, ui) {
-        if (parrentClass.dropHelper) {
-          var offset = $("#" + parrentClass.euid).position();
-          var name = parrentClass.checkdrop(ui.position.left, ui.position.top);
+            if (parrentClass.dropHelper) {
+                return;
+            }
 
-          var selConn = parrentClass.dropHelper;
-          // Remove the temporary connector
-          var sel = self.euid;
-          //sel = sel.substr(0, sel.length -7);
-          parrentClass.removeConnector(sel, "ConnectionHelper", selConn);
+            if (self.$moveit != undefined) {
+                $("#" + self.$moveit).css("left", 200);
+            }
+            parrentClass['onElementDragMove'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
+          },
+          'stop': function(event, ui) {
+            if (parrentClass.dropHelper) {
+              var offset = $("#" + parrentClass.euid).position();
+              var name = parrentClass.checkdrop(ui.position.left, ui.position.top);
 
-          if (name != undefined)
-            parrentClass.Connector(selConn, {fromId: sel, toId: name});
-          // Remove selection from menu item
-          $('.connector-selector').removeClass('selected');
+              var selConn = parrentClass.dropHelper;
+              // Remove the temporary connector
+              var sel = self.euid;
+              //sel = sel.substr(0, sel.length -7);
+              parrentClass.removeConnector(sel, "ConnectionHelper", selConn);
 
-          parrentClass.setDropHelper();
+              if (name != undefined)
+                parrentClass.Connector(selConn, {fromId: sel, toId: name});
+              // Remove selection from menu item
+              $('.connector-selector').removeClass('selected');
 
-          parrentClass.draw();
-          return;
-        }
+              parrentClass.setDropHelper();
 
-        if (ui.position.top < 0) {
-          $(this).css("top", 3);
-          ui.position.top = 3;
-        }
+              parrentClass.draw();
+              return;
+            }
 
-        if (ui.position.left < 0) {
-          $(this).css("left", 0);
-          ui.position.left = 0;
-        }
-        parrentClass['onElementDragStop'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
+            if (ui.position.top < 0) {
+              $(this).css("top", 3);
+              ui.position.top = 3;
+            }
 
-        /*                if (self.options['droppable']) {
-                    if (self.parrent != undefined) {
-                      self.parrent._dropElement(self, ui); 
-                    }
+            if (ui.position.left < 0) {
+              $(this).css("left", 0);
+              ui.position.left = 0;
+            }
+            parrentClass['onElementDragStop'](self, {left:ui.position.left - self.operation_start.left, top:ui.position.top - self.operation_start.top});
+
+            /*  if (self.options['droppable']) {
+                  if (self.parrent != undefined) {
+                    self.parrent._dropElement(self, ui); 
+                  }
                 }
-         */
-        if (self.onDropComplete) {
-          self.onDropComplete();
-        }
-        //self.operationStop();
-        //self.parrent.reportOperation("move", self.euid, self.operation_start, {left: ui.position.left, top: ui.position.top});
-      },
-      'scope': self.options['droppable'],
-      'axis': axis111
-      }) 
+             */
+            if (self.onDropComplete) {
+              self.onDropComplete();
+            }
+            //self.operationStop();
+            //self.parrent.reportOperation("move", self.euid, self.operation_start, {left: ui.position.left, top: ui.position.top});
+          },
+          'scope': self.options['droppable'],
+          'axis': axis111
+          }) 
       /*{
         start: function(event, ui) {
                  // if this is a connection helper
@@ -2721,19 +2719,19 @@ dm['at'] = dm.at; //automated testing
       this.labels[opt.idx].css({left:opt.left, top:opt.top});
     },
 
-	getSvgDescription: function() {
-	    var desc;
+    getSvgDescription: function() {
+        var desc;
         this.points = this['_getConnectionPoints'](this['from'], this['toId'], this.epoints);
-		var rrr = this.draw(null, this.points, this.options.color || "black", true);
-		// Draw method has svg support
-		if (rrr) {
-		  // TODO: fromId and toId
-		  desc = '<g id="'+this.options.type+'-'+this.euid+'"><desc>' + this.getDescription() + '</desc>' + rrr + '</g>';
-		  return desc;
-		}
-		return '';
-	},
-	
+        var rrr = this.draw(null, this.points, this.options.color || "black", true);
+        // Draw method has svg support
+        if (rrr) {
+          // TODO: fromId and toId
+          desc = '<g id="'+this.options.type+'-'+this.euid+'"><desc>' + this.getDescription() + '</desc>' + rrr + '</g>';
+          return desc;
+        }
+        return '';
+    },
+    
     getDescription: function() {
       this.options['fromId'] = this.from;
       this.options['toId'] = this.toId;
@@ -3125,10 +3123,10 @@ dm['at'] = dm.at; //automated testing
         return;
       }
       var p21 = $('#' + toId + "_Border").position();
-	  
-	  var scrollTop = $("#" + this.parrent.euid).scrollTop(),
+      
+      var scrollTop = $("#" + this.parrent.euid).scrollTop(),
         scrollLeft = $("#" + this.parrent.euid).scrollLeft();
-	  
+      
       if ((epoints == undefined) || (epoints.length == 0)) {
         var x1 = this._getRValue(p1.left + p11.left, p2.left + p21.left, $('#'+ fromId).width()) ;
         var y1 = this._getRValue(p1.top + p11.top, p2.top + p21.top, $('#'+ fromId).height()) ;
@@ -3136,14 +3134,14 @@ dm['at'] = dm.at; //automated testing
         var x2 = this._getRValue(p2.left + p21.left, p1.left + p11.left, $('#' + toId).width());
         var y2 = this._getRValue(p2.top + p21.top, p1.top + p11.top,  $('#' + toId).height());
 
-		if (this.parrent.options.multicanvas) {
+        if (this.parrent.options.multicanvas) {
           var newpoints = [[x1 + scrollLeft,y1 + scrollTop], [x2 + scrollLeft,y2 + scrollTop]];
           return newpoints;
-		}
-		else {
+        }
+        else {
           var newpoints = [[x1,y1], [x2,y2]];
           return newpoints;
-		}
+        }
       }
       else {
         var lln = epoints.length -1;
@@ -3160,29 +3158,29 @@ dm['at'] = dm.at; //automated testing
          var x2 = p2.left + p21.left;
          var y2 = p2.top + p21.top;
          */      
-		if (this.parrent.options.multicanvas) {
-			var newpoints = [];
-			newpoints[0] = [x1+scrollLeft,y1+scrollTop];
-			for (var i=1;i<=epoints.length;++i) {
-			  newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
-			}
-			newpoints[epoints.length + 1] = [x2+scrollLeft,y2+scrollTop];
-			return newpoints;
-		}
-		else {
-		    // Canvas doesn't corresponding to diagram type
-			// and not scrollable
-			// therefore keep x,y on place and shift extra points
-			var newpoints = [];
-			newpoints[0] = [x1,y1];
-			for (var i=1;i<=epoints.length;++i) {
-			  newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
-			  newpoints[i][0] -= scrollLeft;
-			  newpoints[i][1] -= scrollTop;
-			}
-			newpoints[epoints.length + 1] = [x2,y2];
-			return newpoints;
-		}
+        if (this.parrent.options.multicanvas) {
+            var newpoints = [];
+            newpoints[0] = [x1+scrollLeft,y1+scrollTop];
+            for (var i=1;i<=epoints.length;++i) {
+              newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
+            }
+            newpoints[epoints.length + 1] = [x2+scrollLeft,y2+scrollTop];
+            return newpoints;
+        }
+        else {
+            // Canvas doesn't corresponding to diagram type
+            // and not scrollable
+            // therefore keep x,y on place and shift extra points
+            var newpoints = [];
+            newpoints[0] = [x1,y1];
+            for (var i=1;i<=epoints.length;++i) {
+              newpoints[i] = [epoints[i-1][0], epoints[i-1][1]];//epoints[i-1];
+              newpoints[i][0] -= scrollLeft;
+              newpoints[i][1] -= scrollTop;
+            }
+            newpoints[epoints.length + 1] = [x2,y2];
+            return newpoints;
+        }
       }
     },
 //@ifdef EDITOR

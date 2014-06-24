@@ -181,7 +181,7 @@
       );
       
       var self = this;
-      $("#diagram-menu").listmenu({
+      $("#new-diagram-dialog #diagram-menu").listmenu({
         selector: "diagram-selector",
         selectable: true,
         urlPrefix: dm.dm.loader.getUrl(),
@@ -292,7 +292,7 @@
 		else if (self.selected == "snippets") {
 		  params.contentType = "snippets";
           params.editable = false;
-		  dm.dm.fw['addNewContent'](params, {});
+		  dm.dm.fw['addNewSnippets'](params, {});
 		}
         $(this).dialog("close");
       },
@@ -610,6 +610,85 @@
 			$("#configure-localhost-dialog #dl-validation-tip").text("");
 		}
 	});
+  },
+
+  //
+  // Snippets navigation dialog
+  //
+  'SnippetNavigator': function(params, fw, callback) {
+    var title = params.title;
+    var innerHtml = '<div id="us-snippets-toolbox"><ul class="ui-widget ui-helper-clearfix">\
+                                    <li class="ui-state-default ui-corner-all" title="First Comment"><span class="ui-icon ui-icon-seek-first"></span></li>\
+									<li class="ui-state-default ui-corner-all" title="Previous Comment"><span class="ui-icon ui-icon-seek-prev"></span></li>\
+									<li class="ui-state-default ui-corner-all" title="Stop and Save snippets"><span class="ui-icon ui-icon-stop"></span></li>\
+									<li class="ui-state-default ui-corner-all" title="Stop and Save snippets"><span class="ui-icon ui-icon-pause"></span></li>\
+									<li class="ui-state-default ui-corner-all" title="Start Snippet"><span class="ui-icon ui-icon-comment"></span></li>\
+									<li class="ui-state-default ui-corner-all" title="Next Comment"><span class="ui-icon ui-icon-seek-next"></span></li>\
+									<li class="ui-state-default ui-corner-all" title="Switch to the final Comment"><span class="ui-icon ui-icon-seek-end"></span></li></ul>\
+									</div>';
+	var innerHtml2 = '<div id="snippets" style="width: 100%; height: 100%;"><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div></div>';
+									
+    var self = fw;
+
+      $('<div id="snippet-navigator-dialog" title="'+title+'"></div>').appendTo('body');
+      $(innerHtml2).appendTo("#snippet-navigator-dialog");
+
+	  function disableSnippetMode() {
+		if (self.selectedContentId) {
+		   params = self.contents[self.selectedContentId];
+		   if (params && params.contentType) {
+			  var snippet = self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, false);
+			  if (snippet) {
+				self.activeSnippet.push(snippet);
+			  }
+		   }
+		}
+	  }
+
+	  self.SnippetMode = true;
+	  $("#snippets #diagram-menu").listmenu({
+        selector: "diagram-selector",
+        selectable: true,
+        onSelect: function(item)
+          {
+		  }
+	    }
+	  ).sortable();
+
+      $("#snippet-navigator-dialog").dialog({
+        autoOpen: true,
+        height: 154,
+        width: 350,
+        modal: false,
+		open: function(event, ui){
+		    // Hide close icon
+			$(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+			// Add navigation icons
+            $(this).parent().find('.ui-dialog-titlebar').append(innerHtml);
+        }
+	}).parent().draggable();
+	
+	  $("#us-snippets-toolbox").mouseenter(function() {
+		if ($("#content-right #snippet-navigator").length == 0) {
+		  $("#content-right").append("<div id='snippet-navigator' style='background-color:#ADFF2F; top:0px;width:100%;height:200px;position:absolute;'>Snippets Navigator</div>");
+		}
+		$("#content-right #snippet-navigator").show();
+	  }).mouseleave(function() {
+		$("#content-right #snippet-navigator").hide();
+	  });
+	  $("#us-snippets-toolbox span.ui-icon-stop").click(this, function(e, data) {
+		var self = e.data || data;
+		self.SnippetMode = false;
+		disableSnippetMode();
+		// remove snippets toolbox 
+		$("#us-snippets-toolbox").remove();
+	  });
+	  $("#us-snippets-toolbox span.ui-icon-pause").click(this, function(e, data) {
+		var self = e.data || data;
+		self.SnippetMode = false;
+		disableSnippetMode();
+	  });
+
   },
   
   //
