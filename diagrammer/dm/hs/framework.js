@@ -138,7 +138,7 @@ Version:
                             if (params && params.contentType) {
 							  if (self.SnippetMode) {
 							    // Check if snippet available
-							    var snippet = self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, false);
+							    var snippet = self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, null);
 								if (snippet) {
 								  self.activeSnippet =  self.activeSnippet || new Array();
 								  self.activeSnippet.push(snippet);
@@ -154,7 +154,7 @@ Version:
 						  if (params && params.contentType) {
 						    self.formatHandlers[params.contentType].onFocus(self.selectedContentId, true);
 							if (self.SnippetMode) {
-							  self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, true);
+							  self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, self.snippetsHandler);
 							}
 							return;
 						  }
@@ -360,6 +360,9 @@ Version:
 				   
 				   obj = new dm.hs.codeview();
 				   this.formatHandlers[obj.getUid()] = obj;
+				   
+				   obj = new dm.hs.snippets();
+				   this.snippetsHandler = obj;
 				},
                 //
                 // Register IViewManager (Github, Bitbucket, Eclipse)

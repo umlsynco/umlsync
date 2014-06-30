@@ -626,12 +626,17 @@
 									<li class="ui-state-default ui-corner-all" title="Next Comment"><span class="ui-icon ui-icon-seek-next"></span></li>\
 									<li class="ui-state-default ui-corner-all" title="Switch to the final Comment"><span class="ui-icon ui-icon-seek-end"></span></li></ul>\
 									</div>';
-	var innerHtml2 = '<div id="snippets" style="width: 100%; height: 100%;"><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div></div>';
+	var innerHtml2 = '<div id="snippets" style="width: 100%; height: 100%;"><div id="selectable-list" style="scroll:auto;"><ul id="snippets-list"></ul></div></div>';
 									
     var self = fw;
 
       $('<div id="snippet-navigator-dialog" title="'+title+'"></div>').appendTo('body');
       $(innerHtml2).appendTo("#snippet-navigator-dialog");
+
+	  $(document).on("snippet.add", function(event) {
+		alert(event.data);
+		$("#snippets-list").append("<li>new item</li>");
+	  });
 
 	  function disableSnippetMode() {
 		if (self.selectedContentId) {
@@ -681,7 +686,7 @@
 		self.SnippetMode = false;
 		disableSnippetMode();
 		// remove snippets toolbox 
-		$("#us-snippets-toolbox").remove();
+		$("#snippet-navigator-dialog").dialog("close");
 	  });
 	  $("#us-snippets-toolbox span.ui-icon-pause").click(this, function(e, data) {
 		var self = e.data || data;

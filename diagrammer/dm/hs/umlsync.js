@@ -221,14 +221,60 @@ URL:
                         obj.options['viewid'] = viewid;
                     });
         },
+
+		onSnippetClick: function(position) {
+		  if (this.snippetHandler) {
+		    this.snippetHandler.showSnippetBubble(position, this.snippetConecntId);
+		  }
+		},
+
+		//
+		// Callback method
+		// @param value - {data, position}
+		//
+		onSaveSnippet: function(value) {
+		  if (this.snippetConecntId) {
+		    alert("Save: " + value + " #" + this.snippetConecntId);
+		  }
+		},
+
+		//
+		// Callback method
+		//
+		onRemoveSnippet: function() {
+		  if (this.snippetConecntId) {
+		    alert("Save: " + value + " #" + this.snippetConecntId);
+		  }
+		},
+		
+		//
+		// Method to open snippet bubble
+		// @param value - {data, position}
+		//
+		openSnippet: function(value) {
+		  if (this.snippetConecntId) {
+		    alert("Save:  #" + this.snippetConecntId);
+		  }
+		},
+		
 		//
 		// Switch diagram to the snippet mode
 		//
-		snippetMode: function(parentSelector, flag) {
+		snippetMode: function(parentSelector, handler) {
+		    var flag = (handler != null);
+			// Keep handler in cache
+			this.snippetHandler = handler;
+
             if (this.contentCache[parentSelector]) {
               var did = this.contentCache[parentSelector]["diagram"];
 			  if (did) {
-			    return did.setSnippetMode(flag);
+			    if (flag) {
+				  this.snippetConecntId = parentSelector;
+				}
+				else {
+				  this.snippetConecntId = null;
+				}
+			    return did.setSnippetMode(flag, this);
 			  }
 			}
 		},

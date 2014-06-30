@@ -1776,7 +1776,8 @@ dm['at'] = dm.at; //automated testing
     this.transformStarted = false;
   },
   
-  setSnippetMode: function(mode) {
+  setSnippetMode: function(mode, ISnippetObserver) {
+    this.ISnippetObserver = ISnippetObserver;
     if (this.snippetMode != mode && this.snippetMode) {
       this.snippetMode = mode;
       if (this.activeSnippet) {
@@ -1793,28 +1794,14 @@ dm['at'] = dm.at; //automated testing
   },
 
   showSnippetBubble: function(activeElement) {
-    var update = this.activeSnippet == "#"+activeElement.euid+'_snippet';
-    if (this.activeSnippet && !update) {
-      $(this.activeSnippet).remove();
-      this.activeSnippet = null;
-    }
-
     if (activeElement == undefined) {
       return;
     }
     var p = $("#" + activeElement.euid + "_Border").position();
     p.left += $("#" + activeElement.euid + "_Border").width();
     p.top += $("#" + activeElement.euid + "_Border").height();
-    if (!update) {
-      $("#" + this.euid).append('<div id="'+activeElement.euid+'_snippet" class="us-snippet"><p class="triangle-border top" id="vrrrrrrrrrrrrrr">&lt;p&gt;[text]&lt;/p&gt;.</p><span style="position:absolute;right:10px;top:15px;" class="ui-icon ui-icon-closethick"></span></div>');
-      $("#"+activeElement.euid+'_snippet p').editable({type:'textarea'});
-      $("#"+activeElement.euid+'_snippet').css({left:p.left,top:p.top}).draggable({'containment': "#" + this.euid}).resizable().children("SPAN").click(function() {$(this).parent().remove();});
-    }
-    else {
-      $("#"+activeElement.euid+'_snippet').css({left:p.left,top:p.top});
-    }
-    // Cache active snippet
-    this.activeSnippet = "#"+activeElement.euid+'_snippet';
+	
+	this.ISnippetObserver.onSnippetClick(p); // left and top
   },
     
   /**
