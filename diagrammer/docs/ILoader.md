@@ -16,9 +16,9 @@ Loader loader functionality could be separate on 3 major part:
 3. Load menus and menus data elements;
 </pre> 
 
-<div id="ILoader" class="pack-diagram" repo="umlsynco/umlsync" path="dm-diagrams/ILoader.umlsync">
-ILoader interface which separated on three groups. 
-</div>
+![mime-type:application/vnd.umlsync.json] (http://umlsync.org/github?path=./dm-diagrams/ILoader.umlsync "")
+
+
 <br>
 
 1. Load queue (internal):
