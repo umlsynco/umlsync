@@ -1665,7 +1665,7 @@
                         if (this.options.notabs == undefined || !this.options.notabs)
                             hhh = hhh - $ch1.children("ul").height() - 8; //  8 from above and 1 is top padding of ul (which is tabs navigator)
 
-                        // Mess hapens only because of wrong in-visible elements !!!
+                        // Could be only because of wrong in-visible elements !!!
                         $ch = $ch1.children(".ui-tabs-panel").filter(':visible').height(hhh)
                             .children("div").height(hhh - 24); // Border 1px + padding 11
                         hhh -= 24;
