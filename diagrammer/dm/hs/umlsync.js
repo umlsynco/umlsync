@@ -224,29 +224,11 @@ URL:
 
 		onSnippetClick: function(position) {
 		  if (this.snippetHandler) {
-		    this.snippetHandler.showSnippetBubble(position, this.snippetConecntId);
+            var params = this.contentCache[this.snippetConecntId];
+		    this.snippetHandler.showSnippetBubble(position, this.snippetConecntId, params);
 		  }
 		},
 
-		//
-		// Callback method
-		// @param value - {data, position}
-		//
-		onSaveSnippet: function(value) {
-		  if (this.snippetConecntId) {
-		    alert("Save: " + value + " #" + this.snippetConecntId);
-		  }
-		},
-
-		//
-		// Callback method
-		//
-		onRemoveSnippet: function() {
-		  if (this.snippetConecntId) {
-		    alert("Save: " + value + " #" + this.snippetConecntId);
-		  }
-		},
-		
 		//
 		// Method to open snippet bubble
 		// @param value - {data, position}

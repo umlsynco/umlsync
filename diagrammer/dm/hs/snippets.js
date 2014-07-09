@@ -60,6 +60,7 @@ URL:
 		// Show snippet bubble for the corresponding conent view
 		//
 		showSnippetBubble: function(p, uid) {
+          var params = dm.dm.fw.contents[uid];
 		  var update = $(uid + " #snippet_bubbble").length != 0;
  		  if (!update) {
 			  $(uid).append('<div id="snippet_bubble" class="us-snippet"><p class="triangle-border top" id="vrrrrrrrrrrrrrr">&lt;p&gt;[text]&lt;/p&gt;.</p>\
@@ -69,26 +70,25 @@ URL:
 				</div>');
 			  $("#snippet_bubble p").editable({type:'textarea'});
 			  $("#snippet_bubble").css({left:p.left,top:p.top}).draggable({'containment': "#" + this.euid}).resizable().children("SPAN")
-			  .click(function() {
+			  .click({params:params, position:p}, function(e) {
+                 var info = e.data;
 				 var $this = $(this);
-				 var vrrrr = $("#vrrrrrrrrrrrrrr");
+				 var message= $("#vrrrrrrrrrrrrrr").text();
+
 				 if ($this.hasClass("ui-icon-trash")) {
 					$this.parent().remove();
-				 }
+			     }
 				 else if ($this.hasClass("ui-icon-cancel")) {
-	  			  $.event.trigger({
-					type: "snippet.add",
-					data: "removed",
-					time: new Date()
-				  });
+	  			  // Send nothing, just cancel-revert changes
 				 }
 				 else if ($this.hasClass("ui-icon-check")) {
+                   // Extend a snippet information with Text Message
+                   info['msg'] = message;
 				   $.event.trigger({
 					type: "snippet.add",
-					info: "update or add",
+                    info: info,
 					time: new Date()
 				  });
-				   
 				 }
 			  });
 			  

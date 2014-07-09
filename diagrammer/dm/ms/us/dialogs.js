@@ -634,8 +634,7 @@
       $(innerHtml2).appendTo("#snippet-navigator-dialog");
 
 	  $(document).on("snippet.add", function(event) {
-		alert(event.data);
-		$("#snippets-list").append("<li>new item</li>");
+		$("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
 	  });
 
 	  function disableSnippetMode() {
@@ -688,6 +687,7 @@
 		// remove snippets toolbox 
 		$("#snippet-navigator-dialog").dialog("close");
 	  });
+
 	  $("#us-snippets-toolbox span.ui-icon-pause").click(this, function(e, data) {
 		var self = e.data || data;
 		self.SnippetMode = false;
