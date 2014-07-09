@@ -669,23 +669,26 @@
 			$(this).parent().children().children('.ui-dialog-titlebar-close').hide();
 			// Add navigation icons
             $(this).parent().find('.ui-dialog-titlebar').append(innerHtml);
+        },
+        close: function() {
+            // disable events subscription (do not modify snippet anymore)
+            $(document).off("snippet.add");
+            // Destroy dialog
+            $( this ).dialog( "destroy" );
+            // Remove HTML element
+            $("#snippet-navigator-dialog").remove();
         }
 	}).parent().draggable();
 	
 	  $("#us-snippets-toolbox").mouseenter(function() {
-		if ($("#content-right #snippet-navigator").length == 0) {
-		  $("#content-right").append("<div id='snippet-navigator' style='background-color:#ADFF2F; top:0px;width:100%;height:200px;position:absolute;'>Snippets Navigator</div>");
-		}
-		$("#content-right #snippet-navigator").show();
 	  }).mouseleave(function() {
-		$("#content-right #snippet-navigator").hide();
 	  });
 	  $("#us-snippets-toolbox span.ui-icon-stop").click(this, function(e, data) {
 		var self = e.data || data;
 		self.SnippetMode = false;
 		disableSnippetMode();
-		// remove snippets toolbox 
-		$("#snippet-navigator-dialog").dialog("close");
+		// remove snippets toolbox
+          $("#snippet-navigator-dialog").dialog("close");
 	  });
 
 	  $("#us-snippets-toolbox span.ui-icon-pause").click(this, function(e, data) {
