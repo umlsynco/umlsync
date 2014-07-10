@@ -838,6 +838,40 @@
             },
 
             //
+            // Save snippets content, no tab changes required
+            // simply save content to the view
+            //
+            saveSnippetsContent: function(params, snippets) {
+                if (params != undefined) {
+                    params.repoId = this.getActiveRepository();
+                    params.viewid = this.getActiveView();
+                    params.branch = this.getActiveBranch();
+                    var data =
+                    {
+                      provider: {
+                        php: 'GitHub',
+                        repo: params.repoId,
+                        branch: params.branch
+                      },
+                      snippets: [
+                      ]
+                    };
+
+                    for ( var s in snippets ) {
+                        var info = snippets[s];
+                        data.snippets[s] = {
+                            msg: info.msg,
+                            position: info.position,
+                            content: {
+                                absPath: info.params.absPath,
+                                revision: info.params.sha
+                            }};
+                    }
+                    this.views[params.viewid].view.saveContent(params, data, params.isNewOne);
+                }
+            },
+
+            //
             // Save content in the concreate view cache
             // @param tabid - jquery.ui.tabs id
             // @param isTabClosed - indicate if tab was closed

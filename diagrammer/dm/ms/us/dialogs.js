@@ -616,6 +616,8 @@
   // Snippets navigation dialog
   //
   'SnippetNavigator': function(params, fw, callback) {
+    var snippetDescription = new Array();
+    var PARARAMS = params;
     var title = params.title;
     var innerHtml = '<div id="us-snippets-toolbox"><ul class="ui-widget ui-helper-clearfix">\
                                     <li class="ui-state-default ui-corner-all" title="First Comment"><span class="ui-icon ui-icon-seek-first"></span></li>\
@@ -634,7 +636,8 @@
       $(innerHtml2).appendTo("#snippet-navigator-dialog");
 
 	  $(document).on("snippet.add", function(event) {
-		$("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
+          snippetDescription.push(event.info);
+          $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
 	  });
 
 	  function disableSnippetMode() {
@@ -671,6 +674,8 @@
             $(this).parent().find('.ui-dialog-titlebar').append(innerHtml);
         },
         close: function() {
+            // Save snippets content
+            dm.dm.fw.saveSnippetsContent(PARARAMS, snippetDescription);
             // disable events subscription (do not modify snippet anymore)
             $(document).off("snippet.add");
             // Destroy dialog
