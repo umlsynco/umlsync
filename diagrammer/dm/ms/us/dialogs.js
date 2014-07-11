@@ -619,6 +619,7 @@
     var snippetDescription = new Array();
     var snippetPosition = -1;
     var PARARAMS = params;
+    var snippetSortCache = null;
     var title = params.title;
     var innerHtml = '<div id="us-snippets-toolbox"><ul class="ui-widget ui-helper-clearfix">\
                                     <li class="ui-state-default ui-corner-all" title="First Comment"><span class="ui-icon ui-icon-seek-first"></span></li>\
@@ -633,10 +634,10 @@
 									
     var self = fw;
 
-      $('<div id="snippet-navigator-dialog" title="'+title+'"></div>').appendTo('body');
-      $(innerHtml2).appendTo("#snippet-navigator-dialog");
+    $('<div id="snippet-navigator-dialog" title="'+title+'"></div>').appendTo('body');
+    $(innerHtml2).appendTo("#snippet-navigator-dialog");
 
-	  $(document).on("snippet.add", function(event) {
+    $(document).on("snippet.add", function(event) {
           var idx = event.info.position.index;
           // Update an existing snippet
           if (idx != undefined && idx != null) {
@@ -652,7 +653,7 @@
           }
 	  });
 
-	  function disableSnippetMode() {
+	function disableSnippetMode() {
 		if (self.selectedContentId) {
 		   params = self.contents[self.selectedContentId];
 		   if (params && params.contentType) {
@@ -662,10 +663,11 @@
 			  }
 		   }
 		}
-	  }
+	}
 
-	  self.SnippetMode = true;
-	  $("#snippets #snippets-list").listmenu({
+	self.SnippetMode = true;
+	$("#snippets #snippets-list")
+    .listmenu({
         selector: "diagram-selector",
         selectable: true,
         onSelect: function(item)
@@ -673,7 +675,20 @@
               alert("selected " + item);
 		  }
 	    }
-	  ).sortable();
+	)
+    .sortable({
+      start: function(event, ui) {
+        // Drop snippet bubble on remove
+        $("#snippet_bubble").remove();
+        // Drop snippet from the list
+        var index = ui.item.index();
+        snippetSortCache = snippetDescription.splice(index, 1);
+      },
+      stop: function(event, ui) {
+        var index = ui.item.index();
+        snippetDescription.splice(index, 0, snippetSortCache);
+      }
+    });
 
       $("#snippet-navigator-dialog").dialog({
         autoOpen: true,
@@ -687,14 +702,14 @@
             $(this).parent().find('.ui-dialog-titlebar').append(innerHtml);
         },
         close: function() {
-            // Save snippets content
-            dm.dm.fw.saveSnippetsContent(PARARAMS, snippetDescription);
-            // disable events subscription (do not modify snippet anymore)
-            $(document).off("snippet.add");
-            // Destroy dialog
-            $( this ).dialog( "destroy" );
-            // Remove HTML element
-            $("#snippet-navigator-dialog").remove();
+          // Save snippets content
+          dm.dm.fw.saveSnippetsContent(PARARAMS, snippetDescription);
+          // disable events subscription (do not modify snippet anymore)
+          $(document).off("snippet.add");
+          // Destroy dialog
+          $( this ).dialog( "destroy" );
+          // Remove HTML element
+          $("#snippet-navigator-dialog").remove();
         }
 	}).parent().draggable();
 	
@@ -703,7 +718,7 @@
 		self.SnippetMode = false;
 		disableSnippetMode();
 		// remove snippets toolbox
-          $("#snippet-navigator-dialog").dialog("close");
+        $("#snippet-navigator-dialog").dialog("close");
 	  });
 
       $("#us-snippets-toolbox span.ui-icon-pause").click(self, function(e, data) {
@@ -715,16 +730,18 @@
       $("#us-snippets-toolbox span.ui-icon-seek-next").click(self, function(e, data) {
           var self = e.data || data;
           if (snippetPosition < snippetDescription.length -1) {
-              ++snippetPosition;
-              self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            ++snippetPosition;
+            snippetDescription[snippetPosition].position.index = snippetPosition;
+            self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
           }
       });
 
       $("#us-snippets-toolbox span.ui-icon-seek-prev").click(self, function(e, data) {
           var self = e.data || data;
           if (snippetPosition > 0) {
-              --snippetPosition;
-              self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            --snippetPosition;
+            snippetDescription[snippetPosition].position.index = snippetPosition;
+            self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
           }
       });
   },
