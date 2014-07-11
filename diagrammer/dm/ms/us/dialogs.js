@@ -639,16 +639,16 @@
 	  $(document).on("snippet.add", function(event) {
           var idx = event.info.position.index;
           // Update an existing snippet
-          if (idx) {
+          if (idx != undefined && idx != null) {
             snippetDescription[idx] = event.info;
           }
           // Insert snippet at active position
           else {
             ++snippetPosition;
-            event.info.position.index = event.info.position; // Update snippet position in the list
+            event.info.position.index = snippetPosition; // Update snippet position in the list
             snippetDescription.splice(snippetPosition, 0, event.info);
-              $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
-              $("#snippets-list").sortable("refresh");
+            $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
+            $("#snippets-list").sortable("refresh");
           }
 	  });
 

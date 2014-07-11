@@ -100,9 +100,13 @@ URL:
                    info['msg'] = message;
                    var $par = $this.parent();
                    var p1 = $par.position();
+
                    // Correct position and size of snippet bubble
                    // TODO: Add an information about reference element etc...
-                   info.position = {left:p1.left, top:p1.top, width:$par.width(), height: $par.height()};
+                   info.position.left = p1.left;
+                   info.position.top = p1.top;
+                   info.position.width = $par.width();
+                   info.position.height = $par.height();
 
 				   $.event.trigger({
 					type: "snippet.add",
