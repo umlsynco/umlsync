@@ -729,7 +729,7 @@
 
       $("#us-snippets-toolbox span.ui-icon-seek-next").click(self, function(e, data) {
           var self = e.data || data;
-          if (snippetPosition < snippetDescription.length -1) {
+          if (snippetPosition < snippetDescription.length) {
             ++snippetPosition;
             snippetDescription[snippetPosition].position.index = snippetPosition;
             self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
