@@ -682,7 +682,7 @@
         $("#snippet_bubble").remove();
         // Drop snippet from the list
         var index = ui.item.index();
-        snippetSortCache = snippetDescription.splice(index, 1);
+        snippetSortCache = snippetDescription.splice(index, 1)[0];
       },
       stop: function(event, ui) {
         var index = ui.item.index();
@@ -740,6 +740,8 @@
           var self = e.data || data;
           if (snippetPosition > 0) {
             --snippetPosition;
+            var sd = snippetDescription;
+            var sp = snippetDescription[snippetPosition];
             snippetDescription[snippetPosition].position.index = snippetPosition;
             self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
           }
