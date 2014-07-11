@@ -637,9 +637,19 @@
       $(innerHtml2).appendTo("#snippet-navigator-dialog");
 
 	  $(document).on("snippet.add", function(event) {
-          snippetDescription.push(event.info);
-          ++snippetPosition;
-          $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
+          var idx = event.info.position.index;
+          // Update an existing snippet
+          if (idx) {
+            snippetDescription[idx] = event.info;
+          }
+          // Insert snippet at active position
+          else {
+            ++snippetPosition;
+            event.info.position.index = event.info.position; // Update snippet position in the list
+            snippetDescription.splice(snippetPosition, 0, event.info);
+              $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
+              $("#snippets-list").sortable("refresh");
+          }
 	  });
 
 	  function disableSnippetMode() {
@@ -655,11 +665,12 @@
 	  }
 
 	  self.SnippetMode = true;
-	  $("#snippets #diagram-menu").listmenu({
+	  $("#snippets #snippets-list").listmenu({
         selector: "diagram-selector",
         selectable: true,
         onSelect: function(item)
           {
+              alert("selected " + item);
 		  }
 	    }
 	  ).sortable();
