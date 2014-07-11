@@ -617,6 +617,7 @@
   //
   'SnippetNavigator': function(params, fw, callback) {
     var snippetDescription = new Array();
+    var snippetPosition = -1;
     var PARARAMS = params;
     var title = params.title;
     var innerHtml = '<div id="us-snippets-toolbox"><ul class="ui-widget ui-helper-clearfix">\
@@ -637,6 +638,7 @@
 
 	  $(document).on("snippet.add", function(event) {
           snippetDescription.push(event.info);
+          ++snippetPosition;
           $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
 	  });
 
@@ -685,10 +687,7 @@
         }
 	}).parent().draggable();
 	
-	  $("#us-snippets-toolbox").mouseenter(function() {
-	  }).mouseleave(function() {
-	  });
-	  $("#us-snippets-toolbox span.ui-icon-stop").click(this, function(e, data) {
+	  $("#us-snippets-toolbox span.ui-icon-stop").click(self, function(e, data) {
 		var self = e.data || data;
 		self.SnippetMode = false;
 		disableSnippetMode();
@@ -696,12 +695,27 @@
           $("#snippet-navigator-dialog").dialog("close");
 	  });
 
-	  $("#us-snippets-toolbox span.ui-icon-pause").click(this, function(e, data) {
-		var self = e.data || data;
-		self.SnippetMode = false;
-		disableSnippetMode();
-	  });
+      $("#us-snippets-toolbox span.ui-icon-pause").click(self, function(e, data) {
+          var self = e.data || data;
+          self.SnippetMode = false;
+          disableSnippetMode();
+      });
 
+      $("#us-snippets-toolbox span.ui-icon-seek-next").click(self, function(e, data) {
+          var self = e.data || data;
+          if (snippetPosition < snippetDescription.length -1) {
+              ++snippetPosition;
+              self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+          }
+      });
+
+      $("#us-snippets-toolbox span.ui-icon-seek-prev").click(self, function(e, data) {
+          var self = e.data || data;
+          if (snippetPosition > 0) {
+              --snippetPosition;
+              self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+          }
+      });
   },
   
   //

@@ -57,11 +57,18 @@ URL:
 		},
 		
 		//
-		// Show snippet bubble for the corresponding conent view
+		// Show snippet bubble for the corresponding content view
+        // @param p - position, size, and custom information which depends on Viewer
+        // @param uid - tabid
+        // @param msg - message inside snippet
 		//
-		showSnippetBubble: function(p, uid) {
+		showSnippetBubble: function(p, uid, msg) {
+          // Get the content description from the framework
           var params = dm.dm.fw.contents[uid];
+
+          // Check if it is update of position of existing bubble
 		  var update = $(uid + ">DIV>#snippet_bubble").length != 0;
+
  		  if (!update) {
               // Drop all existing bubble to prevent some kind of mess
               $("#snippet_bubble").remove();
@@ -73,8 +80,10 @@ URL:
 				</div>');
 			  $(uid + ">DIV>#snippet_bubble p").editable({type:'textarea'});
 			  $(uid + ">DIV>#snippet_bubble")
-              .css({left:p.left,top:p.top})
-              .draggable().resizable().children("SPAN")
+              .css({left:p.left,top:p.top, width:(p.width ? p.width: 250),height:(p.height ? p.height: 100)})
+              .draggable()
+              .resizable()
+              .children("SPAN")
 			  .click({params:params, position:p}, function(e) {
                  var info = e.data;
 				 var $this = $(this);
@@ -89,19 +98,36 @@ URL:
 				 else if ($this.hasClass("ui-icon-check")) {
                    // Extend a snippet information with Text Message
                    info['msg'] = message;
+                   var $par = $this.parent();
+                   var p1 = $par.position();
+                   // Correct position and size of snippet bubble
+                   // TODO: Add an information about reference element etc...
+                   info.position = {left:p1.left, top:p1.top, width:$par.width(), height: $par.height()};
+
 				   $.event.trigger({
 					type: "snippet.add",
                     info: info,
 					time: new Date()
 				  });
+
+                  // drop element after save
+                  $par.remove();
 				 }
 			  });
 			}
-			else {
+		  else {
 			  // Change the position of existing bubble
-			  $(uid + ">DIV>#snippet_bubbble").css({left:p.left,top:p.top});
-			}
-		},
+			  $(uid + ">DIV>#snippet_bubbble")
+              .css({left:p.left,top:p.top,
+                    width:(p.width ? p.width:250),
+                    height:(p.height ? p.height:100)});
+		  }
+
+          // Update snippet text for existing snippet
+		  if (msg) {
+              $("#vrrrrrrrrrrrrrr").text(msg);
+          }
+        },
 
 		//
 		// Get the cached value of current content

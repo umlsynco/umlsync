@@ -316,6 +316,12 @@
             // List of format handlers
             //
             formatHandlers: {},
+
+            //
+            // queue of delayed snippets
+            // which is waiting for content load completion
+            //
+            snippetsQueue: new Array(),
             //
             // Initiazlize all registered handlres
             // TODO: load the list of format handlers dynamically
@@ -324,6 +330,9 @@
                 var self = this;
                 var obj = new dm.hs.umlsync({onModified: function (selector, flag) {
                     self.onContentModifiedStateChanged(selector, flag);
+                },
+                onLoadComplete: function(selector, status) {
+                    self.onLoadComplete(selector, status);
                 }
                 });
                 this.formatHandlers[obj.getUid()] = obj;
@@ -1269,6 +1278,35 @@
                 }
                 return null;
             },
+
+            //
+            // open snippet content and show bubble
+            //
+            openSnippet: function(snippetParams, snippet){
+                // Show a snippets bubble on load complete
+                this.snippetsQueue.push(snippet);
+
+                // open the content item
+                this.loadContent(snippet.params, snippetParams);
+            },
+
+            //
+            // Show snippet on load complete
+            //
+            onLoadComplete: function(selector, flag) {
+                if (this.snippetsQueue && this.snippetsQueue.length > 0) {
+                    var params = this.contents[selector];
+                    var snippet = this.snippetsQueue.pop();
+
+                    if (snippet.params.absPath == params.absPath) {
+                        // Show bubble
+                        this.snippetsHandler.showSnippetBubble(snippet.position, selector, snippet.msg);
+                        // Splice handler
+                        this.snippetsQueue.splice(0,this.snippetsQueue.length);
+                    }
+                }
+            },
+
             //
             // Load content by internal reference
             // Uses to navigate through the diagrams and markdown
@@ -1342,6 +1380,7 @@
                             && (d.absPath == params.absPath) // path from root
                             ) {
                             $("#tabs").tabs('select', r);
+                            self.onLoadComplete(r, true);
                             return;
                         }
                     }
@@ -1422,7 +1461,7 @@
             //
             // data: diagram data
             //
-            sloadDiagram: function (tabname, params, data) {
+            loadDiagram: function (tabname, params, data) {
                 var jsonData = (typeof data === "string") ? $.parseJSON(data) : data,
                     viewid = params.viewid,
                     self = this;

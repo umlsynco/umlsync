@@ -220,12 +220,20 @@ URL:
 
                         obj.options['viewid'] = viewid;
                     });
+
+            // Make a callback on load completion
+            // uses for snippets mainly
+            dm.dm.loader.OnLoadComplete(
+                function () {
+                    if (self.options.onLoadComplete)
+                        self.options.onLoadComplete(parent, true);
+                }
+            );
         },
 
 		onSnippetClick: function(position) {
 		  if (this.snippetHandler) {
-            var params = this.contentCache[this.snippetConecntId];
-		    this.snippetHandler.showSnippetBubble(position, this.snippetConecntId, params);
+		    this.snippetHandler.showSnippetBubble(position, this.snippetConecntId);
 		  }
 		},
 
