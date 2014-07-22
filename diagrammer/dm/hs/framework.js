@@ -726,7 +726,7 @@
             // @data - default value
             //
             addNewSnippets: function (params, data) {
-                dm.dm.dialogs['SnippetNavigator'](params, this, null);
+                dm.dm.dialogs['SnippetNavigator'](params, this, data);
             },
             //
             // add new content
@@ -1263,7 +1263,11 @@
             getContentType: function (title) {
                 //var tt = title.split(".");
                 //var ext = (tt.length > 1) ? tt[tt.length-1].toUpperCase() : "";
-                var ext = title.toUpperCase();
+                var ext = title.toUpperCase(),
+                    snip = ".US.SNIPPET";
+                if (ext.indexOf(snip) == ext.length - snip.length) {
+                    return "snippet";
+                }
 
                 for (var t in this.formatHandlers) {
                     // Check if view functionality supported
@@ -1363,53 +1367,64 @@
                 var uniqueContentId = params.viewid + "/" + params.repoId + "/" + params.branch + "/" + params.absPath;
                 params.cuid = uniqueContentId;
 
-                // work-around for the first content load
-                // to prevent diagram menu open over markdown
-                this.openDiagramMenuOnFirstInit = params.editable;
 
-                // Check if content was loaded before
-                // and select corresponding tab
-                // But if diagram should be embedded into markdown
-                // then skip this step
-                if (self.contents && params.selector == undefined) {
-                    for (var r in self.contents) {
-                        var d = self.contents[r];
-                        if ((d.viewid == params.viewid)  // Github
-                            && (d.repoId == params.repoId)   // userid/repo
-                            && (d.branch == params.branch) // tree/master
-                            && (d.absPath == params.absPath) // path from root
-                            ) {
-                            $("#tabs").tabs('select', r);
-                            self.onLoadComplete(r, true);
-                            return;
+
+                // Check if content is snippet
+                if (params.contentType != 'snippet') {
+
+                    // work-around for the first content load
+                    // to prevent diagram menu open over markdown
+                    this.openDiagramMenuOnFirstInit = params.editable;
+
+                    // Check if content was loaded before
+                    // and select corresponding tab
+                    // But if diagram should be embedded into markdown
+                    // then skip this step
+                    if (self.contents && params.selector == undefined) {
+                        for (var r in self.contents) {
+                            var d = self.contents[r];
+                            if ((d.viewid == params.viewid)  // Github
+                                && (d.repoId == params.repoId)   // userid/repo
+                                && (d.branch == params.branch) // tree/master
+                                && (d.absPath == params.absPath) // path from root
+                                ) {
+                                $("#tabs").tabs('select', r);
+                                self.onLoadComplete(r, true);
+                                return;
+                            }
                         }
                     }
-                }
 
-                // Create tab or use an existing selector
-                var tabname = params.selector || self.options.tabRight + "-" + self.counter;
-                self.counter++;
+                    // Create tab or use an existing selector
+                    var tabname = params.selector || self.options.tabRight + "-" + self.counter;
+                    self.counter++;
 
-                // create new tab
-                if (params.selector == undefined) {
-                    tabname = "#" + tabname;
-                    $("#" + self.options.tabs).tabs("add", tabname, params.title);
-                    $("#" + self.options.tabs).append('<div id="' + tabname + '"></div>');
+                    // create new tab
+                    if (params.selector == undefined) {
+                        tabname = "#" + tabname;
+                        $("#" + self.options.tabs).tabs("add", tabname, params.title);
+                        $("#" + self.options.tabs).append('<div id="' + tabname + '"></div>');
 
-                    // Hide diagram menu
-                    if (params.editable == true || params.editable == "true") {
-                        $(".diagram-menu").show();
-                    } else {
-                        $(".diagram-menu").hide();
+                        // Hide diagram menu
+                        if (params.editable == true || params.editable == "true") {
+                            $(".diagram-menu").show();
+                        } else {
+                            $(".diagram-menu").hide();
+                        }
                     }
-                }
 
-                // Add gif which shows that content is loading
-                $('<img id="puh" src="images/Puh.gif"/>').appendTo(tabname);
+                    // Add gif which shows that content is loading
+                    $('<img id="puh" src="images/Puh.gif"/>').appendTo(tabname);
+                }
 
                 if (self.views[viewid]) {
                     self.views[viewid].view.loadContent(params, {
                         'success': function (msg, data) {
+                            if (params.contentType == 'snippet') {
+                              self.addNewSnippets(params, data);
+                              return;
+                            }
+
                             if (params.selector == undefined) {
                                 params.hasModification = true;
                                 self.contents[tabname] = params;
@@ -1439,6 +1454,10 @@
                             self._helperUpdateFrameWork(true);
                         },
                         'error': function (msg) {
+                            if (params.contentType == 'snippet') {
+                                alert('Failed to load snippet');
+                                return;
+                            }
                             self.loadError("content", msg, tabname, params);
                         }
                     });

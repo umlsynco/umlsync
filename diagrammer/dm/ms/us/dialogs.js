@@ -615,7 +615,7 @@
   //
   // Snippets navigation dialog
   //
-  'SnippetNavigator': function(params, fw, callback) {
+  'SnippetNavigator': function(params, fw, jsonData) {
     var snippetDescription = new Array();
     var snippetPosition = -1;
     var PARARAMS = params;
@@ -633,6 +633,8 @@
 	var innerHtml2 = '<div id="snippets" style="width: 100%; height: 100%;"><div id="selectable-list" style="scroll:auto;"><ul id="snippets-list"></ul></div></div>';
 									
     var self = fw;
+
+    $.log(jsonData);
 
     $('<div id="snippet-navigator-dialog" title="'+title+'"></div>').appendTo('body');
     $(innerHtml2).appendTo("#snippet-navigator-dialog");
