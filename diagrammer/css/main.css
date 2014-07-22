@@ -620,3 +620,8 @@ ul#snippets-list {
 ul#snippets-list>li:hover {
     background-color: #97F7A1;
 }
+
+div.us-snippet {
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 11px;
+}

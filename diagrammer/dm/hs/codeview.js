@@ -78,10 +78,15 @@ URL:
 		//
 		// Notify on tab in focus, when we need to re-draw picture
 		//
-		// parentSelector - CSS selector of parent id
-		// isInFocus      - in focus(true) or focus left(false)
+		// @param parentSelector - CSS selector of parent id
+		// @param isInFocus      - in focus(true) or focus left(false)
 		//
 		onFocus: function(parentSelector, isInFocus) {
+            // There is a specific behavior for snippets mode only
+            if (!this.snippetHandler)
+                return;
+
+            this._helperSetSnippetMode(parentSelector, isInFocus);
 		},
 
 		//
@@ -106,7 +111,31 @@ URL:
 		//
 		close: function(parent) {
 		  $(parent).destroy();
-		}
+        },
+        _helperSetSnippetMode: function(parentSelector, isInFocus) {
+            var self = this;
+            if (isInFocus) {
+                $(parentSelector + ' ol.linenums>li').bind('click', function(e) {
+                    if (self.snippetHandler) {
+                        var position = {top:e.clientY, left: e.clientX};
+                        self.snippetHandler.showSnippetBubble(position, parentSelector);
+                    }
+                });
+            }
+            else {
+                $(parentSelector + ' ol.linenums>li').unbind('click');
+            }
+        },
+        //
+        // Switch diagram to the snippet mode
+        // @param handler - snippet handler, if null then disable snippets
+        //
+        snippetMode: function(parentSelector, handler) {
+            var flag = (handler != null);
+            // Keep handler in cache
+            this.snippetHandler = handler;
+            this._helperSetSnippetMode(parentSelector, true);
+        }
 		};
 
 		return getInstance();
