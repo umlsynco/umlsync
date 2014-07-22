@@ -209,34 +209,32 @@
         'buttons': {
         "Create": function() {
           var isNamed = $("#us-new-diagram-dialog-input").is(":checked"),
+              type = $("#us-new-diagram-dialog-readio input:checked").val(),
               diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
-         
-		 var type = $("#us-new-diagram-dialog-readio input:checked").val();
-		 
-         // Add file extension for diagram files
-         if ((diagram_name.lastIndexOf("." + type) != diagram_name.length - 1 -type.length) && (!(["markdown", "snippets"].indexOf(self.selected) >= 0))) {
-           diagram_name = diagram_name + "." + type;
-         }
+         if (isNamed) {
+           // Add file extension for diagram files
+           if ((diagram_name.lastIndexOf("." + type) != diagram_name.length - 1 -type.length) && (!(["markdown", "snippets"].indexOf(self.selected) >= 0))) {
+             diagram_name = diagram_name + "." + type;
+           }
 
-		 // markdown extension
-         if ((diagram_name.lastIndexOf(".md") != diagram_name.length - 3) && (self.selected == "markdown")) {
-           diagram_name = diagram_name + ".md";
-         }
+	  	   // markdown extension
+           if ((diagram_name.lastIndexOf(".md") != diagram_name.length - 3) && (self.selected == "markdown")) {
+             diagram_name = diagram_name + ".md";
+           }
 
-		 // snippets extension
-		 if ((diagram_name.lastIndexOf(".snippet") != diagram_name.length - 8) && (self.selected == "snippets")) {
-           diagram_name = diagram_name + ".snippet";
-         }
+		   // snippets extension
+		   if ((diagram_name.lastIndexOf(".snippet") != diagram_name.length - 8) && (self.selected == "snippets")) {
+             diagram_name = diagram_name + ".snippet";
+           }
 
-          var fullname = diagram_name;
-          if (isNamed) {
-            // check the name of diagram
-            var msg = dm.dm.fw.checkContentName(diagram_name);
-            if (msg != "ok") {
-              // Can't close the dialog if user has entered wrong name
-              alert(msg);
-              return;
-            }
+           var fullname = diagram_name;
+           // check the name of diagram
+           var msg = dm.dm.fw.checkContentName(diagram_name);
+           if (msg != "ok") {
+             // Can't close the dialog if user has entered wrong name
+             alert(msg);
+             return;
+           }
           }
           else {
             // The default name
@@ -245,7 +243,7 @@
 
           var params =
           {
-            title:isNamed ? diagram_name.split("/").pop() : diagram_name,
+            title: isNamed ? diagram_name.split("/").pop() : diagram_name,
             repoId:isNamed ? dm.dm.fw.getActiveRepository() : null,
             viewid:isNamed ? dm.dm.fw.getActiveView() : null,
             branch:isNamed ? dm.dm.fw.getActiveBranch() : null,
@@ -253,48 +251,44 @@
             contentType:"umlsync",
             isOwner: true,
             editable:true,
-            isNewOne:!isNamed
+            isNewOne:true
           };
 
-          if (isNamed) {
-            params.absPath = diagram_name;
-		  }
-		  else {
-		    if (self.selected != "markdown" && self.selected != "snippets") {
+          if (!isNamed && self.selected != "markdown" && self.selected != "snippets") {
 			  // Keep the content type for a SaveAs dialog for a content without name
 		      params.type = type;
-			}
 		  }
-        if (self.selected != "markdown" && self.selected != "snippets") {
-		  // Work-around for the sequence diagrams
-		  var baseType = self.selected;
-		  if (type == "umlsync") {
-		    // Empty diagram in JSON format
-            dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
-		  }
-		  else if (type == "us.svg") {
-		    // Empty diagram in SVG format
-		    var ddd = '<?xml version="1.0" encoding="utf-8" ?>\
+
+          if (self.selected != "markdown" && self.selected != "snippets") {
+		    // Work-around for the sequence diagrams
+		    var baseType = self.selected;
+		    if (type == "umlsync") {
+		      // Empty diagram in JSON format
+              dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
+  		    }
+		    else if (type == "us.svg") {
+		      // Empty diagram in SVG format
+		      var ddd = '<?xml version="1.0" encoding="utf-8" ?>\
                            <svg umlsync="v1.0" baseProfile="full" height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">\
                            <desc>{"type":"'+self.selected+'","base_type":"'+baseType+'"}</desc></svg>';
-		    dm.dm.fw['addNewContent'](params, ddd);
+		      dm.dm.fw['addNewContent'](params, ddd);
+		    }
+		    else {
+		      alert("type - " + type + " not supported.");
+		    }
+          }
+          else if (self.selected == "markdown") {
+            params.contentType = "markdown";
+            params.editable = false;
+		    // Empty content of markdown
+            dm.dm.fw['addNewContent'](params, "Goodby Word!");
+          }
+		  else if (self.selected == "snippets") {
+  		    params.contentType = "snippets";
+            params.editable = false;
+		    dm.dm.fw['addNewSnippets'](params, {});
 		  }
-		  else {
-		    alert("type - " + type + " not supported.");
-		  }
-        }
-        else if (self.selected == "markdown") {
-          params.contentType = "markdown";
-          params.editable = false;
-		  // Empty content of markdown
-          dm.dm.fw['addNewContent'](params, "Goodby Word!");
-        }
-		else if (self.selected == "snippets") {
-		  params.contentType = "snippets";
-          params.editable = false;
-		  dm.dm.fw['addNewSnippets'](params, {});
-		}
-        $(this).dialog("close");
+          $(this).dialog("close");
       },
       'Cancel': function() {
         $(this).dialog("close");
@@ -649,11 +643,22 @@
           else {
             ++snippetPosition;
             event.info.position.index = snippetPosition; // Update snippet position in the list
-            snippetDescription.splice(snippetPosition, 0, event.info);
+              snippetDescription.splice(snippetPosition, 0, event.info);
             $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
             $("#snippets-list").sortable("refresh");
+              var snippetDDDDDDDDD = snippetDescription;
+              var snippetDDDDDDDDAD = snippetDescription;
+              var snippetDDDDDDDDD1 = snippetDescription;
           }
 	  });
+    if (jsonData && jsonData['snippets']) {
+        for (var sn in jsonData['snippets']) {
+            var inf = jsonData['snippets'][sn]
+            snippetDescription.push(inf);
+            ++snippetPosition;
+            $("#snippets-list").append("<li title='"+inf.msg+"'>"+inf.params.absPath+"</li>");
+        }
+    }
 
 	function disableSnippetMode() {
 		if (self.selectedContentId) {
@@ -731,7 +736,7 @@
 
       $("#us-snippets-toolbox span.ui-icon-seek-next").click(self, function(e, data) {
           var self = e.data || data;
-          if (snippetPosition < snippetDescription.length) {
+          if (snippetPosition < snippetDescription.length - 1) {
             ++snippetPosition;
             snippetDescription[snippetPosition].position.index = snippetPosition;
             self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);

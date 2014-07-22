@@ -871,8 +871,9 @@
                         data.snippets[s] = {
                             msg: info.msg,
                             position: info.position,
-                            content: {
+                            params: {
                                 absPath: info.params.absPath,
+                                contentType: info.params.contentType,
                                 revision: info.params.sha
                             }};
                     }
@@ -889,7 +890,8 @@
                 var self = this;
                 var params = self.contents[tabid];
 
-                if (params != undefined && params.isNewOne) {
+                // Check if absolute path was not defined then use SaveAs dialog
+                if (params != undefined && params.absPath == null) {
                     params.repoId = self.getActiveRepository();
                     params.viewid = self.getActiveView();
                     params.branch = self.getActiveBranch();
@@ -1287,6 +1289,8 @@
             // open snippet content and show bubble
             //
             openSnippet: function(snippetParams, snippet){
+                snippet.params = $.extend({}, snippetParams, snippet.params ?  snippet.params : snippet.content);
+
                 // Show a snippets bubble on load complete
                 this.snippetsQueue.push(snippet);
 
