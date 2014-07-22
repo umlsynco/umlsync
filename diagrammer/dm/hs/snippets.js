@@ -62,14 +62,14 @@ URL:
         // @param uid - tabid
         // @param msg - message inside snippet
 		//
-		showSnippetBubble: function(p, uid, msg) {
+		showSnippetBubble: function(p, uid, msg, force) {
           // Get the content description from the framework
           var params = dm.dm.fw.contents[uid];
 
           // Check if it is update of position of existing bubble
 		  var update = $(uid + ">DIV>#snippet_bubble").length != 0;
 
- 		  if (!update) {
+ 		  if (!update || force) {
               // Drop all existing bubble to prevent some kind of mess
               $("#snippet_bubble").remove();
               // Create a new SnippetBubble
@@ -129,7 +129,8 @@ URL:
 
           // Update snippet text for existing snippet
 		  if (msg) {
-              $("#vrrrrrrrrrrrrrr").text(msg);
+              var mmm = (msg == "") ? "_" : msg;
+              $("#vrrrrrrrrrrrrrr").text(mmm);
           }
         },
 

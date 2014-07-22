@@ -616,3 +616,7 @@ div#us-snippets-toolbox ul li {
 ul#snippets-list {
     list-style-type: decimal;
 }
+
+ul#snippets-list>li:hover {
+    background-color: #97F7A1;
+}

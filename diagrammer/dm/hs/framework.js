@@ -717,11 +717,11 @@
                 }
             },
             //////////////////////////////////////////////////////////////
-            //            Content managment
+            //            Content management
             //////////////////////////////////////////////////////////////
             selectedContentId: null,
             //
-            // add new sippet element
+            // add new snippet element
             // @params - content description
             // @data - default value
             //
@@ -851,6 +851,9 @@
             // simply save content to the view
             //
             saveSnippetsContent: function(params, snippets) {
+                // Drop snippet bubble
+                $("#snippet_bubble").remove();
+
                 if (params != undefined) {
                     params.repoId = this.getActiveRepository();
                     params.viewid = this.getActiveView();

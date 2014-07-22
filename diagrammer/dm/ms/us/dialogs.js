@@ -628,11 +628,10 @@
 									
     var self = fw;
 
-    $.log(jsonData);
-
     $('<div id="snippet-navigator-dialog" title="'+title+'"></div>').appendTo('body');
     $(innerHtml2).appendTo("#snippet-navigator-dialog");
 
+    // Subscribe on add new items event
     $(document).on("snippet.add", function(event) {
           var idx = event.info.position.index;
           // Update an existing snippet
@@ -646,11 +645,11 @@
               snippetDescription.splice(snippetPosition, 0, event.info);
             $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
             $("#snippets-list").sortable("refresh");
-              var snippetDDDDDDDDD = snippetDescription;
-              var snippetDDDDDDDDAD = snippetDescription;
-              var snippetDDDDDDDDD1 = snippetDescription;
           }
-	  });
+	});
+
+    // Add all existing items to the list
+    // Note: applicable for snippet open only
     if (jsonData && jsonData['snippets']) {
         for (var sn in jsonData['snippets']) {
             var inf = jsonData['snippets'][sn]
@@ -660,6 +659,7 @@
         }
     }
 
+    // disable snippet mode of the framework
 	function disableSnippetMode() {
 		if (self.selectedContentId) {
 		   params = self.contents[self.selectedContentId];
@@ -672,17 +672,12 @@
 		}
 	}
 
-	self.SnippetMode = true;
+    // Enable snippets mode for the framework
+	fw.SnippetMode = true;
+
+    // Make the list of snippets selectable
 	$("#snippets #snippets-list")
-    .listmenu({
-        selector: "diagram-selector",
-        selectable: true,
-        onSelect: function(item)
-          {
-              alert("selected " + item);
-		  }
-	    }
-	)
+    // Make the list of snippets sortable
     .sortable({
       start: function(event, ui) {
         // Drop snippet bubble on remove
@@ -697,7 +692,10 @@
       }
     });
 
-      $("#snippet-navigator-dialog").dialog({
+    var cachedWidth = 200, cachedPosition = {top:50, left: 400}, cachedH = 39;
+    // Open snippet navigation dialog
+    //
+    $("#snippet-navigator-dialog").dialog({
         autoOpen: true,
         height: 154,
         width: 350,
@@ -718,41 +716,74 @@
           // Remove HTML element
           $("#snippet-navigator-dialog").remove();
         }
-	}).parent().draggable();
+	})
+    // Make this dialog draggable
+    .parent().draggable().dblclick(function() {
+        // To prevent unexpected behavior copy the values to the local variables
+        var $this = $(this), cw = cachedWidth, cp = cachedPosition, ch = cachedH;
+        cachedWidth = $this.width();
+        cachedH = $this.height();
+        cachedPosition = $this.position();
+
+        // save/restore from the small/big view
+        $("#snippet-navigator-dialog").toggle();
+        $('#ui-dialog-title-snippet-navigator-dialog').toggle();
+        $this.animate({width:cw, height:ch, top:cp.top, left:cp.left});
+    });
 	
-	  $("#us-snippets-toolbox span.ui-icon-stop").click(self, function(e, data) {
-		var self = e.data || data;
-		self.SnippetMode = false;
-		disableSnippetMode();
-		// remove snippets toolbox
-        $("#snippet-navigator-dialog").dialog("close");
-	  });
+	$("#us-snippets-toolbox span.ui-icon").click(self, function(e, data) {
+        var self = e.data || data,
+            $this = $(this);
+        if ($this.hasClass('ui-icon-stop')) {
+            self.SnippetMode = false;
+            disableSnippetMode();
+            // remove snippets toolbox
+            $("#snippet-navigator-dialog").dialog("close");
+        }
+        else if ($this.hasClass('ui-icon-pause')) {
+            self.SnippetMode = false;
+            disableSnippetMode();
+        }
+        else if ($this.hasClass('ui-icon-seek-next')) {
+            if (snippetPosition < snippetDescription.length - 1) {
+                ++snippetPosition;
+                snippetDescription[snippetPosition].position.index = snippetPosition;
+                self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            }
+        }
+        else if ($this.hasClass('ui-icon-seek-prev')) {
+            if (snippetPosition > 0) {
+                --snippetPosition;
+                snippetDescription[snippetPosition].position.index = snippetPosition;
+                self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            }
+        }
+        else if ($this.hasClass('ui-icon-seek-first')) {
+            if (snippetPosition >= 0) {
+                snippetPosition = 0;
+                snippetDescription[snippetPosition].position.index = snippetPosition;
+                self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            }
+        }
+        else if ($this.hasClass('ui-icon-seek-end')) {
+            if (snippetPosition >= 0) {
+                snippetPosition = snippetDescription.length - 1;
+                snippetDescription[snippetPosition].position.index = snippetPosition;
+                self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            }
+        }
+        e.stopPropagation();
+    });
 
-      $("#us-snippets-toolbox span.ui-icon-pause").click(self, function(e, data) {
-          var self = e.data || data;
-          self.SnippetMode = false;
-          disableSnippetMode();
-      });
-
-      $("#us-snippets-toolbox span.ui-icon-seek-next").click(self, function(e, data) {
-          var self = e.data || data;
-          if (snippetPosition < snippetDescription.length - 1) {
-            ++snippetPosition;
+    $("DIV#snippets>DIV#selectable-list>ul#snippets-list>li").live('click', function () {
+        var index = $(this).parent().children('li').removeClass('hover').index(this);
+        if (index != -1 && index >= 0 && index < snippetDescription.length) {
+            $(this).addClass('hover');
+            snippetPosition = index;
             snippetDescription[snippetPosition].position.index = snippetPosition;
             self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
-          }
-      });
-
-      $("#us-snippets-toolbox span.ui-icon-seek-prev").click(self, function(e, data) {
-          var self = e.data || data;
-          if (snippetPosition > 0) {
-            --snippetPosition;
-            var sd = snippetDescription;
-            var sp = snippetDescription[snippetPosition];
-            snippetDescription[snippetPosition].position.index = snippetPosition;
-            self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
-          }
-      });
+        }
+    });
   },
   
   //
