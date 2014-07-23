@@ -1629,7 +1629,12 @@
                 if (this.contents && this.selectedContentId) {
                     var params = this.contents[this.selectedContentId];
                     if (params && params.contentType) {
-                        return  this.formatHandlers[params.contentType]._getContentObject(this.selectedContentId);
+                        if (this.formatHandlers[params.contentType]._getContentObject) {
+                            return  this.formatHandlers[params.contentType]._getContentObject(this.selectedContentId);
+                        }
+                        else {
+                            alert('Timesheet happens !!!');
+                        }
                     }
                 }
                 return null;

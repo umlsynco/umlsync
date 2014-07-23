@@ -112,6 +112,14 @@ URL:
 		close: function(parent) {
 		  $(parent).destroy();
         },
+
+        // Helper method to enable/disable snippet mode
+        // There is no need to support snippet mode for the content which is not in focus
+        // and content should not be in editable mode too
+        //
+        // @param parentSelector - content's tab selector
+        // @param isInForcus - in focus flag true/false
+        //
         _helperSetSnippetMode: function(parentSelector, isInFocus) {
             var self = this;
             if (isInFocus) {
@@ -126,6 +134,7 @@ URL:
                 $(parentSelector + ' ol.linenums>li').unbind('click');
             }
         },
+
         //
         // Switch diagram to the snippet mode
         // @param handler - snippet handler, if null then disable snippets

@@ -32,7 +32,7 @@ URL:
         }
 
         var markdown = function() {
-        }
+        };
 
         markdown.prototype = {
         options: {
@@ -42,32 +42,38 @@ URL:
             edit:true,
             view:true
         },
+
         //
         // Embedded content counter
         //
         counter:0,
+
         //
         // The cached content values for a corresponding tabs
         //
         contentCache: {},
+
         //
         // Unique id for this editor/viewer
         //
         getUid: function() {
           return this.options.uid;
         },
+
         //
         // List of supported extensions
         //
         getExtensionList: function() {
             return this.options.extensions.split(";");
         },
+
         //
         // List of supported mime types
         //
         getMimeTypeList: function() {
             return this.options.mime_types.split(";");
         },
+
         //
         // Open method, works in view mode by default (if view supported)
         // parentSelector - selector of parent frame
@@ -78,6 +84,7 @@ URL:
             this.contentCache[parentSelector] = {info: contentInfo, data:contentData};
             this._viewMarkdown(parentSelector, contentInfo, contentData);
         },
+
         //
         // Destroy the content edit/view area,
         // before the corresponding tab closing
@@ -86,6 +93,7 @@ URL:
           delete this.contentCache[parentSelector];
           $(parentSelector + " div#readme").remove();
         },
+
         //
         // Get the cached value of current content
         //
@@ -104,6 +112,7 @@ URL:
           return text;
           
         },
+
         //
         // Helper method to open  markdown in view mode
         //
@@ -159,6 +168,7 @@ URL:
                     });
             }
         },
+
         //
         // Helper method to open  markdown in edit mode
         //
@@ -289,11 +299,22 @@ URL:
                         }
                     });
         },
+
         //
         // Switch between edit and view mode
         // mode - boolean flag:  true - edit; false - view;
         //
         switchMode: function(parentSelector, mode) {
+            //
+            // Check that mode was changed
+            // There is no cached state for each view, therefore we have to get it manually
+            //
+            var activeMode = !($(parentSelector + " div#readme").length > 0);
+            if (activeMode == mode) {
+                return;
+            }
+
+            // Start to switch mode
 			var self = this;
 			if (this.contentCache[parentSelector]) {
 			  if (mode) {
@@ -343,21 +364,67 @@ URL:
 			  }
 			}
         },
+
         //
         // Notify on tab in focus, when we need to re-draw picture
         //
-        // parentSelector - CSS selector of parent id
+        // parentSelector - CSS selector of parent element
         // isInFocus      - in focus(true) or focus left(false)
         //
         onFocus: function(parentSelector, isInFocus) {
-          // Empty
+            // There is a specific behavior for snippets mode only
+            if (!this.snippetHandler)
+                return;
+
+            this._helperSetSnippetMode(parentSelector, isInFocus);
         },
+
         //
         // Handler of custom keys Ctrl-Z/Y/C/V/X,Del
         // Some of the the sequence should handle framework itself (Ctrl-S and Del)
         //
         onKeyPressed: function (parent, e) {
           // Empty for a while
+        },
+
+        // Helper method to enable/disable snippet mode
+        // There is no need to support snippet mode for the content which is not in focus
+        // and content should not be in editable mode too
+        //
+        // @param parentSelector - content's tab selector
+        // @param isInForcus - in focus flag true/false
+        //
+        _helperSetSnippetMode: function(parentSelector, isInFocus) {
+            var self = this;
+
+            if (this.snippetHandler) {
+                // There is no way to handle snippets in edit mode of markdown
+                // but it doesn't matter for exit from snippet mode
+                this.switchMode(parentSelector, false);
+            }
+
+            if (isInFocus) {
+                $(parentSelector + ' article.markdown-body').bind('click', function(e) {
+                    if (self.snippetHandler) {
+                        var position = {top:e.clientY, left: e.clientX};
+                        self.snippetHandler.showSnippetBubble(position, parentSelector);
+                    }
+                });
+            }
+            else {
+                $(parentSelector + ' article.markdown-body').unbind('click');
+            }
+        },
+
+        //
+        // Switch diagram to the snippet mode
+        // @param handler - snippet handler, if null then disable snippets
+        //
+        snippetMode: function(parentSelector, handler) {
+            var flag = (handler != null);
+            // Keep handler in cache
+            this.snippetHandler = handler;
+            this._helperSetSnippetMode(parentSelector, true);
         }
         };
 
