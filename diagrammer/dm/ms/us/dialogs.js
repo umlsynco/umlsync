@@ -181,7 +181,7 @@
       );
       
       var self = this;
-      $("#diagram-menu").listmenu({
+      $("#new-diagram-dialog #diagram-menu").listmenu({
         selector: "diagram-selector",
         selectable: true,
         urlPrefix: dm.dm.loader.getUrl(),
@@ -190,11 +190,14 @@
           {
             self.selected = item.id;
             var val = $("#new-diagram-dialog input#VP_inputselector").val();
-            if (item.id != "markdown") {
-              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
+            if (item.id == "markdown") {
+              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + "Document.md");
+            }
+            else if (item.id == "snippets") {
+              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + "Snippet.us.snippet");
             }
             else {
-              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + "Document.md");
+              $("#new-diagram-dialog input#VP_inputselector").val(val.substr(0, val.lastIndexOf('/') + 1) + item.id + "Diagram");
             }
           }
       });
@@ -206,28 +209,33 @@
         'buttons': {
         "Create": function() {
           var isNamed = $("#us-new-diagram-dialog-input").is(":checked"),
+              type = $("#us-new-diagram-dialog-readio input:checked").val(),
               diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
-         
-         var type = $("#us-new-diagram-dialog-readio input:checked").val();
-         
-         // Add file extension for diagram files
-         if ((diagram_name.lastIndexOf("." + type) != diagram_name.length - 1 -type.length) && (self.selected != "markdown")) {
-           diagram_name = diagram_name + "." + type;
-         }
 
-         if ((diagram_name.lastIndexOf(".md") != diagram_name.length - 3) && (self.selected == "markdown")) {
-           diagram_name = diagram_name + ".md";
-         }
+         if (isNamed) {
+           // Add file extension for diagram files
+           if ((diagram_name.lastIndexOf("." + type) != diagram_name.length - 1 -type.length) && (!(["markdown", "snippets"].indexOf(self.selected) >= 0))) {
+             diagram_name = diagram_name + "." + type;
+           }
 
-          var fullname = diagram_name;
-          if (isNamed) {
-            // check the name of diagram
-            var msg = dm.dm.fw.checkContentName(diagram_name);
-            if (msg != "ok") {
-              // Can't close the dialog if user has entered wrong name
-              alert(msg);
-              return;
-            }
+             // markdown extension
+           if ((diagram_name.lastIndexOf(".md") != diagram_name.length - 3) && (self.selected == "markdown")) {
+             diagram_name = diagram_name + ".md";
+           }
+
+           // snippets extension
+           if ((diagram_name.lastIndexOf(".snippet") != diagram_name.length - 8) && (self.selected == "snippets")) {
+             diagram_name = diagram_name + ".snippet";
+           }
+
+           var fullname = diagram_name;
+           // check the name of diagram
+           var msg = dm.dm.fw.checkContentName(diagram_name);
+           if (msg != "ok") {
+             // Can't close the dialog if user has entered wrong name
+             alert(msg);
+             return;
+           }
           }
           else {
             // The default name
@@ -236,7 +244,7 @@
 
           var params =
           {
-            title:isNamed ? diagram_name.split("/").pop() : diagram_name,
+            title: isNamed ? diagram_name.split("/").pop() : diagram_name,
             repoId:isNamed ? dm.dm.fw.getActiveRepository() : null,
             viewid:isNamed ? dm.dm.fw.getActiveView() : null,
             branch:isNamed ? dm.dm.fw.getActiveBranch() : null,
@@ -244,43 +252,44 @@
             contentType:"umlsync",
             isOwner: true,
             editable:true,
-            isNewOne:!isNamed
+            isNewOne:true
           };
 
-          if (isNamed) {
-            params.absPath = diagram_name;
-          }
-          else {
-            if (self.selected != "markdown") {
+          if (!isNamed && self.selected != "markdown" && self.selected != "snippets") {
               // Keep the content type for a SaveAs dialog for a content without name
               params.type = type;
-            }
           }
-        if (self.selected != "markdown") {
-          // Work-around for the sequence diagrams
-          var baseType = self.selected;
-          if (type == "umlsync") {
-            // Empty diagram in JSON format
-            dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
-          }
-          else if (type == "us.svg") {
-            // Empty diagram in SVG format
-            var ddd = '<?xml version="1.0" encoding="utf-8" ?>\
+
+          if (self.selected != "markdown" && self.selected != "snippets") {
+            // Work-around for the sequence diagrams
+            var baseType = self.selected;
+            if (type == "umlsync") {
+              // Empty diagram in JSON format
+              dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
+              }
+            else if (type == "us.svg") {
+              // Empty diagram in SVG format
+              var ddd = '<?xml version="1.0" encoding="utf-8" ?>\
                            <svg umlsync="v1.0" baseProfile="full" height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">\
                            <desc>{"type":"'+self.selected+'","base_type":"'+baseType+'"}</desc></svg>';
-            dm.dm.fw['addNewContent'](params, ddd);
+              dm.dm.fw['addNewContent'](params, ddd);
+            }
+            else {
+              alert("type - " + type + " not supported.");
+            }
           }
-          else {
-            alert("type - " + type + " not supported.");
+          else if (self.selected == "markdown") {
+            params.contentType = "markdown";
+            params.editable = false;
+            // Empty content of markdown
+            dm.dm.fw['addNewContent'](params, "Goodby Word!");
           }
-        }
-        else {
-          params.contentType = "markdown";
-          params.editable = false;
-          // Empty content of markdown
-          dm.dm.fw['addNewContent'](params, "Goodby Word!");
-        }
-        $(this).dialog("close");
+          else if (self.selected == "snippets") {
+              params.contentType = "snippets";
+            params.editable = false;
+            dm.dm.fw['addNewSnippets'](params, {});
+          }
+          $(this).dialog("close");
       },
       'Cancel': function() {
         $(this).dialog("close");
@@ -594,6 +603,186 @@
         },
         close: function() {
             $("#configure-localhost-dialog #dl-validation-tip").text("");
+        }
+    });
+  },
+
+  //
+  // Snippets navigation dialog
+  //
+  'SnippetNavigator': function(params, fw, jsonData) {
+    var snippetDescription = new Array();
+    var snippetPosition = -1;
+    var PARARAMS = params;
+    var snippetSortCache = null;
+    var title = params.title;
+    var innerHtml = '<div id="us-snippets-toolbox"><ul class="ui-widget ui-helper-clearfix">\
+                                    <li class="ui-state-default ui-corner-all" title="First Comment"><span class="ui-icon ui-icon-seek-first"></span></li>\
+                                    <li class="ui-state-default ui-corner-all" title="Previous Comment"><span class="ui-icon ui-icon-seek-prev"></span></li>\
+                                    <li class="ui-state-default ui-corner-all" title="Stop and Save snippets"><span class="ui-icon ui-icon-stop"></span></li>\
+                                    <li class="ui-state-default ui-corner-all" title="Stop and Save snippets"><span class="ui-icon ui-icon-pause"></span></li>\
+                                    <li class="ui-state-default ui-corner-all" title="Start Snippet"><span class="ui-icon ui-icon-comment"></span></li>\
+                                    <li class="ui-state-default ui-corner-all" title="Next Comment"><span class="ui-icon ui-icon-seek-next"></span></li>\
+                                    <li class="ui-state-default ui-corner-all" title="Switch to the final Comment"><span class="ui-icon ui-icon-seek-end"></span></li></ul>\
+                                    </div>';
+    var innerHtml2 = '<div id="snippets" style="width: 100%; height: 100%;"><div id="selectable-list" style="scroll:auto;"><ul id="snippets-list"></ul></div></div>';
+                                    
+    var self = fw;
+
+    $('<div id="snippet-navigator-dialog" title="'+title+'"></div>').appendTo('body');
+    $(innerHtml2).appendTo("#snippet-navigator-dialog");
+
+    // Subscribe on add new items event
+    $(document).on("snippet.add", function(event) {
+          var idx = event.info.position.index;
+          // Update an existing snippet
+          if (idx != undefined && idx != null) {
+            snippetDescription[idx] = event.info;
+          }
+          // Insert snippet at active position
+          else {
+            ++snippetPosition;
+            event.info.position.index = snippetPosition; // Update snippet position in the list
+              snippetDescription.splice(snippetPosition, 0, event.info);
+            $("#snippets-list").append("<li title='"+event.info.msg+"'>"+event.info.params.absPath+"</li>");
+            $("#snippets-list").sortable("refresh");
+          }
+    });
+
+    // Add all existing items to the list
+    // Note: applicable for snippet open only
+    if (jsonData && jsonData['snippets']) {
+        for (var sn in jsonData['snippets']) {
+            var inf = jsonData['snippets'][sn]
+            snippetDescription.push(inf);
+            ++snippetPosition;
+            $("#snippets-list").append("<li title='"+inf.msg+"'>"+inf.params.absPath+"</li>");
+        }
+    }
+
+    // disable snippet mode of the framework
+    function disableSnippetMode() {
+        if (self.selectedContentId) {
+           params = self.contents[self.selectedContentId];
+           if (params && params.contentType) {
+              var snippet = self.formatHandlers[params.contentType].snippetMode(self.selectedContentId, false);
+              if (snippet) {
+                self.activeSnippet.push(snippet);
+              }
+           }
+        }
+    }
+
+    // Enable snippets mode for the framework
+    fw.SnippetMode = true;
+
+    // Make the list of snippets selectable
+    $("#snippets #snippets-list")
+    // Make the list of snippets sortable
+    .sortable({
+      start: function(event, ui) {
+        // Drop snippet bubble on remove
+        $("#snippet_bubble").remove();
+        // Drop snippet from the list
+        var index = ui.item.index();
+        snippetSortCache = snippetDescription.splice(index, 1)[0];
+      },
+      stop: function(event, ui) {
+        var index = ui.item.index();
+        snippetDescription.splice(index, 0, snippetSortCache);
+      }
+    });
+
+    var cachedWidth = 200, cachedPosition = {top:50, left: 400}, cachedH = 39;
+    // Open snippet navigation dialog
+    //
+    $("#snippet-navigator-dialog").dialog({
+        autoOpen: true,
+        height: 154,
+        width: 350,
+        modal: false,
+        open: function(event, ui){
+            // Hide close icon
+            $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+            // Add navigation icons
+            $(this).parent().find('.ui-dialog-titlebar').append(innerHtml);
+        },
+        close: function() {
+          // Save snippets content
+          dm.dm.fw.saveSnippetsContent(PARARAMS, snippetDescription);
+          // disable events subscription (do not modify snippet anymore)
+          $(document).off("snippet.add");
+          // Destroy dialog
+          $( this ).dialog( "destroy" );
+          // Remove HTML element
+          $("#snippet-navigator-dialog").remove();
+        }
+    })
+    // Make this dialog draggable
+    .parent().draggable().dblclick(function() {
+        // To prevent unexpected behavior copy the values to the local variables
+        var $this = $(this), cw = cachedWidth, cp = cachedPosition, ch = cachedH;
+        cachedWidth = $this.width();
+        cachedH = $this.height();
+        cachedPosition = $this.position();
+
+        // save/restore from the small/big view
+        $("#snippet-navigator-dialog").toggle();
+        $('#ui-dialog-title-snippet-navigator-dialog').toggle();
+        $this.animate({width:cw, height:ch, top:cp.top, left:cp.left});
+    });
+    
+    $("#us-snippets-toolbox span.ui-icon").click(self, function(e, data) {
+        var self = e.data || data,
+            $this = $(this);
+        if ($this.hasClass('ui-icon-stop')) {
+            self.SnippetMode = false;
+            disableSnippetMode();
+            // remove snippets toolbox
+            $("#snippet-navigator-dialog").dialog("close");
+        }
+        else if ($this.hasClass('ui-icon-pause')) {
+            self.SnippetMode = false;
+            disableSnippetMode();
+        }
+        else if ($this.hasClass('ui-icon-seek-next')) {
+            if (snippetPosition < snippetDescription.length - 1) {
+                ++snippetPosition;
+                snippetDescription[snippetPosition].position.index = snippetPosition;
+                self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            }
+        }
+        else if ($this.hasClass('ui-icon-seek-prev')) {
+            if (snippetPosition > 0) {
+                --snippetPosition;
+                snippetDescription[snippetPosition].position.index = snippetPosition;
+                self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            }
+        }
+        else if ($this.hasClass('ui-icon-seek-first')) {
+            if (snippetPosition >= 0) {
+                snippetPosition = 0;
+                snippetDescription[snippetPosition].position.index = snippetPosition;
+                self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            }
+        }
+        else if ($this.hasClass('ui-icon-seek-end')) {
+            if (snippetPosition >= 0) {
+                snippetPosition = snippetDescription.length - 1;
+                snippetDescription[snippetPosition].position.index = snippetPosition;
+                self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
+            }
+        }
+        e.stopPropagation();
+    });
+
+    $("DIV#snippets>DIV#selectable-list>ul#snippets-list>li").live('click', function () {
+        var index = $(this).parent().children('li').removeClass('hover').index(this);
+        if (index != -1 && index >= 0 && index < snippetDescription.length) {
+            $(this).addClass('hover');
+            snippetPosition = index;
+            snippetDescription[snippetPosition].position.index = snippetPosition;
+            self.openSnippet(PARARAMS, snippetDescription[snippetPosition]);
         }
     });
   },

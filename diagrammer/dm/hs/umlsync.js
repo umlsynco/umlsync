@@ -220,7 +220,54 @@ URL:
 
                         obj.options['viewid'] = viewid;
                     });
+
+            // Make a callback on load completion
+            // uses for snippets mainly
+            dm.dm.loader.OnLoadComplete(
+                function () {
+                    if (self.options.onLoadComplete)
+                        self.options.onLoadComplete(parent, true);
+                }
+            );
         },
+
+		onSnippetClick: function(position) {
+		  if (this.snippetHandler) {
+		    this.snippetHandler.showSnippetBubble(position, this.snippetConecntId);
+		  }
+		},
+
+		//
+		// Method to open snippet bubble
+		// @param value - {data, position}
+		//
+		openSnippet: function(value) {
+		  if (this.snippetConecntId) {
+		    alert("Save:  #" + this.snippetConecntId);
+		  }
+		},
+		
+		//
+		// Switch diagram to the snippet mode
+		//
+		snippetMode: function(parentSelector, handler) {
+		    var flag = (handler != null);
+			// Keep handler in cache
+			this.snippetHandler = handler;
+
+            if (this.contentCache[parentSelector]) {
+              var did = this.contentCache[parentSelector]["diagram"];
+			  if (did) {
+			    if (flag) {
+				  this.snippetConecntId = parentSelector;
+				}
+				else {
+				  this.snippetConecntId = null;
+				}
+			    return did.setSnippetMode(flag, this);
+			  }
+			}
+		},
         //
         // Switch between edit and view mode
         // mode - boolean flag:  true - edit; false - view;
@@ -460,9 +507,15 @@ URL:
             }
           }
           return true;
-        }
-        };
-
+        },
+		
+		_setWidgetsOption: function(parent, id, value) {
+		  if (this.contentCache[parent]) {
+		    this.contentCache[parent]["diagram"]._setWidgetsOption(id, value);
+		  }
+		}
+		};
+		
         return getInstance(options);
 
     };
