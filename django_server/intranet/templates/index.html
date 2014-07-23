@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>UML Framework: UMLSync</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/github.css"/>
+  <link href="/static/css/gray-start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="/static/js/3pp/scrollabletab/css/jquery.ui.tabs.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="/static/js/3pp/simple-color-picker/jquery.simple-color-picker.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="/static/js/3pp/tablesorter/themes/blue/style.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="/static/js/3pp/dynatree/src/skin-vista/ui.dynatree.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="/static/css/main.css" type="text/css" media="all"/>
+  <link rel="stylesheet" href="/static/css/umlsync.css" type="text/css" media="all"/>
+  <link rel="stylesheet/less" href="/static/css/main.less" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="/static/css/simple_menu.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/static/css/jqsimplemenu.css" type="text/css" media="screen" />
+  <link rel='stylesheet' type='text/css' href='/static/js/3pp/skin/ui.dynatree.css'>
+  <script src="/static/js/jquery.js"></script>
+  <script src="/static/js/lib/underscore-min.js"></script>
+  <script src="/static/js/github.js"></script>
+  <script src="/static/js/jquery-ui.js"></script>
+  <script src="/static/css/less.js" type="text/javascript"></script>
+  <script src="/static/js/3pp/scrollabletab/js/jquery.scrollabletab.js"></script>
+  <script src="/static/js/jquery.cookie.js"></script>
+  <script src="/static/js/ui.selectmenu.js"></script>
+  <script type="text/javascript" src="/static/js/3pp/simple-color-picker/jquery.simple-color-picker.js"></script>
+  <script type="text/javascript" src="/static/js/jqsimplemenu.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.combomenu.js"></script>
+  <script src="/static/js/3pp/jLog/jLog.min.js"></script>
+  <script src="/static/js/3pp/editable/editable.js"></script>
+  <script src="/static/js/3pp/metadata/jquery.metadata.js"></script>
+  <script src="/static/js/3pp/tablesorter/jquery.tablesorter.js"></script>
+  <script src="/static/js/3pp/jquery.tools.min.js"></script>
+  <script src="/static/js/3pp/contextmenu/jquery.contextmenu.js"></script>
+  <script src="/static/js/3pp/dynatree/jquery.dynatree.js" type="text/javascript"></script>
+  <script src="/static/js/3pp/base64/jquery.base64.js"></script>
+  <script type="text/javascript" src="/static/js/3pp/jquery-fieldselection/jquery-fieldselection.js"></script>
+  <style>
+    label, input { display: inline; }
+    fieldset { padding:0; border:0; margin-top:5px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+    .left { float: left; }
+    .left2 { overflow: hidden; display: block; padding: 0 6px 0 5px; }
+    .left2 input { width: 100%; }
+    .ui-tabs-panel div#readme article{background-color:white;}
+    .ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled { opacity : 1;}
+  </style>
+  <script src="/static/js/3pp/showdown/src/showdown.js"></script>
+  <script src="/static/js/3pp/showdown/src/extensions/umlsync.js"></script>
+  <script src="/static/dm/ds/diagram.js"></script>
+  <script src="/static/dm/ds/base.js"></script>
+  <script src="/static/dm/ms/ds/common.js"></script>
+  <script src="/static/dm/ds/sequence.js"></script>
+  <script src="/static/dm/dm/loader.js"></script>
+  <script src="/static/dm/dm/LocalhostView.js"></script>
+  <script src="/static/dm/dm/Githubview.js"></script>
+  <script src="/static/dm/dm/LocalFilesView.js"></script>
+  <script src="/static/dm/dm/SelfAnalysisView.js"></script>
+  <script src="/static/dm/hs/menu.js"></script>
+  <script src="/static/dm/ms/us/dialogs.js"></script>
+  <script src="/static/dm/es/class.js"></script>
+  <script src="/static/dm/es/note.js"></script>
+  <script src="/static/dm/cs/nested.js"></script>
+  <script src="/static/dm/cs/arc.js"></script>
+  <script src="/static/dm/cs/aggregation.js"></script>
+  <script src="/static/dm/cs/composition.js"></script>
+  <script src="/static/dm/cs/transition.js"></script>
+  <script src="/static/dm/cs/selfassociation.js"></script>
+  <script src="/static/dm/cs/llsequence.js"></script>
+  <script src="/static/dm/hs/umlsync.js"></script>
+  <script src="/static/dm/hs/markdown.js"></script>
+  <script src="/static/dm/hs/codeview.js"></script>
+  <script src="/static/dm/hs/framework.js"></script>
+  <script src="/static/dm/ms/ctx/class.js"></script>
+
+  <script>
+  //$.log = function() {};
+
+  $(document).ready(function() {
+    var Loader = new dm.base.loader("http://localhost:8000/static/");
+    //var fw = new dm.hs.framework({notabs:true}); // No tabs view
+    var fw = new dm.hs.framework({});
+
+    // Initialize header menu on the left
+    $('#header-menu').combomenu({menu:{
+        'Project': {
+          'Select repository': {handler:function() {$("#us-repo").click();}},
+          'Select branch': {handler:function() {$("#us-branch").click();}},
+          'New diagram': {handler:function() {$("#us-newdoc").click();}},
+//          'New gist diagram':{handler: function() {dm.dm.dialogs['Activate']("new-diagram-dialog");}}
+        },
+/*        
+        'Actions': {
+          'Post for review':{handler: function() {      }}
+        },
+*/
+        'Edit':{
+          'Un-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;    e.keyCode = 90; $(window).trigger(e); }},
+          'Re-do':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 89; $(window).trigger(e); }},
+          'Cut':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 88; $(window).trigger(e); }},
+          'Copy':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 67; $(window).trigger(e); }},
+          'Past':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 86; $(window).trigger(e); }},
+          'Delete':{handler: function(){var e = $.Event('keydown');    e.keyCode = 46; $(window).trigger(e); }},
+          'Select All':{handler: function(){var e = $.Event('keydown');e.ctrlKey = true;e.keyCode = 65; $(window).trigger(e); }},
+        },
+        'Views':{
+          'Github':{handler: function(){$("#us-github").click();}},
+          'Eclipse':{handler: function(){$("#us-eclipse").click();}}
+//          'BitBucket':{handler: function(){$("#us-bitbucket").click();}},
+//          'Google code':{handler: function(){}},
+//          'Sourceforege':{handler: function(){}},
+        }
+    },
+    prefix: "file-menu"});
+
+    // User data
+    var username = "{{ user }}",
+      token = "{{ access_token }}",
+      path = "{{ path }}";
+
+    // Pre-initialize workspace
+    dm.dm = dm.dm || {};
+
+    // Register GitHub as a storage service
+    dm.dm.IGithubViewsManager =
+      new dm.base.GithubViewsManager(username, token);
+    dm.dm.IGithubViewsManager.init(path);
+    
+    dm.dm.ILocalhostViewsManager = new dm.base.LocalhostViewsManager();
+    dm.dm.ILocalhostViewsManager.init();
+  });
+
+</script>
+
+
+</head>
+<body>
+<div id="body">
+  <div class="header-nav ui-state-default" id="content-header">
+  <div>
+  <ul id="header-menu" class="header-menu-left"></ul>
+  </div>
+  <div>
+    <ul id="user-links" class="header-menu-right">
+        <li class="us-head-menu-separator">&nbsp;</li>
+        <li><a class="name" href="https://github.com/{{ user }}" target="_blank"><img height="20" width="20" src="{{ avatar }}"/>{{ user }}</a></li>
+        <li class="us-head-menu-separator">&nbsp;</li>
+        <li><a href="/logout">Log out</a></li>
+        <li class="us-head-menu-separator">&nbsp;</li>
+        <li><a id="us-fw-user-settings" href="http://github.com/umlsynco/diagrams/issues" target="_blank">Report a bug</a></li>
+    </ul>
+  </div>
+  </div>
+  <div id="content"></div>
+  <div id="content-bottom" style="clear:both;">bottom</div>
+</div>
+</body>
+</html>

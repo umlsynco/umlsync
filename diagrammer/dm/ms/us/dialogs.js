@@ -834,7 +834,12 @@
   'CommitDataDialog':function(data, commit_callback){
     var items = [];
     for (var d in data) {
-      items.push('<tr><td> <input type="checkbox" checked/></td><td>' + d + '</td></tr>');
+      if (data[d].title) {
+        items.push('<tr><td> <input type="checkbox" checked/></td><td>' + data[d].title + '</td></tr>');
+      }
+      else {
+        items.push('<tr><td> <input type="checkbox" checked/></td><td>' + d + '</td></tr>');
+      }
     }
 
     var innerHtml = items.join('');
