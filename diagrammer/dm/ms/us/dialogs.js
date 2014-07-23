@@ -22,10 +22,10 @@
     // status of modal dialogs
     this.status = new Array();
     this.callback = new Array();
-	var self = this;
-	$(document).bind("us-dialog-newdiagram", function(event, data) {
+    var self = this;
+    $(document).bind("us-dialog-newdiagram", function(event, data) {
       self['Activate']("new-diagram-dialog", null, data);
-	});
+    });
   };
 
 
@@ -49,19 +49,19 @@
     this.status[name] = true; // active dialog. It is possible to activate dialog before it's creation. in that case it will be shown on creation.
     this.callback[name] = callback;
 
-	if (name == "new-diagram-dialog") {
-	  $("#VP_error").text("Select the name of the new file:");
-	  
-	  if (data.view == null) {
-	    $("#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
-		$("#VP_inputselector").attr('disabled', true);
+    if (name == "new-diagram-dialog") {
+      $("#VP_error").text("Select the name of the new file:");
+      
+      if (data.view == null) {
+        $("#us-new-diagram-dialog-input").attr('disabled', true).attr('checked', false);
+        $("#VP_inputselector").attr('disabled', true);
       }
-	  else {
-	    $( "#us-new-diagram-dialog-input").attr('disabled', false).attr('checked', true);
-		$("#VP_inputselector").attr('disabled', false).val(data.path);
-		$("#VP_inputselector").autocomplete("option", "view", data.view);
-	  }
-	}
+      else {
+        $( "#us-new-diagram-dialog-input").attr('disabled', false).attr('checked', true);
+        $("#VP_inputselector").attr('disabled', false).val(data.path);
+        $("#VP_inputselector").autocomplete("option", "view", data.view);
+      }
+    }
 
     if (!$( "#" + name ).dialog( "isOpen" )) {
       $( "#" + name ).dialog( "open" );
@@ -79,14 +79,14 @@
 
     var innerHtml = '<form id="us-dialog-newdiagram">\
       <fieldset><div id="selectable-list" style="scroll:auto;"><ul id="diagram-menu"></ul></div>\
-	  <br><p id="us-new-diagram-dialog-readio" class="ui-widget-header ui-corner-all"><form>\
-	  <input value="umlsync" type="radio" name="type" checked="true">JSON</input>\
-	  <input value="us.svg" type="radio" name="type" style="margin-left:25px;">SVG</input>\
-	  <input value="text" type="radio" name="type" style="margin-left:25px;" disabled=true>PlantUML</input></p></form>\
-	  <p><label id="VP_error" style="margin-top:0px;float:left;font-color:red;">Select the name of the new file:</label></p>\
-	  <br><p class="ui-widget-header ui-corner-all">\
-	  <input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin: 4px 0px 4px 4px;"/>\
-	  <span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
+      <br><p id="us-new-diagram-dialog-readio" class="ui-widget-header ui-corner-all"><form>\
+      <input value="umlsync" type="radio" name="type" checked="true">JSON</input>\
+      <input value="us.svg" type="radio" name="type" style="margin-left:25px;">SVG</input>\
+      <input value="text" type="radio" name="type" style="margin-left:25px;" disabled=true>PlantUML</input></p></form>\
+      <p><label id="VP_error" style="margin-top:0px;float:left;font-color:red;">Select the name of the new file:</label></p>\
+      <br><p class="ui-widget-header ui-corner-all">\
+      <input id="us-new-diagram-dialog-input" type="checkbox" checked="true" class="left" style="margin: 4px 0px 4px 4px;"/>\
+      <span class="left2"><input id="VP_inputselector" type="text" value="'+dm.dm.fw.getActiveTreePath()+'" maxlength="256" pattern="[a-zA-Z ]{5,}" name="name"/>\
       </span>\
       </p></fieldset></form>';
       $("<div id='new-diagram-dialog' title='Creating new diagram'></div>").appendTo('body');
@@ -106,19 +106,19 @@
       $("#VP_inputselector")
       .autocomplete(
         {
-		  currentStatus: "",
-		  currentList: null,
-		  waitPathLoad: false,
+          currentStatus: "",
+          currentList: null,
+          waitPathLoad: false,
           source:function(request, response) {
             if (response) {
               var val = $("#VP_inputselector").val();
               var newStatus = val.substr(0, val.lastIndexOf('/'));
-			  // Get user input
+              // Get user input
               var match = val.split("/").pop();
-			  // Self reference
-			  var selfA = this;
+              // Self reference
+              var selfA = this;
 
-			  // Mrthod to resuce show values
+              // Mrthod to resuce show values
               function getMatch(descr) {
                 var retList = new Array();
                 for (var t in selfA.options.currentList) {
@@ -130,53 +130,53 @@
               }
 
               // Prevent multiple request of the same paths
-			  // Or request if paths was not loaded yet
+              // Or request if paths was not loaded yet
               if (!this.options.waitPathLoad
-			     && (this.options.currentStatus != newStatus
-				     || this.options.currentList == null
-					 || Object.keys(this.options.currentList).length == 0)) {
+                 && (this.options.currentStatus != newStatus
+                     || this.options.currentList == null
+                     || Object.keys(this.options.currentList).length == 0)) {
                 
-				this.options.currentStatus = newStatus;
-				// Refresh result list:
-				delete this.options.currentList;
-				this.options.currentList = {};
+                this.options.currentStatus = newStatus;
+                // Refresh result list:
+                delete this.options.currentList;
+                this.options.currentList = {};
 
-				$(this).addClass('ui-autocomplete-loading');
+                $(this).addClass('ui-autocomplete-loading');
 
-				var IView = this.options.view;
+                var IView = this.options.view;
                 if (IView) {
-				  this.options.waitPathLoad = true;
-				  IView.getSubPaths(newStatus, function(status, data) {
-					// Handle results
-				    if (status == "ok") {
-				      // Reset wait status and list
-				      selfA.options.waitPathLoad = false;
-				      selfA.options.currentList = data;
-					  $("#VP_inputselector").removeClass("ui-autocomplete-loading");
-					  $("#VP_error").text("Select the name of the new file:");
+                  this.options.waitPathLoad = true;
+                  IView.getSubPaths(newStatus, function(status, data) {
+                    // Handle results
+                    if (status == "ok") {
+                      // Reset wait status and list
+                      selfA.options.waitPathLoad = false;
+                      selfA.options.currentList = data;
+                      $("#VP_inputselector").removeClass("ui-autocomplete-loading");
+                      $("#VP_error").text("Select the name of the new file:");
                       response(getMatch(match)); // Update search result
-	  			    }
-   				    else if (status == "loaded") {
-					  $("#VP_error").text("Loading: " + data);
-					}
-					else {
-					  // Reset wait status and list
-				      selfA.options.waitPathLoad = false;
-					  $("#VP_inputselector").removeClass("ui-autocomplete-loading");
-					  $("#VP_error").text("Error: " + data);
-  				    }
-				  });
-				}
+                      }
+                       else if (status == "loaded") {
+                      $("#VP_error").text("Loading: " + data);
+                    }
+                    else {
+                      // Reset wait status and list
+                      selfA.options.waitPathLoad = false;
+                      $("#VP_inputselector").removeClass("ui-autocomplete-loading");
+                      $("#VP_error").text("Error: " + data);
+                      }
+                  });
+                }
               }
-			  else {
-			    // return nothing is path was not load yet
+              else {
+                // return nothing is path was not load yet
                 response(getMatch(match));
               }
             }
           },
-		  select: function(event, ui) {
-		    $(this).autocomplete('search');
-		  }
+          select: function(event, ui) {
+            $(this).autocomplete('search');
+          }
         }
       );
       
@@ -208,8 +208,8 @@
           var isNamed = $("#us-new-diagram-dialog-input").is(":checked"),
               diagram_name = $("#new-diagram-dialog input#VP_inputselector").val();
          
-		 var type = $("#us-new-diagram-dialog-readio input:checked").val();
-		 
+         var type = $("#us-new-diagram-dialog-readio input:checked").val();
+         
          // Add file extension for diagram files
          if ((diagram_name.lastIndexOf("." + type) != diagram_name.length - 1 -type.length) && (self.selected != "markdown")) {
            diagram_name = diagram_name + "." + type;
@@ -249,35 +249,35 @@
 
           if (isNamed) {
             params.absPath = diagram_name;
-		  }
-		  else {
-		    if (self.selected != "markdown") {
-			  // Keep the content type for a SaveAs dialog for a content without name
-		      params.type = type;
-			}
-		  }
+          }
+          else {
+            if (self.selected != "markdown") {
+              // Keep the content type for a SaveAs dialog for a content without name
+              params.type = type;
+            }
+          }
         if (self.selected != "markdown") {
-		  // Work-around for the sequence diagrams
-		  var baseType = self.selected;
-		  if (type == "umlsync") {
-		    // Empty diagram in JSON format
+          // Work-around for the sequence diagrams
+          var baseType = self.selected;
+          if (type == "umlsync") {
+            // Empty diagram in JSON format
             dm.dm.fw['addNewContent'](params, {base_type:baseType,type:self.selected});
-		  }
-		  else if (type == "us.svg") {
-		    // Empty diagram in SVG format
-		    var ddd = '<?xml version="1.0" encoding="utf-8" ?>\
+          }
+          else if (type == "us.svg") {
+            // Empty diagram in SVG format
+            var ddd = '<?xml version="1.0" encoding="utf-8" ?>\
                            <svg umlsync="v1.0" baseProfile="full" height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">\
                            <desc>{"type":"'+self.selected+'","base_type":"'+baseType+'"}</desc></svg>';
-		    dm.dm.fw['addNewContent'](params, ddd);
-		  }
-		  else {
-		    alert("type - " + type + " not supported.");
-		  }
+            dm.dm.fw['addNewContent'](params, ddd);
+          }
+          else {
+            alert("type - " + type + " not supported.");
+          }
         }
         else {
           params.contentType = "markdown";
           params.editable = false;
-		  // Empty content of markdown
+          // Empty content of markdown
           dm.dm.fw['addNewContent'](params, "Goodby Word!");
         }
         $(this).dialog("close");
@@ -559,8 +559,8 @@
   //
   'ConfigureLocalhost': function(title, callback) {
     var innerHtml = '<p id="dl-validation-tip" style="color:red;"></p>\
-	  <form>\
-	  <fieldset>\
+      <form>\
+      <fieldset>\
       <div style="display:inline;"><label for="host" style="float:left;">Host:</label><input type="text" value="http://localhost:8000" name="host" id="us-host-input" class="text ui-widget-content ui-corner-all" style="float:right;width:250px;" /></div><br><br>\
       <div style="display:inline;"><label for="key" style="float:left;">Secret key:</label><input type="text" value="180070104577213587621384870490287" name="key" id="us-key-input" class="text ui-widget-content ui-corner-all" style="float:right;width:250px;"/></div>\
       </fieldset>\
@@ -576,26 +576,26 @@
         width: 350,
         modal: true,
         buttons: {
-			"Connect": function() {
-			  var host = $("#us-host-input").val();
-			  var key = $("#us-key-input").val();
-			  if (callback && callback.OnConfigSetup) {
-				callback.OnConfigSetup(host, key);
-			  }
+            "Connect": function() {
+              var host = $("#us-host-input").val();
+              var key = $("#us-key-input").val();
+              if (callback && callback.OnConfigSetup) {
+                callback.OnConfigSetup(host, key);
+              }
 
-			  $( this ).dialog( "close" );
-			},
-			Cancel: function() {
-			  $( this ).dialog( "close" );
-			},
-			'Info ...': function() {
-				window.open('https://github.com/UmlSync/websync/blob/master/install.md', '_blank');
-			}
-		},
-		close: function() {
-			$("#configure-localhost-dialog #dl-validation-tip").text("");
-		}
-	});
+              $( this ).dialog( "close" );
+            },
+            Cancel: function() {
+              $( this ).dialog( "close" );
+            },
+            'Info ...': function() {
+                window.open('https://github.com/UmlSync/websync/blob/master/install.md', '_blank');
+            }
+        },
+        close: function() {
+            $("#configure-localhost-dialog #dl-validation-tip").text("");
+        }
+    });
   },
   
   //
@@ -739,5 +739,69 @@
 
     return $dialog.dialog('open');
   },
+  
+  'SelectBranchesDialog': function(title, ISelectObserver, repos) {
+    var self = this;
+
+    function getTabContent(data) {
+      var items = [];
+      for (var i in data) {
+        var name = data[i];
+        //pr = "<i>" + (data[i]['private']) ? "Private: ":"Public: </i>" ;
+        //items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'" url="'+ data[i]['url'] +'">' + pr + "<span>" + data[i]['full_name'] + '</span></li>');
+        items.push('<li class="diagramSelector" style="cursor:pointer;" id="'  + name +'"><span>' + name + '</span></li>');
+      }
+      return items.join('');
+    }
+
+    var
+    tabContent = '<div id="us-'+title+'"><ul>'+getTabContent(repos)+'</ul></div>';
+
+    if ($("#svn-selection-dialog #selectable-list").length == 0) {
+      var innerHtml = '<form>\
+        <fieldset>\
+        <div id="us-search"></div>\
+        <div id="selectable-list" style="scroll:auto;">\
+        <ul><li><a href="#us-'+title+'">'+title+'</a></li></ul>'
+        + tabContent + 
+        '</div>\
+        </fieldset>\
+        </form>';
+        $("<div id='svn-selection-dialog' title='Repository selection'></div>").appendTo('body');
+        $(innerHtml).appendTo("#svn-selection-dialog");
+
+        $("#svn-selection-dialog #selectable-list").tabs();
+
+        var $dialog = $( "#svn-selection-dialog" ).dialog(
+            {
+              'autoOpen': false,
+              appendTo: '#switcher',
+              position: 'left',
+              'minWidth': 100,
+              'modal': false,
+              'minHeight': 20,
+              'close': function() {
+            },
+            open: function( event, ui ) {
+              $( "#svn-selection-dialog")
+              .parent().offset($("#us-branch").offset());
+            }
+            }
+        );
+    }
+    else {
+      $("#svn-selection-dialog #selectable-list").append(tabContent);
+      $("#svn-selection-dialog #selectable-list").tabs("add", "#us-" + title, title);
+    }
+
+    $("#us-"+title+" .diagramSelector").click(function() {
+      self.selected = $(this).attr('url');
+      var text = $(this).children("span").text();
+      $("#svn-selection-dialog" ).dialog("close");
+      ISelectObserver.onRepoSelect(title, text);
+    });
+  },
+
+
   };
 })(jQuery, dm);
