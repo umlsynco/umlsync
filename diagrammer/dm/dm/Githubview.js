@@ -9,6 +9,103 @@
     //////////////////////////////////////////////////////////////
     //           IViewManager
     //////////////////////////////////////////////////////////////
+
+    dm.models = dm.models || {};
+    dm.views = dm.views || {};
+
+    dm.dm.Application.module('GithubHandler', function(GithubHandler, App, Backbone, Marionette, $, _) {
+        GithubHandler.GithubUser = Backbone.Model.extend({
+            defaults: {
+                name: null
+            },
+            sync: function (callback) {
+                var that = this;
+                // Do nothing if github api was not initialized
+                if (!this.github) {
+                    return;
+                }
+                if (this.get("name")) {
+
+                }
+            }
+        });
+
+        GithubHandler.GithubRepository = Backbone.Model.extend({
+            defaults: {},
+            sync: function (callback) {
+                var that = this;
+
+                if (this.get("description") || this.get("about_the_course")) {
+                    callback();
+                } else if (this.get("short_name")) {
+                    Coursera.api.get('topic/information', {
+                        data: {"topic-id": that.get('short_name')},
+                        message: {"waiting": "loading course page ..."}
+                    })
+                        .done(function (data) {
+                            that.set(data);
+                            callback();
+                        })
+                        .fail(function (jqXHR) {
+                            callback(jqXHR.status);
+                        });
+                }
+            }
+        });
+
+        GithubHandler.GithubUserRepositoriesList = Backbone.Collection.extend({
+            model: GithubHandler.GithubContentCache
+        });
+
+        GithubHandler.GithubContentCache = Backbone.Model.extend({
+            defaults: {
+                sha: null,
+                full_name: null,
+                content: null,
+                updatedContent: null,
+                referenceCount: 0
+            }
+        });
+
+        //
+        // The collection of loaded and modified files,
+        // and newly created files too
+        GithubHandler.GithubContentCacheCollection = Backbone.Collection.extend({
+            model: GithubContentCache
+        });
+
+        GithubHandler.GithubTreeView = Marionette.CompositeView.extend({
+            tagName: '#tree',
+            initialize: function () {
+                _.bindAll(this, 'render');
+                this.collection.bind('add', this.render);
+            },
+
+            render: function () {
+                alert('start to render');
+                return this;
+            }
+        });
+
+        GithubHandler.Routes = Marionette.AppRouter.extend({
+            appRoutes: {
+                '/github': 'initializeView',
+                '/github/user': 'updateUserInformation',
+                '/github/user/repos': 'listUserRepositories',
+                '/github/*user/*repos/branches': 'listUserBranches',
+                '/github/*user/*repos/git/tree/*branch': 'listTree'
+            },
+
+            initializeView: function() {
+              // GitHub object should be predefined yet
+              this.navigate('/github/user/', {trigger: true});
+            },
+            updateUserInformation: function() {
+                App.vent.trigger('todoList:filter', filter.trim() || '');
+            },
+
+        });
+    });
     //
     // Github view manager is an abstraction which allow
     // to extract information about user's repositories (own, followed, starred etc..)
@@ -437,6 +534,7 @@
         this.init = function(path) {
             // Show repo title on the top
             dm.dm.fw.registerViewManager(this, true);
+            dm.dm.fw.Framework.model({Github:})
 
             // This is the default view
             this._activateRepoWidget("#us-repo-select");
@@ -521,6 +619,10 @@
                     // }
                     //
                     repositories: {},
+                    //
+                    // Cached repo content
+                    RepoCollection: new dm.models.GithubContentCacheCollection(),
+
                     //
                     // Return whether repo content was modified or not
                     //
@@ -1228,6 +1330,8 @@
                             return;
                         }
 
+                        self.TreeView = new dm.views.GithubTreeView({collection:self.RepoCollection});
+
                         var repo = self.repositories[self.activeRepo].repo;
                         self.treeParentSelector = parentSelector;
 
@@ -1289,6 +1393,8 @@
                                     if (node.data.isFolder) {
                                         return;
                                     }
+
+                                    self.RepoCollection.create({full_name:node.getAbsolutePath()});
 
                                     var title = node.data.title;
                                     var contentType = dm.dm.fw.getContentType(title);

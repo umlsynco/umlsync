@@ -16,8 +16,74 @@
 
 (function ($, dm, undefined) {
 
-    //@export:dm.hs.framework:plain
-    dm.hs.framework = function (options) {
+    var Application = new Backbone.Marionette.Application();
+    dm.dm.Application = Application;
+
+    Application.addRegions({
+        headerRegion: "#content-header",
+        leftRegion: "#content-left",
+        rightRegion: "#content-right",
+        footerRegion: "#content-bottom"
+    });
+
+    Application.on('initialize:after', function() {
+        Backbone.history.start();
+    });
+
+    Application.module('ContentManager', function(ContentManager, App, Backbone, Marionette, $, _) {
+        ContentManager.ContentModel = Backbone.Model.extend({
+            defaults: {
+                title: '',
+                absPath: '',
+                completed: false,
+                isOwner: false,
+                isEditable:false,
+                sha:null,
+                repo:null,
+                branch:null,
+                view:null,
+                created: 0
+            },
+
+            initialize: function() {
+                if (this.isNew()) {
+                    this.set('created', Date.now());
+                }
+            },
+
+            toggle: function() {
+                return this.set('completed', !this.isCompleted());
+            },
+
+            isCompleted: function() {
+                return this.get('completed');
+            }
+        });
+
+        ContentManager.ContentCollection = Backbone.Collection.extend({
+            model: ContentManager.ContentModel,
+
+            getCompleted: function() {
+                return this.filter(this._isCompleted);
+            },
+
+            getActive: function() {
+                return this.reject(this._isCompleted);
+            },
+
+            comparator: function(content) {
+                return content.get('created');
+            },
+
+            _isCompleted: function(content){
+                return content.isCompleted();
+            }
+        });
+
+
+    });
+
+
         var activeNode;
         var converter = new Showdown.converter({ extensions: ['umlsync'] });
 
@@ -44,6 +110,8 @@
         var framework = function (options) {
             var tmp_opt = $.extend(true, {}, this.options, options);
             this.options = tmp_opt;
+            this.Framework = Framework;
+            this.Framework.start();
 
             this.counter = 0;
             this.loader = dm.dm.loader;
